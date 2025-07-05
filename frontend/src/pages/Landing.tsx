@@ -1,0 +1,33 @@
+import { HeroSection } from '../components/sections/HeroSection'
+import { FeaturesSection } from '../components/sections/FeaturesSection'
+import { AISection } from '../components/sections/AISection'
+import { SuperformSection } from '../components/sections/SuperformSection'
+import { TeamCommunicationSection } from '../components/sections/TeamCommunicationSection'
+import { LayoutBuilderSection } from '../components/sections/LayoutBuilderSection'
+import { CustomizationSection } from '../components/sections/CustomizationSection'
+import { ProductivitySection } from '../components/sections/ProductivitySection'
+import { IntegrateSection } from '../components/sections/IntegrateSection'
+import { TestimonialsSection } from '../components/sections/TestimonialsSection'
+import { Footer } from '../components/sections/Footer'
+
+/**
+ * Landing Page - Complete Implementation
+ * Pixel-perfect recreation of the original Webflow design with modular components
+ */
+export default function Landing() {
+  return (
+    <>
+      <HeroSection />
+      <FeaturesSection />
+      <AISection />
+      <SuperformSection />
+      <TeamCommunicationSection />
+      <LayoutBuilderSection />
+      <CustomizationSection />
+      <ProductivitySection />
+      <IntegrateSection />
+      <TestimonialsSection />
+      <Footer />
+    </>
+  )
+}

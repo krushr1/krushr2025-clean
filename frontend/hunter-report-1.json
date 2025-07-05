@@ -1,0 +1,1718 @@
+{
+  "reportId": 1,
+  "timestamp": "2025-07-03T01:52:36.851Z",
+  "totalIssues": 190,
+  "severityBreakdown": {
+    "critical": 0,
+    "high": 25,
+    "medium": 163,
+    "low": 2
+  },
+  "typeBreakdown": {
+    "layout": 25,
+    "font": 33,
+    "responsive": 52,
+    "content": 8,
+    "accessibility": 72
+  },
+  "issues": [
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1997,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-content-wrapper",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1977,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "H3.menu-drop-down-text",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1507.0703125,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.wrap-all-dropdown-links",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1977,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "A.drop-link-wrapper",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1585.1015625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "IMG.dropdown-img",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1447,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-right-text-wrapper",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1585.1015625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-text-link",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1585.1015625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-text-link",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1585.1015625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "A.drop-link-wrapper",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1611.3515625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "IMG.dropdown-img",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1447,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-right-text-wrapper",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1611.3515625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-text-link",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1611.3515625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-text-link",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1611.3515625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "A.drop-link-wrapper",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1615.3984375,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "IMG.dropdown-img",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1447,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-right-text-wrapper",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1615.3984375,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-text-link",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1615.3984375,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-text-link",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1615.3984375,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "A.drop-link-wrapper",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1598.390625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "IMG.dropdown-img",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1447,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-right-text-wrapper",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1598.390625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-text-link",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1598.390625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.dropdown-text-link",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1598.390625,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "layout",
+      "severity": "high",
+      "element": "DIV.message",
+      "issue": "Horizontal overflow detected",
+      "position": {
+        "right": 1816,
+        "windowWidth": 1440
+      }
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.container-default-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "claritycity, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.foot-wrap-ne",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "claritycity, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.footer-top-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "claritycity, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.footer-middle-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "claritycity, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.div-block-4",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.footer-pages-links-container-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "UL.footer-list-wrapper-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "UL.footer-list-wrapper-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.div-block-4",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.footer-pages-links-container-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "UL.footer-list-wrapper-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "LI.footer-list-item",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.div-block-4",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.footer-contact-info-wrapper",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.footer-contact-info-item-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.footer-contact-info-item-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "satoshi, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.footer-bottom-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "claritycity, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "font",
+      "severity": "medium",
+      "element": "DIV.footer-copyright-container-2",
+      "issue": "Footer element not using Manrope font",
+      "currentFont": "claritycity, sans-serif",
+      "expectedFont": "Manrope"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-logo-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-logo-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.header-nav-link",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 0,
+        "height": 0
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 211.75,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 248.6640625,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 223.140625,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 212.2109375,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 160.1171875,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 181.734375,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 155.390625,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 158.1015625,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 184.3515625,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 188.3984375,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.drop-link-wrapper",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 171.390625,
+        "height": 34.8359375
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 58.4921875,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 61.1953125,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 60.9375,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 61.96875,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 84.390625,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 47.34375,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 79.8515625,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 124.28125,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 48.359375,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 51.0625,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 50.8046875,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 54.8515625,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 45.9453125,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 51.328125,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 131.671875,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 40.1640625,
+        "height": 16.6640625
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 121.9921875,
+        "height": 22
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-link-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 135.484375,
+        "height": 22
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.link-6",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 99.2421875,
+        "height": 19
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-social-media-link-wrapper-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 157.5859375,
+        "height": 26.703125
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-social-media-link-wrapper-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 135.015625,
+        "height": 26.703125
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-social-media-link-wrapper-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 158.375,
+        "height": 26.703125
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "responsive",
+      "severity": "medium",
+      "element": "A.footer-social-media-link-wrapper-2",
+      "issue": "Touch target too small on mobile",
+      "size": {
+        "width": 147.75,
+        "height": 26.703125
+      },
+      "viewport": "Mobile"
+    },
+    {
+      "type": "content",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Broken or missing image",
+      "src": "http://127.0.0.1:8001/images/Hero-portion-dashboard.webp",
+      "alt": ""
+    },
+    {
+      "type": "content",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Broken or missing image",
+      "src": "http://127.0.0.1:8001/images/Dual-Chats.png",
+      "alt": ""
+    },
+    {
+      "type": "content",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Broken or missing image",
+      "src": "http://127.0.0.1:8001/images/Screenshot-2023-03-28-at-10.24.08-PM.png",
+      "alt": ""
+    },
+    {
+      "type": "content",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Broken or missing image",
+      "src": "http://127.0.0.1:8001/images/Task-Board-detail_1.webp",
+      "alt": ""
+    },
+    {
+      "type": "content",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Broken or missing image",
+      "src": "http://127.0.0.1:8001/images/social-icon-facebook-techcloud-webflow-ecommerce-template.svg",
+      "alt": "Krushr - Facebook"
+    },
+    {
+      "type": "content",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Broken or missing image",
+      "src": "http://127.0.0.1:8001/images/social-icon-twitter-techcloud-webflow-ecommerce-template.svg",
+      "alt": "Krushr - Twitter"
+    },
+    {
+      "type": "content",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Broken or missing image",
+      "src": "http://127.0.0.1:8001/images/social-icon-instagram-techcloud-webflow-ecommerce-template.svg",
+      "alt": "Krushr - Instagram"
+    },
+    {
+      "type": "content",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Broken or missing image",
+      "src": "http://127.0.0.1:8001/images/social-icon-linkedin-techcloud-webflow-ecommerce-template.svg",
+      "alt": "Krushr - LinkedIn"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/Krushr-white-bg.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/Hero-portion-dashboard.webp"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/ChatGPT-Assistant.webp"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/Krushr-white-bg.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/layout-alt-04.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/message-chat-square.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/bar-chart-10.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/mail-02.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/image-1211-Traced.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/magic-wand-01.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/data.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/data.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/help-square.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/message-chat-square.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/file-heart-02.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/shield-tick.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/Hero-portion-dashboard.webp"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/ChatGPT-Assistant.webp"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/Dual-Chats.png"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/Screenshot-2023-03-28-at-10.24.08-PM.png"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/Task-Board-detail_1.webp"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/ChatGPT-Assistant.webp"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/lindsay-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/five-stars-techcloud-webflow-ecommerce-template.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/five-stars-techcloud-webflow-ecommerce-template.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/sophie-moore-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/five-stars-techcloud-webflow-ecommerce-template.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/lindsay-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/sophie-moore-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/LightRedCircleDarkCheck.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "medium",
+      "element": "img",
+      "issue": "Image missing alt text",
+      "src": "http://127.0.0.1:8001/images/krushr-logo-for-dark-pages.svg"
+    },
+    {
+      "type": "accessibility",
+      "severity": "low",
+      "element": "H3",
+      "issue": "Heading hierarchy skip detected",
+      "details": "Jumped from h1 to h3"
+    },
+    {
+      "type": "accessibility",
+      "severity": "low",
+      "element": "H3",
+      "issue": "Heading hierarchy skip detected",
+      "details": "Jumped from h1 to h3"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "action": "Address high severity issues",
+      "details": [
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected",
+        "Horizontal overflow detected"
+      ]
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Apply Manrope font to all footer elements (except logo)",
+      "details": "Add style=\"font-family: 'Manrope', sans-serif;\" to footer text elements"
+    },
+    {
+      "priority": "HIGH",
+      "action": "Fix layout overflow and grid issues",
+      "details": "Review container max-widths and grid configurations"
+    }
+  ],
+  "screenshot": "hunter-report-1.png"
+}

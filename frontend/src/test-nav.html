@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Navigation Test</title>
+</head>
+<body>
+    <h1>Navigation Test</h1>
+    <button onclick="window.location.href='http://localhost:8000/#/login'">Go to Login</button>
+    <button onclick="window.location.href='http://localhost:8000/#/board'">Go to Board</button>
+    <button onclick="alert('Button clicked!')">Test Alert</button>
+    
+    <script>
+        console.log('Test page loaded');
+        document.addEventListener('click', function(e) {
+            console.log('Click detected on:', e.target);
+        });
+    </script>
+</body>
+</html>

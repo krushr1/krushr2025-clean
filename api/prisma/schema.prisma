@@ -1,0 +1,565 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String             @id @default(cuid())
+  email           String             @unique
+  name            String
+  avatar          String?
+  password        String
+  emailVerified   DateTime?
+  timezone        String             @default("UTC")
+  dateFormat      String             @default("MM/DD/YYYY")
+  language        String             @default("en")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  sentMessages    ChatMessage[]      @relation("MessageSender")
+  chatReactions   ChatReaction[]     @relation("ChatReactions")
+  notes           Note[]
+  notifications   Notification[]
+  preferences     UserPreferences?
+  sessions        Session[]
+  taskComments    TaskComment[]
+  taskTimeEntries TaskTimeEntry[]
+  tasks           Task[]             @relation("TaskAssignee")
+  createdTasks    Task[]             @relation("TaskCreator")
+  teamMembers     TeamMember[]
+  workspaces      WorkspaceMember[]
+  ownedWorkspaces Workspace[]        @relation("WorkspaceOwner")
+  calendarEvents  CalendarEvent[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Workspace {
+  id            String                  @id @default(cuid())
+  name          String
+  description   String?
+  settings      String                  @default("{}")
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+  ownerId       String
+  kanbans       Kanban[]
+  noteFolders   NoteFolder[]
+  notes         Note[]
+  panels        Panel[]
+  projects      Project[]
+  teams         Team[]
+  layoutPresets WorkspaceLayoutPreset[]
+  members       WorkspaceMember[]
+  owner         User                    @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  calendarEvents CalendarEvent[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String    @id @default(cuid())
+  userId      String
+  workspaceId String
+  role        String    @default("MEMBER")
+  joinedAt    DateTime  @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@map("workspace_members")
+}
+
+model Team {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  color       String       @default("#3B82F6")
+  workspaceId String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  chats       ChatThread[]
+  projects    Project[]
+  members     TeamMember[]
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("teams")
+}
+
+model TeamMember {
+  id     String @id @default(cuid())
+  userId String
+  teamId String
+  role   String @default("MEMBER")
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+  @@map("team_members")
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  status      String    @default("ACTIVE")
+  startDate   DateTime?
+  endDate     DateTime?
+  workspaceId String
+  teamId      String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  kanbans     Kanban[]
+  team        Team?     @relation(fields: [teamId], references: [id])
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  @@map("projects")
+}
+
+model Kanban {
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  position    Int            @default(0)
+  workspaceId String
+  projectId   String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  columns     KanbanColumn[]
+  project     Project?       @relation(fields: [projectId], references: [id])
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("kanbans")
+}
+
+model KanbanColumn {
+  id       String @id @default(cuid())
+  title    String
+  position Int    @default(0)
+  color    String @default("#6B7280")
+  kanbanId String
+  kanban   Kanban @relation(fields: [kanbanId], references: [id], onDelete: Cascade)
+  tasks    Task[]
+
+  @@map("kanban_columns")
+}
+
+model Task {
+  id             String           @id @default(cuid())
+  title          String
+  description    String?
+  status         String           @default("TODO")
+  priority       String           @default("medium")
+  position       Int              @default(0)
+  dueDate        DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  projectId      String?
+  kanbanColumnId String?
+  createdById    String
+  assigneeId     String?
+  estimatedHours Float?
+  
+  // Enhanced 2025 Enterprise Fields
+  startDate           DateTime?
+  completedAt         DateTime?
+  storyPoints         Int?
+  actualHours         Float?
+  epicId              String?
+  parentTaskId        String?
+  template            String?
+  recurringPattern    String?
+  watchers            String           @default("[]")
+  customFields        String           @default("{}")
+  aiSummary           String?
+  aiPriority          String?
+  riskLevel           String           @default("LOW")
+  businessValue       Int?
+  complexity          Int?
+  blockedReason       String?
+  blockedBy           String?
+  isBlocked           Boolean          @default(false)
+  isTemplate          Boolean          @default(false)
+  isPrivate           Boolean          @default(false)
+  
+  // Relations
+  attachments    TaskAttachment[]
+  checklists     TaskChecklist[]
+  comments       TaskComment[]
+  tags           TaskTag[]
+  subtasks       Task[]               @relation("TaskHierarchy")
+  parentTask     Task?                @relation("TaskHierarchy", fields: [parentTaskId], references: [id])
+  timeEntries    TaskTimeEntry[]
+  dependencies   TaskDependency[]     @relation("DependentTask")
+  dependents     TaskDependency[]     @relation("BlockingTask")
+  assignee       User?                @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  createdBy      User                 @relation("TaskCreator", fields: [createdById], references: [id])
+  kanbanColumn   KanbanColumn?        @relation(fields: [kanbanColumnId], references: [id])
+  project        Project?             @relation(fields: [projectId], references: [id])
+
+  @@map("tasks")
+}
+
+model TaskTag {
+  id     String @id @default(cuid())
+  name   String
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([name, taskId])
+  @@map("task_tags")
+}
+
+model TaskChecklist {
+  id     String              @id @default(cuid())
+  title  String
+  taskId String
+  items  TaskChecklistItem[]
+  task   Task                @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("task_checklists")
+}
+
+model TaskChecklistItem {
+  id          String        @id @default(cuid())
+  text        String
+  completed   Boolean       @default(false)
+  position    Int           @default(0)
+  checklistId String
+  checklist   TaskChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+
+  @@map("task_checklist_items")
+}
+
+model TaskComment {
+  id        String   @id @default(cuid())
+  content   String
+  taskId    String
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation(fields: [authorId], references: [id])
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("task_comments")
+}
+
+model TaskAttachment {
+  id           String   @id @default(cuid())
+  filename     String
+  url          String
+  mimeType     String
+  size         Int
+  compressed   Boolean  @default(false)
+  taskId       String
+  uploadedAt   DateTime @default(now())
+  thumbnailUrl String?
+  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("task_attachments")
+}
+
+model TaskTimeEntry {
+  id          String    @id @default(cuid())
+  taskId      String
+  userId      String
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Int?      // Duration in minutes
+  billable    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@map("task_time_entries")
+}
+
+model TaskDependency {
+  id              String   @id @default(cuid())
+  dependentTaskId String   // Task that depends on another
+  blockingTaskId  String   // Task that blocks the dependent task
+  type            String   @default("FINISH_TO_START") // FINISH_TO_START, START_TO_START, etc.
+  createdAt       DateTime @default(now())
+  dependentTask   Task     @relation("DependentTask", fields: [dependentTaskId], references: [id], onDelete: Cascade)
+  blockingTask    Task     @relation("BlockingTask", fields: [blockingTaskId], references: [id], onDelete: Cascade)
+
+  @@unique([dependentTaskId, blockingTaskId])
+  @@map("task_dependencies")
+}
+
+model ChatThread {
+  id        String        @id @default(cuid())
+  name      String?
+  type      String
+  teamId    String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  messages  ChatMessage[]
+  team      Team?         @relation(fields: [teamId], references: [id])
+
+  @@map("chat_threads")
+}
+
+model ChatMessage {
+  id          String              @id @default(cuid())
+  content     String
+  type        String              @default("TEXT")
+  threadId    String
+  senderId    String
+  replyToId   String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  attachments ChatAttachment[]
+  reactions   ChatReaction[]
+  sender      User                @relation("MessageSender", fields: [senderId], references: [id])
+  thread      ChatThread          @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  replyTo     ChatMessage?        @relation("MessageReply", fields: [replyToId], references: [id])
+  replies     ChatMessage[]       @relation("MessageReply")
+
+  @@map("chat_messages")
+}
+
+model ChatReaction {
+  id        String      @id @default(cuid())
+  emoji     String
+  messageId String
+  userId    String
+  createdAt DateTime    @default(now())
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      User        @relation("ChatReactions", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId, emoji])
+  @@map("chat_reactions")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  type      String
+  isRead    Boolean  @default(false)
+  userId    String
+  data      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Panel {
+  id           String    @id @default(cuid())
+  type         String
+  title        String
+  position_x   Int       @default(0)
+  position_y   Int       @default(0)
+  width        Int       @default(6)
+  height       Int       @default(4)
+  is_minimized Boolean   @default(false)
+  is_locked    Boolean   @default(false)
+  data         String    @default("{}")
+  workspaceId  String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("panels")
+}
+
+model NoteFolder {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  color       String       @default("#6B7280")
+  position    Int          @default(0)
+  parentId    String?
+  workspaceId String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  parent      NoteFolder?  @relation("FolderHierarchy", fields: [parentId], references: [id])
+  children    NoteFolder[] @relation("FolderHierarchy")
+  notes       Note[]
+
+  @@map("note_folders")
+}
+
+model Note {
+  id          String           @id @default(cuid())
+  title       String
+  content     String           @default("")
+  color       String?          @default("#ffffff")
+  isPinned    Boolean          @default(false)
+  isArchived  Boolean          @default(false)
+  folderId    String?
+  authorId    String
+  workspaceId String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  attachments NoteAttachment[]
+  tags        NoteTag[]
+  workspace   Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  author      User             @relation(fields: [authorId], references: [id])
+  folder      NoteFolder?      @relation(fields: [folderId], references: [id])
+
+  @@map("notes")
+}
+
+model NoteTag {
+  id     String @id @default(cuid())
+  name   String
+  noteId String
+  note   Note   @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@unique([name, noteId])
+  @@map("note_tags")
+}
+
+model WorkspaceLayoutPreset {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  isDefault   Boolean   @default(false)
+  layoutData  String
+  workspaceId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("workspace_layout_presets")
+}
+
+model ChatAttachment {
+  id           String      @id @default(cuid())
+  filename     String
+  url          String
+  mimeType     String
+  size         Int
+  compressed   Boolean     @default(false)
+  messageId    String
+  uploadedAt   DateTime    @default(now())
+  thumbnailUrl String?
+  message      ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@map("chat_attachments")
+}
+
+model NoteAttachment {
+  id           String   @id @default(cuid())
+  filename     String
+  url          String
+  mimeType     String
+  size         Int
+  compressed   Boolean  @default(false)
+  noteId       String
+  uploadedAt   DateTime @default(now())
+  thumbnailUrl String?
+  note         Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@map("note_attachments")
+}
+
+model UserPreferences {
+  id                          String   @id @default(cuid())
+  userId                      String   @unique
+  theme                       String   @default("system") // light, dark, system
+  colorScheme                 String   @default("blue")   // blue, green, purple, orange
+  compactMode                 Boolean  @default(false)
+  fontSize                    String   @default("medium") // small, medium, large
+  sidebarBehavior            String   @default("auto")    // always, auto, manual
+  desktopNotifications       Boolean  @default(true)
+  emailNotifications         Boolean  @default(true)
+  emailDigestFrequency       String   @default("daily")   // immediate, daily, weekly, off
+  notifyTaskAssignments      Boolean  @default(true)
+  notifyCommentsMentions     Boolean  @default(true)
+  notifyTeamInvitations      Boolean  @default(true)
+  notifyProjectDeadlines     Boolean  @default(true)
+  notifyFileUploads          Boolean  @default(false)
+  notificationSound          Boolean  @default(true)
+  quietHoursStart            String?  // "22:00"
+  quietHoursEnd              String?  // "08:00"
+  defaultTaskPriority        String   @default("medium") // low, medium, high, critical
+  autoSaveFrequency          Int      @default(30)       // seconds
+  defaultCalendarView        String   @default("month")  // month, week, day, agenda
+  calendarWeekStartsOn       Int      @default(0)        // 0 = Sunday, 1 = Monday
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+  user                       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+// Calendar and Events
+model CalendarEvent {
+  id            String                @id @default(cuid())
+  title         String
+  description   String?
+  startTime     DateTime
+  endTime       DateTime
+  allDay        Boolean               @default(false)
+  location      String?
+  color         String                @default("blue") // blue, green, purple, orange, red
+  type          String                @default("EVENT") // MEETING, TASK, REMINDER, EVENT, DEADLINE, MILESTONE
+  status        String                @default("CONFIRMED") // CONFIRMED, TENTATIVE, CANCELLED
+  priority      String                @default("MEDIUM") // LOW, MEDIUM, HIGH, CRITICAL
+  isRecurring   Boolean               @default(false)
+  recurrenceRule String?              // RRULE format for recurring events
+  timezone      String                @default("UTC")
+  visibility    String                @default("DEFAULT") // DEFAULT, PUBLIC, PRIVATE
+  workspaceId   String
+  createdById   String
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  attendees     CalendarAttendee[]
+  reminders     CalendarReminder[]
+  workspace     Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy     User                  @relation(fields: [createdById], references: [id])
+
+  @@map("calendar_events")
+}
+
+model CalendarAttendee {
+  id          String                   @id @default(cuid())
+  eventId     String
+  email       String
+  name        String?
+  status      String                   @default("PENDING") // PENDING, ACCEPTED, DECLINED, MAYBE
+  response    String?                  // Optional response message
+  isOrganizer Boolean                  @default(false)
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  event       CalendarEvent            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, email])
+  @@map("calendar_attendees")
+}
+
+model CalendarReminder {
+  id        String                   @id @default(cuid())
+  eventId   String
+  type      String                   @default("NOTIFICATION") // NOTIFICATION, EMAIL, SMS
+  timing    String                   @default("FIFTEEN_MINUTES") // FIVE_MINUTES, TEN_MINUTES, etc.
+  customMinutes Int?                 // For custom timing
+  createdAt DateTime                 @default(now())
+  event     CalendarEvent            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("calendar_reminders")
+}
+
+// Calendar enums are implemented as string constraints in validation schemas
+// SQLite doesn't support native enums, so we use strings with validation

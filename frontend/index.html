@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Krushr - Project Management Platform</title>
+    <meta name="description" content="Modern project management platform with Kanban boards, team collaboration, and real-time updates">
+    <meta name="theme-color" content="#FF6B6B">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Krushr">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/icons/icon-32x32.svg" sizes="32x32" type="image/svg+xml">
+    <link rel="icon" href="/icons/icon-16x16.svg" sizes="16x16" type="image/svg+xml">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-152x152.svg" sizes="152x152">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.svg" sizes="192x192">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Webflow CSS Files -->
+    <link href="css/normalize.css" rel="stylesheet" type="text/css">
+    <link href="css/webflow.css" rel="stylesheet" type="text/css">
+    <link href="css/taskpanels.webflow.css" rel="stylesheet" type="text/css">
+    
+    <!-- Styles -->
+    <link href="main.css" rel="stylesheet">
+    <script src="/js/performance-optimizations.js"></script>
+</head>
+  <script>
+    new EventSource('/esbuild').addEventListener('change', () =>
+      location.reload()
+    )
+  </script>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

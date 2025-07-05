@@ -1,0 +1,181 @@
+/**
+ * Hero Section Styles
+ * Complete design system implementation without Webflow dependencies
+ */
+
+.heroWrapper {
+  background-color: #f3f4f6;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  overflow: hidden;
+}
+
+.heroContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.heroContent {
+  text-align: center;
+}
+
+.noticeBar {
+  background: linear-gradient(135deg, #EB5857 0%, #d44c4c 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(235, 88, 87, 0.3);
+}
+
+.noticeHighlight {
+  font-weight: 600;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #1f2937;
+  margin-bottom: 2rem;
+  font-family: 'Manrope', sans-serif;
+}
+
+.featureList {
+  margin-bottom: 3rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.featureIcon {
+  background: #10b981;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.featureText {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.heroImages {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.imageContainer {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.dashboardImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.assistantImage {
+  position: absolute;
+  bottom: -2rem;
+  right: -2rem;
+  width: 60%;
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 4px solid white;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .heroGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+  
+  .heroContent {
+    text-align: left;
+  }
+  
+  .buttonContainer {
+    justify-content: flex-start;
+  }
+  
+  .featureItem {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroTitle {
+    font-size: 4rem;
+  }
+  
+  .heroContainer {
+    padding: 0 3rem;
+  }
+  
+  .assistantImage {
+    bottom: -3rem;
+    right: -3rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .assistantImage {
+    position: static;
+    width: 80%;
+    margin: 1rem auto 0;
+    display: block;
+  }
+}

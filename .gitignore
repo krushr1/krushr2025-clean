@@ -1,0 +1,95 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+build/
+*/dist/
+*/build/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database
+*.db
+*.db-journal
+*.sqlite
+
+# Uploads
+uploads/
+*/uploads/
+
+# Development artifacts
+*.tsbuildinfo
+.vite/
+.turbo/
+
+# Testing
+coverage/
+.nyc_output/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup and temp directories
+backup/
+backups/
+temp*/
+*temp*/
+*backup*
+*test*/
+test-*/
+
+# Development files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+!frontend/src/**/*.svg
+!frontend/public/**/*.svg
+
+# Documentation bloat
+*.md
+!README.md
+!CLAUDE.md
+
+# Development scripts
+*test*.js
+*test*.cjs
+*debug*.js
+*-test.*
+
+# Legacy backend (deprecated)
+backend/
+
+# Landing page staging
+landing-page-staging/
+
+# Miscellaneous bloat
+*.zip
+*.tar.gz
+*.app/
+Launch*/
+cookies.txt
+server.log
+*.log

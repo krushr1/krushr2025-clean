@@ -1,0 +1,845 @@
+/* Fonts loaded via HTML <link> tags in index.html to avoid CORS issues */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global font settings - Manrope as default, Satoshi for hero */
+@layer base {
+  * {
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+  }
+  
+  body {
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-manrope {
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+  }
+  
+  .font-satoshi {
+    font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
+  }
+}
+
+:root {
+  /* Figma Design System Colors */
+  --color-primary: #143197;              /* Primary Blue */
+  --color-secondary: #EB5857;            /* Secondary Red */
+  --color-success: #1FBB65;              /* Success Green */
+  --color-warning: #FFE81A;              /* Warning Yellow */
+  --color-info: #57C7EB;                 /* Info Blue */
+  --color-purple: #6941C6;               /* Purple */
+  --color-orange: #FF9772;               /* Orange */
+  
+  /* Neutrals */
+  --color-black: #000000;
+  --color-gray-dark: #434242;
+  --color-gray-medium: #454343;
+  --color-gray: #5F5F5F;
+  --color-gray-light: #ADADAD;
+  --color-gray-lighter: #C9C9C9;
+  --color-gray-border: #E9E9E9;
+  --color-gray-bg: #F1F1F1;
+  --color-gray-bg-light: #F6F6F6;
+  --color-white: #FFFFFF;
+  
+  /* Typography */
+  --font-primary: 'Manrope', sans-serif;
+  --font-brand: 'Manrope', sans-serif;
+  --font-hero: 'Satoshi', sans-serif;
+  
+  /* Shadows */
+  --shadow-card: 0px 2px 5px 3px rgba(215, 215, 215, 0.1);
+  --shadow-modal: 0px 15px 40px 5px rgba(136, 136, 136, 0.42);
+  --shadow-button-red: 1px 2px 10px #DDA1A1;
+  --shadow-button-dark: 1px 2px 10px #5F5F5F;
+  
+  /* Enhanced Elevation System */
+  --shadow-elevation-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-elevation-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-elevation-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-elevation-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-elevation-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-elevation-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* Convert to HSL for CSS variables compatibility */
+  --krushr-primary: 225 77% 34%;          /* #143197 */
+  --krushr-secondary: 0 79% 63%;          /* #EB5857 - Coral Red (Accent) */
+  --krushr-success: 141 82% 43%;          /* #1FBB65 */
+  --krushr-warning: 32 94% 43%;           /* #D97706 */
+  --krushr-info: 194 83% 64%;             /* #57C7EB */
+  --krushr-purple: 259 57% 52%;           /* #6941C6 */
+  --krushr-orange: 16 100% 72%;           /* #FF9772 */
+  --krushr-coral-red: 0 79% 63%;          /* #EB5857 - Accent color */
+  --krushr-gray-dark: 2 2% 26%;           /* #434242 */
+  --krushr-gray: 0 0% 37%;                /* #5F5F5F */
+  --krushr-gray-light: 0 0% 68%;          /* #ADADAD */
+  
+  /* Design System Colors (Figma-based) */
+  --background: 0 0% 100%;                /* White */
+  --foreground: var(--krushr-gray-dark);  /* #434242 */
+  --card: 0 0% 100%;                      /* White */
+  --card-foreground: var(--krushr-gray-dark);
+  --popover: 0 0% 100%;
+  --popover-foreground: var(--krushr-gray-dark);
+  --primary: var(--krushr-primary);       /* #143197 Blue as Primary */
+  --primary-foreground: 0 0% 100%;
+  --secondary: var(--krushr-secondary);   /* #EB5857 Red as Secondary */
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 94.5%;                    /* #F1F1F1 */
+  --muted-foreground: var(--krushr-gray);
+  --accent: var(--krushr-coral-red);      /* #EB5857 Coral Red */
+  --accent-foreground: 0 0% 100%;
+  --destructive: var(--krushr-secondary); /* #EB5857 */
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 91%;                     /* #E9E9E9 */
+  --input: 0 0% 91%;                      /* #E9E9E9 */
+  --ring: var(--krushr-primary);         /* #143197 */
+  
+  /* Krushr-themed Charts */
+  --chart-1: var(--krushr-coral-red);     /* Primary Coral Red */
+  --chart-2: var(--krushr-blue);          /* Supporting Blue */
+  --chart-3: var(--krushr-light-blue);
+  --chart-4: var(--krushr-sky-blue);
+  --chart-5: 0 31% 68%;                   /* Medium Coral */
+  
+  --radius: 0.5rem;
+  
+  /* Figma-based Sidebar */
+  --sidebar-background: 0 0% 97%;         /* #F6F6F6 Light Background */
+  --sidebar-foreground: var(--krushr-gray-dark); /* #434242 Dark Gray */
+  --sidebar-icon: var(--krushr-secondary); /* #EB5857 Red for icons */
+  --sidebar-primary: var(--krushr-primary); /* #143197 Blue */
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 94.5%;           /* #F1F1F1 */
+  --sidebar-accent-foreground: var(--krushr-gray-dark);
+  --sidebar-border: 0 0% 91%;             /* #E9E9E9 */
+  --sidebar-ring: var(--krushr-primary);
+}
+
+.dark {
+  /* Dark mode with Krushr Coral Red branding */
+  --background: 0 15% 6%;                 /* Dark coral-tinted background */
+  --foreground: 0 0% 98%;
+  --card: 0 15% 8%;                       /* Slightly lighter dark coral */
+  --card-foreground: 0 0% 98%;
+  --popover: 0 15% 8%;
+  --popover-foreground: 0 0% 98%;
+  --primary: var(--krushr-coral-red);     /* Coral Red stays primary in dark */
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 15% 12%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 14.9%;
+  --muted-foreground: 0 0% 63.9%;
+  --accent: 0 0% 14.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --input: 0 0% 14.9%;
+  --ring: 0 0% 83.1%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+  --sidebar-background: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+  overscroll-behavior: none;
+  font-synthesis-weight: none;
+  font-family: var(--font-primary); /* Manrope as primary */
+}
+
+html > body * {
+  border-color: hsl(var(--border));
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 5px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+/* Figma Design System Implementation */
+
+/* Primary font (Manrope) for UI elements */
+body, .ui-text, .body-text, input, button, label {
+  font-family: var(--font-primary) !important;
+}
+
+/* Brand font (Manrope) for brand elements */
+.brand-text, .logo-text, .brand-heading, h1.brand, h2.brand {
+  font-family: var(--font-brand) !important;
+}
+
+/* Figma Typography Scale */
+.text-micro {
+  font-family: var(--font-primary);
+  font-size: 3px;
+  line-height: 4px;
+}
+
+.text-tiny {
+  font-family: var(--font-primary);
+  font-size: 4.5px;
+  line-height: 5px;
+}
+
+.text-small {
+  font-family: var(--font-primary);
+  font-size: 6px;
+  line-height: 8px;
+}
+
+.text-body {
+  font-family: var(--font-primary);
+  font-size: 7px;
+  line-height: 10px;
+}
+
+.text-label {
+  font-family: var(--font-primary);
+  font-size: 8px;
+  line-height: 11px;
+  font-weight: 600;
+}
+
+.text-heading {
+  font-family: var(--font-primary);
+  font-size: 20px;
+  line-height: 27px;
+  font-weight: 600;
+}
+
+.text-brand-logo {
+  font-family: var(--font-brand);
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.text-brand-tagline {
+  font-family: var(--font-brand);
+  font-size: 4.5px;
+  line-height: 5px;
+  font-weight: 500;
+  color: var(--color-gray-light);
+}
+
+/* Figma Component Styles */
+.figma-card {
+  background: var(--color-white);
+  border: 0.5px solid var(--color-gray-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 5px;
+}
+
+.figma-modal {
+  background: var(--color-white);
+  box-shadow: var(--shadow-modal);
+  border-radius: 5px;
+}
+
+.figma-button-primary {
+  background: var(--color-primary);
+  border: 0.7px solid var(--color-primary);
+  border-radius: 5px;
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-weight: 500;
+}
+
+.figma-button-secondary {
+  background: var(--color-secondary);
+  border: 0.7px solid var(--color-secondary);
+  border-radius: 5px;
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-weight: 500;
+}
+
+.figma-button-outline {
+  background: transparent;
+  border: 0.7px solid var(--color-primary);
+  border-radius: 5px;
+  color: var(--color-primary);
+  font-family: var(--font-primary);
+  font-weight: 500;
+}
+
+.figma-tag-critical {
+  background: var(--color-warning);
+  border-radius: 5px;
+  font-family: var(--font-primary);
+  font-weight: 500;
+  font-size: 5px;
+  color: var(--color-white);
+  padding: 2px 6px;
+}
+
+.figma-tag-package {
+  background: var(--color-purple);
+  border-radius: 5px;
+  font-family: var(--font-primary);
+  font-weight: 500;
+  font-size: 5px;
+  color: var(--color-white);
+  padding: 2px 6px;
+}
+
+.figma-tag-location {
+  background: var(--color-primary);
+  border-radius: 5px;
+  font-family: var(--font-primary);
+  font-weight: 500;
+  font-size: 5px;
+  color: var(--color-white);
+  padding: 2px 6px;
+}
+
+.figma-priority-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 3px;
+}
+
+.figma-priority-active {
+  background: var(--color-secondary);
+}
+
+.figma-priority-inactive {
+  background: var(--color-gray-lighter);
+}
+
+/* Keep sidebar icons red per Figma */
+.sidebar .lucide, .sidebar svg, nav .lucide, nav svg {
+  color: var(--color-secondary) !important; /* #EB5857 Red */
+}
+
+/* Figma-based space efficiency for board area */
+.board-header {
+  padding: 12px !important;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-border);
+}
+
+.board-title {
+  font-family: var(--font-primary);
+  font-size: 20px;
+  line-height: 27px;
+  font-weight: 600;
+  color: var(--color-gray-dark);
+  margin-bottom: 4px !important;
+}
+
+.board-description {
+  font-family: var(--font-primary);
+  font-size: 7px;
+  line-height: 10px;
+  font-weight: 500;
+  color: var(--color-gray);
+  margin-bottom: 8px !important;
+}
+
+.board-actions {
+  gap: 8px !important;
+}
+
+.board-search {
+  padding: 6px 12px !important;
+  font-family: var(--font-primary);
+  font-size: 8px;
+  border: 0.7px solid var(--color-gray-border);
+  border-radius: 5px;
+}
+
+.board-search:focus {
+  border-color: var(--color-secondary);
+  outline: none;
+  box-shadow: 0 0 0 1px var(--color-secondary);
+}
+
+/* Apply Figma font weights */
+body {
+  font-weight: 400; /* Figma standard weight */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600; /* Figma heading weight */
+}
+
+.font-medium {
+  font-weight: 500; /* Figma medium weight */
+}
+
+.font-semibold {
+  font-weight: 600; /* Figma semi-bold weight */
+}
+
+.font-bold {
+  font-weight: 700; /* Figma bold weight */
+}
+
+/* Accessibility & Mobile Touch Enhancements */
+
+/* WCAG AA compliant touch targets - minimum 44x44px */
+.touch-target {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  touch-action: manipulation;
+}
+
+.touch-target-small {
+  min-width: 32px !important;
+  min-height: 32px !important;
+  touch-action: manipulation;
+}
+
+/* Panel drag handle touch behavior */
+.panel-drag-handle {
+  touch-action: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Panel container touch behavior - prevent scrolling only during drag */
+.panel-container {
+  overscroll-behavior: none !important;
+}
+
+.panel-card {
+  overscroll-behavior: none !important;
+}
+
+/* React Grid Layout touch behavior - allow vertical scrolling */
+.react-grid-layout {
+  overscroll-behavior: none !important;
+  touch-action: pan-y !important; /* Allow vertical scrolling */
+}
+
+.react-grid-item {
+  touch-action: pan-y !important; /* Allow vertical scrolling */
+  overscroll-behavior: none !important;
+}
+
+.react-grid-item.react-grid-placeholder {
+  touch-action: pan-y !important;
+}
+
+.react-grid-item.cssTransforms {
+  touch-action: pan-y !important;
+}
+
+/* Only disable touch during actual dragging */
+.react-grid-item.react-draggable-dragging {
+  touch-action: none !important;
+}
+
+/* Resize handles should allow vertical scrolling */
+.react-resizable-handle {
+  touch-action: pan-y !important;
+}
+
+/* Enhanced focus indicators for accessibility */
+.focus-ring {
+  transition: all 0.2s ease-in-out;
+}
+
+.focus-ring:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px hsl(var(--ring)) !important;
+  border-color: hsl(var(--ring)) !important;
+}
+
+.focus-ring:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px hsl(var(--ring)) !important;
+  border-color: hsl(var(--ring)) !important;
+}
+
+/* Improved hover states for better interaction feedback */
+.hover-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hover-bg:hover {
+  background-color: hsl(var(--muted)) !important;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Mobile-first responsive utilities */
+@media (max-width: 768px) {
+  /* Ensure all interactive elements meet touch target size */
+  button, 
+  [role="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select,
+  .interactive {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Larger tap areas for small icons on mobile */
+  .mobile-touch {
+    padding: 12px !important;
+  }
+  
+  /* Better spacing for mobile readability */
+  .mobile-spacing {
+    margin: 8px 0 !important;
+  }
+  
+  /* Readable text sizes on mobile */
+  .mobile-text {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  padding: 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  z-index: 1000;
+  font-weight: 600;
+  font-size: 14px;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .border {
+    border-width: 2px !important;
+  }
+  
+  .focus-ring:focus,
+  .focus-ring:focus-visible {
+    box-shadow: 0 0 0 3px hsl(var(--ring)) !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Krushr Brand Color Utilities */
+@layer utilities {
+  .bg-krushr-coral-red {
+    background-color: hsl(var(--krushr-secondary));
+  }
+  
+  .text-krushr-coral-red {
+    color: hsl(var(--krushr-secondary));
+  }
+  
+  .border-krushr-coral-red {
+    border-color: hsl(var(--krushr-secondary));
+  }
+  
+  .ring-krushr-coral-red {
+    --tw-ring-color: hsl(var(--krushr-secondary));
+  }
+  
+  .focus\:ring-krushr-coral-red:focus {
+    --tw-ring-color: hsl(var(--krushr-secondary));
+  }
+  
+  .focus\:border-krushr-coral-red:focus {
+    border-color: hsl(var(--krushr-secondary));
+  }
+  
+  .hover\:bg-krushr-coral-red\/90:hover {
+    background-color: hsl(var(--krushr-secondary) / 0.9);
+  }
+  
+  .hover\:text-krushr-coral-red\/80:hover {
+    color: hsl(var(--krushr-secondary) / 0.8);
+  }
+}
+
+/* Brandkit Form Controls */
+@layer components {
+  /* Krushr-Themed Form Controls from Brandkit */
+  
+  /* Checkboxes */
+  .krushr-checkbox {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-gray-border);
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  
+  .krushr-checkbox:hover {
+    border-color: var(--color-primary);
+  }
+  
+  .krushr-checkbox:checked {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  
+  .krushr-checkbox:checked::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -60%) rotate(45deg);
+  }
+  
+  /* Radio Buttons */
+  .krushr-radio {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-gray-border);
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  
+  .krushr-radio:hover {
+    border-color: var(--color-primary);
+  }
+  
+  .krushr-radio:checked {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  
+  /* Modal and Panel Styles */
+  .shadow-krushr-modal {
+    box-shadow: var(--shadow-modal);
+  }
+  
+  .rounded-modal {
+    border-radius: 12px;
+  }
+  
+  .rounded-button {
+    border-radius: 6px;
+  }
+  
+  .rounded-input {
+    border-radius: 6px;
+  }
+  
+  /* Typography Classes from Brandkit */
+  .typography-hero {
+    @apply brand-font text-6xl font-bold leading-none tracking-tight;
+  }
+  
+  .typography-display {
+    @apply brand-font text-4xl font-bold leading-tight tracking-tight;
+  }
+  
+  .typography-h1 {
+    @apply text-3xl font-semibold leading-tight tracking-tight;
+  }
+  
+  .typography-h2 {
+    @apply text-2xl font-semibold leading-tight;
+  }
+  
+  .typography-body-large {
+    @apply text-lg leading-relaxed;
+  }
+  
+  .typography-body {
+    @apply text-base leading-normal;
+  }
+  
+  .typography-small {
+    @apply text-sm leading-normal;
+  }
+  
+  .typography-micro {
+    @apply text-xs leading-normal tracking-wide;
+  }
+  
+  /* Modal Overlay */
+  .bg-krushr-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* BrandKit-2 Modal Styles */
+  .shadow-krushr-modal {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  .krushr-input {
+    @apply w-full px-3 py-2 border border-krushr-gray-border rounded-md focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary font-manrope text-sm;
+  }
+  
+  /* Ensure all brandkit color classes are available */
+  .text-krushr-gray-dark { color: #434242; }
+  .text-krushr-gray { color: #5F5F5F; }
+  .border-krushr-gray-border { border-color: #E9E9E9; }
+  .bg-krushr-gray-bg-light { background-color: #F6F6F6; }
+  .bg-krushr-gray-bg { background-color: #F1F1F1; }
+  .text-krushr-primary { color: #143197; }
+  .bg-krushr-primary { background-color: #143197; }
+  .border-krushr-primary { border-color: #143197; }
+  .focus\:ring-krushr-primary:focus { --tw-ring-color: #143197; }
+  .focus\:border-krushr-primary:focus { border-color: #143197; }
+  .text-krushr-secondary { color: #EB5857; }
+  .border-krushr-secondary { border-color: #EB5857; }
+  .bg-krushr-secondary { background-color: #EB5857; }
+  .hover\:bg-krushr-secondary:hover { background-color: #EB5857; }
+  .hover\:text-krushr-gray-dark:hover { color: #434242; }
+  .hover\:bg-krushr-gray-bg:hover { background-color: #F1F1F1; }
+  
+  /* Enhanced Brandkit Classes */
+  .bg-krushr-panel-bg { background-color: #ffffff; }
+  .border-krushr-panel-border { border-color: #e5e7eb; }
+  .bg-krushr-modal-overlay { background-color: rgba(0, 0, 0, 0.5); }
+  .rounded-modal { border-radius: 12px; }
+  .rounded-input { border-radius: 6px; }
+  .rounded-button { border-radius: 6px; }
+  
+  /* Enhanced Typography Classes */
+  .typography-h2 {
+    @apply text-2xl font-semibold leading-tight tracking-tight;
+  }
+  
+  /* Shadow Utility Classes */
+  .shadow-elevation-sm { box-shadow: var(--shadow-elevation-sm); }
+  .shadow-elevation-base { box-shadow: var(--shadow-elevation-base); }
+  .shadow-elevation-md { box-shadow: var(--shadow-elevation-md); }
+  .shadow-elevation-lg { box-shadow: var(--shadow-elevation-lg); }
+  .shadow-elevation-xl { box-shadow: var(--shadow-elevation-xl); }
+  .shadow-elevation-2xl { box-shadow: var(--shadow-elevation-2xl); }
+  
+  /* Extended Primary Colors */
+  .bg-krushr-primary-50 { background-color: #f0f3ff; }
+  .text-krushr-primary-50 { color: #f0f3ff; }
+  .border-krushr-primary-200 { border-color: #c9d6ff; }
+  .bg-krushr-primary-700 { background-color: #3f4bdb; }
+  .hover\:bg-krushr-primary-700:hover { background-color: #3f4bdb; }
+  .bg-krushr-primary-800 { background-color: #3940b8; }
+  .hover\:bg-krushr-primary-800:hover { background-color: #3940b8; }
+  .bg-krushr-info-50 { background-color: #f0f9ff; }
+  .hover\:border-krushr-primary:hover { border-color: #143197; }
+  .hover\:bg-krushr-gray-100:hover { background-color: #f3f4f6; }
+  .text-krushr-gray-900 { color: #111827; }
+  .text-krushr-gray-500 { color: #6b7280; }
+  .text-krushr-gray-400 { color: #9ca3af; }
+  
+  /* Animations and Keyframes */
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    0% { transform: translateY(10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  /* Sitewide Typography Hierarchy */
+  /* Satoshi for H1, H2, H3 and above */
+  h1, .h1, h2, .h2, h3, .h3 {
+    font-family: 'Satoshi', system-ui, -apple-system, sans-serif !important;
+    font-weight: 600;
+  }
+
+  /* Manrope for H4 and below, and all body text */
+  h4, .h4, h5, .h5, h6, .h6, p, body, span, div {
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
+  }
+
+  /* Ensure specific heading variants use Satoshi */
+  .title-h1, .title-h2, .display-3, .display-3-copy, .heading-h3 {
+    font-family: 'Satoshi', system-ui, -apple-system, sans-serif !important;
+  }
+
+  /* Ensure H4 variants and body text use Manrope */
+  .heading-h4-size,
+  .heading-h4-size-copy,
+  .heading-h4-size-copy-copy,
+  .component-title,
+  .text-300.bold,
+  .menu-drop-down-text,
+  .paragraph-18px,
+  .text-200,
+  .text-block-6 {
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
+  }
+}

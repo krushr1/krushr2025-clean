@@ -1,0 +1,136 @@
+/**
+ * Button Component Styles
+ * Modular CSS for reusable button components
+ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 12px;
+  padding: 16px 28px;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  position: relative;
+  outline: none;
+  white-space: nowrap;
+  gap: 8px;
+}
+
+.button:focus {
+  box-shadow: 0 0 0 3px rgba(235, 88, 87, 0.3);
+  outline: none;
+}
+
+.button:focus:not(:focus-visible) {
+  box-shadow: none;
+}
+
+.primary {
+  background-color: #EB5857;
+  color: #ffffff;
+  border-color: #EB5857;
+  margin-right: 24px;
+}
+
+.primary:hover {
+  background-color: #d44c4c;
+  border-color: #d44c4c;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(235, 88, 87, 0.3);
+}
+
+.primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(235, 88, 87, 0.3);
+}
+
+.secondary {
+  background-color: #ffffff;
+  color: #143197;
+  border-color: #143197;
+}
+
+.secondary:hover {
+  background-color: #143197;
+  border-color: #143197;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 49, 151, 0.3);
+}
+
+.secondary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(20, 49, 151, 0.3);
+}
+
+.iconRight {
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.button:hover .iconRight {
+  transform: translateX(2px);
+}
+
+/* Add spacing between buttons on mobile */
+@media (max-width: 768px) {
+  .button {
+    width: auto;
+    margin-bottom: 0;
+    margin-right: 0;
+    display: flex;
+  }
+  
+  .primary {
+    margin-right: 16px;
+  }
+}
+
+/* Tablet and up - maintain inline layout */
+@media (min-width: 769px) {
+  .button {
+    width: auto;
+    max-width: none;
+    display: inline-block;
+    margin-bottom: 0;
+  }
+  
+  .primary {
+    margin-right: 24px;
+  }
+}
+
+/* Desktop and wider - constrain button width */
+@media (min-width: 1024px) {
+  .button {
+    max-width: 220px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .button {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+  
+  .button:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "timestamp": "2025-01-03T17:00:00.000Z",
+  "jsHuntReportId": "manual-console-errors",
+  "urgency": "HIGH",
+  "tasks": [
+    {
+      "type": "custom-element-fix",
+      "priority": "high",
+      "description": "Fix duplicate custom element 'mce-autosize-textarea' registration",
+      "issues": [
+        {
+          "type": "javascript",
+          "severity": "high",
+          "element": "Custom Elements",
+          "issue": "Duplicate custom element definition",
+          "details": "A custom element with name 'mce-autosize-textarea' has already been defined",
+          "solution": "Add conditional registration check for web components"
+        }
+      ],
+      "action": "Add conditional registration check for mce-autosize-textarea"
+    },
+    {
+      "type": "performance-fix",
+      "priority": "high",
+      "description": "Optimize slow message and setTimeout handlers",
+      "issues": [
+        {
+          "type": "performance",
+          "severity": "high",
+          "element": "Message Handler",
+          "issue": "Slow message handler performance",
+          "duration": "463ms",
+          "details": "'message' handler took 463ms",
+          "solution": "Optimize handler performance or debounce calls"
+        },
+        {
+          "type": "performance",
+          "severity": "medium",
+          "element": "setTimeout Handler",
+          "issue": "Slow setTimeout handler performance",
+          "duration": "68ms",
+          "details": "'setTimeout' handler took 68ms",
+          "solution": "Optimize handler performance"
+        }
+      ],
+      "action": "Add debouncing and optimize React rendering"
+    },
+    {
+      "type": "resource-fix",
+      "priority": "medium",
+      "description": "Fix missing krushr.svg resource",
+      "issues": [
+        {
+          "type": "network",
+          "severity": "medium",
+          "element": "Resource Loading",
+          "issue": "404 - Resource not found",
+          "details": "GET http://127.0.0.1:8001/krushr.svg 404 (Not Found)",
+          "solution": "Add missing resource or update path"
+        }
+      ],
+      "action": "Create missing krushr.svg file"
+    },
+    {
+      "type": "react-fix",
+      "priority": "low",
+      "description": "Add React DevTools recommendation",
+      "issues": [
+        {
+          "type": "development",
+          "severity": "low",
+          "element": "Development Tools",
+          "issue": "React DevTools not installed",
+          "details": "Download the React DevTools for a better development experience",
+          "solution": "Install React DevTools browser extension"
+        }
+      ],
+      "action": "Provide React DevTools installation guidance"
+    }
+  ],
+  "evidence": "manual-console-output"
+}

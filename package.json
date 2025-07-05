@@ -1,0 +1,39 @@
+{
+  "name": "krushr-monorepo",
+  "version": "1.0.0",
+  "description": "Krushr project management platform - monorepo structure",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd api && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "lint": "npm run lint:frontend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd api && npm run test",
+    "test:frontend": "cd frontend && npm run test",
+    "install:all": "npm install && cd frontend && npm install && cd ../api && npm install",
+    "clean": "rm -rf node_modules frontend/node_modules api/node_modules",
+    "backup": "node backup-system.js create",
+    "backup:list": "node backup-system.js list",
+    "backup:restore": "node backup-system.js restore",
+    "backup:quick": "./backup.sh quick",
+    "backup:clean": "node backup-system.js clean"
+  },
+  "workspaces": [
+    "frontend",
+    "api",
+    "shared"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "php": ">=8.1"
+  },
+  "author": "Krushr Team",
+  "license": "MIT"
+}

@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import './shadcn.css'
-import './shadcn.css'
+import './styles/landing.css'
 import App from './App'
 import { Toaster } from 'sonner'
 import { CriticalErrorBoundary } from './components/ErrorBoundary'

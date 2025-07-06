@@ -73,13 +73,11 @@ if (isProd) {
   
   let debounceTimer
   watcher.on('change', (path) => {
-    console.log(`📁 Public file changed: ${path}`)
     clearTimeout(debounceTimer)
     debounceTimer = setTimeout(copyPublicAssets, 200)
   })
   
   watcher.on('add', (path) => {
-    console.log(`📁 Public file added: ${path}`)
     clearTimeout(debounceTimer)
     debounceTimer = setTimeout(copyPublicAssets, 200)
   })

@@ -31,8 +31,6 @@ export const PRICING_CONTENT = {
       name: 'Lite', 
       description: 'Put your full productivity stack on one page',
       price: '$39/mo',
-      originalPrice: '$49/mo',
-      savings: 'Save $10/mo',
       background: 'images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg',
       features: [
         '',
@@ -55,7 +53,7 @@ export const PRICING_CONTENT = {
       description: 'Everything + your tailored o1 model, OpenAI\'s most advanced model',
       price: '$49/mo',
       originalPrice: '$99/mo',
-      savings: 'Save $50/mo',
+      savings: '40% beta discount',
       background: 'images/sophie-moore-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg',
       features: [
         'ChatGPT o1 precise user style model',

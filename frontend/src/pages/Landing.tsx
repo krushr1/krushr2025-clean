@@ -1,3 +1,4 @@
+import { Navigation } from '../components/sections/Navigation'
 import { HeroSection } from '../components/sections/HeroSection'
 import { FeaturesSection } from '../components/sections/FeaturesSection'
 import { AISection } from '../components/sections/AISection'
@@ -8,6 +9,7 @@ import { CustomizationSection } from '../components/sections/CustomizationSectio
 import { ProductivitySection } from '../components/sections/ProductivitySection'
 import { IntegrateSection } from '../components/sections/IntegrateSection'
 import { TestimonialsSection } from '../components/sections/TestimonialsSection'
+import { PricingSection } from '../components/sections/PricingSection'
 import { Footer } from '../components/sections/Footer'
 
 /**
@@ -17,6 +19,7 @@ import { Footer } from '../components/sections/Footer'
 export default function Landing() {
   return (
     <>
+      <Navigation />
       <HeroSection />
       <FeaturesSection />
       <AISection />
@@ -27,6 +30,7 @@ export default function Landing() {
       <ProductivitySection />
       <IntegrateSection />
       <TestimonialsSection />
+      <PricingSection />
       <Footer />
     </>
   )

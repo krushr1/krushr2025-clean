@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Krushr Global Launch Script
+# Can be run from anywhere on the system
+
+KRUSHR_DIR="/Users/justindoff/Cursor Projects/krushr-clean"
+
+echo "🚀 Launching Krushr Workspace..."
+
+# Navigate to Krushr directory
+cd "$KRUSHR_DIR" || {
+    echo "❌ Error: Krushr directory not found at $KRUSHR_DIR"
+    exit 1
+}
+
+# Run the launch script
+./launch-krushr.sh

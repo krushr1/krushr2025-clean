@@ -32,41 +32,35 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      // Initial state
-      user: null,
-      token: null,
-      isAuthenticated: false,
+      // Initial state - DEV: Always logged in
+      user: {
+        id: 'dev-user-123',
+        name: 'Development User',
+        email: 'dev@krushr.com',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dev',
+        createdAt: new Date()
+      },
+      token: 'dev-token-123',
+      isAuthenticated: true,
       isLoading: false,
 
-      // Initialize from localStorage
+      // Initialize from localStorage - DEV: Always stay logged in
       hydrate: () => {
         if (typeof window !== 'undefined') {
-          const token = localStorage.getItem('auth-token')
-          const state = get()
-          
-          if (token && state.user) {
-            // Both token and user exist, set authenticated
-            set({ 
-              token, 
-              isAuthenticated: true,
-              isLoading: false 
-            })
-          } else if (token && !state.user) {
-            // Token exists but no user - will be verified by tRPC call
-            set({ 
-              token, 
-              isAuthenticated: false,
-              isLoading: true 
-            })
-          } else {
-            // No token or invalid state
-            set({ 
-              user: null,
-              token: null,
-              isAuthenticated: false,
-              isLoading: false 
-            })
-          }
+          // DEV MODE: Force development login state
+          localStorage.setItem('auth-token', 'dev-token-123')
+          set({ 
+            user: {
+              id: 'dev-user-123',
+              name: 'Development User',
+              email: 'dev@krushr.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dev',
+              createdAt: new Date()
+            },
+            token: 'dev-token-123',
+            isAuthenticated: true,
+            isLoading: false 
+          })
         }
       },
 

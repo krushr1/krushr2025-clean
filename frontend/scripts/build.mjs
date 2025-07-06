@@ -16,6 +16,20 @@ async function copyPublicAssets() {
   try {
     await cp('public', 'dist', { recursive: true })
     console.log('✅ Copied public assets to dist')
+    
+    // Rename the static landing page from index.html to home.html
+    // This ensures the React app's index.html takes precedence
+    const { rename } = await import('fs/promises')
+    try {
+      await rename('dist/index.html', 'dist/home.html')
+      console.log('✅ Renamed static landing page to home.html')
+      
+      // Now rename our React app HTML to index.html
+      await rename('dist/react-index.html', 'dist/index.html')
+      console.log('✅ Set React app as main index.html')
+    } catch (renameError) {
+      console.log('⚠️  Error in HTML renaming:', renameError.message)
+    }
   } catch (error) {
     console.log('⚠️  No public folder found, skipping copy')
   }
@@ -29,7 +43,7 @@ await copyPublicAssets()
  */
 const esbuildOpts = {
   color: true,
-  entryPoints: ['src/main.tsx', 'index.html'],
+  entryPoints: ['src/main.tsx', 'react-index.html'],
   assetNames: '[name]',
   publicPath: '/',
   outdir: 'dist',

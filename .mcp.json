@@ -23,7 +23,11 @@
       "args": [
         "@modelcontextprotocol/server-memory"
       ],
-      "env": {}
+      "env": {
+        "MAX_ENTITIES": "10000",
+        "MAX_OBSERVATIONS": "50000",
+        "ENABLE_LARGE_CONTEXT": "true"
+      }
     },
     "filesystem": {
       "type": "stdio",
@@ -32,7 +36,12 @@
         "@modelcontextprotocol/server-filesystem",
         "."
       ],
-      "env": {}
+      "env": {
+        "MAX_FILE_SIZE": "10485760",
+        "MAX_FILES_PER_REQUEST": "50",
+        "ENABLE_LARGE_FILES": "true",
+        "READ_CHUNK_SIZE": "8192"
+      }
     }
   }
 }

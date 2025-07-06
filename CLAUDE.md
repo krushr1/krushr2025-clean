@@ -1,6 +1,42 @@
 # KRUSHR Development Guidelines - CLEAN REPOSITORY
 Deploy multiple concurrent agents where beneficial for thoroughness and/or processing efficiency
 
+## 🎯 CURRENT DEVELOPMENT STATUS (Updated: 2025-07-06)
+
+### **Session Context Preserved** 
+- **Memory Sync**: Complete project context stored in knowledge graph
+- **Claude Config**: Auto-compact disabled, enhanced MCP configuration active
+- **5-Agent Analysis**: Concurrent context analysis capabilities verified
+- **Configuration**: Claude Code v1.0.43 with optimized settings for large context
+
+### **Recent Progress**
+- ✅ **UI Consistency Fixes**: Button standardization, font unification (Manrope), layout improvements
+- ✅ **Build System**: Enhanced asset pipeline with reduced console verbosity
+- ✅ **Design System**: Comprehensive brandkit integration and token system
+- ✅ **File Management**: Dual upload strategies with thumbnail generation
+- ✅ **Database Schema**: Complete with 2025 enterprise features
+- ✅ **MCP Enhancement**: Optimized memory and filesystem servers for larger context
+
+### **Current System Status**
+- **Frontend**: Running on port 8001 ✅
+- **API**: Issues on port 3002 ⚠️ (Authentication context schema mismatch identified)
+- **Database**: SQLite development database operational ✅
+- **Testing**: E2E framework working, unit tests needed ⚠️
+- **Memory System**: Enhanced knowledge graph active with 10K entities capacity ✅
+
+### **Critical Issues Identified & Context**
+- **Auth Schema Mismatch**: `api/src/trpc/context.ts:19` expects `hashedPassword`, schema defines `password`
+- **Dev Mode Lock-in**: Frontend hardcoded to `dev-token-123` preventing production auth
+- **Missing Test Infrastructure**: No unit/integration tests, only E2E via Puppeteer
+- **Performance**: 421KB CSS bundle needs optimization
+- **Uncommitted Work**: 11 modified files need staging and commit
+
+### **Next Priority Actions**
+1. **Fix Authentication**: Resolve schema mismatch in context.ts
+2. **Commit Changes**: Stage and commit UI consistency improvements
+3. **Start API Server**: Get backend running on port 3002
+4. **Add Testing**: Implement unit test infrastructure (Jest/Vitest)
+
 ## Quick Start
 
 ```bash
@@ -153,31 +189,31 @@ gemini --all_files -p "Analyze project structure"
 
 **Authentication System Analysis:**
 ```bash
-cd "/Users/justindoff/Cursor Projects/Krushr/api"
+cd "/Users/justindoff/Cursor Projects/krushr-clean/api"
 gemini -p "@src/trpc/routers/auth.ts @src/lib/auth.ts @src/trpc/middleware.ts @src/trpc/context.ts Analyze the complete authentication system. What endpoints exist? How are JWT tokens handled? What security measures are implemented?"
 ```
 
 **Backend Architecture Overview:**
 ```bash
-cd "/Users/justindoff/Cursor Projects/Krushr/api"
+cd "/Users/justindoff/Cursor Projects/krushr-clean/api"
 gemini -p "@src/ Provide a comprehensive analysis of this Node.js/tRPC backend. What are the main features? How is the code organized? What are the key routers and their responsibilities?"
 ```
 
 **Frontend Component Analysis:**
 ```bash
-cd "/Users/justindoff/Cursor Projects/Krushr/frontend"
+cd "/Users/justindoff/Cursor Projects/krushr-clean/frontend"
 gemini -p "@src/components/ @src/pages/ Analyze the React frontend architecture. What are the main components? How is state management handled? What UI patterns are used?"
 ```
 
 **Security Assessment:**
 ```bash
-cd "/Users/justindoff/Cursor Projects/Krushr/api"
+cd "/Users/justindoff/Cursor Projects/krushr-clean/api"
 gemini -p "@src/ Are there security vulnerabilities? Is input validation implemented? Are there SQL injection protections? Is rate limiting in place? What authentication mechanisms exist?"
 ```
 
 **Full Project Analysis:**
 ```bash
-cd "/Users/justindoff/Cursor Projects/Krushr"
+cd "/Users/justindoff/Cursor Projects/krushr-clean"
 gemini -p "@api/src/ @frontend/src/ @shared/ Analyze this full-stack project. How do frontend and backend communicate? What are the main features? What is the overall architecture?"
 ```
 
@@ -206,6 +242,26 @@ gemini -p "@api/src/lib/upload.ts @api/src/lib/thumbnail.ts @api/src/trpc/router
 **Database Schema Review:**
 ```bash
 gemini -p "@api/prisma/schema.prisma @api/src/lib/database.ts Analyze the database schema. What are the main models? How are relationships defined?"
+```
+
+### **Project Health & Context Analysis**
+
+**Current System Analysis:**
+```bash
+cd "/Users/justindoff/Cursor Projects/krushr-clean"
+gemini -p "@api/src/trpc/context.ts @frontend/src/stores/auth-store.ts @test-results.json Analyze current authentication integration and test failures. What's causing 401 errors?"
+```
+
+**Recent Changes Impact:**
+```bash
+cd "/Users/justindoff/Cursor Projects/krushr-clean"
+gemini -p "@frontend/public/css/ @frontend/src/components/project/ What UI changes were made? Are there any integration issues with recent updates?"
+```
+
+**Development Workflow Status:**
+```bash
+cd "/Users/justindoff/Cursor Projects/krushr-clean"
+gemini -p "@package.json @docker-compose.yml @frontend/scripts/ What's the current development setup? Are there any configuration conflicts?"
 ```
 
 ### **Integration with Claude Code**
@@ -457,11 +513,12 @@ docker-compose logs -f        # Monitor logs
 /prisma-debug "model"        # Database debugging
 /think "problem"             # Structured analysis
 
-# New Long Context & Memory Tools
+# Long Context & Memory Tools
 /krushr-status               # Complete project state overview
 /trpc-map                   # tRPC router architecture mapping
 /brand-check                # Design system compliance validation
 /memory-sync                # Synchronize all project context and memory
+/context                    # Run 5 concurrent agents for full context analysis
 ```
 
 ## MCP Integration (Krushr-Specific)

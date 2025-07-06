@@ -1,0 +1,295 @@
+<!-- ANIMATION & INTERACTION EXAMPLES -->
+<div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Checkmark icon" class="mg-right-24px">
+  <div style="width: 100%;">
+    <h2 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Animation & Interaction Examples</h2>
+    <p class="paragraph-18px mg-bottom-24px" style="color: #64748b;">Hover effects, transitions, and micro-interactions using existing classes and CSS animations.</p>
+    
+    <!-- Button Hover Effects -->
+    <div style="margin-bottom: 48px;">
+      <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Button Hover Effects</h3>
+      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197;">
+        
+        <div style="margin-bottom: 32px;">
+          <h4 class="text-300 bold mg-bottom-8px" style="color: #143197;">Primary Button with Hover Lift</h4>
+          <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <a href="#" class="btn-primary button-row w-button hover-lift">
+              Hover Me<span class="line-rounded-icon link-icon-right"></span>
+            </a>
+          </div>
+          <pre style="background: #1a1a1a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; margin: 0; overflow-x: auto;"><code>&lt;a href="#" class="btn-primary button-row w-button hover-lift"&gt;
+  Hover Me&lt;span class="line-rounded-icon link-icon-right"&gt;&lt;/span&gt;
+&lt;/a&gt;</code></pre>
+        </div>
+        
+        <div style="margin-bottom: 32px;">
+          <h4 class="text-300 bold mg-bottom-8px" style="color: #143197;">Secondary Button with Scale Effect</h4>
+          <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <a href="#" class="btn-secondary w-button hover-scale">
+              Scale on Hover
+            </a>
+          </div>
+          <pre style="background: #1a1a1a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; margin: 0; overflow-x: auto;"><code>&lt;a href="#" class="btn-secondary w-button hover-scale"&gt;
+  Scale on Hover
+&lt;/a&gt;</code></pre>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Card Hover Effects -->
+    <div style="margin-bottom: 48px;">
+      <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Card Hover Effects</h3>
+      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #EB5857;">
+        
+        <div style="margin-bottom: 32px;">
+          <h4 class="text-300 bold mg-bottom-8px" style="color: #EB5857;">Card with Hover Lift & Shadow</h4>
+          <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <div class="card pd-40px---20px border-radius-24px min-width hover-lift" style="cursor: pointer;">
+              <div class="text-center">
+                <div class="display-3" style="color: #143197;">Interactive Card</div>
+                <div class="text-200 medium">Hover to see the lift effect</div>
+              </div>
+            </div>
+          </div>
+          <pre style="background: #1a1a1a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; margin: 0; overflow-x: auto;"><code>&lt;div class="card pd-40px---20px border-radius-24px min-width hover-lift" 
+     style="cursor: pointer;"&gt;
+  &lt;div class="text-center"&gt;
+    &lt;div class="display-3"&gt;Interactive Card&lt;/div&gt;
+    &lt;div class="text-200 medium"&gt;Hover to see the lift effect&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Loading States -->
+    <div style="margin-bottom: 48px;">
+      <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Loading States</h3>
+      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #1FBB65;">
+        
+        <div style="margin-bottom: 32px;">
+          <h4 class="text-300 bold mg-bottom-8px" style="color: #1FBB65;">Button Loading State</h4>
+          <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <a href="#" class="btn-primary button-row w-button" onclick="event.preventDefault(); showLoadingState(this)">
+              Click to Load
+            </a>
+          </div>
+          <pre style="background: #1a1a1a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; margin: 0; overflow-x: auto;"><code>&lt;a href="#" class="btn-primary button-row w-button" 
+   onclick="showLoadingState(this)"&gt;
+  Click to Load
+&lt;/a&gt;
+
+&lt;!-- JavaScript function included in page --&gt;
+function showLoadingState(btn) {
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '&lt;span class="loading-spinner"&gt;&lt;/span&gt;Loading...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.innerHTML = 'Success!';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }, 1000);
+  }, 2000);
+}</code></pre>
+        </div>
+        
+        <div style="margin-bottom: 32px;">
+          <h4 class="text-300 bold mg-bottom-8px" style="color: #1FBB65;">Skeleton Loading for Cards</h4>
+          <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <div class="card pd-40px---20px border-radius-24px min-width" id="skeletonCard">
+              <div class="text-center">
+                <div class="shimmer-placeholder" style="height: 32px; border-radius: 8px; margin-bottom: 16px;"></div>
+                <div class="shimmer-placeholder" style="height: 16px; border-radius: 8px; margin: 0 auto; width: 60%;"></div>
+              </div>
+            </div>
+            <button class="btn-secondary w-button" onclick="toggleSkeletonContent()" style="margin-top: 16px;">Toggle Content</button>
+          </div>
+          <pre style="background: #1a1a1a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; margin: 0; overflow-x: auto;"><code>&lt;div class="card pd-40px---20px border-radius-24px min-width" id="skeletonCard"&gt;
+  &lt;div class="text-center"&gt;
+    &lt;div class="shimmer-placeholder" style="height: 32px; border-radius: 8px; margin-bottom: 16px;"&gt;&lt;/div&gt;
+    &lt;div class="shimmer-placeholder" style="height: 16px; border-radius: 8px; margin: 0 auto; width: 60%;"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;button onclick="toggleSkeletonContent()"&gt;Toggle Content&lt;/button&gt;</code></pre>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Smooth Transitions -->
+    <div style="margin-bottom: 48px;">
+      <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Smooth Transitions</h3>
+      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #8b5cf6;">
+        
+        <div style="margin-bottom: 32px;">
+          <h4 class="text-300 bold mg-bottom-8px" style="color: #8b5cf6;">Expandable Content</h4>
+          <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <div class="card pd-40px---20px border-radius-24px min-width smooth-transition" style="cursor: pointer;" onclick="toggleExpansion(this)">
+              <div class="text-center">
+                <div class="display-3" style="color: #8b5cf6;">Click to Expand</div>
+                <div class="text-200 medium">See more content below</div>
+                <div class="expandable-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease; margin-top: 0;">
+                  <div style="padding-top: 16px; border-top: 1px solid #e2e8f0; margin-top: 16px;">
+                    <div class="text-200 medium">This is the expanded content that appears with a smooth transition. You can put any content here including forms, images, or additional information.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre style="background: #1a1a1a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; margin: 0; overflow-x: auto;"><code>&lt;div class="card pd-40px---20px border-radius-24px min-width smooth-transition" 
+     style="cursor: pointer;" onclick="toggleExpansion(this)"&gt;
+  &lt;div class="text-center"&gt;
+    &lt;div class="display-3"&gt;Click to Expand&lt;/div&gt;
+    &lt;div class="expandable-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;"&gt;
+      &lt;div style="padding-top: 16px;"&gt;
+        &lt;div class="text-200 medium"&gt;Expanded content...&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Micro-interactions -->
+    <div style="margin-bottom: 48px;">
+      <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Micro-interactions</h3>
+      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #FFB366;">
+        
+        <div style="margin-bottom: 32px;">
+          <h4 class="text-300 bold mg-bottom-8px" style="color: #FFB366;">Interactive Navigation Links</h4>
+          <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <a class="drop-link-wrapper w-inline-block smooth-transition" style="border-radius: 8px; padding: 8px;" onmouseover="this.style.backgroundColor='#f8fafc'; this.style.transform='translateX(4px)'" onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)'">
+              <img src="images/layout-alt-04.svg" loading="lazy" alt="Icon" class="dropdown-img smooth-transition" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <div class="dropdown-right-text-wrapper">
+                <div class="dropdown-text-link up">Dashboard</div>
+                <div class="dropdown-text-link">Navigate to main area</div>
+              </div>
+            </a>
+          </div>
+          <pre style="background: #1a1a1a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; margin: 0; overflow-x: auto;"><code>&lt;a class="drop-link-wrapper w-inline-block smooth-transition" 
+   style="border-radius: 8px; padding: 8px;" 
+   onmouseover="this.style.backgroundColor='#f8fafc'; this.style.transform='translateX(4px)'"
+   onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)'"&gt;
+  &lt;img src="images/layout-alt-04.svg" class="dropdown-img smooth-transition" 
+       onmouseover="this.style.transform='scale(1.1)'" 
+       onmouseout="this.style.transform='scale(1)'"&gt;
+  &lt;div class="dropdown-right-text-wrapper"&gt;
+    &lt;div class="dropdown-text-link up"&gt;Dashboard&lt;/div&gt;
+    &lt;div class="dropdown-text-link"&gt;Navigate to main area&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/a&gt;</code></pre>
+        </div>
+        
+        <div style="margin-bottom: 32px;">
+          <h4 class="text-300 bold mg-bottom-8px" style="color: #FFB366;">Pulse Animation for Notifications</h4>
+          <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <div class="pricing-template-notice" style="animation: pulse 2s infinite;">
+              <div class="text-block-6">New notification <span class="text-span-18" style="animation: pulse 2s infinite;">•</span> Click to read</div>
+            </div>
+          </div>
+          <pre style="background: #1a1a1a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; margin: 0; overflow-x: auto;"><code>&lt;div class="pricing-template-notice" style="animation: pulse 2s infinite;"&gt;
+  &lt;div class="text-block-6"&gt;New notification 
+    &lt;span class="text-span-18" style="animation: pulse 2s infinite;"&gt;•&lt;/span&gt; 
+    Click to read
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Form Animations -->
+    <div style="margin-bottom: 48px;">
+      <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Form Animations</h3>
+      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #57C7EB;">
+        
+        <div style="margin-bottom: 32px;">
+          <h4 class="text-300 bold mg-bottom-8px" style="color: #57C7EB;">Input Focus States</h4>
+          <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <div class="form-field">
+              <div class="text-200 medium mg-bottom-8px">Email Address</div>
+              <input type="email" class="text-field w-input smooth-transition" placeholder="Enter your email" style="border: 2px solid #e2e8f0;" onfocus="this.style.borderColor='#143197'; this.style.boxShadow='0 0 0 3px rgba(20, 49, 151, 0.1)'; this.style.transform='scale(1.02)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; this.style.transform='scale(1)'">
+            </div>
+          </div>
+          <pre style="background: #1a1a1a; color: #e2e8f0; padding: 12px; border-radius: 8px; font-size: 12px; margin: 0; overflow-x: auto;"><code>&lt;div class="form-field"&gt;
+  &lt;div class="text-200 medium mg-bottom-8px"&gt;Email Address&lt;/div&gt;
+  &lt;input type="email" class="text-field w-input smooth-transition" 
+         placeholder="Enter your email" style="border: 2px solid #e2e8f0;" 
+         onfocus="this.style.borderColor='#143197'; this.style.boxShadow='0 0 0 3px rgba(20, 49, 151, 0.1)'; this.style.transform='scale(1.02)'" 
+         onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; this.style.transform='scale(1)'"&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- CSS Reference -->
+    <div style="margin-bottom: 48px;">
+      <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197;">CSS Animation Classes</h3>
+      <div style="background: #1a1a1a; padding: 24px; border-radius: 12px; color: #e2e8f0;">
+        <pre style="margin: 0; font-size: 12px; overflow-x: auto;"><code>/* Animation CSS Classes (already included in page) */
+
+/* Hover Effects */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hover-scale {
+  transition: all 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.smooth-transition {
+  transition: all 0.3s ease;
+}
+
+/* Loading States */
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Keyframe Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}</code></pre>
+      </div>
+    </div>
+    
+  </div>
+</div>

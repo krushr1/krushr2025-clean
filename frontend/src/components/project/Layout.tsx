@@ -30,8 +30,10 @@ export default function Layout({ children }: LayoutProps) {
     }
     
     // For HashRouter, we need to check location.pathname (the part after #)
+    // location.pathname is the actual route, location.hash would be empty with HashRouter
     const currentPath = location.pathname
     const page = pathToPageMap[currentPath] || 'home'
+    // console.log('Layout - Current path:', currentPath, 'Mapped to page:', page)
     setCurrentPage(page)
   }, [location.pathname])
 

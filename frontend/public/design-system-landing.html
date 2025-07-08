@@ -118,6 +118,11 @@
 h1, h2 {
   font-family: 'Satoshi', sans-serif;
 }
+
+/* Override pill-shaped button styling */
+.button-row {
+  border-radius: 8px !important;
+}
 </style>
 
 <script>
@@ -739,16 +744,118 @@ function toggleSkeletonContent() {
               </p>
               
               <!-- ELEMENT BREAKDOWN -->
-              <div style="margin-bottom: 40px;">
-                <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197; margin-bottom: 20px;">Element Breakdown</h3>
+              <div style="margin-bottom: 60px;">
+                <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197; margin-bottom: 32px; text-align: center;">Component Library Cards</h3>
+                <p style="text-align: center; color: #64748b; margin-bottom: 40px;">Core UI components displayed using the Krushr thematic card pattern with proper documentation</p>
                 
-                <div style="text-align: left; display: flex; flex-direction: column; gap: 32px;">
-                  <div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Krushr checkmark" class="mg-right-24px">
-                    <div>
-                      <h4 class="heading-h4-size mg-bottom-8px" style="color: #143197;">1. Notice Badge (.pricing-template-notice)</h4>
-                      <p class="text-300" style="color: #64748b; margin-bottom: 8px;"><strong>Function:</strong> Attention-grabbing announcement with emoji + highlighted text</p>
-                      <p class="text-300" style="color: #64748b; margin-bottom: 12px;"><strong>Classes:</strong> <code>text-block-6</code>, <code>text-span-18</code></p>
-                      <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #143197; margin-bottom: 12px;">
+                <div class="grid-2-columns _1-col-tablet gap-row-32px gap-column-32px" style="margin-bottom: 40px;">
+                  <!-- Notice Badge Component Card -->
+                  <div class="card testimonial-slider-card-small">
+                    <img src="images/lindsay-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <h2 class="pricing-card-heading">Notice Badge</h2>
+                    <div class="text-200 medium">Attention-grabbing announcement with emoji + highlighted text</div>
+                    <div class="divider _24px bg-neutral-300"></div>
+                    <div class="grid-1-column-3 gap-row-16px mg-bottom-40px">
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Gradient text spans</strong></div>
+                      </div>
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Icon + text combination</strong></div>
+                      </div>
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Responsive typography</strong></div>
+                      </div>
+                    </div>
+                    <div class="display-5 mg-bottom-16px"><span class="text-span-23">.pricing-template-notice</span></div>
+                    <a href="#" class="btn-secondary-free-plan w-button">View Component<span class="line-rounded-icon link-icon-right"></span></a>
+                  </div>
+                  
+                  <!-- Main Headline Component Card -->
+                  <div class="card testimonial-slider-card-small">
+                    <img src="images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <h2 class="pricing-card-heading">Main Headline</h2>
+                    <div class="text-200 medium">Primary value proposition with maximum visual impact</div>
+                    <div class="divider _24px bg-neutral-300"></div>
+                    <div class="grid-1-column-3 gap-row-16px mg-bottom-40px">
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Satoshi custom font</strong></div>
+                      </div>
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>-3px letter spacing</strong></div>
+                      </div>
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>White color variant</strong></div>
+                      </div>
+                    </div>
+                    <div class="display-5 mg-bottom-16px"><span class="text-span-23">.title-h2.white</span></div>
+                    <a href="#" class="btn-secondary-free-plan w-button">View Component<span class="line-rounded-icon link-icon-right"></span></a>
+                  </div>
+                  
+                  <!-- Benefits Checklist Component Card -->
+                  <div class="card testimonial-slider-card-small">
+                    <img src="images/sarah-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <h2 class="pricing-card-heading">Benefits Checklist</h2>
+                    <div class="text-200 medium">Animated reveal of key value propositions with checkmark icons</div>
+                    <div class="divider _24px bg-neutral-300"></div>
+                    <div class="grid-1-column-3 gap-row-16px mg-bottom-40px">
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Progressive disclosure animation</strong></div>
+                      </div>
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Checkmark icon integration</strong></div>
+                      </div>
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Responsive grid layout</strong></div>
+                      </div>
+                    </div>
+                    <div class="display-5 mg-bottom-16px"><span class="text-span-23">.pricing-template-review</span></div>
+                    <a href="#" class="btn-secondary-free-plan w-button">View Component<span class="line-rounded-icon link-icon-right"></span></a>
+                  </div>
+                  
+                  <!-- Dual CTA Buttons Component Card -->
+                  <div class="card testimonial-slider-card-small">
+                    <img src="images/michael-foster-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <h2 class="pricing-card-heading">Dual CTA Buttons</h2>
+                    <div class="text-200 medium">Primary and secondary action buttons with consistent styling</div>
+                    <div class="divider _24px bg-neutral-300"></div>
+                    <div class="grid-1-column-3 gap-row-16px mg-bottom-40px">
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Primary/secondary hierarchy</strong></div>
+                      </div>
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Icon + text combination</strong></div>
+                      </div>
+                      <div class="flex align-top">
+                        <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
+                        <div class="text-200 medium color-neutral-800"><strong>Mobile-responsive layout</strong></div>
+                      </div>
+                    </div>
+                    <div class="display-5 mg-bottom-16px"><span class="text-span-23">.buttons-row</span></div>
+                    <a href="#" class="btn-secondary-free-plan w-button">View Component<span class="line-rounded-icon link-icon-right"></span></a>
+                  </div>
+                </div>
+                
+                <!-- Legacy content preserved below for reference -->
+                <details style="margin-bottom: 24px;">
+                  <summary style="cursor: pointer; color: #143197; font-weight: 600; margin-bottom: 12px;">View Legacy Implementation Details</summary>
+                  <div style="text-align: left; display: flex; flex-direction: column; gap: 32px;">
+                    <div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Krushr checkmark" class="mg-right-24px">
+                      <div>
+                        <h4 class="heading-h4-size mg-bottom-8px" style="color: #143197;">1. Notice Badge (.pricing-template-notice)</h4>
+                        <p class="text-300" style="color: #64748b; margin-bottom: 8px;"><strong>Function:</strong> Attention-grabbing announcement with emoji + highlighted text</p>
+                        <p class="text-300" style="color: #64748b; margin-bottom: 12px;"><strong>Classes:</strong> <code>text-block-6</code>, <code>text-span-18</code></p>
+                      <div class="card documentation-card" style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #143197; margin-bottom: 12px;">
                         <div class="pricing-template-notice" style="margin-bottom: 8px;">
                           <div class="text-block-6"><i class="icon-briefcase" style="font-family: 'line-square-icons'; margin-right: 4px;"></i> <span class="text-span-18">Design System Documentation</span> - Complete component guide</div>
                         </div>
@@ -772,7 +879,7 @@ function toggleSkeletonContent() {
                         <li><strong>Color:</strong> var(--neutral--100) / #ffffff</li>
                         <li><strong>Display:</strong> flex (for layout flexibility)</li>
                       </ul>
-                      <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #143197; margin-bottom: 12px;">
+                      <div class="card documentation-card" style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #143197; margin-bottom: 12px;">
                         <div style="background: #1a1a1a; padding: 20px; border-radius: 8px; color: #ffffff; margin-bottom: 8px;">
                           <h1 class="title-h2 white" style="margin: 0;">Krushr Landing Page Design System</h1>
                         </div>
@@ -786,7 +893,7 @@ function toggleSkeletonContent() {
                       <h4 class="heading-h4-size mg-bottom-8px" style="color: #143197;">3. Benefits Checklist (.pricing-template-review)</h4>
                       <p class="text-300" style="color: #64748b; margin-bottom: 8px;"><strong>Function:</strong> Animated reveal of key value propositions with checkmark icons</p>
                       <p class="text-300" style="color: #64748b; margin-bottom: 12px;"><strong>Animation:</strong> <code>opacity:0</code> with <code>data-w-id</code> triggers for progressive disclosure</p>
-                      <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #143197; margin-bottom: 12px;">
+                      <div class="card documentation-card" style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #143197; margin-bottom: 12px;">
                         <div class="flex align-top" style="margin-bottom: 8px; animation: checkReveal 3s ease-in-out infinite;">
                           <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-24px" style="animation: checkBounce 3s ease-in-out infinite; animation-delay: 0.2s;">
                           <div style="animation: textSlide 3s ease-in-out infinite; animation-delay: 0.4s; opacity: 0;">
@@ -829,7 +936,7 @@ function toggleSkeletonContent() {
                       <h4 class="heading-h4-size mg-bottom-8px" style="color: #143197;">4. Dual CTA Buttons (.buttons-row)</h4>
                       <p class="text-300" style="color: #64748b; margin-bottom: 8px;"><strong>Function:</strong> Primary (.btn-primary) + Secondary (.btn-secondary) action hierarchy</p>
                       <p class="text-300" style="color: #64748b; margin-bottom: 12px;"><strong>Icons:</strong> Right arrow on primary CTA for directional flow guidance</p>
-                      <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #143197; margin-bottom: 12px;">
+                      <div class="card documentation-card" style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #143197; margin-bottom: 12px;">
                         <div class="buttons-row mg-bottom-48px mg-bottom-48px-tablet" style="margin-bottom: 8px;">
                           <a href="#hero-documentation" class="btn-primary button-row w-button">Start Exploring<span class="line-rounded-icon link-icon-right"></span></a>
                           <a href="#" class="btn-secondary w-button">View all components</a>
@@ -851,88 +958,83 @@ function toggleSkeletonContent() {
                     <h2 class="heading-h4-size mg-bottom-8px" style="color: #143197; font-size: 24px; margin-bottom: 16px;">Button System</h2>
                     <p style="color: #64748b; font-size: 16px; margin-bottom: 32px;"><strong>Complete button component library</strong> with primary, secondary, and circular variants. Each button includes live examples, CSS specifications, and usage guidelines.</p>
                     
-                    <!-- BUTTON GRID - 2-COLUMN LAYOUT FOR BETTER SPACE UTILIZATION -->
-                    <div class="grid-2-columns _1-col-tablet gap-row-32px gap-column-32px" style="margin-bottom: 48px;">
-                      <!-- PRIMARY BUTTONS -->
-                      <div>
-                        <h3 style="color: #143197; font-size: 20px; margin-bottom: 16px; font-weight: 600;">Primary Buttons</h3>
-                        <div class="card testimonial-slider-card-small grid-item">
-                      <img src="images/lindsay-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
-                      <h2 class="pricing-card-heading">Primary Buttons</h2>
-                      <div class="text-200 medium">Main action buttons with hover effects and scaling</div>
-                      <div class="divider _24px bg-neutral-300"></div>
-                      <div class="grid-1-column-3 gap-row-16px mg-bottom-40px">
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Class:</strong> .btn-primary</div>
+                    <!-- BUTTON GRID - ENHANCED WITH INTERACTIVE EXAMPLES AND PROPER GRID LAYOUT -->
+                    <!-- SIMPLE BUTTON VARIANTS - 4-COLUMN GRID FOR COMPACT EXAMPLES -->
+                    <div class="grid-4-columns gap-row-32px gap-column-24px" style="margin-bottom: 48px;">
+                      <!-- PRIMARY BUTTONS - NARROW CARD -->
+                      <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h4 style="color: #143197; margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">Primary Buttons</h4>
+                        <p style="color: #64748b; margin: 0 0 16px 0; font-size: 14px;">Main action buttons with brand colors</p>
+                        <div style="margin-bottom: 16px;">
+                          <button style="width: 100%; background: #143197; color: white; padding: 12px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;" onmouseover="this.style.background='#0f2570'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='#143197'; this.style.transform='scale(1)'">
+                            Create Task
+                          </button>
+                          <button style="width: 100%; background: #EB5857; color: white; padding: 12px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='#e63946'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='#EB5857'; this.style.transform='scale(1)'">
+                            Delete Project
+                          </button>
                         </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Background:</strong> #FF6B6B</div>
-                        </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Hover:</strong> #FF4267 + scale(1.06)</div>
-                        </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Use Case:</strong> Primary actions, CTAs</div>
-                        </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Border Radius:</strong> 16px</div>
-                        </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Padding:</strong> 20px 38px</div>
-                        </div>
-                      </div>
-                      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px;">
-                        <a href="#" class="btn-primary w-button">Default Primary</a>
-                        <a href="#" class="btn-primary small w-button">Small Primary</a>
-                        <a href="#" class="btn-primary button-row w-button">Button Row</a>
-                      </div>
+                        <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                          <div style="color: #374151; margin-bottom: 4px;"><strong>Class:</strong> .btn-primary</div>
+                          <div style="color: #374151; margin-bottom: 4px;"><strong>Background:</strong> #143197</div>
+                          <div style="color: #374151;"><strong>Hover:</strong> scale(1.02) + darker</div>
                         </div>
                       </div>
                       
-                      <!-- SECONDARY BUTTONS -->
-                      <div>
-                        <h3 style="color: #143197; font-size: 20px; margin-bottom: 16px; font-weight: 600;">Secondary Buttons</h3>
-                        <div class="card testimonial-slider-card-small grid-item">
-                      <img src="images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
-                      <h2 class="pricing-card-heading">Secondary Buttons</h2>
-                      <div class="text-200 medium">Alternative actions with outlined styling</div>
-                      <div class="divider _24px bg-neutral-300"></div>
-                      <div class="grid-1-column-3 gap-row-16px mg-bottom-40px">
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Class:</strong> .btn-secondary</div>
+                      <!-- SECONDARY BUTTONS - NARROW CARD -->
+                      <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h4 style="color: #143197; margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">Secondary Buttons</h4>
+                        <p style="color: #64748b; margin: 0 0 16px 0; font-size: 14px;">Alternative actions with outlined styling</p>
+                        <div style="margin-bottom: 16px;">
+                          <button style="width: 100%; background: white; color: #143197; padding: 12px 16px; border: 2px solid #143197; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;" onmouseover="this.style.background='#143197'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='#143197'">
+                            Cancel
+                          </button>
+                          <button style="width: 100%; background: white; color: #6b7280; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db'" onmouseout="this.style.background='white'; this.style.borderColor='#e5e7eb'">
+                            Secondary
+                          </button>
                         </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Background:</strong> #FFFFFF</div>
-                        </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Hover:</strong> #143197 + scale(1.06)</div>
-                        </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Use Case:</strong> Secondary actions, cancel</div>
-                        </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Border:</strong> 2px solid #E5E7EB</div>
-                        </div>
-                        <div class="flex align-top">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-16px-2">
-                          <div class="text-200 medium color-neutral-800"><strong>Text Color:</strong> #143197</div>
+                        <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                          <div style="color: #374151; margin-bottom: 4px;"><strong>Class:</strong> .btn-secondary</div>
+                          <div style="color: #374151; margin-bottom: 4px;"><strong>Border:</strong> 2px solid</div>
+                          <div style="color: #374151;"><strong>Hover:</strong> filled background</div>
                         </div>
                       </div>
-                      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px;">
-                        <a href="#" class="btn-secondary w-button">Default Secondary</a>
-                        <a href="#" class="btn-secondary button-row w-button">Button Row</a>
+                      
+                      <!-- ICON BUTTONS - NARROW CARD -->
+                      <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h4 style="color: #143197; margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">Icon Buttons</h4>
+                        <p style="color: #64748b; margin: 0 0 16px 0; font-size: 14px;">Compact buttons with icons</p>
+                        <div style="margin-bottom: 16px; display: flex; gap: 8px; justify-content: center;">
+                          <button style="width: 40px; height: 40px; background: #143197; color: white; border: none; border-radius: 50%; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                            +
+                          </button>
+                          <button style="width: 40px; height: 40px; background: white; color: #143197; border: 2px solid #143197; border-radius: 50%; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='#143197'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='#143197'">
+                            ×
+                          </button>
+                        </div>
+                        <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                          <div style="color: #374151; margin-bottom: 4px;"><strong>Shape:</strong> Circular</div>
+                          <div style="color: #374151; margin-bottom: 4px;"><strong>Size:</strong> 40px × 40px</div>
+                          <div style="color: #374151;"><strong>Hover:</strong> scale(1.1)</div>
+                        </div>
                       </div>
+                      
+                      <!-- LOADING STATES - NARROW CARD -->
+                      <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h4 style="color: #143197; margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">Loading States</h4>
+                        <p style="color: #64748b; margin: 0 0 16px 0; font-size: 14px;">Disabled and loading variations</p>
+                        <div style="margin-bottom: 16px;">
+                          <button style="width: 100%; background: #9ca3af; color: white; padding: 12px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: not-allowed; margin-bottom: 8px;" disabled>
+                            Disabled
+                          </button>
+                          <button style="width: 100%; background: #143197; color: white; padding: 12px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: wait; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <div style="width: 16px; height: 16px; border: 2px solid white; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                            Loading...
+                          </button>
+                        </div>
+                        <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                          <div style="color: #374151; margin-bottom: 4px;"><strong>Disabled:</strong> opacity: 0.5</div>
+                          <div style="color: #374151; margin-bottom: 4px;"><strong>Loading:</strong> spinner + text</div>
+                          <div style="color: #374151;"><strong>Cursor:</strong> not-allowed</div>
                         </div>
                       </div>
                     </div>
@@ -1083,7 +1185,7 @@ function toggleSkeletonContent() {
                       <h4 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Mobile Container (.mob-3-graph-cards---container-right-2-copy)</h4>
                       <p class="text-300" style="color: #64748b; margin-bottom: 8px;"><strong>Animation:</strong> <code>translate3d(0, 10%, 0)</code> + <code>opacity:0</code> initial state</p>
                       <p class="text-300" style="color: #64748b; margin-bottom: 12px;"><strong>Trigger:</strong> <code>data-w-id="3c799aa6-2e7f-f5e7-8ac6-42daf0385742"</code></p>
-                      <div style="background: #f0f9ff; padding: 16px; border-radius: 8px; border-left: 3px solid #57C7EB; margin-bottom: 12px;">
+                      <div class="card documentation-card info-card" style="background: #f0f9ff; padding: 16px; border-radius: 8px; border-left: 3px solid #57C7EB; margin-bottom: 12px;">
                         <div style="position: relative; width: 100%; height: 120px; background: #1a1a1a; border-radius: 8px; color: #ffffff; margin-bottom: 12px; overflow: hidden;">
                           <div style="
                             animation: floatIn 3s ease-in-out infinite;
@@ -1117,7 +1219,7 @@ function toggleSkeletonContent() {
                       <h4 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Desktop Container (.des-3-graph-cards---container-right-2-copy)</h4>
                       <p class="text-300" style="color: #64748b; margin-bottom: 8px;"><strong>Animation:</strong> Identical transform but separate container for responsive behavior</p>
                       <p class="text-300" style="color: #64748b; margin-bottom: 12px;"><strong>Trigger:</strong> <code>data-w-id="d28a12e7-34c9-34a9-bae3-5fb511decc75"</code></p>
-                      <div style="background: #f0f9ff; padding: 16px; border-radius: 8px; border-left: 3px solid #57C7EB; margin-bottom: 12px;">
+                      <div class="card documentation-card info-card" style="background: #f0f9ff; padding: 16px; border-radius: 8px; border-left: 3px solid #57C7EB; margin-bottom: 12px;">
                         <div style="position: relative; width: 100%; height: 160px; background: #1a1a1a; border-radius: 8px; color: #ffffff; margin-bottom: 12px; overflow: hidden;">
                           <div style="
                             animation: floatInDesktop 3s ease-in-out infinite;
@@ -2285,75 +2387,93 @@ function toggleSkeletonContent() {
             <div style="margin-bottom: 60px;">
               <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197; margin-bottom: 32px; text-align: center;">Usage Patterns & Best Practices</h3>
               
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 32px;">
-                <!-- Pattern 1 -->
-                <div style="background: #f0f9ff; padding: 24px; border-radius: 12px; border-left: 4px solid #57C7EB;">
-                  <h4 style="color: #143197; margin-bottom: 12px; font-size: 18px;">Progressive Disclosure</h4>
-                  <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">Notice → Headline → Benefits → CTAs</p>
-                  <div style="font-size: 12px; color: #64748b;">
-                    <div style="margin-bottom: 8px;">1. Notice badge grabs attention</div>
-                    <div style="margin-bottom: 8px;">2. Headline states value prop</div>
-                    <div style="margin-bottom: 8px;">3. Benefits provide proof</div>
-                    <div>4. CTAs drive action</div>
+              <div class="grid-2-columns _1-col-tablet gap-row-32px">
+                <!-- Progressive Disclosure Pattern -->
+                <div class="card pd-40px---20px border-radius-24px min-width">
+                  <div class="text-center">
+                    <div class="display-3" style="color: #57C7EB; margin-bottom: 16px;">Progressive Disclosure</div>
+                    <div class="text-200 medium" style="color: #64748b; margin-bottom: 20px;">Notice → Headline → Benefits → CTAs</div>
+                    <div style="text-align: left; max-width: 280px; margin: 0 auto;">
+                      <div class="text-100" style="color: #64748b; margin-bottom: 8px;">1. Notice badge grabs attention</div>
+                      <div class="text-100" style="color: #64748b; margin-bottom: 8px;">2. Headline states value prop</div>
+                      <div class="text-100" style="color: #64748b; margin-bottom: 8px;">3. Benefits provide proof</div>
+                      <div class="text-100" style="color: #64748b;">4. CTAs drive action</div>
+                    </div>
                   </div>
                 </div>
                 
-                <!-- Pattern 2 -->
-                <div style="background: #f0fdf4; padding: 24px; border-radius: 12px; border-left: 4px solid #1FBB65;">
-                  <h4 style="color: #143197; margin-bottom: 12px; font-size: 18px;">Responsive Strategy</h4>
-                  <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">Mobile-first with adaptive layouts</p>
-                  <div style="font-size: 12px; color: #64748b;">
-                    <div style="margin-bottom: 8px;">• Separate mobile/desktop containers</div>
-                    <div style="margin-bottom: 8px;">• Scaled content for different screens</div>
-                    <div style="margin-bottom: 8px;">• Optimized image loading</div>
-                    <div>• Touch-friendly button sizes</div>
+                <!-- Responsive Strategy Pattern -->
+                <div class="card pd-40px---20px border-radius-24px min-width">
+                  <div class="text-center">
+                    <div class="display-3" style="color: #1FBB65; margin-bottom: 16px;">Responsive Strategy</div>
+                    <div class="text-200 medium" style="color: #64748b; margin-bottom: 20px;">Mobile-first with adaptive layouts</div>
+                    <div style="text-align: left; max-width: 280px; margin: 0 auto;">
+                      <div class="text-100" style="color: #64748b; margin-bottom: 8px;">• Separate mobile/desktop containers</div>
+                      <div class="text-100" style="color: #64748b; margin-bottom: 8px;">• Scaled content for different screens</div>
+                      <div class="text-100" style="color: #64748b; margin-bottom: 8px;">• Optimized image loading</div>
+                      <div class="text-100" style="color: #64748b;">• Touch-friendly button sizes</div>
+                    </div>
                   </div>
                 </div>
                 
-                <!-- Pattern 3 -->
-                <div style="background: #fef3f2; padding: 24px; border-radius: 12px; border-left: 4px solid #EB5857;">
-                  <h4 style="color: #143197; margin-bottom: 12px; font-size: 18px;">Animation Guidelines</h4>
-                  <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">Smooth, purposeful transitions</p>
-                  <div style="font-size: 12px; color: #64748b;">
-                    <div style="margin-bottom: 8px;">• 10% Y-translate for entry</div>
-                    <div style="margin-bottom: 8px;">• Opacity fade for smoothness</div>
-                    <div style="margin-bottom: 8px;">• Staggered timing for flow</div>
-                    <div>• data-w-id triggers</div>
+                <!-- Animation Guidelines Pattern -->
+                <div class="card pd-40px---20px border-radius-24px min-width">
+                  <div class="text-center">
+                    <div class="display-3" style="color: #EB5857; margin-bottom: 16px;">Animation Guidelines</div>
+                    <div class="text-200 medium" style="color: #64748b; margin-bottom: 20px;">Smooth, purposeful transitions</div>
+                    <div style="text-align: left; max-width: 280px; margin: 0 auto;">
+                      <div class="text-100" style="color: #64748b; margin-bottom: 8px;">• 10% Y-translate for entry</div>
+                      <div class="text-100" style="color: #64748b; margin-bottom: 8px;">• Opacity fade for smoothness</div>
+                      <div class="text-100" style="color: #64748b; margin-bottom: 8px;">• Staggered timing for flow</div>
+                      <div class="text-100" style="color: #64748b;">• data-w-id triggers</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             
             <!-- QUICK REFERENCE -->
-            <div style="background: #1a1a1a; color: white; padding: 32px; border-radius: 12px; text-align: center;">
-              <h3 style="color: #57C7EB; margin-bottom: 24px; font-size: 24px;">Quick Reference</h3>
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 24px;">
-                <div>
-                  <div style="color: #1FBB65; font-weight: 600; margin-bottom: 8px;">Main Container</div>
-                  <div style="font-size: 14px; color: #e2e8f0;">.pricing-template-hero</div>
+            <div style="background: #1a1a1a; color: white; padding: 40px; border-radius: 24px; text-align: center;">
+              <h3 style="color: #57C7EB; margin-bottom: 32px; font-size: 24px;">Quick Reference</h3>
+              <div class="grid-2-columns _1-col-tablet gap-row-32px">
+                <div class="card pd-40px---20px border-radius-24px min-width" style="background: rgba(255,255,255,0.1);">
+                  <div class="text-center">
+                    <div class="display-3" style="color: #1FBB65; margin-bottom: 16px;">Main Container</div>
+                    <div class="text-200 medium" style="color: #e2e8f0;">.pricing-template-hero</div>
+                  </div>
                 </div>
-                <div>
-                  <div style="color: #1FBB65; font-weight: 600; margin-bottom: 8px;">Content Body</div>
-                  <div style="font-size: 14px; color: #e2e8f0;">.pricing-template-body</div>
+                <div class="card pd-40px---20px border-radius-24px min-width" style="background: rgba(255,255,255,0.1);">
+                  <div class="text-center">
+                    <div class="display-3" style="color: #1FBB65; margin-bottom: 16px;">Content Body</div>
+                    <div class="text-200 medium" style="color: #e2e8f0;">.pricing-template-body</div>
+                  </div>
                 </div>
-                <div>
-                  <div style="color: #1FBB65; font-weight: 600; margin-bottom: 8px;">Heading Section</div>
-                  <div style="font-size: 14px; color: #e2e8f0;">.pricing-template-heading</div>
+                <div class="card pd-40px---20px border-radius-24px min-width" style="background: rgba(255,255,255,0.1);">
+                  <div class="text-center">
+                    <div class="display-3" style="color: #1FBB65; margin-bottom: 16px;">Heading Section</div>
+                    <div class="text-200 medium" style="color: #e2e8f0;">.pricing-template-heading</div>
+                  </div>
                 </div>
-                <div>
-                  <div style="color: #1FBB65; font-weight: 600; margin-bottom: 8px;">Notice Badge</div>
-                  <div style="font-size: 14px; color: #e2e8f0;">.pricing-template-notice</div>
+                <div class="card pd-40px---20px border-radius-24px min-width" style="background: rgba(255,255,255,0.1);">
+                  <div class="text-center">
+                    <div class="display-3" style="color: #1FBB65; margin-bottom: 16px;">Notice Badge</div>
+                    <div class="text-200 medium" style="color: #e2e8f0;">.pricing-template-notice</div>
+                  </div>
                 </div>
-                <div>
-                  <div style="color: #1FBB65; font-weight: 600; margin-bottom: 8px;">Benefits List</div>
-                  <div style="font-size: 14px; color: #e2e8f0;">.pricing-template-review</div>
+                <div class="card pd-40px---20px border-radius-24px min-width" style="background: rgba(255,255,255,0.1);">
+                  <div class="text-center">
+                    <div class="display-3" style="color: #1FBB65; margin-bottom: 16px;">Benefits List</div>
+                    <div class="text-200 medium" style="color: #e2e8f0;">.pricing-template-review</div>
+                  </div>
                 </div>
-                <div>
-                  <div style="color: #1FBB65; font-weight: 600; margin-bottom: 8px;">Hero Headline</div>
-                  <div style="font-size: 14px; color: #e2e8f0;">.title-h2.white</div>
+                <div class="card pd-40px---20px border-radius-24px min-width" style="background: rgba(255,255,255,0.1);">
+                  <div class="text-center">
+                    <div class="display-3" style="color: #1FBB65; margin-bottom: 16px;">Hero Headline</div>
+                    <div class="text-200 medium" style="color: #e2e8f0;">.title-h2.white</div>
+                  </div>
                 </div>
               </div>
-              <p style="color: #64748b; font-size: 14px; margin: 0;">All components are fully responsive and include hover states, animations, and accessibility features.</p>
+              <p style="color: #64748b; font-size: 14px; margin: 32px 0 0 0;">All components are fully responsive and include hover states, animations, and accessibility features.</p>
             </div>
           </div>
         </div>
@@ -2394,77 +2514,61 @@ function toggleSkeletonContent() {
               <!-- LIVE EXAMPLES -->
               <div class="mg-bottom-48px">
                 <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197; margin-bottom: 24px; text-align: left;">Live Examples</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 32px;">
+                <div class="grid-2-columns _1-col-tablet gap-row-32px">
                   
                   <!-- Google Integration Example -->
-                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <h4 style="color: #143197; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">Google Integration</h4>
-                    <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 16px; position: relative;">
-                      <a href="#" class="card integrations-slider-link-card w-inline-block" style="position: relative; z-index: 1; border: 1px solid var(--neutral--300); box-shadow: 0 2px 6px 0 var(--general--shadow-01); padding: 24px 40px 48px; text-decoration: none; transition: none; display: block;">
-                        <img src="images/google-integration-logo.png" loading="eager" alt="Google Calendar & Drive" class="max-w-70px mg-bottom-24px" style="max-width: 70px; margin-bottom: 24px;">
-                        <h3 class="card-link-title---hover-primary" style="color: #143197; font-family: Manrope, sans-serif; font-weight: 500; margin-bottom: 12px;">Google Calendar & Drive</h3>
-                        <p class="color-neutral-600" style="color: #64748b; margin-bottom: 16px;">Effortlessly manage your schedule and access your files</p>
-                        <div class="badge-secondary light integrations-slider-card-badge" style="z-index: 1; padding: 12px 18px; font-family: Manrope, sans-serif; font-size: 14px; font-weight: 400; position: absolute; top: 24px; right: 24px; background: #f1f5f9; color: #64748b; border-radius: 6px;">Popular</div>
-                      </a>
-                    </div>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Badge:</strong> "Popular"</div>
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Logo:</strong> 70px max-width</div>
-                      <div style="color: #374151;"><strong>Hover:</strong> Primary color title</div>
+                  <div class="card pd-40px---20px border-radius-24px min-width">
+                    <div class="text-center">
+                      <div class="display-3" style="color: #143197; margin-bottom: 16px;">Google Integration</div>
+                      <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Popular integration for productivity</div>
+                      <div style="background: #f8fafc; padding: 16px; border-radius: 12px; margin-bottom: 16px; position: relative;">
+                        <img src="images/google-integration-logo.png" loading="eager" alt="Google Calendar & Drive" style="max-width: 50px; margin-bottom: 12px;">
+                        <h4 style="color: #143197; margin-bottom: 8px;">Google Calendar & Drive</h4>
+                        <div class="text-100" style="color: #64748b; margin-bottom: 12px;">Effortlessly manage your schedule and access your files</div>
+                        <div style="background: #f1f5f9; color: #64748b; padding: 8px 12px; border-radius: 6px; font-size: 12px; display: inline-block;">Popular</div>
+                      </div>
                     </div>
                   </div>
                   
                   <!-- Slack Integration Example -->
-                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <h4 style="color: #143197; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">Slack Integration</h4>
-                    <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 16px; position: relative;">
-                      <a href="#" class="card integrations-slider-link-card w-inline-block" style="position: relative; z-index: 1; border: 1px solid var(--neutral--300); box-shadow: 0 2px 6px 0 var(--general--shadow-01); padding: 24px 40px 48px; text-decoration: none; transition: none; display: block;">
-                        <img src="images/slack-integration-logo.png" loading="eager" alt="Slack" class="max-w-70px mg-bottom-24px" style="max-width: 70px; margin-bottom: 24px;">
-                        <h3 class="card-link-title---hover-primary" style="color: #143197; font-family: Manrope, sans-serif; font-weight: 500; margin-bottom: 12px;">Slack</h3>
-                        <p class="color-neutral-600" style="color: #64748b; margin-bottom: 16px;">Unite your team and enhance communication</p>
-                        <div class="badge-secondary light integrations-slider-card-badge" style="z-index: 1; padding: 12px 18px; font-family: Manrope, sans-serif; font-size: 14px; font-weight: 400; position: absolute; top: 24px; right: 24px; background: #fef3c7; color: #92400e; border-radius: 6px;">Essential</div>
-                      </a>
-                    </div>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Badge:</strong> "Essential"</div>
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Style:</strong> Yellow badge variant</div>
-                      <div style="color: #374151;"><strong>Team:</strong> Communication focus</div>
+                  <div class="card pd-40px---20px border-radius-24px min-width">
+                    <div class="text-center">
+                      <div class="display-3" style="color: #143197; margin-bottom: 16px;">Slack Integration</div>
+                      <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Essential team communication</div>
+                      <div style="background: #f8fafc; padding: 16px; border-radius: 12px; margin-bottom: 16px; position: relative;">
+                        <img src="images/slack-integration-logo.png" loading="eager" alt="Slack" style="max-width: 50px; margin-bottom: 12px;">
+                        <h4 style="color: #143197; margin-bottom: 8px;">Slack</h4>
+                        <div class="text-100" style="color: #64748b; margin-bottom: 12px;">Unite your team and enhance communication</div>
+                        <div style="background: #fef3c7; color: #92400e; padding: 8px 12px; border-radius: 6px; font-size: 12px; display: inline-block;">Essential</div>
+                      </div>
                     </div>
                   </div>
                   
                   <!-- Trello Integration Example -->
-                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <h4 style="color: #143197; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">Trello Integration</h4>
-                    <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 16px; position: relative;">
-                      <a href="#" class="card integrations-slider-link-card w-inline-block" style="position: relative; z-index: 1; border: 1px solid var(--neutral--300); box-shadow: 0 2px 6px 0 var(--general--shadow-01); padding: 24px 40px 48px; text-decoration: none; transition: none; display: block;">
-                        <img src="images/trello-integration-logo.png" loading="eager" alt="Trello" class="max-w-70px mg-bottom-24px" style="max-width: 70px; margin-bottom: 24px;">
-                        <h3 class="card-link-title---hover-primary" style="color: #143197; font-family: Manrope, sans-serif; font-weight: 500; margin-bottom: 12px;">Trello</h3>
-                        <p class="color-neutral-600" style="color: #64748b; margin-bottom: 16px;">Import your Trello boards to give your task management superpowers</p>
-                        <div class="badge-secondary light integrations-slider-card-badge" style="z-index: 1; padding: 12px 18px; font-family: Manrope, sans-serif; font-size: 14px; font-weight: 400; position: absolute; top: 24px; right: 24px; background: #dcfce7; color: #166534; border-radius: 6px;">New</div>
-                      </a>
-                    </div>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Badge:</strong> "New"</div>
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Style:</strong> Green badge variant</div>
-                      <div style="color: #374151;"><strong>Content:</strong> Longer description</div>
+                  <div class="card pd-40px---20px border-radius-24px min-width">
+                    <div class="text-center">
+                      <div class="display-3" style="color: #143197; margin-bottom: 16px;">Trello Integration</div>
+                      <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Project management enhancement</div>
+                      <div style="background: #f8fafc; padding: 16px; border-radius: 12px; margin-bottom: 16px; position: relative;">
+                        <img src="images/trello-integration-logo.png" loading="eager" alt="Trello" style="max-width: 50px; margin-bottom: 12px;">
+                        <h4 style="color: #143197; margin-bottom: 8px;">Trello</h4>
+                        <div class="text-100" style="color: #64748b; margin-bottom: 12px;">Import your Trello boards to give your task management superpowers</div>
+                        <div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 6px; font-size: 12px; display: inline-block;">New</div>
+                      </div>
                     </div>
                   </div>
                   
                   <!-- Zapier Integration Example -->
-                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <h4 style="color: #143197; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">Zapier Integration</h4>
-                    <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 16px; position: relative;">
-                      <a href="#" class="card integrations-slider-link-card w-inline-block" style="position: relative; z-index: 1; border: 1px solid var(--neutral--300); box-shadow: 0 2px 6px 0 var(--general--shadow-01); padding: 24px 40px 48px; text-decoration: none; transition: none; display: block;">
-                        <img src="images/zapier-integration-logo.png" loading="eager" alt="Zapier" class="max-w-70px mg-bottom-24px" style="max-width: 70px; margin-bottom: 24px;">
-                        <h3 class="card-link-title---hover-primary" style="color: #143197; font-family: Manrope, sans-serif; font-weight: 500; margin-bottom: 12px;">Zapier</h3>
-                        <p class="color-neutral-600" style="color: #64748b; margin-bottom: 16px;">Automate workflows between Krushr and 5,000+ apps</p>
-                        <div class="badge-secondary light integrations-slider-card-badge" style="z-index: 1; padding: 12px 18px; font-family: Manrope, sans-serif; font-size: 14px; font-weight: 400; position: absolute; top: 24px; right: 24px; background: #ede9fe; color: #7c3aed; border-radius: 6px;">Automation</div>
-                      </a>
-                    </div>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Badge:</strong> "Automation"</div>
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Style:</strong> Purple badge variant</div>
-                      <div style="color: #374151;"><strong>Focus:</strong> Workflow automation</div>
+                  <div class="card pd-40px---20px border-radius-24px min-width">
+                    <div class="text-center">
+                      <div class="display-3" style="color: #143197; margin-bottom: 16px;">Zapier Integration</div>
+                      <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Workflow automation platform</div>
+                      <div style="background: #f8fafc; padding: 16px; border-radius: 12px; margin-bottom: 16px; position: relative;">
+                        <img src="images/zapier-integration-logo.png" loading="eager" alt="Zapier" style="max-width: 50px; margin-bottom: 12px;">
+                        <h4 style="color: #143197; margin-bottom: 8px;">Zapier</h4>
+                        <div class="text-100" style="color: #64748b; margin-bottom: 12px;">Automate workflows between Krushr and 5,000+ apps</div>
+                        <div style="background: #ede9fe; color: #7c3aed; padding: 8px 12px; border-radius: 6px; font-size: 12px; display: inline-block;">Automation</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2685,75 +2789,57 @@ function toggleSkeletonContent() {
               <!-- BRAND COLORS -->
               <div class="mg-bottom-48px">
                 <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197; margin-bottom: 24px; text-align: left;">Brand Colors</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
+                <div class="grid-2-columns _1-col-tablet gap-row-32px">
                   
-                  <!-- Primary Brand -->
-                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <div style="width: 100%; height: 80px; background: #143197; border-radius: 8px; margin-bottom: 16px; position: relative;">
-                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #143197; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#143197</div>
-                    </div>
-                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Primary Brand</h4>
-                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Main brand color for buttons, links, and accents</p>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --krushr-primary</div>
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #143197</div>
-                      <div style="color: #374151;"><strong>Usage:</strong> .btn-primary, .text-primary</div>
+                  <!-- Primary Brand Colors Group -->
+                  <div class="card pd-40px---20px border-radius-24px min-width">
+                    <div class="text-center">
+                      <div class="display-3" style="color: #143197; margin-bottom: 16px;">Primary Colors</div>
+                      <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Main brand identity colors</div>
+                      <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; align-items: center; gap: 16px; background: #f8fafc; padding: 12px; border-radius: 8px;">
+                          <div style="width: 40px; height: 40px; background: #143197; border-radius: 8px; flex-shrink: 0;"></div>
+                          <div style="text-align: left; flex: 1;">
+                            <div style="font-weight: 600; color: #143197; font-size: 14px;">Primary Brand</div>
+                            <div style="font-size: 12px; color: #64748b;">#143197 • --krushr-primary</div>
+                          </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 16px; background: #f8fafc; padding: 12px; border-radius: 8px;">
+                          <div style="width: 40px; height: 40px; background: #EB5857; border-radius: 8px; flex-shrink: 0;"></div>
+                          <div style="text-align: left; flex: 1;">
+                            <div style="font-weight: 600; color: #143197; font-size: 14px;">Secondary Brand</div>
+                            <div style="font-size: 12px; color: #64748b;">#EB5857 • --krushr-secondary</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
-                  <!-- Secondary Brand -->
-                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <div style="width: 100%; height: 80px; background: #EB5857; border-radius: 8px; margin-bottom: 16px; position: relative;">
-                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #EB5857; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#EB5857</div>
-                    </div>
-                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Secondary Brand</h4>
-                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Accent color for highlights and secondary actions</p>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --krushr-secondary</div>
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #EB5857</div>
-                      <div style="color: #374151;"><strong>Usage:</strong> .btn-secondary, .text-secondary</div>
-                    </div>
-                  </div>
-                  
-                  <!-- Success -->
-                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <div style="width: 100%; height: 80px; background: #1FBB65; border-radius: 8px; margin-bottom: 16px; position: relative;">
-                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #1FBB65; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#1FBB65</div>
-                    </div>
-                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Success</h4>
-                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Success states, completed tasks, positive feedback</p>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --krushr-success</div>
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #1FBB65</div>
-                      <div style="color: #374151;"><strong>Usage:</strong> .text-success, .border-success</div>
-                    </div>
-                  </div>
-                  
-                  <!-- Warning -->
-                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <div style="width: 100%; height: 80px; background: #FFB366; border-radius: 8px; margin-bottom: 16px; position: relative;">
-                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #FFB366; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#FFB366</div>
-                    </div>
-                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Warning</h4>
-                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Warning states, pending actions, caution indicators</p>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --krushr-warning</div>
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #FFB366</div>
-                      <div style="color: #374151;"><strong>Usage:</strong> .text-warning, .bg-warning</div>
-                    </div>
-                  </div>
-                  
-                  <!-- Info -->
-                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <div style="width: 100%; height: 80px; background: #57C7EB; border-radius: 8px; margin-bottom: 16px; position: relative;">
-                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #57C7EB; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#57C7EB</div>
-                    </div>
-                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Info</h4>
-                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Information states, helpful tips, neutral highlights</p>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --krushr-info</div>
-                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #57C7EB</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
+                  <!-- Status Colors Group -->
+                  <div class="card pd-40px---20px border-radius-24px min-width">
+                    <div class="text-center">
+                      <div class="display-3" style="color: #143197; margin-bottom: 16px;">Status Colors</div>
+                      <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Semantic state indicators</div>
+                      <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 16px; background: #f8fafc; padding: 12px; border-radius: 8px;">
+                          <div style="width: 32px; height: 32px; background: #1FBB65; border-radius: 6px; flex-shrink: 0;"></div>
+                          <div style="text-align: left; flex: 1;">
+                            <div style="font-weight: 600; color: #143197; font-size: 12px;">Success #1FBB65</div>
+                          </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 16px; background: #f8fafc; padding: 12px; border-radius: 8px;">
+                          <div style="width: 32px; height: 32px; background: #FFB366; border-radius: 6px; flex-shrink: 0;"></div>
+                          <div style="text-align: left; flex: 1;">
+                            <div style="font-weight: 600; color: #143197; font-size: 12px;">Warning #FFB366</div>
+                          </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 16px; background: #f8fafc; padding: 12px; border-radius: 8px;">
+                          <div style="width: 32px; height: 32px; background: #57C7EB; border-radius: 6px; flex-shrink: 0;"></div>
+                          <div style="text-align: left; flex: 1;">
+                            <div style="font-weight: 600; color: #143197; font-size: 12px;">Info #57C7EB</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -2762,76 +2848,62 @@ function toggleSkeletonContent() {
               
               <!-- NEUTRAL COLORS -->
               <div class="mg-bottom-48px">
-                <h3 class="heading-h4-size color-neutral-800 mg-bottom-24px text-align-left">Neutral Colors</h3>
-                <div class="w-layout-grid grid-3-columns gap-24px">
+                <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197; margin-bottom: 24px; text-align: left;">Neutral Colors</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
                   
                   <!-- White -->
-                  <div class="bg-neutral-100 border-radius-12px padding-20px box-shadow">
-                    <div class="color-swatch height-80px border-radius-8px mg-bottom-16px position-relative border-neutral-300" style="background: var(--neutral--100);">
-                      <div class="color-label position-absolute bottom-8px right-8px bg-neutral-800 color-neutral-100 border-radius-4px padding-4px-8px text-12px font-weight-600">#FFFFFF</div>
+                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="width: 100%; height: 80px; background: #ffffff; border-radius: 8px; margin-bottom: 16px; position: relative; border: 1px solid #e2e8f0;">
+                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#FFFFFF</div>
                     </div>
-                    <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">White</h4>
-                    <p class="color-neutral-600 mg-bottom-12px text-14px">Pure white for backgrounds and text on dark surfaces</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --neutral--100</div>
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #ffffff</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> .bg-neutral-100, .color-neutral-100</div>
+                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">White</h4>
+                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Pure white for backgrounds and text on dark surfaces</p>
+                    <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --neutral-100</div>
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #ffffff</div>
+                      <div style="color: #374151;"><strong>Usage:</strong> .bg-neutral-100, .text-white</div>
                     </div>
                   </div>
                   
                   <!-- Light Gray -->
-                  <div class="bg-neutral-100 border-radius-12px padding-20px box-shadow">
-                    <div class="color-swatch height-80px border-radius-8px mg-bottom-16px position-relative" style="background: var(--neutral--200);">
-                      <div class="color-label position-absolute bottom-8px right-8px bg-neutral-800 color-neutral-100 border-radius-4px padding-4px-8px text-12px font-weight-600">#F7F7FC</div>
+                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="width: 100%; height: 80px; background: #f7f7fc; border-radius: 8px; margin-bottom: 16px; position: relative;">
+                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#F7F7FC</div>
                     </div>
-                    <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Light Gray</h4>
-                    <p class="color-neutral-600 mg-bottom-12px text-14px">Light background sections and subtle contrasts</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --neutral--200</div>
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #f7f7fc</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> .bg-neutral-200</div>
+                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Light Gray</h4>
+                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Light background sections and subtle contrasts</p>
+                    <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --neutral-200</div>
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #f7f7fc</div>
+                      <div style="color: #374151;"><strong>Usage:</strong> .bg-neutral-200</div>
                     </div>
                   </div>
                   
                   <!-- Medium Gray -->
-                  <div class="bg-neutral-100 border-radius-12px padding-20px box-shadow">
-                    <div class="color-swatch height-80px border-radius-8px mg-bottom-16px position-relative" style="background: var(--neutral--300);">
-                      <div class="color-label position-absolute bottom-8px right-8px bg-neutral-800 color-neutral-100 border-radius-4px padding-4px-8px text-12px font-weight-600">#EFF0F6</div>
+                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="width: 100%; height: 80px; background: #6e7191; border-radius: 8px; margin-bottom: 16px; position: relative;">
+                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #6e7191; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#6E7191</div>
                     </div>
-                    <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Medium Gray</h4>
-                    <p class="color-neutral-600 mg-bottom-12px text-14px">Card borders, dividers, and subtle backgrounds</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --neutral--300</div>
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #eff0f6</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> .bg-neutral-300</div>
+                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Medium Gray</h4>
+                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Secondary text and subtle borders</p>
+                    <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --neutral-600</div>
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #6e7191</div>
+                      <div style="color: #374151;"><strong>Usage:</strong> .text-neutral-600</div>
                     </div>
                   </div>
                   
                   <!-- Dark Gray -->
-                  <div class="bg-neutral-100 border-radius-12px padding-20px box-shadow">
-                    <div class="color-swatch height-80px border-radius-8px mg-bottom-16px position-relative" style="background: var(--neutral--600);">
-                      <div class="color-label position-absolute bottom-8px right-8px bg-neutral-100 color-neutral-600 border-radius-4px padding-4px-8px text-12px font-weight-600">#6E7191</div>
+                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="width: 100%; height: 80px; background: #211f54; border-radius: 8px; margin-bottom: 16px; position: relative;">
+                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #211f54; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#211F54</div>
                     </div>
-                    <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Dark Gray</h4>
-                    <p class="color-neutral-600 mg-bottom-12px text-14px">Secondary text, placeholders, and disabled states</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --neutral--600</div>
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #6e7191</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> .color-neutral-600</div>
-                    </div>
-                  </div>
-                  
-                  <!-- Very Dark Gray -->
-                  <div class="bg-neutral-100 border-radius-12px padding-20px box-shadow">
-                    <div class="color-swatch height-80px border-radius-8px mg-bottom-16px position-relative" style="background: var(--neutral--800);">
-                      <div class="color-label position-absolute bottom-8px right-8px bg-neutral-100 color-neutral-800 border-radius-4px padding-4px-8px text-12px font-weight-600">#211F54</div>
-                    </div>
-                    <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Very Dark Gray</h4>
-                    <p class="color-neutral-600 mg-bottom-12px text-14px">Primary text, headings, and high contrast elements</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --neutral--800</div>
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #211f54</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> .color-neutral-800</div>
+                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Dark Gray</h4>
+                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Primary text and headings</p>
+                    <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --neutral-800</div>
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #211f54</div>
+                      <div style="color: #374151;"><strong>Usage:</strong> .text-neutral-800</div>
                     </div>
                   </div>
                   
@@ -2840,62 +2912,62 @@ function toggleSkeletonContent() {
               
               <!-- TASK STATUS COLORS -->
               <div class="mg-bottom-48px">
-                <h3 class="heading-h4-size color-neutral-800 mg-bottom-24px text-align-left">Task Status Colors</h3>
-                <div class="w-layout-grid grid-3-columns gap-24px">
+                <h3 class="heading-h4-size mg-bottom-8px" style="color: #143197; margin-bottom: 24px; text-align: left;">Task Status Colors</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
                   
                   <!-- Todo -->
-                  <div class="bg-neutral-100 border-radius-12px padding-20px box-shadow">
-                    <div class="color-swatch height-80px border-radius-8px mg-bottom-16px position-relative" style="background: var(--task-todo);">
-                      <div class="color-label position-absolute bottom-8px right-8px bg-neutral-100 color-neutral-600 border-radius-4px padding-4px-8px text-12px font-weight-600">#6B7280</div>
+                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="width: 100%; height: 80px; background: #6b7280; border-radius: 8px; margin-bottom: 16px; position: relative;">
+                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #6b7280; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#6B7280</div>
                     </div>
-                    <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Todo</h4>
-                    <p class="color-neutral-600 mg-bottom-12px text-14px">Tasks that haven't been started yet</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --task-todo</div>
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #6b7280</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
+                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Todo</h4>
+                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Tasks that are planned but not yet started</p>
+                    <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --task-todo</div>
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #6b7280</div>
+                      <div style="color: #374151;"><strong>Usage:</strong> Kanban columns, task badges</div>
                     </div>
                   </div>
                   
                   <!-- In Progress -->
-                  <div class="bg-neutral-100 border-radius-12px padding-20px box-shadow">
-                    <div class="color-swatch height-80px border-radius-8px mg-bottom-16px position-relative" style="background: var(--task-progress);">
-                      <div class="color-label position-absolute bottom-8px right-8px bg-neutral-100 border-radius-4px padding-4px-8px text-12px font-weight-600" style="color: var(--task-progress);">#3B82F6</div>
+                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="width: 100%; height: 80px; background: #3b82f6; border-radius: 8px; margin-bottom: 16px; position: relative;">
+                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#3B82F6</div>
                     </div>
-                    <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">In Progress</h4>
-                    <p class="color-neutral-600 mg-bottom-12px text-14px">Tasks currently being worked on</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --task-progress</div>
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #3b82f6</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
+                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">In Progress</h4>
+                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Tasks currently being worked on</p>
+                    <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --task-progress</div>
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #3b82f6</div>
+                      <div style="color: #374151;"><strong>Usage:</strong> Progress indicators, active states</div>
                     </div>
                   </div>
                   
                   <!-- Review -->
-                  <div class="bg-neutral-100 border-radius-12px padding-20px box-shadow">
-                    <div class="color-swatch height-80px border-radius-8px mg-bottom-16px position-relative" style="background: var(--task-review);">
-                      <div class="color-label position-absolute bottom-8px right-8px bg-neutral-100 border-radius-4px padding-4px-8px text-12px font-weight-600" style="color: var(--task-review);">#8B5CF6</div>
+                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="width: 100%; height: 80px; background: #8b5cf6; border-radius: 8px; margin-bottom: 16px; position: relative;">
+                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #8b5cf6; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#8B5CF6</div>
                     </div>
-                    <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Review</h4>
-                    <p class="color-neutral-600 mg-bottom-12px text-14px">Tasks ready for review or testing</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --task-review</div>
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #8b5cf6</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
+                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Review</h4>
+                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Tasks ready for review or testing</p>
+                    <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --task-review</div>
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #8b5cf6</div>
+                      <div style="color: #374151;"><strong>Usage:</strong> Review states, QA columns</div>
                     </div>
                   </div>
                   
                   <!-- Done -->
-                  <div class="bg-neutral-100 border-radius-12px padding-20px box-shadow">
-                    <div class="color-swatch height-80px border-radius-8px mg-bottom-16px position-relative" style="background: var(--task-done);">
-                      <div class="color-label position-absolute bottom-8px right-8px bg-neutral-100 border-radius-4px padding-4px-8px text-12px font-weight-600" style="color: var(--task-done);">#10B981</div>
+                  <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="width: 100%; height: 80px; background: #10b981; border-radius: 8px; margin-bottom: 16px; position: relative;">
+                      <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.9); color: #10b981; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">#10B981</div>
                     </div>
-                    <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Done</h4>
-                    <p class="color-neutral-600 mg-bottom-12px text-14px">Completed tasks</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --task-done</div>
-                      <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #10b981</div>
-                      <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
+                    <h4 style="color: #143197; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Done</h4>
+                    <p style="color: #64748b; margin: 0 0 12px 0; font-size: 14px;">Completed tasks</p>
+                    <div class="card code-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 12px;">
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>CSS Variable:</strong> --task-done</div>
+                      <div style="color: #374151; margin-bottom: 4px;"><strong>Hex:</strong> #10b981</div>
+                      <div style="color: #374151;"><strong>Usage:</strong> Success states, completed badges</div>
                     </div>
                   </div>
                   
@@ -2914,7 +2986,7 @@ function toggleSkeletonContent() {
                     </div>
                     <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Accent Primary</h4>
                     <p class="color-neutral-600 mg-bottom-12px text-14px">Primary accent for interactive elements</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
+                    <div class="card code-card bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
                       <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --accent--primary-1</div>
                       <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #563aff</div>
                       <div class="color-neutral-800"><strong>Usage:</strong> .color-accent-1</div>
@@ -2928,7 +3000,7 @@ function toggleSkeletonContent() {
                     </div>
                     <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Purple</h4>
                     <p class="color-neutral-600 mg-bottom-12px text-14px">Secondary accent for special highlights</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
+                    <div class="card code-card bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
                       <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --secondary--color-1</div>
                       <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #7d42fb</div>
                       <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
@@ -2942,7 +3014,7 @@ function toggleSkeletonContent() {
                     </div>
                     <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Green</h4>
                     <p class="color-neutral-600 mg-bottom-12px text-14px">Success indicators and positive actions</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
+                    <div class="card code-card bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
                       <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --secondary--color-3</div>
                       <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #2ff2b8</div>
                       <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
@@ -2956,7 +3028,7 @@ function toggleSkeletonContent() {
                     </div>
                     <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Yellow</h4>
                     <p class="color-neutral-600 mg-bottom-12px text-14px">Warning indicators and attention-grabbing elements</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
+                    <div class="card code-card bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
                       <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --secondary--color-4</div>
                       <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #ffcd42</div>
                       <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
@@ -2970,7 +3042,7 @@ function toggleSkeletonContent() {
                     </div>
                     <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Orange</h4>
                     <p class="color-neutral-600 mg-bottom-12px text-14px">Warm accents and energy indicators</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
+                    <div class="card code-card bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
                       <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --secondary--color-5</div>
                       <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #ff813a</div>
                       <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
@@ -2984,7 +3056,7 @@ function toggleSkeletonContent() {
                     </div>
                     <h4 class="color-neutral-800 mg-bottom-8px text-16px font-weight-600">Cyan</h4>
                     <p class="color-neutral-600 mg-bottom-12px text-14px">Cool accents and information highlights</p>
-                    <div class="bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
+                    <div class="card code-card bg-neutral-200 padding-12px border-radius-6px font-family-mono text-12px">
                       <div class="color-neutral-800 mg-bottom-4px"><strong>CSS Variable:</strong> --secondary--color-6</div>
                       <div class="color-neutral-800 mg-bottom-4px"><strong>Hex:</strong> #1de4ff</div>
                       <div class="color-neutral-800"><strong>Usage:</strong> Variable reference only</div>
@@ -4712,42 +4784,54 @@ var(--task-done) /* #10b981 */</code></pre>
             <div class="inner-details">
               <h2 class="title-h2">Component Examples</h2>
               <p class="paragraph-18px">Working examples using existing page classes and structure.</p>
-              <div class="grid-1-column-2 gap-row-32px">
+              
+              <!-- UI Components Group -->
+              <div class="mg-bottom-48px">
+                <h3 class="title-h3 mg-bottom-24px" style="color: #143197;">UI Components</h3>
+                <div class="grid-2-columns _1-col-tablet gap-row-32px gap-column-24px">
                 
-                <div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Checkmark icon" class="mg-right-24px">
-                  <div>
-                    <h3 class="heading-h4-size mg-bottom-8px">pricing-template-notice</h3>
+                  <div class="card testimonial-slider-card-small">
+                    <img src="images/lindsay-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <h4 class="pricing-card-heading">Notice Template</h4>
+                    <div class="text-200 medium color-neutral-600 mg-bottom-16px">Highlighted text messages and alerts</div>
+                    <div class="divider _24px bg-neutral-300 mg-bottom-16px"></div>
                     <div class="pricing-template-notice">
                       <div class="text-block-6">Example <span class="text-span-18">text-span-18</span> highlight</div>
                     </div>
+                    <div class="display-5 mg-bottom-16px"><span class="text-span-23">.pricing-template-notice</span></div>
                   </div>
-                </div>
                 
-                <div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Checkmark icon" class="mg-right-24px">
-                  <div>
-                    <h3 class="heading-h4-size mg-bottom-8px">buttons-row</h3>
-                    <div class="buttons-row mg-bottom-48px mg-bottom-48px-tablet">
-                      <a href="#" class="btn-primary button-row w-button">btn-primary button-row<span class="line-rounded-icon link-icon-right"></span></a>
-                      <a href="#" class="btn-secondary w-button">btn-secondary</a>
+                  <div class="card testimonial-slider-card-small">
+                    <img src="images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <h4 class="pricing-card-heading">Button Groups</h4>
+                    <div class="text-200 medium color-neutral-600 mg-bottom-16px">Primary and secondary button combinations</div>
+                    <div class="divider _24px bg-neutral-300 mg-bottom-16px"></div>
+                    <div class="buttons-row mg-bottom-24px">
+                      <a href="#" class="btn-primary button-row w-button">Primary<span class="line-rounded-icon link-icon-right"></span></a>
+                      <a href="#" class="btn-secondary w-button">Secondary</a>
                     </div>
+                    <div class="display-5 mg-bottom-16px"><span class="text-span-23">.buttons-row</span></div>
                   </div>
-                </div>
                 
-                <div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Checkmark icon" class="mg-right-24px">
-                  <div>
-                    <h3 class="heading-h4-size mg-bottom-8px">card border-radius-24px</h3>
+                  <div class="card testimonial-slider-card-small">
+                    <img src="images/sarah-smith-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <h4 class="pricing-card-heading">Content Cards</h4>
+                    <div class="text-200 medium color-neutral-600 mg-bottom-16px">Rounded cards with centered content</div>
+                    <div class="divider _24px bg-neutral-300 mg-bottom-16px"></div>
                     <div class="card pd-40px---20px border-radius-24px min-width">
                       <div class="text-center">
                         <div class="display-3">display-3</div>
                         <div class="text-200 medium">text-200 medium</div>
                       </div>
                     </div>
+                    <div class="display-5 mg-bottom-16px"><span class="text-span-23">.card.border-radius-24px</span></div>
                   </div>
-                </div>
                 
-                <div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Checkmark icon" class="mg-right-24px">
-                  <div>
-                    <h3 class="heading-h4-size mg-bottom-8px">drop-link-wrapper</h3>
+                  <div class="card testimonial-slider-card-small">
+                    <img src="images/alex-thompson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <h4 class="pricing-card-heading">Navigation Links</h4>
+                    <div class="text-200 medium color-neutral-600 mg-bottom-16px">Dropdown style navigation elements</div>
+                    <div class="divider _24px bg-neutral-300 mg-bottom-16px"></div>
                     <a class="drop-link-wrapper w-inline-block">
                       <img src="images/layout-alt-04.svg" loading="lazy" alt="Icon" class="dropdown-img">
                       <div class="dropdown-right-text-wrapper">
@@ -4755,8 +4839,11 @@ var(--task-done) /* #10b981 */</code></pre>
                         <div class="dropdown-text-link">dropdown-text-link</div>
                       </div>
                     </a>
+                    <div class="display-5 mg-bottom-16px"><span class="text-span-23">.drop-link-wrapper</span></div>
                   </div>
+                
                 </div>
+              </div>
                 
                 <div class="grid-1-column-2 gap-row-32px">
                   <div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Checkmark icon" class="mg-right-24px">
@@ -5697,7 +5784,7 @@ var(--task-done) /* #10b981 */</code></pre>
                         </div>
                         
                         <!-- Recent Activity -->
-                        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb;">
+                        <div class="card demo-card" style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb;">
                           <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">Recent Activity</h4>
                           <div class="flex align-top mg-bottom-12px">
                             <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; margin-right: 12px; margin-top: 8px;"></div>
@@ -6041,7 +6128,7 @@ var(--task-done) /* #10b981 */</code></pre>
                         </div>
                         
                         <!-- Comparison Chart -->
-                        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb;">
+                        <div class="card demo-card" style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb;">
                           <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">Feature Comparison</h4>
                           <div style="display: flex; flex-direction: column; gap: 12px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
@@ -6340,7 +6427,7 @@ var(--task-done) /* #10b981 */</code></pre>
                         </div>
                         
                         <!-- Estimated Delivery -->
-                        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb;">
+                        <div class="card demo-card" style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb;">
                           <div class="flex align-top mg-bottom-12px" style="justify-content: space-between; align-items: center;">
                             <div>
                               <div class="text-300" style="font-weight: 600; color: #374151; font-size: 16px;">Estimated Delivery</div>
@@ -6590,220 +6677,112 @@ var(--task-done) /* #10b981 */</code></pre>
                       </div>
                     </div>
                     
-                    <!-- ACCESSIBILITY PATTERNS -->
+                    <!-- ACCESSIBILITY GUIDELINES CARDS -->
                     <div class="mg-bottom-48px">
-                      <h3 class="heading-h4-size mg-bottom-16px" style="color: #143197;">Accessibility Patterns</h3>
-                      
-                      <!-- Focus Management -->
-                      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197; margin-bottom: 32px;">
-                        <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">Focus Management</h4>
-                        <div style="margin-bottom: 24px;">
-                          <button class="btn-primary w-button" style="padding: 12px 24px; margin-right: 12px; focus-visible: outline: 2px solid #143197; outline-offset: 2px;">
-                            Focusable Button
-                          </button>
-                          <button class="btn-secondary w-button" style="padding: 12px 24px; margin-right: 12px; focus-visible: outline: 2px solid #143197; outline-offset: 2px;">
-                            Secondary Button
-                          </button>
-                          <a href="#" class="btn-primary w-button" style="padding: 12px 24px; text-decoration: none; focus-visible: outline: 2px solid #143197; outline-offset: 2px;">
-                            Link as Button
-                          </a>
-                        </div>
-                        <div class="text-300" style="color: #6b7280; font-size: 14px;">
-                          <strong>Focus Indicators:</strong> All interactive elements have visible focus indicators with 2px solid outline and 2px offset for clear visibility.
-                        </div>
-                      </div>
-                      
-                      <!-- Skip Links -->
-                      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197; margin-bottom: 32px;">
-                        <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">Skip Links</h4>
-                        <div style="margin-bottom: 16px;">
-                          <a href="#main-content" class="btn-primary w-button" style="padding: 8px 16px; font-size: 14px; position: absolute; left: -9999px; z-index: 999;" onFocus="this.style.left='10px'; this.style.top='10px';" onBlur="this.style.left='-9999px';">
-                            Skip to main content
-                          </a>
-                        </div>
-                        <div class="text-300" style="color: #6b7280; font-size: 14px;">
-                          <strong>Implementation:</strong> Skip links are hidden by default and become visible when focused, allowing keyboard users to bypass navigation.
-                        </div>
-                      </div>
-                      
-                      <!-- ARIA Labels and Descriptions -->
-                      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197; margin-bottom: 32px;">
-                        <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">ARIA Labels and Descriptions</h4>
-                        <div style="margin-bottom: 24px;">
-                          <button 
-                            class="btn-primary w-button" 
-                            style="padding: 12px 24px; margin-right: 12px;"
-                            aria-label="Close dialog"
-                            aria-describedby="close-help"
-                          >
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                          </button>
-                          <div id="close-help" class="text-300" style="color: #6b7280; font-size: 14px; margin-top: 8px;">
-                            This button closes the current dialog and returns focus to the triggering element.
-                          </div>
-                        </div>
+                      <h3 class="heading-h4-size mg-bottom-16px" style="color: #143197;">Accessibility Guidelines</h3>
+                      <div class="grid-3-columns _1-col-tablet gap-row-32px">
                         
-                        <div style="margin-bottom: 24px;">
-                          <div role="status" aria-live="polite" aria-label="Loading content" class="text-300" style="color: #6b7280; padding: 12px; background: #f3f4f6; border-radius: 8px;">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite; margin-right: 8px;">
-                              <path d="M8 1.5C4.4 1.5 1.5 4.4 1.5 8C1.5 11.6 4.4 14.5 8 14.5C11.6 14.5 14.5 11.6 14.5 8C14.5 4.4 11.6 1.5 8 1.5ZM8 13C5.2 13 3 10.8 3 8C3 5.2 5.2 3 8 3C10.8 3 13 5.2 13 8C13 10.8 10.8 13 8 13Z" fill="#d1d5db"/>
-                              <path d="M8 1.5C10.5 1.5 12.6 2.9 13.6 5" stroke="#6b7280" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Loading content, please wait...
-                          </div>
-                        </div>
-                        
-                        <div style="margin-bottom: 24px;">
-                          <div role="alert" aria-live="assertive" class="text-300" style="color: #ef4444; padding: 12px; background: #fef2f2; border-radius: 8px; border-left: 4px solid #ef4444;">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
-                              <path d="M8 1.5C4.4 1.5 1.5 4.4 1.5 8C1.5 11.6 4.4 14.5 8 14.5C11.6 14.5 14.5 11.6 14.5 8C14.5 4.4 11.6 1.5 8 1.5ZM8 10.5C7.7 10.5 7.5 10.3 7.5 10V8C7.5 7.7 7.7 7.5 8 7.5C8.3 7.5 8.5 7.7 8.5 8V10C8.5 10.3 8.3 10.5 8 10.5ZM8 6.5C7.7 6.5 7.5 6.3 7.5 6C7.5 5.7 7.7 5.5 8 5.5C8.3 5.5 8.5 5.7 8.5 6C8.5 6.3 8.3 6.5 8 6.5Z" fill="#ef4444"/>
-                            </svg>
-                            Error: Please check your input and try again.
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <!-- Keyboard Navigation -->
-                      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197; margin-bottom: 32px;">
-                        <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">Keyboard Navigation</h4>
-                        <div style="margin-bottom: 24px;">
-                          <div role="tablist" aria-label="Content sections" style="display: flex; border-bottom: 2px solid #e5e7eb;">
-                            <button 
-                              role="tab" 
-                              aria-selected="true" 
-                              aria-controls="tab-panel-1" 
-                              id="tab-1"
-                              class="btn-secondary w-button"
-                              style="padding: 12px 16px; border: none; border-bottom: 2px solid #143197; background: transparent; color: #143197; font-weight: 600;"
-                            >
-                              Tab 1
-                            </button>
-                            <button 
-                              role="tab" 
-                              aria-selected="false" 
-                              aria-controls="tab-panel-2" 
-                              id="tab-2"
-                              class="btn-secondary w-button"
-                              style="padding: 12px 16px; border: none; border-bottom: 2px solid transparent; background: transparent; color: #6b7280;"
-                            >
-                              Tab 2
-                            </button>
-                            <button 
-                              role="tab" 
-                              aria-selected="false" 
-                              aria-controls="tab-panel-3" 
-                              id="tab-3"
-                              class="btn-secondary w-button"
-                              style="padding: 12px 16px; border: none; border-bottom: 2px solid transparent; background: transparent; color: #6b7280;"
-                            >
-                              Tab 3
-                            </button>
-                          </div>
-                          <div 
-                            role="tabpanel" 
-                            aria-labelledby="tab-1" 
-                            id="tab-panel-1"
-                            style="padding: 16px; background: #f9fafb; border-radius: 0 0 8px 8px;"
-                          >
-                            <div class="text-300" style="color: #374151;">Content for Tab 1. Use arrow keys to navigate between tabs, Enter or Space to activate.</div>
-                          </div>
-                        </div>
-                        <div class="text-300" style="color: #6b7280; font-size: 14px;">
-                          <strong>Keyboard Support:</strong> Tab navigation, arrow keys for tab selection, Enter/Space for activation, and proper focus management.
-                        </div>
-                      </div>
-                      
-                      <!-- Screen Reader Support -->
-                      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197; margin-bottom: 32px;">
-                        <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">Screen Reader Support</h4>
-                        <div style="margin-bottom: 24px;">
-                          <div role="region" aria-labelledby="progress-heading" style="padding: 16px; background: #f9fafb; border-radius: 8px;">
-                            <h5 id="progress-heading" class="text-300" style="color: #374151; margin-bottom: 12px; font-weight: 600;">Upload Progress</h5>
-                            <div 
-                              role="progressbar" 
-                              aria-valuenow="65" 
-                              aria-valuemin="0" 
-                              aria-valuemax="100" 
-                              aria-label="Upload progress: 65% complete"
-                              style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;"
-                            >
-                              <div style="width: 65%; height: 100%; background: #143197; transition: width 0.3s ease;"></div>
+                        <!-- Focus Management Card -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">Focus Management</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Interactive element focus indicators with proper visibility</div>
+                            <div style="margin-bottom: 16px;">
+                              <button class="btn-primary w-button" style="padding: 8px 16px; margin-bottom: 8px; focus-visible: outline: 2px solid #143197; outline-offset: 2px;">
+                                Example Button
+                              </button>
                             </div>
-                            <div class="text-300" style="color: #6b7280; margin-top: 8px; font-size: 14px;">65% complete</div>
-                          </div>
-                        </div>
-                        
-                        <div style="margin-bottom: 24px;">
-                          <div role="complementary" aria-labelledby="sidebar-heading" style="padding: 16px; background: #f9fafb; border-radius: 8px;">
-                            <h5 id="sidebar-heading" class="text-300" style="color: #374151; margin-bottom: 12px; font-weight: 600;">Related Links</h5>
-                            <nav role="navigation" aria-label="Related content">
-                              <ul style="list-style: none; margin: 0; padding: 0;">
-                                <li style="margin-bottom: 8px;">
-                                  <a href="#" class="text-300" style="color: #143197; text-decoration: underline;">Documentation</a>
-                                </li>
-                                <li style="margin-bottom: 8px;">
-                                  <a href="#" class="text-300" style="color: #143197; text-decoration: underline;">Support</a>
-                                </li>
-                                <li>
-                                  <a href="#" class="text-300" style="color: #143197; text-decoration: underline;">Contact Us</a>
-                                </li>
-                              </ul>
-                            </nav>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <!-- ACCESSIBILITY BEST PRACTICES -->
-                    <div class="mg-bottom-48px">
-                      <h3 class="heading-h4-size mg-bottom-16px" style="color: #143197;">Accessibility Best Practices</h3>
-                      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197;">
-                        <div class="grid-2-columns _1-col-tablet gap-row-24px">
-                          <div>
-                            <h4 class="heading-h4-size mg-bottom-12px" style="color: #1e293b;">WCAG 2.1 AA Compliance</h4>
-                            <div class="grid-1-column gap-row-12px">
-                              <div class="flex align-top" style="gap: 12px;">
-                                <div style="background: #22c55e; width: 4px; height: 4px; border-radius: 50%; margin-top: 8px; flex-shrink: 0;"></div>
-                                <div class="text-300" style="color: #6b7280; font-size: 14px;">Color contrast ratio of 4.5:1 for normal text</div>
-                              </div>
-                              <div class="flex align-top" style="gap: 12px;">
-                                <div style="background: #22c55e; width: 4px; height: 4px; border-radius: 50%; margin-top: 8px; flex-shrink: 0;"></div>
-                                <div class="text-300" style="color: #6b7280; font-size: 14px;">Color contrast ratio of 3:1 for large text</div>
-                              </div>
-                              <div class="flex align-top" style="gap: 12px;">
-                                <div style="background: #22c55e; width: 4px; height: 4px; border-radius: 50%; margin-top: 8px; flex-shrink: 0;"></div>
-                                <div class="text-300" style="color: #6b7280; font-size: 14px;">Minimum touch target size of 44x44 pixels</div>
-                              </div>
-                              <div class="flex align-top" style="gap: 12px;">
-                                <div style="background: #22c55e; width: 4px; height: 4px; border-radius: 50%; margin-top: 8px; flex-shrink: 0;"></div>
-                                <div class="text-300" style="color: #6b7280; font-size: 14px;">Proper heading hierarchy (h1, h2, h3, etc.)</div>
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 class="heading-h4-size mg-bottom-12px" style="color: #1e293b;">Implementation Guidelines</h4>
-                            <div class="grid-1-column gap-row-12px">
-                              <div class="flex align-top" style="gap: 12px;">
-                                <div style="background: #22c55e; width: 4px; height: 4px; border-radius: 50%; margin-top: 8px; flex-shrink: 0;"></div>
-                                <div class="text-300" style="color: #6b7280; font-size: 14px;">Always provide alt text for images</div>
-                              </div>
-                              <div class="flex align-top" style="gap: 12px;">
-                                <div style="background: #22c55e; width: 4px; height: 4px; border-radius: 50%; margin-top: 8px; flex-shrink: 0;"></div>
-                                <div class="text-300" style="color: #6b7280; font-size: 14px;">Use semantic HTML elements (nav, main, section, etc.)</div>
-                              </div>
-                              <div class="flex align-top" style="gap: 12px;">
-                                <div style="background: #22c55e; width: 4px; height: 4px; border-radius: 50%; margin-top: 8px; flex-shrink: 0;"></div>
-                                <div class="text-300" style="color: #6b7280; font-size: 14px;">Provide clear error messages and instructions</div>
-                              </div>
-                              <div class="flex align-top" style="gap: 12px;">
-                                <div style="background: #22c55e; width: 4px; height: 4px; border-radius: 50%; margin-top: 8px; flex-shrink: 0;"></div>
-                                <div class="text-300" style="color: #6b7280; font-size: 14px;">Test with keyboard navigation and screen readers</div>
-                              </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              2px solid outline with 2px offset for clear visibility
                             </div>
                           </div>
                         </div>
+
+                        <!-- ARIA Labels Card -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">ARIA Labels</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Accessible Rich Internet Applications attributes for screen readers</div>
+                            <div style="margin-bottom: 16px;">
+                              <button 
+                                class="btn-primary w-button" 
+                                style="padding: 8px 16px;"
+                                aria-label="Close dialog"
+                              >
+                                ×
+                              </button>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              aria-label, aria-describedby, role attributes
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Keyboard Navigation Card -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">Keyboard Navigation</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Tab order, arrow keys, and proper focus management</div>
+                            <div style="margin-bottom: 16px;">
+                              <div style="display: flex; gap: 8px; justify-content: center;">
+                                <button class="btn-secondary w-button" style="padding: 6px 12px; font-size: 12px;">Tab 1</button>
+                                <button class="btn-secondary w-button" style="padding: 6px 12px; font-size: 12px;">Tab 2</button>
+                              </div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              Enter/Space activation, arrow key navigation
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Screen Reader Support Card -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">Screen Readers</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Progress bars, regions, and semantic HTML structure</div>
+                            <div style="margin-bottom: 16px;">
+                              <div style="width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
+                                <div style="width: 65%; height: 100%; background: #143197; border-radius: 3px;"></div>
+                              </div>
+                              <div class="text-300" style="color: #6b7280; font-size: 10px; margin-top: 4px;">65% complete</div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              role, aria-live, aria-valuenow attributes
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- WCAG Compliance Card -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">WCAG 2.1 AA</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Web Content Accessibility Guidelines compliance standards</div>
+                            <div style="margin-bottom: 16px;">
+                              <div class="text-300" style="color: #22c55e; font-weight: 600;">4.5:1 Contrast</div>
+                              <div class="text-300" style="color: #22c55e; font-weight: 600;">44px Touch Targets</div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              Color contrast, touch targets, heading hierarchy
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Skip Links Card -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">Skip Links</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Hidden navigation aids for keyboard users</div>
+                            <div style="margin-bottom: 16px;">
+                              <div class="btn-primary w-button" style="padding: 6px 12px; font-size: 12px; position: relative;">
+                                Skip to content
+                              </div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              Hidden by default, visible on focus
+                            </div>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   </div>
@@ -7107,7 +7086,7 @@ var(--task-done) /* #10b981 */</code></pre>
                         </div>
                         
                         <div style="color: #64748b; font-size: 13px; margin-bottom: 12px;"><strong>Key Classes:</strong></div>
-                        <div style="font-family: monospace; font-size: 13px; color: #143197; background: #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                        <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #143197; background: #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
                           .mg-bottom-48px.mg-bottom-48px-tablet  /* 80px → 48px on tablet */<br>
                           .mg-bottom-48px-tablet                 /* 48px on tablet/mobile */<br>
                           .mg-bottom-8px-mob                     /* 8px on mobile only */
@@ -7149,27 +7128,27 @@ var(--task-done) /* #10b981 */</code></pre>
                           <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
                             <div class="text-200 medium" style="color: #143197; margin-bottom: 8px;">Desktop</div>
                             <div class="text-300" style="color: #64748b; margin-bottom: 4px;">992px and up</div>
-                            <div style="font-family: monospace; font-size: 12px; color: #6b7280;">Full grid layouts, horizontal navigation</div>
+                            <div style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6b7280;">Full grid layouts, horizontal navigation</div>
                           </div>
                           <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
                             <div class="text-200 medium" style="color: #143197; margin-bottom: 8px;">Tablet</div>
                             <div class="text-300" style="color: #64748b; margin-bottom: 4px;">768px - 991px</div>
-                            <div style="font-family: monospace; font-size: 12px; color: #6b7280;">Reduced columns, larger touch targets</div>
+                            <div style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6b7280;">Reduced columns, larger touch targets</div>
                           </div>
                           <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
                             <div class="text-200 medium" style="color: #143197; margin-bottom: 8px;">Mobile</div>
                             <div class="text-300" style="color: #64748b; margin-bottom: 4px;">767px and below</div>
-                            <div style="font-family: monospace; font-size: 12px; color: #6b7280;">Single column, stacked layout</div>
+                            <div style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6b7280;">Single column, stacked layout</div>
                           </div>
                           <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
                             <div class="text-200 medium" style="color: #143197; margin-bottom: 8px;">Large Desktop</div>
                             <div class="text-300" style="color: #64748b; margin-bottom: 4px;">1200px and up</div>
-                            <div style="font-family: monospace; font-size: 12px; color: #6b7280;">Maximum container width, optimal spacing</div>
+                            <div style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6b7280;">Maximum container width, optimal spacing</div>
                           </div>
                         </div>
                         
                         <div style="color: #64748b; font-size: 13px; margin-bottom: 12px;"><strong>Common Responsive Classes:</strong></div>
-                        <div style="font-family: monospace; font-size: 13px; color: #143197; background: #e2e8f0; padding: 12px; border-radius: 8px;">
+                        <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #143197; background: #e2e8f0; padding: 12px; border-radius: 8px;">
                           ._1-col-tablet          /* 1 column on tablet and mobile */<br>
                           ._2-col-tablet          /* 2 columns on tablet, 1 on mobile */<br>
                           ._2-col-mbp             /* 2 columns on mobile portrait */<br>
@@ -7630,17 +7609,190 @@ var(--task-done) /* #10b981 */</code></pre>
                   </div>
                 </div>
                 
-                <!-- EDUCATIONAL AND LEARNING EXAMPLES -->
+                <!-- EDUCATIONAL INTERFACE COMPONENTS -->
                 <div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Checkmark icon" class="mg-right-24px">
                   <div style="width: 100%;">
-                    <h2 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Educational & Learning Interface Examples</h2>
-                    <p class="paragraph-18px mg-bottom-24px" style="color: #64748b;"><strong>Comprehensive educational UI patterns</strong> including course cards, quiz interfaces, progress tracking, student dashboards, and interactive learning components using existing design system classes.</p>
+                    <h2 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Educational Interface Components</h2>
+                    <p class="paragraph-18px mg-bottom-24px" style="color: #64748b;"><strong>Learning platform UI patterns</strong> with course cards, assessment interfaces, progress tracking, and interactive components for educational applications.</p>
                     
-                    <!-- COURSE CARDS -->
-                    <div class="mg-bottom-48px">
-                      <h3 class="heading-h4-size mg-bottom-16px" style="color: #143197;">Course Cards</h3>
-                      <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197; margin-bottom: 24px;">
-                        <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">Course Grid Layout</h4>
+                    <!-- EDUCATIONAL INTERFACE SHOWCASE -->
+                    <div style="margin-bottom: 80px;">
+                      <h3 class="heading-h4-size mg-bottom-32px" style="color: #143197; text-align: center;">Educational Interface Components</h3>
+                      
+                      <!-- Basic Learning Components Row -->
+                      <div style="margin-bottom: 80px;">
+                        <h4 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 32px; text-align: center;">Core Learning Components</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto;">
+
+                          <!-- Course Card -->
+                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                            <h5 style="color: #143197; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;">Course Cards</h5>
+                            <p style="color: #64748b; font-size: 16px; margin: 0 0 32px 0; line-height: 1.6;">Progress tracking and enrollment</p>
+                            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-bottom: 24px;">
+                              <div style="width: 80px; height: 60px; background: #143197; border-radius: 8px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 20px;">JS</div>
+                              <div style="color: #143197; font-weight: 600; font-size: 18px; margin-bottom: 12px;">JavaScript Basics</div>
+                              <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
+                                <div style="width: 75%; height: 100%; background: #10b981; border-radius: 4px;"></div>
+                              </div>
+                              <div style="color: #64748b; font-size: 14px;">75% Complete</div>
+                            </div>
+                          </div>
+
+                          <!-- Certificates -->
+                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                            <h5 style="color: #143197; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;">Certificates</h5>
+                            <p style="color: #64748b; font-size: 16px; margin: 0 0 32px 0; line-height: 1.6;">Achievement verification</p>
+                            <div style="background: linear-gradient(135deg, #143197 0%, #1e40af 100%); padding: 24px; border-radius: 12px; color: white; margin-bottom: 24px;">
+                              <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">Certificate</div>
+                              <div style="font-size: 14px; margin-bottom: 16px;">Sarah Johnson</div>
+                              <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 20px;">🏆</div>
+                            </div>
+                          </div>
+
+                          <!-- Learning Paths -->
+                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                            <h5 style="color: #143197; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;">Learning Paths</h5>
+                            <p style="color: #64748b; font-size: 16px; margin: 0 0 32px 0; line-height: 1.6;">Sequential progression</p>
+                            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-bottom: 24px;">
+                              <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+                                <div style="width: 32px; height: 32px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 600;">✓</div>
+                                <div style="width: 3px; height: 16px; background: #d1d5db;"></div>
+                                <div style="width: 32px; height: 32px; background: #143197; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 600;">2</div>
+                                <div style="width: 3px; height: 16px; background: #d1d5db;"></div>
+                                <div style="width: 32px; height: 32px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 16px; font-weight: 600;">3</div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Code Editor -->
+                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                            <h5 style="color: #143197; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;">Code Editor</h5>
+                            <p style="color: #64748b; font-size: 16px; margin: 0 0 32px 0; line-height: 1.6;">Interactive coding exercises</p>
+                            <div style="background: #1a1a1a; padding: 20px; border-radius: 12px; color: white; text-align: left; margin-bottom: 24px;">
+                              <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+                                <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+                                <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+                                <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+                              </div>
+                              <div style="font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6;">
+                                function add(a, b) {<br>
+                                &nbsp;&nbsp;return a + b;<br>
+                                }<br><br>
+                                <span style="color: #6b7280;">// Output: 8</span>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                      <!-- Quiz Interface Showcase -->
+                      <div style="margin-bottom: 80px;">
+                        <h4 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 32px; text-align: center;">Quiz & Assessment Interface</h4>
+                        <div style="max-width: 800px; margin: 0 auto; background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                          <h5 style="color: #143197; font-size: 28px; font-weight: 700; margin: 0 0 16px 0; text-align: center;">Interactive Quiz</h5>
+                          <p style="color: #64748b; font-size: 18px; margin: 0 0 40px 0; text-align: center; line-height: 1.6;">Real-time assessment with progress tracking</p>
+                          
+                          <div style="background: #f8fafc; padding: 32px; border-radius: 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                              <div style="color: #143197; font-weight: 600; font-size: 20px;">Question 3 of 10</div>
+                              <div style="background: #143197; color: white; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: 600;">2:45</div>
+                            </div>
+                            
+                            <div style="width: 100%; height: 12px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 32px;">
+                              <div style="width: 30%; height: 100%; background: #143197; border-radius: 6px;"></div>
+                            </div>
+                            
+                            <div style="color: #374151; font-size: 22px; margin-bottom: 32px; font-weight: 500; text-align: center;">Which keyword declares variables in JavaScript?</div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;">
+                              <div style="padding: 16px 20px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 18px; cursor: pointer; transition: all 0.2s;">A) variable</div>
+                              <div style="padding: 16px 20px; border: 3px solid #143197; border-radius: 12px; font-size: 18px; background: #f0f4ff; cursor: pointer;">B) var</div>
+                              <div style="padding: 16px 20px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 18px; cursor: pointer; transition: all 0.2s;">C) declare</div>
+                              <div style="padding: 16px 20px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 18px; cursor: pointer; transition: all 0.2s;">D) v</div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between;">
+                              <div style="padding: 12px 24px; border: 2px solid #e5e7eb; border-radius: 8px; color: #6b7280; cursor: pointer; font-size: 16px;">Previous</div>
+                              <div style="padding: 12px 24px; background: #143197; color: white; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">Next Question</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Student Dashboard Showcase -->
+                      <div style="margin-bottom: 80px;">
+                        <h4 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 32px; text-align: center;">Student Dashboard Interface</h4>
+                        <div style="max-width: 900px; margin: 0 auto; background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                          <h5 style="color: #143197; font-size: 28px; font-weight: 700; margin: 0 0 16px 0; text-align: center;">Learning Progress Dashboard</h5>
+                          <p style="color: #64748b; font-size: 18px; margin: 0 0 40px 0; text-align: center; line-height: 1.6;">Comprehensive overview of student learning journey</p>
+                          
+                          <!-- Stats Grid -->
+                          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; margin-bottom: 40px;">
+                            <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 16px;">
+                              <div style="color: #143197; font-weight: 700; font-size: 32px; margin-bottom: 8px;">12</div>
+                              <div style="color: #64748b; font-size: 16px;">Courses Enrolled</div>
+                            </div>
+                            <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 16px;">
+                              <div style="color: #10b981; font-weight: 700; font-size: 32px; margin-bottom: 8px;">8</div>
+                              <div style="color: #64748b; font-size: 16px;">Completed</div>
+                            </div>
+                            <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 16px;">
+                              <div style="color: #f59e0b; font-weight: 700; font-size: 32px; margin-bottom: 8px;">127</div>
+                              <div style="color: #64748b; font-size: 16px;">Hours Learned</div>
+                            </div>
+                            <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 16px;">
+                              <div style="color: #8b5cf6; font-weight: 700; font-size: 32px; margin-bottom: 8px;">89%</div>
+                              <div style="color: #64748b; font-size: 16px;">Average Score</div>
+                            </div>
+                          </div>
+
+                          <!-- Weekly Activity Chart -->
+                          <div style="background: #f8fafc; padding: 32px; border-radius: 16px;">
+                            <div style="color: #374151; font-weight: 600; font-size: 20px; margin-bottom: 24px; text-align: center;">Weekly Learning Activity</div>
+                            <div style="display: flex; gap: 16px; justify-content: center; align-items: end; margin-bottom: 24px;">
+                              <div style="text-align: center;">
+                                <div style="width: 32px; height: 64px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
+                                <div style="color: #64748b; font-size: 14px;">Mon</div>
+                              </div>
+                              <div style="text-align: center;">
+                                <div style="width: 32px; height: 48px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
+                                <div style="color: #64748b; font-size: 14px;">Tue</div>
+                              </div>
+                              <div style="text-align: center;">
+                                <div style="width: 32px; height: 80px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
+                                <div style="color: #64748b; font-size: 14px;">Wed</div>
+                              </div>
+                              <div style="text-align: center;">
+                                <div style="width: 32px; height: 40px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
+                                <div style="color: #64748b; font-size: 14px;">Thu</div>
+                              </div>
+                              <div style="text-align: center;">
+                                <div style="width: 32px; height: 72px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
+                                <div style="color: #64748b; font-size: 14px;">Fri</div>
+                              </div>
+                              <div style="text-align: center;">
+                                <div style="width: 32px; height: 56px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
+                                <div style="color: #64748b; font-size: 14px;">Sat</div>
+                              </div>
+                              <div style="text-align: center;">
+                                <div style="width: 32px; height: 88px; background: #143197; border-radius: 6px; margin-bottom: 8px;"></div>
+                                <div style="color: #64748b; font-size: 14px;">Sun</div>
+                              </div>
+                            </div>
+                            <div style="text-align: center;">
+                              <div style="color: #f59e0b; font-weight: 700; font-size: 24px; margin-bottom: 8px;">7 day learning streak</div>
+                              <div style="color: #64748b; font-size: 16px;">Keep up the excellent work!</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- EDUCATIONAL FEATURES SECTION -->
+                    <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197; margin-bottom: 48px;">
+                      <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">Educational Platform Features</h4>
                         <div class="grid-4-columns _2-col-tablet _1-col-mbp gap-row-48px" style="margin-bottom: 24px;">
                           <div class="card pd-40px---20px border-radius-24px">
                             <div style="position: relative; margin-bottom: 16px;">
@@ -8185,7 +8337,7 @@ var(--task-done) /* #10b981 */</code></pre>
                                 <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
                                 <div class="text-300" style="color: #e5e7eb; font-size: 12px; margin-left: 8px;">calculator.js</div>
                               </div>
-                              <div style="padding: 16px; font-family: monospace; color: #e5e7eb; font-size: 14px; line-height: 1.4;">
+                              <div style="padding: 16px; font-family: 'Manrope', sans-serif; color: #e5e7eb; font-size: 14px; line-height: 1.4;">
                                 <div style="color: #6b7280;">// Complete the function below</div>
                                 <div style="color: #8b5cf6;">function</div> <div style="color: #f59e0b;">add</div>(<div style="color: #3b82f6;">a</div>, <div style="color: #3b82f6;">b</div>) {<br>
                                 &nbsp;&nbsp;<div style="color: #6b7280;">// Your code here</div><br>
@@ -8199,8 +8351,8 @@ var(--task-done) /* #10b981 */</code></pre>
                           
                           <div style="margin-bottom: 16px;">
                             <div style="background: #1a1a1a; border-radius: 8px; color: #ffffff; padding: 12px;">
-                              <div class="text-300" style="color: #10b981; font-family: monospace; font-size: 12px; margin-bottom: 4px;">Console Output:</div>
-                              <div class="text-300" style="color: #e5e7eb; font-family: monospace; font-size: 12px;">8</div>
+                              <div class="text-300" style="color: #10b981; font-family: 'Manrope', sans-serif; font-size: 12px; margin-bottom: 4px;">Console Output:</div>
+                              <div class="text-300" style="color: #e5e7eb; font-family: 'Manrope', sans-serif; font-size: 12px;">8</div>
                             </div>
                           </div>
                           
@@ -8351,20 +8503,192 @@ var(--task-done) /* #10b981 */</code></pre>
                   </div>
                 </div>
                 
-                <!-- WEATHER AND CLIMATE INTERFACE EXAMPLES -->
+                <!-- WEATHER INTERFACE COMPONENTS -->
                 <div class="flex align-top"><img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="Checkmark icon" class="mg-right-24px">
                   <div style="width: 100%;">
-                    <h2 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Weather & Climate Interface Components</h2>
-                    <p class="paragraph-18px mg-bottom-24px" style="color: #64748b;"><strong>Comprehensive weather and climate UI patterns</strong> for current weather displays, forecasts, weather alerts, climate dashboards, and meteorological interfaces using existing design system classes.</p>
+                    <h2 class="heading-h4-size mg-bottom-8px" style="color: #143197;">Weather Interface Components</h2>
+                    <p class="paragraph-18px mg-bottom-24px" style="color: #64748b;"><strong>Meteorological UI patterns</strong> for weather displays, forecasts, alerts, and climate data visualization in modern applications.</p>
                     
-                    <!-- CURRENT WEATHER CARDS -->
+                    <!-- WEATHER WIDGET CARDS -->
                     <div class="mg-bottom-48px">
-                      <h3 class="heading-h4-size mg-bottom-16px" style="color: #143197;">Current Weather Cards</h3>
-                      <div class="grid-4-columns _2-col-tablet _1-col-mbp gap-row-48px" style="margin-bottom: 24px;">
-                        <div class="card pd-40px---20px border-radius-24px" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); color: white;">
-                          <div style="position: relative;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                              <div>
+                      <h3 class="heading-h4-size mg-bottom-16px" style="color: #143197;">Weather Widget Components</h3>
+                      <div class="grid-3-columns _1-col-tablet gap-row-32px">
+
+                        <!-- Current Weather Widget -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">Current Weather</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Real-time weather conditions with temperature and location</div>
+                            <div style="margin-bottom: 16px; padding: 16px; background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-radius: 12px; color: white;">
+                              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <div>
+                                  <div class="text-300" style="color: white; font-weight: 600; font-size: 11px;">San Francisco</div>
+                                  <div class="text-300" style="color: rgba(255,255,255,0.8); font-size: 9px;">Dec 12</div>
+                                </div>
+                                <div style="font-size: 20px;">☀️</div>
+                              </div>
+                              <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div class="display-3" style="color: white; font-size: 24px; margin: 0;">72°F</div>
+                                <div class="text-300" style="color: rgba(255,255,255,0.9); font-size: 10px;">Sunny</div>
+                              </div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              Temperature, conditions, location, time
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Weather Forecast Widget -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">7-Day Forecast</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Extended weather predictions with daily highs and lows</div>
+                            <div style="margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px;">
+                              <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0;">
+                                  <div class="text-300" style="color: #374151; font-weight: 600; font-size: 10px;">Today</div>
+                                  <div style="font-size: 14px;">☀️</div>
+                                  <div style="display: flex; gap: 4px;">
+                                    <div class="text-300" style="color: #374151; font-weight: 600; font-size: 10px;">78°</div>
+                                    <div class="text-300" style="color: #6b7280; font-size: 10px;">65°</div>
+                                  </div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0;">
+                                  <div class="text-300" style="color: #374151; font-weight: 600; font-size: 10px;">Wed</div>
+                                  <div style="font-size: 14px;">🌧️</div>
+                                  <div style="display: flex; gap: 4px;">
+                                    <div class="text-300" style="color: #374151; font-weight: 600; font-size: 10px;">68°</div>
+                                    <div class="text-300" style="color: #6b7280; font-size: 10px;">58°</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              Daily forecasts, weather icons, temperature ranges
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Weather Alerts Widget -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">Weather Alerts</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Critical weather warnings and advisories</div>
+                            <div style="margin-bottom: 16px; padding: 12px; background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px;">
+                              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <div style="width: 16px; height: 16px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                  <div style="color: white; font-size: 8px;">⚠️</div>
+                                </div>
+                                <div class="text-300" style="color: #92400e; font-weight: 600; font-size: 10px;">Heat Advisory</div>
+                              </div>
+                              <div class="text-300" style="color: #92400e; font-size: 9px;">Excessive heat warning until 8:00 PM</div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              Priority levels, icons, expiration times
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Climate Dashboard Widget -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">Climate Data</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Long-term climate metrics and historical comparisons</div>
+                            <div style="margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px;">
+                              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <div class="text-300" style="color: #ef4444; font-weight: 600; font-size: 10px;">Record High</div>
+                                <div class="text-300" style="color: #ef4444; font-weight: 600; font-size: 10px;">94.2°F</div>
+                              </div>
+                              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <div class="text-300" style="color: #3b82f6; font-weight: 600; font-size: 10px;">Record Low</div>
+                                <div class="text-300" style="color: #3b82f6; font-weight: 600; font-size: 10px;">31.8°F</div>
+                              </div>
+                              <div style="display: flex; gap: 1px; margin-top: 8px;">
+                                <div style="width: 4px; height: 12px; background: #3b82f6; border-radius: 1px;"></div>
+                                <div style="width: 4px; height: 16px; background: #10b981; border-radius: 1px;"></div>
+                                <div style="width: 4px; height: 20px; background: #f59e0b; border-radius: 1px;"></div>
+                                <div style="width: 4px; height: 18px; background: #ef4444; border-radius: 1px;"></div>
+                              </div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              Historical data, trends, temperature charts
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Air Quality Widget -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">Air Quality</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Air quality index and atmospheric conditions</div>
+                            <div style="margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px;">
+                              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                <div class="display-3" style="color: #10b981; font-size: 20px; margin: 0;">42</div>
+                                <div>
+                                  <div class="text-300" style="color: #065f46; font-weight: 600; font-size: 10px;">Good</div>
+                                  <div class="text-300" style="color: #6b7280; font-size: 9px;">Safe for everyone</div>
+                                </div>
+                              </div>
+                              <div style="width: 100%; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden;">
+                                <div style="width: 42%; height: 100%; background: #10b981; border-radius: 2px;"></div>
+                              </div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              AQI scale, health recommendations, pollutants
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Weather API Integration -->
+                        <div class="card pd-40px---20px border-radius-24px min-width">
+                          <div class="text-center">
+                            <div class="display-3" style="color: #143197; margin-bottom: 16px;">API Integration</div>
+                            <div class="text-200 medium" style="color: #64748b; margin-bottom: 24px;">Real-time data updates with loading and error states</div>
+                            <div style="margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px;">
+                              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <div style="width: 12px; height: 12px; border: 2px solid #3b82f6; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                                <div class="text-300" style="color: #6b7280; font-size: 10px;">Loading weather...</div>
+                              </div>
+                              <div style="display: flex; align-items: center; gap: 8px; padding: 6px; background: #f0fdf4; border-radius: 4px; border: 1px solid #bbf7d0;">
+                                <div style="width: 6px; height: 6px; background: #10b981; border-radius: 50%;"></div>
+                                <div class="text-300" style="color: #065f46; font-size: 9px;">Updated 2 min ago</div>
+                              </div>
+                            </div>
+                            <div class="text-300" style="color: #6b7280; font-size: 12px;">
+                              Loading states, data freshness, error handling
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <!-- WEATHER FEATURES SUMMARY -->
+                    <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #143197;">
+                      <h4 class="heading-h4-size mg-bottom-16px" style="color: #1e293b;">Weather Application Features</h4>
+                      <div class="grid-2-columns _1-col-tablet gap-row-24px">
+                        <div>
+                          <div class="text-300" style="color: #143197; font-weight: 600; margin-bottom: 8px;">Core Components</div>
+                          <div class="text-300" style="color: #6b7280; font-size: 14px; line-height: 1.4;">
+                            Real-time weather displays, 7-day forecasts, interactive alerts, climate data visualization, and air quality monitoring with responsive design patterns.
+                          </div>
+                        </div>
+                        <div>
+                          <div class="text-300" style="color: #143197; font-weight: 600; margin-bottom: 8px;">Integration Ready</div>
+                          <div class="text-300" style="color: #6b7280; font-size: 14px; line-height: 1.4;">
+                            API-driven updates, loading states, error handling, and data freshness indicators for modern weather applications.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- COMPONENT EXAMPLES SECTION DIVIDER -->
+                <div style="width: 100%; height: 1px; background: linear-gradient(90deg, transparent 0%, #e2e8f0 50%, transparent 100%); margin: 60px 0;"></div>
+                
+                <!-- ADDITIONAL COMPONENT EXAMPLES CONTINUE -->
                                 <div class="text-200 medium" style="color: rgba(255,255,255,0.9); margin-bottom: 4px;">San Francisco, CA</div>
                                 <div class="text-300" style="color: rgba(255,255,255,0.7); font-size: 12px;">Tuesday, Dec 12</div>
                               </div>
@@ -10518,11 +10842,11 @@ var(--task-done) /* #10b981 */</code></pre>
                               
                               <!-- Controls -->
                               <div class="flex align-top" style="gap: 16px; align-items: center;">
-                                <button style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; border: none;">⏮</button>
-                                <button style="width: 56px; height: 56px; background: #8b5cf6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; border: none;">⏸</button>
-                                <button style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; border: none;">⏭</button>
-                                <button style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; border: none;">🔀</button>
-                                <button style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; border: none;">🔁</button>
+                                <button style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; border: none;">⏮</button>
+                                <button style="width: 56px; height: 56px; background: #8b5cf6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; border: none;">⏸</button>
+                                <button style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; border: none;">⏭</button>
+                                <button style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; border: none;">🔀</button>
+                                <button style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; border: none;">🔁</button>
                               </div>
                             </div>
                           </div>
@@ -12018,14 +12342,14 @@ var(--task-done) /* #10b981 */</code></pre>
               </div>
               <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px;">
                 <div class="text-200 medium white" style="margin-bottom: 12px;">Classes Available:</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column gap-row-32px</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column gap-row-28px</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column overflow-visible</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column max-width-updated</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">grid-1-column-2, grid-1-column-3</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column gap-row-32px</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column gap-row-28px</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column overflow-visible</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-1-column max-width-updated</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">grid-1-column-2, grid-1-column-3</div>
                 <div class="text-200 medium white" style="margin-bottom: 8px;">Usage:</div>
-                <div style="font-family: monospace; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
+                <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
                   &lt;div class="grid-1-column gap-row-32px"&gt;<br>
                   &nbsp;&nbsp;&lt;div&gt;Item 1&lt;/div&gt;<br>
                   &nbsp;&nbsp;&lt;div&gt;Item 2&lt;/div&gt;<br>
@@ -12067,14 +12391,14 @@ var(--task-done) /* #10b981 */</code></pre>
               </div>
               <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px;">
                 <div class="text-200 medium white" style="margin-bottom: 12px;">Two Column Variants:</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns _1-col-tablet</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns _1fr---1-2fr</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns _1-5fr---1fr</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns _2-col-mbl</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">grid-2-columns gap-row-32px</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns _1-col-tablet</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns _1fr---1-2fr</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns _1-5fr---1fr</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-2-columns _2-col-mbl</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">grid-2-columns gap-row-32px</div>
                 <div class="text-200 medium white" style="margin-bottom: 8px;">Usage:</div>
-                <div style="font-family: monospace; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
+                <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
                   &lt;div class="grid-2-columns _1fr---1-2fr"&gt;<br>
                   &nbsp;&nbsp;&lt;div&gt;Main Content&lt;/div&gt;<br>
                   &nbsp;&nbsp;&lt;div&gt;Sidebar&lt;/div&gt;<br>
@@ -12109,14 +12433,14 @@ var(--task-done) /* #10b981 */</code></pre>
               </div>
               <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px;">
                 <div class="text-200 medium white" style="margin-bottom: 12px;">Three Column Variants:</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns gap-row-48px</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns gap-row-32px</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns _1-col-tablet</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns _2-col-mbp</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">grid-3-columns gap-row-94px</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns gap-row-48px</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns gap-row-32px</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns _1-col-tablet</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-3-columns _2-col-mbp</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">grid-3-columns gap-row-94px</div>
                 <div class="text-200 medium white" style="margin-bottom: 8px;">Usage:</div>
-                <div style="font-family: monospace; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
+                <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
                   &lt;div class="grid-3-columns gap-row-48px"&gt;<br>
                   &nbsp;&nbsp;&lt;div&gt;Feature 1&lt;/div&gt;<br>
                   &nbsp;&nbsp;&lt;div&gt;Feature 2&lt;/div&gt;<br>
@@ -12157,13 +12481,13 @@ var(--task-done) /* #10b981 */</code></pre>
               </div>
               <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px;">
                 <div class="text-200 medium white" style="margin-bottom: 12px;">Four Column Variants:</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-4-columns</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-4-columns _4-columns-tablet</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-4-columns gap-44px</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-4-columns pricing-table</div>
-                <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">grid-4-columns stats-grid</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-4-columns</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-4-columns _4-columns-tablet</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-4-columns gap-44px</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-4-columns pricing-table</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">grid-4-columns stats-grid</div>
                 <div class="text-200 medium white" style="margin-bottom: 8px;">Usage:</div>
-                <div style="font-family: monospace; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
+                <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
                   &lt;div class="grid-4-columns gap-44px"&gt;<br>
                   &nbsp;&nbsp;&lt;div&gt;Card 1&lt;/div&gt;<br>
                   &nbsp;&nbsp;&lt;div&gt;Card 2&lt;/div&gt;<br>
@@ -12209,14 +12533,14 @@ var(--task-done) /* #10b981 */</code></pre>
             </div>
             <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px;">
               <div class="text-200 medium white" style="margin-bottom: 12px;">Container Variants:</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-default-prev</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-default-prev overflow-yes</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-default-prev btm-pad</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-default-prev position-relative---z-index-1</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-light-contrast</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">w-container</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-default-prev</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-default-prev overflow-yes</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-default-prev btm-pad</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-default-prev position-relative---z-index-1</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">container-light-contrast</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">w-container</div>
               <div class="text-200 medium white" style="margin-bottom: 8px;">Usage:</div>
-              <div style="font-family: monospace; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
+              <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
                 &lt;div class="container-default-prev w-container"&gt;<br>
                 &nbsp;&nbsp;&lt;!-- Page content --&gt;<br>
                 &lt;/div&gt;
@@ -12273,16 +12597,16 @@ var(--task-done) /* #10b981 */</code></pre>
             </div>
             <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px;">
               <div class="text-200 medium white" style="margin-bottom: 12px;">Flexbox Variants:</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex align-center</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex align-top</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex children-wrap</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex-vertical</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex-vertical center</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex-vertical reverse</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">flex-horizontal</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex align-center</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex align-top</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex children-wrap</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex-vertical</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex-vertical center</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">flex-vertical reverse</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">flex-horizontal</div>
               <div class="text-200 medium white" style="margin-bottom: 8px;">Usage:</div>
-              <div style="font-family: monospace; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
+              <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
                 &lt;div class="flex align-center"&gt;<br>
                 &nbsp;&nbsp;&lt;div&gt;Item 1&lt;/div&gt;<br>
                 &nbsp;&nbsp;&lt;div&gt;Item 2&lt;/div&gt;<br>
@@ -12316,13 +12640,13 @@ var(--task-done) /* #10b981 */</code></pre>
             </div>
             <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px;">
               <div class="text-200 medium white" style="margin-bottom: 12px;">Webflow Grid Classes:</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">w-layout-grid</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">details-grid</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-home-data</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-subscribe-form-button-left-2</div>
-              <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">social-media-grid-top</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">w-layout-grid</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">details-grid</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-home-data</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">grid-subscribe-form-button-left-2</div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 16px;">social-media-grid-top</div>
               <div class="text-200 medium white" style="margin-bottom: 8px;">Usage:</div>
-              <div style="font-family: monospace; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
+              <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #90F3FF; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 4px;">
                 &lt;div class="w-layout-grid details-grid"&gt;<br>
                 &nbsp;&nbsp;&lt;div&gt;Grid Item 1&lt;/div&gt;<br>
                 &nbsp;&nbsp;&lt;div&gt;Grid Item 2&lt;/div&gt;<br>
@@ -12344,18 +12668,18 @@ var(--task-done) /* #10b981 */</code></pre>
               <div class="text-200 medium white" style="margin-bottom: 12px;">Responsive Modifiers:</div>
               <div class="grid-3-columns _2-col-tablet _1-col-mbp gap-row-32px">
                 <div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_1-col-tablet</div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_2-col-mbl</div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_2-col-mbp</div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_3-col-tablet</div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_4-columns-tablet</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_1-col-tablet</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_2-col-mbl</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_2-col-mbp</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_3-col-tablet</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">_4-columns-tablet</div>
                 </div>
                 <div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-row-32px</div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-row-48px</div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-row-32px</div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-row-80px</div>
-                  <div style="font-family: monospace; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-44px</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-row-32px</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-row-48px</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-row-32px</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-row-80px</div>
+                  <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A0A0A0; margin-bottom: 8px;">gap-44px</div>
                 </div>
               </div>
             </div>
@@ -12571,21 +12895,21 @@ var(--task-done) /* #10b981 */</code></pre>
                   
                   <div style="margin-bottom: 20px;">
                     <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-                      <div style="font-family: 'Courier New', monospace; font-size: 14px; color: #143197; margin-bottom: 8px;">.mg-bottom-48px.mg-bottom-48px-tablet</div>
+                      <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #143197; margin-bottom: 8px;">.mg-bottom-48px.mg-bottom-48px-tablet</div>
                       <div style="color: #64748b; font-size: 13px; margin: 0;">Desktop: 80px bottom margin → Tablet: 48px bottom margin</div>
                     </div>
                   </div>
                   
                   <div style="margin-bottom: 20px;">
                     <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-                      <div style="font-family: 'Courier New', monospace; font-size: 14px; color: #143197; margin-bottom: 8px;">.mg-bottom-8px-mob</div>
+                      <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #143197; margin-bottom: 8px;">.mg-bottom-8px-mob</div>
                       <div style="color: #64748b; font-size: 13px; margin: 0;">Mobile: 8px bottom margin for compact spacing</div>
                     </div>
                   </div>
                   
                   <div style="margin-bottom: 20px;">
                     <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-                      <div style="font-family: 'Courier New', monospace; font-size: 14px; color: #143197; margin-bottom: 8px;">.mg-bottom-48px</div>
+                      <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #143197; margin-bottom: 8px;">.mg-bottom-48px</div>
                       <div style="color: #64748b; font-size: 13px; margin: 0;">Standard 48px bottom margin for all breakpoints</div>
                     </div>
                   </div>
@@ -12596,21 +12920,21 @@ var(--task-done) /* #10b981 */</code></pre>
                   
                   <div style="margin-bottom: 20px;">
                     <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-                      <div style="font-family: 'Courier New', monospace; font-size: 14px; color: #143197; margin-bottom: 8px;">.grid-2-columns._1-col-tablet</div>
+                      <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #143197; margin-bottom: 8px;">.grid-2-columns._1-col-tablet</div>
                       <div style="color: #64748b; font-size: 13px; margin: 0;">Desktop: 2 columns → Tablet: 1 column stacked</div>
                     </div>
                   </div>
                   
                   <div style="margin-bottom: 20px;">
                     <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-                      <div style="font-family: 'Courier New', monospace; font-size: 14px; color: #143197; margin-bottom: 8px;">.show-in-tablet</div>
+                      <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #143197; margin-bottom: 8px;">.show-in-tablet</div>
                       <div style="color: #64748b; font-size: 13px; margin: 0;">Show element only on tablet and smaller screens</div>
                     </div>
                   </div>
                   
                   <div style="margin-bottom: 20px;">
                     <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-                      <div style="font-family: 'Courier New', monospace; font-size: 14px; color: #143197; margin-bottom: 8px;">.mobile_menu</div>
+                      <div style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #143197; margin-bottom: 8px;">.mobile_menu</div>
                       <div style="color: #64748b; font-size: 13px; margin: 0;">Mobile navigation menu container</div>
                     </div>
                   </div>

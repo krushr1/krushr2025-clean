@@ -1,0 +1,65 @@
+#!/usr/bin/env node
+/**
+ * Claude Code Workflow Command
+ * Usage: claude workflow [type]
+ */
+
+const KrushrWorkflowAutomation = require('../workflows/krushr-automation.js');
+
+function showHelp() {
+    console.log(`
+🔧 Krushr Workflow Automation
+
+Usage: claude workflow [type]
+
+Available workflows:
+  format    - Auto-format all TypeScript/React files
+  imports   - Organize and clean up imports
+  tests     - Run complete test suite
+  build     - Validate build process
+  trpc      - Generate tRPC and Prisma types
+  lint      - Run ESLint with auto-fixes
+  all       - Run complete workflow (default)
+
+Examples:
+  claude workflow           # Run all workflows
+  claude workflow format    # Just format code
+  claude workflow tests     # Just run tests
+  claude workflow trpc      # Generate types only
+
+🚀 Daily productivity automation for Krushr development
+`);
+}
+
+async function main() {
+    const args = process.argv.slice(2);
+    
+    if (args.includes('--help') || args.includes('-h')) {
+        showHelp();
+        return;
+    }
+
+    const workflowType = args[0] || 'all';
+    const automation = new KrushrWorkflowAutomation();
+    
+    console.log('🔧 Starting Krushr workflow automation...\n');
+    
+    try {
+        const success = await automation.run(workflowType);
+        
+        if (success) {
+            console.log('\n✅ Workflow automation completed successfully!');
+            console.log('📊 Your Krushr codebase is now optimized and ready for development.');
+        } else {
+            console.log('\n⚠️ Some workflow steps failed - check output above');
+            process.exit(1);
+        }
+    } catch (error) {
+        console.error('\n❌ Workflow automation failed:', error.message);
+        process.exit(1);
+    }
+}
+
+if (require.main === module) {
+    main();
+}

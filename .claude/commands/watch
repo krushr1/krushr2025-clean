@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+/**
+ * Claude Code File Watcher Command
+ * Usage: claude watch
+ */
+
+const KrushrFileWatcher = require('../workflows/watch-automation.js');
+
+function showHelp() {
+    console.log(`
+👀 Krushr File Watcher Automation
+
+Usage: claude watch
+
+Automatically runs workflows when files change:
+  • TypeScript/React files → format, imports, lint
+  • Prisma schema → type generation
+  • Config files → build validation
+  • Test files → test execution
+
+Features:
+  ✅ Real-time file monitoring
+  ✅ Debounced execution (2s delay)
+  ✅ Smart workflow triggering
+  ✅ Multi-directory watching
+
+Press Ctrl+C to stop watching.
+
+🚀 Continuous automation for Krushr development
+`);
+}
+
+async function main() {
+    const args = process.argv.slice(2);
+    
+    if (args.includes('--help') || args.includes('-h')) {
+        showHelp();
+        return;
+    }
+
+    console.log('👀 Starting Krushr file watcher...\n');
+    
+    const watcher = new KrushrFileWatcher();
+    watcher.start();
+}
+
+if (require.main === module) {
+    main();
+}

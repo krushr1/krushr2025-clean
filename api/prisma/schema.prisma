@@ -19,20 +19,22 @@ model User {
   language        String             @default("en")
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
-  sentMessages    ChatMessage[]      @relation("MessageSender")
-  chatReactions   ChatReaction[]     @relation("ChatReactions")
-  notes           Note[]
-  notifications   Notification[]
-  preferences     UserPreferences?
-  sessions        Session[]
-  taskComments    TaskComment[]
-  taskTimeEntries TaskTimeEntry[]
-  tasks           Task[]             @relation("TaskAssignee")
-  createdTasks    Task[]             @relation("TaskCreator")
-  teamMembers     TeamMember[]
-  workspaces      WorkspaceMember[]
-  ownedWorkspaces Workspace[]        @relation("WorkspaceOwner")
-  calendarEvents  CalendarEvent[]
+  sentMessages           ChatMessage[]             @relation("MessageSender")
+  chatReactions          ChatReaction[]            @relation("ChatReactions")
+  notes                  Note[]
+  notifications          Notification[]
+  preferences            UserPreferences?
+  sessions               Session[]
+  taskComments           TaskComment[]
+  taskCommentMentions    TaskCommentMention[]
+  taskCommentReactions   TaskCommentReaction[]
+  taskTimeEntries        TaskTimeEntry[]
+  tasks                  Task[]                    @relation("TaskAssignee")
+  createdTasks           Task[]                    @relation("TaskCreator")
+  teamMembers            TeamMember[]
+  workspaces             WorkspaceMember[]
+  ownedWorkspaces        Workspace[]               @relation("WorkspaceOwner")
+  calendarEvents         CalendarEvent[]
 
   @@map("users")
 }
@@ -247,15 +249,56 @@ model TaskChecklistItem {
 
 model TaskComment {
   id        String   @id @default(cuid())
-  content   String
+  content   String   // Rich text content (HTML/JSON)
+  plainText String?  // Plain text version for search/indexing
   taskId    String
   authorId  String
+  parentId  String?  // For threaded comments/replies
+  isEdited  Boolean  @default(false)
+  isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
-  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  // Relations
+  author    User              @relation(fields: [authorId], references: [id])
+  task      Task              @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  parent    TaskComment?      @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   TaskComment[]     @relation("CommentReplies")
+  mentions  TaskCommentMention[]
+  reactions TaskCommentReaction[]
 
   @@map("task_comments")
+}
+
+model TaskCommentMention {
+  id        String   @id @default(cuid())
+  commentId String
+  userId    String
+  startPos  Int      // Start position in content
+  endPos    Int      // End position in content
+  createdAt DateTime @default(now())
+  
+  // Relations
+  comment   TaskComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id])
+
+  @@unique([commentId, userId, startPos])
+  @@map("task_comment_mentions")
+}
+
+model TaskCommentReaction {
+  id        String   @id @default(cuid())
+  commentId String
+  userId    String
+  emoji     String   // Emoji character or code
+  createdAt DateTime @default(now())
+  
+  // Relations
+  comment   TaskComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id])
+
+  @@unique([commentId, userId, emoji])
+  @@map("task_comment_reactions")
 }
 
 model TaskAttachment {

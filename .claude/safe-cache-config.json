@@ -1,0 +1,21 @@
+{
+  "caching": {
+    "enabled": true,
+    "safe_mode": true,
+    "max_memory": "256MB",
+    "max_entries": 1000,
+    "ttl_seconds": 3600,
+    "allowed_extensions": [".ts", ".js", ".tsx", ".jsx", ".py", ".md"],
+    "security": {
+      "validate_paths": true,
+      "restrict_to_project": true,
+      "no_system_files": true,
+      "max_file_size": "10MB"
+    }
+  },
+  "performance": {
+    "enable_monitoring": true,
+    "log_cache_hits": false,
+    "memory_warnings": true
+  }
+}

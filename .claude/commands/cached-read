@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""
+Cached file reading command for Claude Code
+Usage: claude cached-read <file-path>
+"""
+
+import sys
+import os
+import time
+
+# Add project root to path
+sys.path.insert(0, '/Users/justindoff/Cursor Projects/krushr-clean')
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: claude cached-read <file-path>")
+        sys.exit(1)
+    
+    file_path = sys.argv[1]
+    
+    try:
+        from claude_cache import ClaudeCache
+        cache = ClaudeCache()
+        
+        start_time = time.time()
+        content = cache.get_file(file_path)
+        end_time = time.time()
+        
+        if content:
+            print(f"✅ Cached read: {len(content)} bytes in {end_time-start_time:.4f}s")
+            print(f"📄 File: {file_path}")
+            print("─" * 50)
+            print(content)
+            
+            # Show cache stats
+            stats = cache.get_stats()
+            print("─" * 50)
+            print(f"🚀 Cache Stats: {stats.hit_rate:.1%} hit rate, {stats.total_files} files cached")
+        else:
+            print(f"❌ File not found in cache: {file_path}")
+            
+    except Exception as e:
+        print(f"❌ Cache error: {e}")
+        # Fallback to regular read
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                print(f"📄 Direct read: {len(content)} bytes")
+                print(content)
+        except Exception as fe:
+            print(f"❌ File read error: {fe}")
+
+if __name__ == "__main__":
+    main()

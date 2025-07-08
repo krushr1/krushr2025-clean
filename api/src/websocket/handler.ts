@@ -161,6 +161,34 @@ async function handleMessage(clientId: string, message: WebSocketMessage) {
         await handleTypingStatus(client, message)
         break
 
+      case 'comment-created':
+        await handleCommentCreated(client, message.payload)
+        break
+
+      case 'comment-updated':
+        await handleCommentUpdated(client, message.payload)
+        break
+
+      case 'comment-deleted':
+        await handleCommentDeleted(client, message.payload)
+        break
+
+      case 'comment-reaction-added':
+        await handleCommentReactionAdded(client, message.payload)
+        break
+
+      case 'comment-reaction-removed':
+        await handleCommentReactionRemoved(client, message.payload)
+        break
+
+      case 'join-task':
+        await handleJoinTask(client, message.payload)
+        break
+
+      case 'leave-task':
+        await handleLeaveTask(client, message.payload)
+        break
+
       default:
         logger.warn(`⚠️ Unknown message type: ${message.type}`)
         sendMessage(client.socket, {
@@ -395,4 +423,147 @@ export function sendNotificationToUser(userId: string, notification: any) {
       })
     }
   }
+}
+
+/**
+ * Join task room for real-time comment updates
+ */
+async function handleJoinTask(client: ConnectedClient, payload: { taskId: string }) {
+  const roomId = `task:${payload.taskId}`
+  client.rooms.add(roomId)
+
+  broadcastToRoom(roomId, {
+    type: 'user-joined-task',
+    payload: { userId: client.userId, taskId: payload.taskId },
+    timestamp: Date.now(),
+  }, getClientId(client))
+
+  sendMessage(client.socket, {
+    type: 'task-joined',
+    payload: { taskId: payload.taskId },
+    timestamp: Date.now(),
+  })
+}
+
+/**
+ * Leave task room
+ */
+async function handleLeaveTask(client: ConnectedClient, payload: { taskId: string }) {
+  const roomId = `task:${payload.taskId}`
+  client.rooms.delete(roomId)
+
+  broadcastToRoom(roomId, {
+    type: 'user-left-task',
+    payload: { userId: client.userId, taskId: payload.taskId },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+/**
+ * Handle real-time comment creation
+ */
+async function handleCommentCreated(client: ConnectedClient, payload: any) {
+  const roomId = `task:${payload.taskId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'comment-created',
+    payload: {
+      ...payload,
+      createdBy: client.userId,
+    },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+/**
+ * Handle real-time comment updates
+ */
+async function handleCommentUpdated(client: ConnectedClient, payload: any) {
+  const roomId = `task:${payload.taskId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'comment-updated',
+    payload: {
+      ...payload,
+      updatedBy: client.userId,
+    },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+/**
+ * Handle real-time comment deletion
+ */
+async function handleCommentDeleted(client: ConnectedClient, payload: any) {
+  const roomId = `task:${payload.taskId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'comment-deleted',
+    payload: {
+      ...payload,
+      deletedBy: client.userId,
+    },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+/**
+ * Handle real-time comment reaction addition
+ */
+async function handleCommentReactionAdded(client: ConnectedClient, payload: any) {
+  const roomId = `task:${payload.taskId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'comment-reaction-added',
+    payload: {
+      ...payload,
+      addedBy: client.userId,
+    },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+/**
+ * Handle real-time comment reaction removal
+ */
+async function handleCommentReactionRemoved(client: ConnectedClient, payload: any) {
+  const roomId = `task:${payload.taskId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'comment-reaction-removed',
+    payload: {
+      ...payload,
+      removedBy: client.userId,
+    },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+/**
+ * Broadcast comment update to task room
+ */
+export function broadcastCommentUpdate(taskId: string, type: string, payload: any) {
+  const roomId = `task:${taskId}`
+  
+  broadcastToRoom(roomId, {
+    type,
+    payload,
+    timestamp: Date.now(),
+  })
+}
+
+/**
+ * Send mention notification with comment context
+ */
+export function sendCommentMentionNotification(userId: string, data: {
+  commentId: string
+  taskId: string
+  authorName: string
+  content: string
+  type: 'mention' | 'reply'
+}) {
+  sendNotificationToUser(userId, {
+    type: 'comment-mention',
+    data,
+  })
 }

@@ -86,9 +86,12 @@
   font-display: swap;
 }
 
-/* Button text should never wrap */
+/* Button text should never wrap but allow for proper sizing */
 [class*="btn-"], .w-button, button, input[type="submit"] {
   white-space: nowrap !important;
+  min-width: fit-content;
+  width: auto;
+  overflow: visible;
 }
 
 :root {
@@ -1932,6 +1935,7 @@ figcaption {
 
 .card.pd-40px---20px.border-radius-24px {
   border: .5px solid var(--neutral--400);
+  border-radius: 24px;
   padding-left: 0;
   padding-right: 0;
   display: block;
@@ -1941,6 +1945,7 @@ figcaption {
   box-shadow: none;
   background-color: #fff0;
   border-style: none;
+  border-radius: 24px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -1966,10 +1971,11 @@ figcaption {
 .card.testimonial-slider-card-small {
   z-index: 1;
   border: .5px solid var(--neutral--400);
+  border-radius: 24px;
   color: var(--neutral--800);
-  width: 320px;
-  max-width: 100%;
-  min-width: 280px;
+  width: 100%;
+  max-width: none;
+  min-width: 320px;
   padding: 76px 32px 44px;
   position: relative;
   overflow: hidden;
@@ -3273,10 +3279,41 @@ figcaption {
 
 .grid-3-columns {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   grid-template-rows: auto;
   grid-auto-columns: 1fr;
-  gap: var(--space-lg);
+  gap: 32px;
+}
+
+.grid-3-columns .card {
+  min-width: 350px;
+  width: 100%;
+}
+
+/* Grid 2 columns for better readability */
+.grid-2-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-rows: auto;
+  gap: 32px;
+}
+
+.grid-2-columns .card {
+  min-width: 400px;
+  width: 100%;
+}
+
+/* Grid 4 columns for stats - smaller cards */
+.grid-4-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-rows: auto;
+  gap: 24px;
+}
+
+.grid-4-columns .card {
+  min-width: 200px;
+  width: 100%;
 }
 
 .grid-3-columns.gap-row-80px {
@@ -3713,7 +3750,7 @@ figcaption {
 }
 
 .border-radius-24px {
-  border-radius: 24px;
+  border-radius: 24px !important;
 }
 
 .border-radius-32px {
@@ -3747,7 +3784,7 @@ figcaption {
   background-color: #FF6B6B;
   color: #FFFFFF;
   border: 2px solid #FF6B6B;
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 20px 38px;
   margin-right: 16px;
   font-family: Manrope, sans-serif;
@@ -3895,7 +3932,7 @@ figcaption {
   background-color: #FF6B6B !important;
   color: #FFFFFF !important;
   border: 2px solid #FF6B6B !important;
-  border-radius: 40px !important;
+  border-radius: 12px !important;
   padding: 20px 38px !important;
   font-family: Manrope, sans-serif !important;
   font-size: 14px !important;
@@ -3939,7 +3976,7 @@ figcaption {
   background-color: #FFFFFF;
   color: #143197;
   border: 2px solid #E5E7EB;
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 20px 38px;
   font-family: Manrope, sans-serif;
   font-size: 14px;
@@ -3971,7 +4008,7 @@ figcaption {
   background-color: #FFFFFF !important;
   color: #143197 !important;
   border: 2px solid #143197 !important;
-  border-radius: 40px !important;
+  border-radius: 12px !important;
   padding: 20px 38px !important;
   font-family: Manrope, sans-serif !important;
   font-size: 14px !important;
@@ -4601,7 +4638,7 @@ figcaption {
   background-color: var(--secondary--color-8);
   color: var(--accent--primary-1);
   transform-style: preserve-3d;
-  border-radius: 8px;
+  border-radius: 12px;
   justify-content: center;
   align-items: center;
   width: 36px;
@@ -4763,6 +4800,10 @@ figcaption {
 .buttons-row {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+  overflow: visible;
 }
 
 .buttons-row.center {
@@ -4817,7 +4858,7 @@ figcaption {
 
 .style---dropdown-link-icon-sidebar {
   background-color: var(--accent--primary-1);
-  border-radius: 8px;
+  border-radius: 12px;
   max-width: 38px;
   margin-right: 10px;
   padding: 2px;
@@ -7303,13 +7344,167 @@ figcaption {
   z-index: -1;
   background-color: var(--neutral--800);
   object-fit: cover;
-  object-position: 50% 100%;
-  min-width: 100%;
+  object-position: 50% 0%;
+  width: 100%;
   height: 130px;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
+}
+
+/* Hide background banners for code example cards */
+.card.testimonial-slider-card-small[style*="max-width: none"] .testimonials-slider-card---bg-banner {
+  display: none;
+}
+
+/* Improve layout for code example cards */
+.card.testimonial-slider-card-small[style*="max-width: none"] {
+  width: 100%;
+  max-width: none;
+  min-width: 600px;
+  background: white;
+}
+
+/* Ensure code blocks fit properly */
+.card pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Fix card layout issues for educational components */
+.card.pd-40px---20px.border-radius-24px.min-width {
+  box-shadow: 0 2px 15px 0 var(--general--shadow-02);
+  background-color: var(--neutral--100);
+  border: none;
+  border-radius: 24px;
+  padding: 24px;
+  width: 100%;
+  min-width: 280px;
+  overflow: visible;
+}
+
+/* Proper grid card spacing */
+.grid-3-columns .card.pd-40px---20px,
+.grid-4-columns .card.pd-40px---20px {
+  min-width: 280px;
+  width: 100%;
+  box-shadow: 0 2px 15px 0 var(--general--shadow-02);
+  background-color: var(--neutral--100);
+  border: none;
+  border-radius: 24px;
+  overflow: visible;
+}
+
+/* Ensure card content doesn't get clipped but maintain rounded corners */
+.card {
+  overflow: hidden;
+  border-radius: 32px;
+}
+
+.card.border-radius-24px {
+  border-radius: 24px !important;
+}
+
+.card * {
+  box-sizing: border-box;
+}
+
+/* Educational section layout improvements */
+.educational-layout {
+  max-width: none;
+  width: 100%;
+}
+
+/* Force better spacing for educational grids */
+.grid-3-columns._educational-components {
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 40px;
+}
+
+.grid-4-columns._educational-features {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+/* Mobile overrides for educational content */
+@media (max-width: 768px) {
+  .grid-3-columns._educational-components {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .grid-4-columns._educational-features {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* Grid classes for content that should be gridded */
+.grid-1-column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.grid-stats-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+  .grid-stats-2x2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Fix manual flex layouts that should be grids */
+.educational-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.educational-skills {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.educational-achievements {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* Fix pricing template notice positioning and sizing */
+.pricing-template-notice {
+  grid-column-gap: 15px;
+  background-color: #351870;
+  background-image: linear-gradient(105deg, var(--accent--primary-1), var(--system--300));
+  color: #fff;
+  text-align: left;
+  -webkit-text-fill-color: inherit;
+  background-clip: padding-box;
+  border-radius: 12px;
+  align-items: center;
+  padding: 5px 25px 5px 10px;
+  display: inline-flex;
+  width: auto;
+  font-weight: 500;
+}
+
+/* Override for educational badges */
+.pricing-template-notice[style*="background:"] {
+  background-image: none !important;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 600;
 }
 
 .testimonials-slider-card---avatar {
@@ -9370,7 +9565,7 @@ figcaption {
   color: #563aff;
   transform-style: preserve-3d;
   background-color: #f2f1ff;
-  border-radius: 8px;
+  border-radius: 12px;
   justify-content: center;
   align-items: center;
   width: 36px;
@@ -9804,7 +9999,7 @@ figcaption {
 ._3-graph-cards---card-top-4 {
   z-index: 1;
   border: 1px solid #eff0f6;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 44%;
   max-width: 256px;
   margin-bottom: -42.5%;
@@ -9827,7 +10022,7 @@ figcaption {
 ._3-graph-cards---card-bottom-2 {
   box-shadow: none;
   border: 1px solid #eff0f6;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 100%;
   max-width: 350px;
   margin-top: -30%;
@@ -9997,6 +10192,8 @@ figcaption {
   border-radius: 12px;
   align-items: center;
   padding: 5px 25px 5px 10px;
+  display: inline-flex;
+  width: auto;
   font-weight: 500;
   display: flex;
 }
@@ -11091,7 +11288,18 @@ figcaption {
   }
 
   .grid-3-columns {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .grid-2-columns {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .grid-4-columns {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
   }
 
   .grid-3-columns.gap-row-80px {
@@ -12784,6 +12992,26 @@ figcaption {
 
   .grid-3-columns._2-col-mbp {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .grid-3-columns {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .grid-2-columns {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .grid-4-columns._2-col-tablet {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .grid-4-columns._1-col-mbp {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .grid-3-columns.gap-row-48px {
@@ -15320,7 +15548,7 @@ figcaption {
   }
 
   ._3-graph-cards---card-bottom.shaow-optimized {
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 15px 11px 40px #3d0b0f33;
   }
 
@@ -15366,11 +15594,11 @@ figcaption {
   }
 
   .top-section-imgs-right---img-small {
-    border-radius: 8px;
+    border-radius: 12px;
   }
 
   .top-section-imgs-right---img-large {
-    border-radius: 8px;
+    border-radius: 12px;
     max-width: 100%;
     margin-top: 0;
     margin-left: 0;
@@ -15965,13 +16193,13 @@ figcaption {
   }
 
   ._3-graph-cards---card-top-copy.less-right-margin-copy {
-    border-radius: 8px;
+    border-radius: 12px;
     margin-left: 10px;
     box-shadow: 0 25px 50px #88727233;
   }
 
   ._3-graph-cards---card-bottom-copy.shaow-optimized-copy {
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 15px 11px 40px #3d0b0f33;
   }
 
@@ -16001,7 +16229,7 @@ figcaption {
   }
 
   ._3-graph-cards---card-top-4.source-dupe-1, ._3-graph-cards---card-bottom-2, ._2-graph-cards---card-right-2, ._2-graph-cards---card-left-2.gpt-analyze {
-    border-radius: 8px;
+    border-radius: 12px;
   }
 
   .title-h2 {
@@ -19936,7 +20164,7 @@ figcaption {
 .code-block-wrapper {
   background: #f8fafc;
   padding: 24px;
-  border-radius: 8px;
+  border-radius: 12px;
   border-left: 4px solid #143197;
 }
 
@@ -19944,7 +20172,7 @@ figcaption {
   background: #1a1a1a;
   color: #e2e8f0;
   padding: 16px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 12px;
   overflow-x: auto;
   margin: 0;

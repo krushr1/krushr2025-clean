@@ -433,69 +433,61 @@ html, body {
   }
 }
 
-/* 🔥 FOOTER FULL-WIDTH FIX - DEDICATED CLASSES TO AVOID INTERFERENCE */
+/* 🔥 FOOTER RESPONSIVENESS FIX - ORIGINAL APPEARANCE PRESERVED */
 
-/* Create dedicated footer classes that won't be overridden */
-.krushr-footer-fullwidth {
+/* Remove width constraints that prevent full-width spanning */
+.footer-wrapper-2 {
   width: 100vw !important;
   margin-left: calc(-50vw + 50%) !important;
   margin-right: calc(-50vw + 50%) !important;
-  position: relative !important;
-  left: 0 !important;
-  right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
-.krushr-footer-container {
+.footer-wrapper-2 .container-default-2 {
   max-width: none !important;
   width: 100% !important;
   padding-left: 24px !important;
   padding-right: 24px !important;
-  margin: 0 auto !important;
-  box-sizing: border-box !important;
+  margin: 0 !important;
 }
 
-.krushr-footer-grid {
+/* Ensure footer content is responsive */
+.footer-middle-2 {
   display: grid !important;
   gap: 32px !important;
-  grid-template-columns: 1fr !important;
-  width: 100% !important;
-}
-
-.krushr-footer-pages-grid {
-  display: grid !important;
-  gap: 24px !important;
   grid-template-columns: 1fr !important;
 }
 
 /* Mobile: Single column for all sections */
 @media (max-width: 767px) {
-  .krushr-footer-grid {
+  .footer-middle-2 {
     grid-template-columns: 1fr !important;
   }
   
-  .krushr-footer-pages-grid {
+  .footer-pages-links-container-2 {
     grid-template-columns: 1fr !important;
   }
 }
 
 /* Tablet: Two columns - Pages section and Contact/Utility */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .krushr-footer-grid {
+  .footer-middle-2 {
     grid-template-columns: 2fr 1fr !important;
   }
   
-  .krushr-footer-pages-grid {
+  .footer-pages-links-container-2 {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 
 /* Desktop: Three columns - Pages, Contact, Utility */
 @media (min-width: 1024px) {
-  .krushr-footer-grid {
+  .footer-middle-2 {
     grid-template-columns: 2fr 1fr 1fr !important;
   }
   
-  .krushr-footer-pages-grid {
+  .footer-pages-links-container-2 {
     grid-template-columns: repeat(3, 1fr) !important;
   }
 }
@@ -2464,8 +2456,8 @@ html, body {
       <div class="bg-neutral-200 bottom-50"></div>
     </div>
   </div>
-  <footer class="footer-wrapper-2 krushr-footer-fullwidth">
-    <div class="container-default-2 krushr-footer-container">
+  <footer class="footer-wrapper-2">
+    <div class="container-default-2">
       <div class="foot-wrap-ne">
         <div class="footer-top-2">
           <div class="inner-container _440px">
@@ -2491,10 +2483,10 @@ html, body {
             </div>
           </div>
         </div>
-        <div class="footer-middle-2 krushr-footer-grid">
+        <div class="footer-middle-2">
           <div id="w-node-_9f0b8505-99cb-9825-916c-c3e9dff548f6-e69b16b1" class="div-block-4">
             <div class="text-300 bold footer-title">Pages</div>
-            <div class="footer-pages-links-container-2 krushr-footer-pages-grid">
+            <div class="footer-pages-links-container-2">
               <ul id="w-node-_9f0b8505-99cb-9825-916c-c3e9dff548fa-e69b16b1" role="list" class="footer-list-wrapper-2">
                 <li class="footer-list-item">
                   <a href="#" class="footer-link-2">Home V1</a>

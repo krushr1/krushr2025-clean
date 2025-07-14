@@ -123,215 +123,10 @@ html, body {
   overflow-x: hidden !important;
 }
 
-/* Footer exactly matching krushr.io layout and behavior */
-.footer-wrapper-2 {
-  background: linear-gradient(135deg, #1a1b3a 0%, #2d1b69 100%);
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  padding: 80px 0 40px 0;
-}
-
-.footer-wrapper-2 .container-default-2 {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.footer-top-2 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 80px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.footer-logo-wrapper img {
-  height: 40px;
-  width: auto;
-}
-
-.footer-newsletter {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.footer-newsletter h3 {
-  color: white;
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0;
-  white-space: nowrap;
-}
-
-.footer-newsletter-form {
-  display: flex;
-  gap: 12px;
-}
-
-.footer-newsletter input[type="email"] {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 12px 16px;
-  color: white;
-  font-size: 16px;
-  width: 280px;
-}
-
-.footer-newsletter input[type="email"]::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.footer-newsletter button {
-  background: white;
-  color: #1a1b3a;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.footer-middle-2 {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 80px;
-  margin-bottom: 60px;
-}
-
-.footer-column h4 {
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-.footer-column ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.footer-column li {
-  margin-bottom: 12px;
-}
-
-.footer-column a {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.footer-column a:hover {
-  color: white;
-}
-
-.footer-pages-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-}
-
-.footer-contact-info {
-  margin-bottom: 16px;
-}
-
-.footer-contact-label {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-.footer-contact-value {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 16px;
-}
-
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 30px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.footer-bottom p {
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0;
-  font-size: 14px;
-}
-
-.footer-social {
-  display: flex;
-  gap: 12px;
-}
-
-.footer-social a {
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-decoration: none;
-  transition: background 0.3s ease;
-}
-
-.footer-social a:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-  .footer-wrapper-2 {
-    padding: 60px 0 30px 0;
-  }
-  
-  .footer-top-2 {
-    flex-direction: column;
-    gap: 30px;
-    align-items: stretch;
-    margin-bottom: 60px;
-  }
-  
-  .footer-newsletter {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .footer-newsletter-form {
-    flex-direction: column;
-  }
-  
-  .footer-newsletter input[type="email"] {
-    width: 100%;
-  }
-  
-  .footer-middle-2 {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  
-  .footer-pages-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  
-  .footer-bottom {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
+.footer-wrapper-2, .foot-wrap-ne {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
 }
 
 /* CRITICAL: 3-column pricing/social proof cards overflow fixes */
@@ -487,207 +282,6 @@ html, body {
     padding-left: 30px !important;
     padding-right: 30px !important;
     max-width: none !important;
-  }
-  
-  /* Fix footer full-width display on wide desktop screens */
-  .foot-wrap-ne {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 30px !important;
-    padding-right: 30px !important;
-  }
-  
-  /* Override inner container constraints in footer */
-  .footer-wrapper-2 .inner-container._440px,
-  .footer-wrapper-2 .inner-container._608px-tablet {
-    max-width: none !important;
-    width: 100% !important;
-    flex: 1 !important;
-  }
-  
-  /* Remove fixed width constraints from all footer inner containers */
-  .footer-wrapper-2 .inner-container {
-    max-width: none !important;
-    width: 100% !important;
-  }
-  
-  /* Force footer to be truly full width */
-  .footer-wrapper-2 {
-    width: 100vw !important;
-    max-width: none !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  
-  .container-default-2 {
-    width: 100% !important;
-    max-width: none !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  
-  /* Override any body padding that might constrain the footer */
-  body {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    overflow-x: visible !important;
-  }
-  
-  .page-wrapper {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    overflow-x: visible !important;
-  }
-  
-  /* Footer responsive layout fixes */
-  .footer-top-2 {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 24px !important;
-  }
-  
-  
-  .footer-pages-links-container-2 {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
-  }
-  
-  .footer-bottom {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 16px !important;
-    text-align: center !important;
-  }
-  
-  .social-media-grid-top {
-    display: flex !important;
-    gap: 12px !important;
-    justify-content: center !important;
-  }
-}
-
-/* Tablet responsiveness (768px+) */
-@media (min-width: 768px) {
-  .footer-top-2 {
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: flex-start !important;
-  }
-  
-  .footer-middle-2 {
-    grid-template-columns: 2fr 1fr !important;
-  }
-  
-  .footer-pages-links-container-2 {
-    grid-template-columns: 1fr 1fr 1fr !important;
-  }
-  
-  .footer-bottom {
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    text-align: left !important;
-  }
-  
-  .social-media-grid-top {
-    justify-content: flex-end !important;
-  }
-}
-
-/* Mobile-specific fixes */
-@media (max-width: 767px) {
-  .footer-wrapper-2 .inner-container._440px,
-  .footer-wrapper-2 .inner-container._608px-tablet,
-  .footer-wrapper-2 .inner-container {
-    max-width: 100% !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-  
-  .grid-subscribe-form-button-left-2 {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    grid-template-columns: 1fr !important;
-  }
-  
-  .input-subscribe-footer {
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  
-  .btn-primary-3.white {
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  
-  .footer-top-2 {
-    gap: 32px !important;
-  }
-}
-
-/* 🔥 FOOTER RESPONSIVENESS FIX - ORIGINAL APPEARANCE PRESERVED */
-
-/* Remove width constraints that prevent full-width spanning */
-.footer-wrapper-2 {
-  width: 100vw !important;
-  margin-left: calc(-50vw + 50%) !important;
-  margin-right: calc(-50vw + 50%) !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-.footer-wrapper-2 .container-default-2 {
-  max-width: none !important;
-  width: 100% !important;
-  padding-left: 24px !important;
-  padding-right: 24px !important;
-  margin: 0 !important;
-}
-
-/* Ensure footer content is responsive */
-.footer-middle-2 {
-  display: grid !important;
-  gap: 32px !important;
-}
-
-/* Mobile: Single column for all sections */
-@media (max-width: 767px) {
-  .footer-middle-2 {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .footer-pages-links-container-2 {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* Tablet: Two columns - Pages section and Contact/Utility */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .footer-middle-2 {
-    grid-template-columns: 2fr 1fr !important;
-  }
-  
-  .footer-pages-links-container-2 {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}
-
-/* Desktop: Three columns - Pages, Contact, Utility */
-@media (min-width: 1024px) {
-  .footer-middle-2 {
-    grid-template-columns: 2fr 1fr 1fr !important;
-  }
-  
-  .footer-pages-links-container-2 {
-    grid-template-columns: repeat(3, 1fr) !important;
   }
 }
 
@@ -850,14 +444,13 @@ html, body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
   }
 }
-
 </style>
 </head>
 <body class="body" style="overflow-x: hidden;">
   <div class="page-wrapper">
     <div data-animation="default" class="header-wrapper w-nav" data-easing2="ease" data-easing="ease" data-collapse="medium" data-w-id="2640a3bb-dc53-552c-928e-59f32e5628b9" role="banner" data-duration="400">
       <div class="container is-nav">
-        <a href="home.html" aria-current="page" class="header-logo-link w-nav-brand w--current"><img width="Auto" height="50" src="images/Krushr-white-bg.svg" alt="" class="image-2"></a>
+        <a href="index.html" aria-current="page" class="header-logo-link w-nav-brand w--current"><img width="Auto" height="50" src="images/Krushr-white-bg.svg" alt="" class="image-2"></a>
         <div class="menu">
           <div class="menu_dp-wrap">
             <div class="menu_dp-link">
@@ -2244,6 +1837,158 @@ html, body {
             </div>
             <div class="slide-item-mg w-slide">
               <div class="w-dyn-list">
+                <div role="list" class="w-dyn-items">
+                  <div role="listitem" class="w-dyn-item">
+                    <a data-w-id="9f0b8505-99cb-9825-916c-c3e9dff54706" href="#" class="card integrations-slider-link-card w-inline-block"><img src="" loading="eager" alt="" class="max-w-70px mg-bottom-24px w-dyn-bind-empty">
+                      <h3 class="card-link-title---hover-primary w-dyn-bind-empty"></h3>
+                      <p class="color-neutral-600 w-dyn-bind-empty"></p>
+                      <div class="link-wrapper">
+                        <div class="link-text text-200 bold"><span class="color-accent-1">View integration</span></div>
+                        <div class="line-rounded-icon link-icon-right color-accent-1"></div>
+                      </div>
+                      <div class="badge-secondary light integrations-slider-card-badge w-dyn-bind-empty"></div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-circle-secondary slider-button-middle-left w-slider-arrow-left">
+            <div class="line-rounded-icon"></div>
+          </div>
+          <div class="btn-circle-primary slider-button-middle-right w-slider-arrow-right">
+            <div class="line-rounded-icon"></div>
+          </div>
+          <div class="hidden-on-desktop w-slider-nav w-round"></div>
+        </div>
+      </div>
+    </div>
+    <div data-w-id="9f0b8505-99cb-9825-916c-c3e9dff5471c" style="opacity:0" class="section overflow-hidden">
+      <div class="container-default-prev btm-pad w-container">
+        <div data-w-id="9f0b8505-99cb-9825-916c-c3e9dff5471e" style="-webkit-transform:translate3d(0, 10%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 10%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 10%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 10%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="text-center mg-bottom-56px">
+          <div class="inner-container _780px center">
+            <div class="display-3">The reviews say it all</div>
+            <h2 class="display-3 mg-bottom-0 red-subhead">Hear what Krushr users say (we can&#x27;t wait for you to be next):</h2>
+          </div>
+        </div>
+        <div data-delay="4000" data-animation="slide" class="slider-wrapper mg-bottom-56px w-slider" data-autoplay="false" data-easing="ease" style="opacity:0" data-hide-arrows="false" data-disable-swipe="false" data-w-id="9f0b8505-99cb-9825-916c-c3e9dff54724" data-autoplay-limit="0" data-nav-spacing="3" data-duration="500" data-infinite="true">
+          <div class="slider-mask width-388px max-height-updated w-slider-mask">
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/lindsay-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/lindsay-johnson-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="Lindsay Johnson - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">&quot;Truly Revolutionary&quot;</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">VP of Marketing at <strong>Facebook</strong></div>
+                <div class="divider _24px bg-neutral-300"></div>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/john-carter-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="John Carter - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">&quot;I&#x27;d be lost without it&quot; </div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">Head of Growth at <strong>Webflow</strong></div>
+                <div class="divider _24px bg-neutral-300"></div>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/sophie-moore-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/sophie-moore-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="Sophie Moore - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">&quot;We canceled 4 other apps&quot;</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">Marketer at <strong>Pinterest</strong></div>
+                <div class="divider _24px bg-neutral-300"></div>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/andy-smith-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/andy-smith-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="Andy Smith - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">How has nobody done this?</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">Head of Growth at <strong>Google</strong></div>
+                <div class="divider _24px bg-neutral-300"></div>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/lindsay-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/lindsay-johnson-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="Lindsay Johnson - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">&quot;We canceled 4 other apps&quot;</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">VP of Marketing at Facebook</div>
+                <div class="divider _24px bg-neutral-300"></div>
+                <p class="mg-bottom-0">“Id auctor dignissim tincidunt duis quis tortor et amet sed turpis ametole iaculis vulputate duis amet id”</p>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/john-carter-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="John Carter - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">John Carter</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">Head of Growth at Webflow</div>
+                <div class="divider _24px bg-neutral-300"></div>
+                <p class="mg-bottom-0">“Id auctor dignissim tincidunt duis quis tortor et amet sed turpis ametole iaculis vulputate duis amet id”</p>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/sophie-moore-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/sophie-moore-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="Sophie Moore - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">Sophie Moore</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">Marketer at Pinterest</div>
+                <div class="divider _24px bg-neutral-300"></div>
+                <p class="mg-bottom-0">“Id auctor dignissim tincidunt duis quis tortor et amet sed turpis ametole iaculis vulputate duis amet id”</p>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/andy-smith-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/andy-smith-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="Andy Smith - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">Andy  Smith</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">Head of Growth at Google</div>
+                <div class="divider _24px bg-neutral-300"></div>
+                <p class="mg-bottom-0">“Id auctor dignissim tincidunt duis quis tortor et amet sed turpis ametole iaculis vulputate duis amet id”</p>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/lindsay-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/lindsay-johnson-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="Lindsay Johnson - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">Lindsay Johnson</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">VP of Marketing at Facebook</div>
+                <div class="divider _24px bg-neutral-300"></div>
+                <p class="mg-bottom-0">“Id auctor dignissim tincidunt duis quis tortor et amet sed turpis ametole iaculis vulputate duis amet id”</p>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/john-carter-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="John Carter - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">John Carter</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">Head of Growth at Webflow</div>
+                <div class="divider _24px bg-neutral-300"></div>
+                <p class="mg-bottom-0">“Id auctor dignissim tincidunt duis quis tortor et amet sed turpis ametole iaculis vulputate duis amet id”</p>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/sophie-moore-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/sophie-moore-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="Sophie Moore - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">Sophie Moore</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">Marketer at Pinterest</div>
+                <div class="divider _24px bg-neutral-300"></div>
+                <p class="mg-bottom-0">“Id auctor dignissim tincidunt duis quis tortor et amet sed turpis ametole iaculis vulputate duis amet id”</p>
+              </div>
+            </div>
+            <div class="slide-item-mg w-slide">
+              <div class="card testimonial-slider-card-small"><img src="images/andy-smith-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner"><img src="images/andy-smith-testimonial-avatar-techcloud-webflow-ecommerce-template.jpg" loading="eager" alt="Andy Smith - Techcloud X Webflow Template" class="testimonials-slider-card---avatar">
+                <div class="testimonials-slider-card---name-and-stars-container">
+                  <div class="text-300 bold color-neutral-800">Andy  Smith</div><img src="images/five-stars-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="">
+                </div>
+                <div class="text-200 medium">Head of Growth at Google</div>
+                <div class="divider _24px bg-neutral-300"></div>
+                <p class="mg-bottom-0">“Id auctor dignissim tincidunt duis quis tortor et amet sed turpis ametole iaculis vulputate duis amet id”</p>
+              </div>
+            </div>
           </div>
           <div class="btn-circle-secondary slider-button-middle-left w-slider-arrow-left">
             <div class="line-rounded-icon"></div>
@@ -2602,41 +2347,6 @@ html, body {
                 </li>
               </ul>
             </div>
-          </div>
-          <div class="div-block-6">
-            <div class="text-300 bold footer-title">Contact us</div>
-            <ul role="list" class="footer-list-wrapper-2">
-              <li class="footer-list-item">
-                <a href="tel:(482)504-3207" class="footer-contact-link-wrapper-2 w-inline-block">
-                  <div class="mg-top-4px">
-                    <div class="opacity-80 mg-bottom-6px">
-                      <div class="text-200 medium color-neutral-100">Phone</div>
-                    </div>
-                    <div class="color-neutral-802">(482) 504 - 3207</div>
-                  </div>
-                </a>
-              </li>
-              <li class="footer-list-item mg-bottom-24px">
-                <a href="mailto:contact@techcloud" class="footer-contact-link-wrapper-2 w-inline-block">
-                  <div class="mg-top-4px">
-                    <div class="opacity-80 mg-bottom-6px">
-                      <div class="text-200 medium color-neutral-100">Email</div>
-                    </div>
-                    <div class="color-neutral-802">contact@techcloud</div>
-                  </div>
-                </a>
-              </li>
-              <li class="footer-list-item mg-bottom-0">
-                <a href="https://www.google.com/maps/place/San+Francisco,+CA,+USA/data=!4m2!3m1!1s0x80859a6d00690021:0x4a501367f076adff?sa=X&amp;ved=2ahUKEwifk6G3jpr5AhUcJUQIHT4tAh8Q8gF6BQiLARAB" target="_blank" class="footer-contact-link-wrapper-2 w-inline-block">
-                  <div class="mg-top-4px">
-                    <div class="opacity-80 mg-bottom-6px">
-                      <div class="text-200 medium color-neutral-100">Location</div>
-                    </div>
-                    <div class="color-neutral-802">1535 Pacific Ave San Francisco, CA</div>
-                  </div>
-                </a>
-              </li>
-            </ul>
           </div>
           <div class="div-block-5">
             <div class="text-300 bold footer-title">Utility pages</div>

@@ -5,7 +5,6 @@ import { SectionBody } from '../layout/SectionBody'
 import { EnhancedImageGallery } from '../shared/EnhancedImageGallery'
 import { AI_POWERED_CONTENT } from '../content/aiPoweredContent'
 
-// Convert content to new format
 const aiPoweredSectionData = {
   title: AI_POWERED_CONTENT.title,
   description: AI_POWERED_CONTENT.description,
@@ -19,11 +18,6 @@ const aiPoweredImages = [
   AI_POWERED_CONTENT.images.aiAssistant
 ]
 
-/**
- * AI Powered Section Component - Refactored for Modern Architecture
- * Showcases ChatGPT AI capabilities with features and stats
- * Now uses shared layout components for consistency and maintainability
- */
 export const AIPoweredSection: React.FC = () => {
   const leftContent = (
     <>

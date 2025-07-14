@@ -1,98 +1,87 @@
 import React from 'react'
 import { FOOTER_CONTENT } from '../content/footerContent'
 
-/**
- * Footer Component
- * Complete footer with newsletter signup, navigation links, and contact info
- * Pixel-perfect recreation of the original HTML structure
- */
 export const Footer: React.FC = () => {
   return (
-    <footer className="footer-wrapper-2">
-      <div className="container-default-2">
-        <div className="foot-wrap-ne">
-          <div className="footer-top-2">
-            <div className="inner-container _440px">
-              <a href={FOOTER_CONTENT.logo.href} className="footer-logo-wrapper w-inline-block">
+    <footer className="bg-gray-900 text-white w-full">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
+        <div className="space-y-12">
+          {/* Top Section - Logo and Newsletter */}
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+            <div className="flex-shrink-0 lg:max-w-md">
+              <a href={FOOTER_CONTENT.logo.href} className="inline-block">
                 <img 
                   src={FOOTER_CONTENT.logo.src} 
                   alt={FOOTER_CONTENT.logo.alt} 
-                  className="width-100-2" 
+                  className="w-auto h-8" 
                 />
               </a>
             </div>
-            <div className="inner-container _608px-tablet">
-              <div className="mg-bottom-24px-2">
-                <div className="text-300 bold color-neutral-100">
+            <div className="flex-grow lg:max-w-lg">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-white">
                   {FOOTER_CONTENT.newsletter.title}
-                </div>
+                </h3>
               </div>
-              <div className="mg-bottom-2 w-form">
-                <form 
-                  id="wf-form-Footer-Subscribe" 
-                  name="wf-form-Footer-Subscribe" 
-                  data-name="Footer Subscribe" 
-                  method="get" 
-                  data-wf-page-id="645449861f69269ee69b16b1" 
-                  data-wf-element-id="9f0b8505-99cb-9825-916c-c3e9dff548e8"
-                >
-                  <div className="w-layout-grid grid-subscribe-form-button-left-2">
-                    <input 
-                      className="input-2 input-subscribe-footer w-input" 
-                      maxLength={256} 
-                      name="Email-2" 
-                      data-name="Email 2" 
-                      placeholder={FOOTER_CONTENT.newsletter.placeholder} 
-                      type="email" 
-                      id="Email-2" 
-                      required 
-                    />
-                    <input 
-                      type="submit" 
-                      data-wait="Please wait..." 
-                      id="w-node-_9f0b8505-99cb-9825-916c-c3e9dff548eb-e69b16b1" 
-                      className="btn-primary-3 white w-button" 
-                      value={FOOTER_CONTENT.newsletter.buttonText} 
-                    />
-                  </div>
-                </form>
-                <div className="success-message w-form-done">
-                  <div className="success-message-horizontal-2 footer-success-message">
-                    <div className="line-rounded-icon success-message-check---left"></div>
-                    <div>{FOOTER_CONTENT.newsletter.successMessage}</div>
-                  </div>
+              <form className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input 
+                    className="flex-1 px-4 py-2 rounded-md border border-gray-600 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                    maxLength={256} 
+                    name="Email-2" 
+                    placeholder={FOOTER_CONTENT.newsletter.placeholder} 
+                    type="email" 
+                    id="Email-2" 
+                    required 
+                  />
+                  <button 
+                    type="submit" 
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200 whitespace-nowrap"
+                  >
+                    {FOOTER_CONTENT.newsletter.buttonText}
+                  </button>
                 </div>
-                <div className="error-message-2 w-form-fail">
-                  <div>{FOOTER_CONTENT.newsletter.errorMessage}</div>
-                </div>
-              </div>
+              </form>
             </div>
           </div>
           
-          <div className="footer-middle-2">
-            <div id="w-node-_9f0b8505-99cb-9825-916c-c3e9dff548f6-e69b16b1" className="div-block-4">
-              <div className="text-300 bold footer-title">{FOOTER_CONTENT.navigation.pages.title}</div>
-              <div className="footer-pages-links-container-2">
-                <ul id="w-node-_9f0b8505-99cb-9825-916c-c3e9dff548fa-e69b16b1" role="list" className="footer-list-wrapper-2">
+          {/* Middle Section - Navigation Links */}
+          <div className="border-t border-gray-800 pt-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div>
+                <h4 className="text-base font-semibold text-white mb-4">{FOOTER_CONTENT.navigation.pages.title}</h4>
+                <ul className="space-y-2">
                   {FOOTER_CONTENT.navigation.pages.links.slice(0, 8).map((link, index) => (
-                    <li key={index} className={index === 7 ? "footer-list-item mg-bottom-0" : "footer-list-item"}>
-                      <a href={link.href} className="footer-link-2">{link.text}</a>
+                    <li key={index}>
+                      <a href={link.href} className="text-gray-300 hover:text-white transition-colors duration-200">
+                        {link.text}
+                      </a>
                     </li>
                   ))}
                 </ul>
-                
-                <ul id="w-node-_9f0b8505-99cb-9825-916c-c3e9dff54913-e69b16b1" role="list" className="footer-list-wrapper-2">
-                  {FOOTER_CONTENT.navigation.support.links.slice(0, 13).map((link, index) => (
-                    <li key={index} className={index === 12 ? "footer-list-item mg-bottom-0" : "footer-list-item"}>
-                      <a href={link.href} className="footer-link-2">{link.text}</a>
+              </div>
+              
+              <div>
+                <h4 className="text-base font-semibold text-white mb-4">{FOOTER_CONTENT.navigation.support.title}</h4>
+                <ul className="space-y-2">
+                  {FOOTER_CONTENT.navigation.support.links.slice(0, 8).map((link, index) => (
+                    <li key={index}>
+                      <a href={link.href} className="text-gray-300 hover:text-white transition-colors duration-200">
+                        {link.text}
+                      </a>
                     </li>
                   ))}
                 </ul>
-                
-                <ul id="w-node-_9f0b8505-99cb-9825-916c-c3e9dff54931-e69b16b1" role="list" className="footer-list-wrapper-2">
-                  {FOOTER_CONTENT.navigation.utility.links.map((link, index) => (
-                    <li key={index} className={index === 8 ? "footer-list-item mg-bottom-0" : "footer-list-item"}>
-                      <a href={link.href} className="footer-link-2">{link.text}</a>
+              </div>
+              
+              <div>
+                <h4 className="text-base font-semibold text-white mb-4">{FOOTER_CONTENT.navigation.utility.title}</h4>
+                <ul className="space-y-2">
+                  {FOOTER_CONTENT.navigation.utility.links.slice(0, 8).map((link, index) => (
+                    <li key={index}>
+                      <a href={link.href} className="text-gray-300 hover:text-white transition-colors duration-200">
+                        {link.text}
+                      </a>
                     </li>
                   ))}
                 </ul>
@@ -100,25 +89,28 @@ export const Footer: React.FC = () => {
             </div>
           </div>
           
-          <div className="footer-bottom-2">
-            <div className="inner-container _440px">
-              <div className="footer-middle-bottom-2">
-                <div className="text-200 bold mg-bottom-24px color-neutral-100">Contact</div>
-                <div className="grid-1-column gap-row-8px mg-bottom-48px">
-                  <div className="footer-contact-info-wrapper">
-                    <div className="text-200 bold">{FOOTER_CONTENT.contact.phone.label}</div>
-                    <div className="text-200">{FOOTER_CONTENT.contact.phone.value}</div>
+          {/* Bottom Section - Contact Info */}
+          <div className="border-t border-gray-800 pt-8">
+            <div className="flex flex-col lg:flex-row lg:justify-between gap-8">
+              <div className="space-y-6">
+                <h4 className="text-base font-semibold text-white">Contact</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div>
+                    <div className="text-sm font-medium text-white">{FOOTER_CONTENT.contact.phone.label}</div>
+                    <div className="text-sm text-gray-300">{FOOTER_CONTENT.contact.phone.value}</div>
                   </div>
-                  <div className="footer-contact-info-wrapper">
-                    <div className="text-200 bold">{FOOTER_CONTENT.contact.email.label}</div>
-                    <div className="text-200">{FOOTER_CONTENT.contact.email.value}</div>
+                  <div>
+                    <div className="text-sm font-medium text-white">{FOOTER_CONTENT.contact.email.label}</div>
+                    <div className="text-sm text-gray-300">{FOOTER_CONTENT.contact.email.value}</div>
                   </div>
-                  <div className="footer-contact-info-wrapper">
-                    <div className="text-200 bold">{FOOTER_CONTENT.contact.location.label}</div>
-                    <div className="text-200">{FOOTER_CONTENT.contact.location.value}</div>
+                  <div>
+                    <div className="text-sm font-medium text-white">{FOOTER_CONTENT.contact.location.label}</div>
+                    <div className="text-sm text-gray-300">{FOOTER_CONTENT.contact.location.value}</div>
                   </div>
                 </div>
-                <div className="text-100">{FOOTER_CONTENT.copyright}</div>
+              </div>
+              <div className="text-sm text-gray-400 lg:text-right">
+                {FOOTER_CONTENT.copyright}
               </div>
             </div>
           </div>

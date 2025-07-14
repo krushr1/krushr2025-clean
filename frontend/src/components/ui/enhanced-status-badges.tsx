@@ -1,7 +1,3 @@
-/**
- * Enhanced Status Badge Variations - Aligned with Krushr Brandkit
- * Two new variations for status representation with improved visual hierarchy
- */
 
 import React from 'react'
 import { 
@@ -23,7 +19,6 @@ interface StatusBadgeProps {
   size?: 'sm' | 'md' | 'lg'
 }
 
-// Variation 1: Gradient Status Badges with Icons
 export const GradientStatusBadge = ({ status, className, size = 'md' }: StatusBadgeProps) => {
   const statusConfig = {
     [TaskStatus.TODO]: {
@@ -89,7 +84,6 @@ export const GradientStatusBadge = ({ status, className, size = 'md' }: StatusBa
   )
 }
 
-// Variation 2: Dot Matrix Status System with Visual Progression
 export const DotMatrixStatusBadge = ({ status, className, size = 'md' }: StatusBadgeProps) => {
   const getStatusLevel = (status: TaskStatus) => {
     switch (status) {
@@ -155,7 +149,6 @@ export const DotMatrixStatusBadge = ({ status, className, size = 'md' }: StatusB
   )
 }
 
-// Variation 3: Minimal Icon-Only Status Badges (Bonus)
 export const MinimalStatusBadge = ({ status, className, size = 'md' }: StatusBadgeProps) => {
   const statusConfig = {
     [TaskStatus.TODO]: {
@@ -217,7 +210,6 @@ export const MinimalStatusBadge = ({ status, className, size = 'md' }: StatusBad
   )
 }
 
-// Main Status Badge Component with Variant Selection
 export const EnhancedStatusBadge = ({ 
   status, 
   className, 

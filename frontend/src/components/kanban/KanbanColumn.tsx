@@ -1,7 +1,3 @@
-/**
- * Enhanced Kanban Column Component
- * Sortable column with task management
- */
 
 import React from 'react'
 import { useSortable } from '@dnd-kit/sortable'
@@ -71,7 +67,6 @@ export default function KanbanColumnComponent({
   }
 
   const getColumnColor = () => {
-    // Use the column's color property if available
     if (column.color) {
       return ''
     }
@@ -80,7 +75,6 @@ export default function KanbanColumnComponent({
       return 'bg-emerald-500'
     }
     
-    // Krushr brand colors based on column position
     const colors = [
       'bg-gray-500',           // To Do
       'bg-krushr-secondary',   // In Progress  

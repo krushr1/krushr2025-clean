@@ -1,8 +1,3 @@
-/**
- * Enhanced Task Creation/Edit Modal - 2025 Enterprise Edition
- * Comprehensive modal with ALL enterprise-level features
- * Includes rich text editing, AI features, subtasks, dependencies, time tracking, etc.
- */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog'
@@ -54,7 +49,6 @@ import { Priority, TaskStatus } from '../../types/enums'
 import AttachmentUpload from '../common/AttachmentUpload'
 import AttachmentList from '../common/AttachmentList'
 
-// Rich Text Editor Component (simplified for demo)
 const RichTextEditor = ({ value, onChange, placeholder }: { 
   value: string
   onChange: (value: string) => void
@@ -127,7 +121,6 @@ const RichTextEditor = ({ value, onChange, placeholder }: {
   )
 }
 
-// Time Tracker Component
 const TimeTracker = ({ isTracking, onStart, onStop, duration }: {
   isTracking: boolean
   onStart: () => void
@@ -168,7 +161,6 @@ const TimeTracker = ({ isTracking, onStart, onStop, duration }: {
   )
 }
 
-// Subtask Component
 const SubtaskItem = ({ subtask, onUpdate, onDelete }: {
   subtask: any
   onUpdate: (updates: any) => void
@@ -269,7 +261,6 @@ export default function TaskModalEnhanced2025({
   const [activeTab, setActiveTab] = useState('details')
   const [timeTracking, setTimeTracking] = useState({ isTracking: false, duration: 0 })
   
-  // Basic form state
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [richDescription, setRichDescription] = useState('')
@@ -282,7 +273,6 @@ export default function TaskModalEnhanced2025({
   const [tags, setTags] = useState<string[]>([])
   const [currentTag, setCurrentTag] = useState('')
   
-  // Enhanced fields
   const [storyPoints, setStoryPoints] = useState<number | undefined>()
   const [estimatedHours, setEstimatedHours] = useState<string>('')
   const [actualHours, setActualHours] = useState<string>('')
@@ -293,40 +283,33 @@ export default function TaskModalEnhanced2025({
   const [templateId, setTemplateId] = useState('')
   const [customFieldValues, setCustomFieldValues] = useState<Record<string, any>>({})
   
-  // Subtasks and dependencies
   const [subtasks, setSubtasks] = useState<any[]>([])
   const [dependencies, setDependencies] = useState<any[]>([])
   const [blockers, setBlockers] = useState<any[]>([])
   const [linkedTasks, setLinkedTasks] = useState<any[]>([])
   
-  // Collaboration features
   const [watchers, setWatchers] = useState<string[]>([])
   const [comments, setComments] = useState<any[]>([])
   const [newComment, setNewComment] = useState('')
   const [reactions, setReactions] = useState<Record<string, number>>({})
   
-  // AI features
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([])
   const [showAiAssistant, setShowAiAssistant] = useState(false)
   const [aiPrompt, setAiPrompt] = useState('')
   
-  // Advanced features
   const [customFields, setCustomFields] = useState<any[]>([])
   const [workflowStates, setWorkflowStates] = useState<any[]>([])
   const [templates, setTemplates] = useState<any[]>([])
   const [timeEntries, setTimeEntries] = useState<any[]>([])
   const [revisionHistory, setRevisionHistory] = useState<any[]>([])
   
-  // Automation and integrations
   const [automationTriggers, setAutomationTriggers] = useState<string[]>([])
   const [integrations, setIntegrations] = useState<any[]>([])
   
-  // File attachments
   const [attachments, setAttachments] = useState<any[]>([])
   const [voiceNotes, setVoiceNotes] = useState<any[]>([])
   const [screenshots, setScreenshots] = useState<any[]>([])
 
-  // Queries for dropdown data
   const { data: users = [] } = trpc.user.listWorkspaceMembers.useQuery(
     { workspaceId },
     { enabled: !!workspaceId }
@@ -337,7 +320,6 @@ export default function TaskModalEnhanced2025({
     { enabled: !!workspaceId }
   )
   
-  // Mock data for enhanced features (would be real queries in production)
   const epics = [
     { id: '1', title: 'User Authentication System' },
     { id: '2', title: 'Dashboard Redesign' },
@@ -350,7 +332,6 @@ export default function TaskModalEnhanced2025({
     { id: '3', name: 'Sprint 23.4', status: 'COMPLETED' }
   ]
 
-  // Initialize form with task data in edit mode
   useEffect(() => {
     if (task) {
       setTitle(task.title || '')
@@ -371,7 +352,6 @@ export default function TaskModalEnhanced2025({
       setSelectedEpicId(task.epicId || '')
       setSelectedSprintId(task.sprintId || '')
       setCustomFieldValues(task.customFieldValues ? JSON.parse(task.customFieldValues) : {})
-      // ... initialize other fields
     }
   }, [task])
 
@@ -405,7 +385,6 @@ export default function TaskModalEnhanced2025({
     setReactions({})
     setAiSuggestions([])
     setAiPrompt('')
-    // ... reset other fields
   }
 
   const handleSubmit = () => {
@@ -431,7 +410,6 @@ export default function TaskModalEnhanced2025({
       workspaceId,
       projectId: projectId || task?.projectId,
       kanbanColumnId: kanbanColumnId || task?.kanbanColumnId,
-      // ... other enhanced fields
     }
 
     console.log('Enhanced task data:', taskData)
@@ -474,7 +452,6 @@ export default function TaskModalEnhanced2025({
 
   const handleAiGenerate = async (type: string) => {
     setAiSuggestions([])
-    // Mock AI generation
     if (type === 'subtasks') {
       const mockSubtasks = [
         'Set up database schema for user authentication',
@@ -944,7 +921,6 @@ This task involves implementing a comprehensive user authentication system with 
                         variant="outline"
                         className="h-6 px-2"
                         onClick={() => {
-                          // Open watcher selection dialog
                         }}
                       >
                         <UserPlus className="w-3 h-3" />
@@ -1022,7 +998,6 @@ This task involves implementing a comprehensive user authentication system with 
                         variant="outline"
                         className="w-full mt-2"
                         onClick={() => {
-                          // Open dependency selection dialog
                         }}
                       >
                         <Plus className="w-3 h-3 mr-1" />
@@ -1061,7 +1036,6 @@ This task involves implementing a comprehensive user authentication system with 
                         variant="outline"
                         className="w-full mt-2"
                         onClick={() => {
-                          // Open blocker creation dialog
                         }}
                       >
                         <Plus className="w-3 h-3 mr-1" />
@@ -1573,7 +1547,6 @@ This task involves implementing a comprehensive user authentication system with 
                         className="flex-1"
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') {
-                            // Send AI prompt
                             setAiPrompt('')
                           }
                         }}
@@ -1677,7 +1650,6 @@ This task involves implementing a comprehensive user authentication system with 
   )
 }
 
-// Missing import for Send icon
 const Send = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

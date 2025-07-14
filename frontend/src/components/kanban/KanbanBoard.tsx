@@ -33,16 +33,13 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
   const [newColumnTitle, setNewColumnTitle] = useState('')
   const [newColumnColor, setNewColumnColor] = useState('#6B7280')
   
-  // Bulk operations state
   const [bulkMode, setBulkMode] = useState(false)
   const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set())
   const [showBulkActions, setShowBulkActions] = useState(false)
 
-  // Get full kanban data with columns
   const { data: kanbanData, refetch: refetchKanban } = trpc.kanban.get.useQuery({ id: kanban.id })
   const columns = kanbanData?.columns || []
   
-  // Get tasks for the workspace
   const { data: tasks = [], refetch: refetchTasks } = trpc.task.list.useQuery({
     workspaceId: kanban.workspaceId,
     kanbanId: kanban.id
@@ -54,7 +51,6 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
     }
   })
 
-  // Column management mutations
   const createColumnMutation = trpc.kanban.createColumn.useMutation({
     onSuccess: () => {
       refetchKanban()
@@ -82,13 +78,11 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
     }
   })
 
-  // Get tasks for this kanban's columns
   const columnIds = columns.map(col => col.id)
   const kanbanTasks = tasks.filter(task => 
     task.kanbanColumnId && columnIds.includes(task.kanbanColumnId)
   )
 
-  // Filter tasks based on search and filters
   const filteredTasks = kanbanTasks.filter(task => {
     const matchesSearch = !searchTerm || 
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -103,7 +97,6 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
     return matchesSearch && matchesPriority && matchesAssignee
   })
 
-  // Group tasks by column
   const tasksByColumn = columns.reduce((acc, column) => {
     acc[column.id] = filteredTasks
       .filter(task => task.kanbanColumnId === column.id)
@@ -139,7 +132,6 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
       const activeTask = active.data.current?.task as Task
       if (!activeTask) return
 
-      // Find source and target columns
       const sourceColumn = columns.find(col => col.id === activeTask.kanbanColumnId)
       let targetColumn: any
       let targetIndex: number
@@ -157,7 +149,6 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
 
       if (!sourceColumn || !targetColumn) return
 
-      // Calculate new order number
       const targetTasks = tasksByColumn[targetColumn.id]
       let newOrderNumber: number
 
@@ -173,7 +164,6 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
         newOrderNumber = (prevOrder + nextOrder) / 2
       }
 
-      // Update task
       const updates = {
         kanbanColumnId: targetColumn.id,
         position: newOrderNumber,
@@ -203,7 +193,6 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
     }
   }
 
-  // Bulk operations helpers
   const toggleTaskSelection = (taskId: string) => {
     const newSelected = new Set(selectedTasks)
     if (newSelected.has(taskId)) {
@@ -231,7 +220,6 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
     if (selectedTasks.size === 0) return
     
     const taskIds = Array.from(selectedTasks)
-    // For now, use existing mutation for each task
     taskIds.forEach(taskId => {
       const task = tasks.find(t => t.id === taskId)
       if (task) {
@@ -257,7 +245,6 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
     clearSelection()
   }
 
-  // Column management handlers
   const handleCreateColumn = async () => {
     if (!newColumnTitle.trim()) return
     
@@ -445,7 +432,6 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
           
           <button
             onClick={() => {
-              // Default to first column if no column is selected
               setSelectedColumnId(columns[0]?.id || null)
               setShowCreatePanel(true)
             }}
@@ -709,8 +695,3 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
     </div>
   )
 }
-
-/**
- * Enhanced Kanban Board Component
- * Professional drag-drop interface with real-time updates
- */

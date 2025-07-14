@@ -12368,7 +12368,7 @@ figcaption {
   .footer-middle-2 {
     grid-column-gap: 40px;
     grid-row-gap: 48px;
-    grid-template-columns: 1fr .4fr;
+    grid-template-columns: 2fr 1fr;
     padding: 60px 0;
   }
 

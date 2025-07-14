@@ -1,7 +1,3 @@
-/**
- * PWA Install Prompt Component
- * Shows install prompt for supported browsers
- */
 
 import React, { useState, useEffect } from 'react'
 import { Button } from '../ui/button'
@@ -23,7 +19,6 @@ export default function InstallPrompt({ className }: InstallPromptProps) {
   const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
-    // Check if app is already installed
     const checkStandalone = () => {
       const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches ||
                               (window.navigator as any).standalone ||
@@ -33,12 +28,10 @@ export default function InstallPrompt({ className }: InstallPromptProps) {
 
     checkStandalone()
 
-    // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e as BeforeInstallPromptEvent)
       
-      // Show prompt after a delay if not standalone
       setTimeout(() => {
         if (!isStandalone) {
           setShowPrompt(true)
@@ -46,7 +39,6 @@ export default function InstallPrompt({ className }: InstallPromptProps) {
       }, 3000)
     }
 
-    // Listen for app installed event
     const handleAppInstalled = () => {
       setShowPrompt(false)
       setDeferredPrompt(null)
@@ -84,11 +76,9 @@ export default function InstallPrompt({ className }: InstallPromptProps) {
 
   const handleDismiss = () => {
     setShowPrompt(false)
-    // Don't show again for this session
     sessionStorage.setItem('installPromptDismissed', 'true')
   }
 
-  // Don't show if already installed, dismissed, or no prompt available
   if (isStandalone || 
       !showPrompt || 
       !deferredPrompt || 
@@ -146,7 +136,6 @@ export default function InstallPrompt({ className }: InstallPromptProps) {
   )
 }
 
-// Hook for manual install prompt
 export function useInstallPrompt() {
   const [canInstall, setCanInstall] = useState(false)
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)

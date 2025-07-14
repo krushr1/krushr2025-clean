@@ -1,7 +1,3 @@
-/**
- * EmojiPicker Component
- * Simple emoji picker for comments
- */
 
 import React, { useRef, useEffect } from 'react'
 import { Button } from '../../ui/button'
@@ -13,7 +9,6 @@ interface EmojiPickerProps {
   className?: string
 }
 
-// Common emojis organized by category
 const EMOJI_CATEGORIES = {
   reactions: ['👍', '👎', '❤️', '😂', '😮', '😢', '😡', '🎉'],
   people: ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩'],
@@ -24,7 +19,6 @@ const EMOJI_CATEGORIES = {
 export function EmojiPicker({ onEmojiSelect, onClose, className }: EmojiPickerProps) {
   const pickerRef = useRef<HTMLDivElement>(null)
 
-  // Close picker when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
@@ -36,7 +30,6 @@ export function EmojiPicker({ onEmojiSelect, onClose, className }: EmojiPickerPr
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [onClose])
 
-  // Close picker on escape key
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {

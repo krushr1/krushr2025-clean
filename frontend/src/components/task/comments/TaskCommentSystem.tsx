@@ -1,7 +1,3 @@
-/**
- * TaskCommentSystem Component
- * Complete comment system demo and integration showcase
- */
 
 import React, { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
@@ -27,7 +23,6 @@ interface TaskCommentSystemProps {
   className?: string
 }
 
-// Demo data for showcasing the system
 const DEMO_TASK = {
   id: 'demo-task-1',
   title: 'Enhanced Task Comments Implementation',
@@ -45,7 +40,6 @@ export default function TaskCommentSystem({ className }: TaskCommentSystemProps)
   
   const commentCount = useCommentCount(DEMO_TASK.id)
 
-  // Features list
   const features = [
     {
       title: 'Rich Text Editing',
@@ -322,7 +316,6 @@ export default function TaskCommentSystem({ className }: TaskCommentSystemProps)
               <div className="bg-gray-50 border rounded p-3 text-sm font-mono">
                 {`import { TaskCommentList } from './components/task/comments'
 
-// In your task modal or detail view:
 <TaskCommentList
   taskId={task.id}
   workspaceId={workspace.id}
@@ -338,7 +331,6 @@ export default function TaskCommentSystem({ className }: TaskCommentSystemProps)
               <div className="bg-gray-50 border rounded p-3 text-sm font-mono">
                 {`import TaskModalEnhanced from './components/task/TaskModalEnhanced'
 
-// Enhanced modal with integrated comments:
 <TaskModalEnhanced
   task={task}
   workspaceId={workspace.id}
@@ -355,7 +347,6 @@ export default function TaskCommentSystem({ className }: TaskCommentSystemProps)
               <div className="bg-gray-50 border rounded p-3 text-sm font-mono">
                 {`import { useComments, useCommentCount } from './hooks/use-comments'
 
-// Use hooks for advanced comment management:
 const { comments, createComment, isLoading } = useComments(taskId)
 const commentCount = useCommentCount(taskId)`}
               </div>

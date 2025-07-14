@@ -7,10 +7,6 @@ interface SectionContainerProps {
   gridClassName?: string
 }
 
-/**
- * Reusable Section Container Component
- * Provides consistent Webflow layout structure across sections
- */
 export const SectionContainer: React.FC<SectionContainerProps> = ({
   children,
   className = "unified-form bg-neutral-200 overflow-hidden",

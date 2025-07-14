@@ -12,10 +12,6 @@ import { TestimonialsSection } from '../components/sections/TestimonialsSection'
 import { PricingSection } from '../components/sections/PricingSection'
 import { Footer } from '../components/sections/Footer'
 
-/**
- * Landing Page - Complete Implementation
- * Pixel-perfect recreation of the original Webflow design with modular components
- */
 export default function Landing() {
   return (
     <>

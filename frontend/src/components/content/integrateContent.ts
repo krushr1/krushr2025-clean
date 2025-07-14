@@ -1,7 +1,3 @@
-/**
- * Integrate Section Content Data
- * Centralized content management for the integrations section
- */
 
 export const INTEGRATE_CONTENT = {
   title: 'Integrate & easily import',

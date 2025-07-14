@@ -1,10 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router'
 
-/**
- * Navigation Component
- * Matches the exact navigation structure from krushr.io
- */
 export const Navigation: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 

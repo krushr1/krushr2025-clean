@@ -1,8 +1,3 @@
-/**
- * Universal Input Form - MVP Variant (Rearranged)
- * Description moved above, minimal dropdowns, button-based controls
- * Based on Task Management Hub - MVP Variant from brandkit
- */
 
 import React, { useState, useCallback } from 'react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameDay, isToday } from 'date-fns'
@@ -11,14 +6,12 @@ import {
   ClipboardListIcon, BoldIcon, ItalicIcon, ListIcon, LinkIcon, CodeIcon
 } from 'lucide-react'
 
-// UI Components
 import { Button } from '../ui/button'
 import { FloatingInput } from '../ui/floating-input'
 import { Label } from '../ui/label'
 import { Textarea } from '../ui/textarea'
 import { Badge } from '../ui/badge'
 
-// tRPC and Types
 import { trpc } from '../../lib/trpc'
 import { UniversalFormData, ContentType } from '../../types/universal-form'
 import { Priority, TaskStatus } from '../../types/enums'
@@ -67,7 +60,6 @@ export default function UniversalInputFormMVP({
   integrationMode = 'modal'
 }: UniversalInputFormMVPProps) {
   
-  // ===== STATE MANAGEMENT =====
   const [formData, setFormData] = useState<UniversalFormData>({
     ...DEFAULT_FORM_DATA,
     workspaceId,
@@ -79,7 +71,6 @@ export default function UniversalInputFormMVP({
   const [newChecklistItem, setNewChecklistItem] = useState('')
   const [calendarDate, setCalendarDate] = useState(new Date())
   
-  // ===== FORM HANDLERS =====
   const updateField = useCallback(<K extends keyof UniversalFormData>(
     field: K, 
     value: UniversalFormData[K]
@@ -87,7 +78,6 @@ export default function UniversalInputFormMVP({
     setFormData(prev => ({ ...prev, [field]: value }))
   }, [])
   
-  // ===== MUTATIONS =====
   const createTaskMutation = trpc.task.create.useMutation({
     onSuccess: (data) => {
       onSuccess?.(formData)
@@ -95,7 +85,6 @@ export default function UniversalInputFormMVP({
     }
   })
   
-  // ===== HELPER FUNCTIONS =====
   const addTag = () => {
     if (currentTag.trim() && !formData.tags.includes(currentTag.trim())) {
       updateField('tags', [...formData.tags, currentTag.trim()])
@@ -116,12 +105,10 @@ export default function UniversalInputFormMVP({
   
   const toggleChecklistItem = (index: number) => {
     const updatedChecklist = [...(formData.checklist || [])]
-    // For demo purposes, just remove from list when checked
     updatedChecklist.splice(index, 1)
     updateField('checklist', updatedChecklist)
   }
   
-  // Calendar helpers
   const generateCalendarDays = () => {
     const start = startOfMonth(calendarDate)
     const end = endOfMonth(calendarDate)

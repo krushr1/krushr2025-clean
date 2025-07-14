@@ -1,7 +1,3 @@
-/**
- * Status Badge Showcase - Demonstration of Enhanced Status Badge Variations
- * Shows integration examples for existing components like TaskCard, SimpleCreatePanel, etc.
- */
 
 import React, { useState } from 'react'
 import { Card, CardHeader, CardContent, CardTitle } from './card'
@@ -10,7 +6,6 @@ import { EnhancedStatusBadge, GradientStatusBadge, DotMatrixStatusBadge, Minimal
 import { TaskStatus } from '../../types/enums'
 import { cn } from '../../lib/utils'
 
-// Integration example for Task Cards
 export const EnhancedTaskCard = ({ 
   title, 
   description, 
@@ -46,7 +41,6 @@ export const EnhancedTaskCard = ({
   )
 }
 
-// Integration example for Status Selection Interface
 export const EnhancedStatusSelector = ({ 
   currentStatus, 
   onStatusChange,
@@ -87,7 +81,6 @@ export const EnhancedStatusSelector = ({
   )
 }
 
-// Integration example for Kanban Column Headers
 export const EnhancedKanbanColumnHeader = ({ 
   title, 
   count, 
@@ -120,7 +113,6 @@ export const EnhancedKanbanColumnHeader = ({
   )
 }
 
-// Comprehensive Showcase Component
 export const StatusBadgeShowcase = () => {
   const [selectedStatus, setSelectedStatus] = useState<TaskStatus>(TaskStatus.TODO)
   const [selectedVariant, setSelectedVariant] = useState<'gradient' | 'dot-matrix' | 'minimal'>('gradient')

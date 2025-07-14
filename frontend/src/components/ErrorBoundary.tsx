@@ -32,10 +32,8 @@ class ErrorBoundary extends Component<Props, State> {
       errorInfo
     })
 
-    // Call custom error handler if provided
     this.props.onError?.(error, errorInfo)
 
-    // Report to error tracking service in production
     if (process.env.NODE_ENV === 'production') {
       // TODO: Add error reporting service (Sentry, LogRocket, etc.)
       console.error('Production error:', {
@@ -62,7 +60,6 @@ class ErrorBoundary extends Component<Props, State> {
 
       const { level = 'component' } = this.props
 
-      // Different UI based on error level
       if (level === 'critical') {
         return (
           <div className="min-h-screen flex items-center justify-center bg-krushr-gray-50 p-6">
@@ -131,7 +128,6 @@ class ErrorBoundary extends Component<Props, State> {
         )
       }
 
-      // Component level (default)
       return (
         <div className="flex items-center justify-center min-h-[200px] p-4 bg-krushr-gray-50 rounded-lg border border-krushr-gray-200">
           <div className="text-center max-w-sm">
@@ -172,7 +168,6 @@ class ErrorBoundary extends Component<Props, State> {
 
 export default ErrorBoundary
 
-// Convenience components for different levels
 export const ComponentErrorBoundary: React.FC<{ children: ReactNode }> = ({ children }) => (
   <ErrorBoundary level="component">{children}</ErrorBoundary>
 )

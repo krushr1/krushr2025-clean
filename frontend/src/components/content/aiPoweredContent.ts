@@ -1,7 +1,3 @@
-/**
- * AI Powered Section Content Data
- * Centralized content management for the ChatGPT AI section
- */
 
 export const AI_POWERED_CONTENT = {
   title: 'Backed by Mindblowing ChatGPT Powered AI',

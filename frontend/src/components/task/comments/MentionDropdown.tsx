@@ -1,7 +1,3 @@
-/**
- * MentionDropdown Component
- * Dropdown menu for @mention autocomplete in comments
- */
 
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar'
@@ -74,7 +70,6 @@ export class MentionDropdown {
       })
       .join('')
 
-    // Add click event listeners
     this.element.querySelectorAll('.mention-item').forEach((item, index) => {
       item.addEventListener('click', () => {
         this.selectItem(index)
@@ -133,7 +128,6 @@ export class MentionDropdown {
   }
 }
 
-// React component version for when needed
 export const MentionDropdownComponent = forwardRef<
   HTMLDivElement,
   MentionDropdownProps

@@ -1,7 +1,3 @@
-/**
- * CommentAttachment Component
- * Display file attachments in comments with preview and download
- */
 
 import React, { useState } from 'react'
 import { Button } from '../../ui/button'
@@ -47,7 +43,6 @@ export function CommentAttachment({
   const [previewAttachment, setPreviewAttachment] = useState<Attachment | null>(null)
   const [showAll, setShowAll] = useState(false)
 
-  // Helper function to get file icon
   const getFileIcon = (mimeType: string) => {
     if (mimeType.startsWith('image/')) return Image
     if (mimeType.startsWith('video/')) return Video
@@ -55,7 +50,6 @@ export function CommentAttachment({
     return File
   }
 
-  // Helper function to format file size
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
@@ -64,7 +58,6 @@ export function CommentAttachment({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
-  // Helper function to check if file can be previewed
   const canPreview = (mimeType: string) => {
     return mimeType.startsWith('image/') || 
            mimeType.startsWith('video/') || 
@@ -72,7 +65,6 @@ export function CommentAttachment({
            mimeType.startsWith('text/')
   }
 
-  // Handle file download
   const handleDownload = (attachment: Attachment) => {
     const link = document.createElement('a')
     link.href = attachment.url
@@ -83,7 +75,6 @@ export function CommentAttachment({
     document.body.removeChild(link)
   }
 
-  // Handle file preview
   const handlePreview = (attachment: Attachment) => {
     if (canPreview(attachment.mimeType)) {
       setPreviewAttachment(attachment)

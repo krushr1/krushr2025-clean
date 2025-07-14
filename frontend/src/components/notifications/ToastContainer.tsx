@@ -1,7 +1,3 @@
-/**
- * Toast Container Component
- * Manages multiple notification toasts with auto-dismiss
- */
 
 import React, { useEffect, useState } from 'react'
 import { useAppStore } from '../../stores/app-store'
@@ -17,7 +13,6 @@ export default function ToastContainer() {
   const [toasts, setToasts] = useState<ToastNotification[]>([])
   const { notifications, markNotificationRead } = useAppStore()
 
-  // Listen for new notifications and create toasts
   useEffect(() => {
     const newNotifications = notifications
       .filter(n => !n.is_read)
@@ -35,7 +30,6 @@ export default function ToastContainer() {
     }
   }, [notifications, toasts])
 
-  // Auto-dismiss toasts after 5 seconds
   useEffect(() => {
     toasts.forEach(toast => {
       const timer = setTimeout(() => {
@@ -51,7 +45,6 @@ export default function ToastContainer() {
   }
 
   const handleToastAction = (notification: ToastNotification) => {
-    // Mark as read and dismiss
     markNotificationRead(notification.id)
     handleDismissToast(notification.toastId)
     
@@ -60,7 +53,6 @@ export default function ToastContainer() {
   }
 
   const handleToastClose = (notification: ToastNotification) => {
-    // Mark as read when manually closed
     markNotificationRead(notification.id)
     handleDismissToast(notification.toastId)
   }

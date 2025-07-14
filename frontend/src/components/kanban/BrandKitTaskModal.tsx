@@ -26,7 +26,6 @@ export default function BrandKitTaskModal({
 }: BrandKitTaskModalProps) {
   const isEditMode = !!task
 
-  // Form state
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<Priority>(Priority.MEDIUM)
@@ -38,15 +37,12 @@ export default function BrandKitTaskModal({
   const [newTag, setNewTag] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  // Queries
   const { data: workspaceUsers } = trpc.user.getWorkspaceUsers.useQuery({ workspaceId })
   
-  // Mutations
   const createTaskMutation = trpc.task.create.useMutation()
   const updateTaskMutation = trpc.task.update.useMutation()
   const deleteTaskMutation = trpc.task.delete.useMutation()
 
-  // Initialize form data
   useEffect(() => {
     if (task) {
       setTitle(task.title || '')
@@ -135,7 +131,6 @@ export default function BrandKitTaskModal({
 
   if (!open) return null
 
-  // Use React Portal to render modal at document body level, outside panel hierarchy
   return createPortal(
     <div 
       className="fixed inset-0 z-[999999] flex items-center justify-center p-6 animate-fade-in"

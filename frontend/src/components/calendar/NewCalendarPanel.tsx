@@ -83,12 +83,10 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
   const [panelSize, setPanelSize] = useState({ width: 0, height: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Calendar date calculations
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(currentDate)
   const calendarDays = eachDayOfInterval({ start: monthStart, end: monthEnd })
 
-  // Fetch calendar events
   const { data: eventsData, isLoading } = trpc.calendar.list.useQuery({
     workspaceId,
     startDate: monthStart,
@@ -107,7 +105,6 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
     }))
   }, [eventsData])
 
-  // Get events for a specific day
   const getEventsForDay = (date: Date) => {
     return events.filter(event => 
       isSameDay(new Date(event.startTime), date) ||
@@ -115,7 +112,6 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
     )
   }
 
-  // Panel size tracking for responsive layout
   useEffect(() => {
     const updateSize = () => {
       if (containerRef.current) {
@@ -133,11 +129,9 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
     return () => resizeObserver.disconnect()
   }, [])
 
-  // Determine panel layout based on size
   const layoutConfig = useMemo(() => {
     const { width, height } = panelSize
     
-    // Very small panels (< 300px wide or < 200px tall)
     if (width < 300 || height < 200) {
       return {
         size: 'micro',
@@ -159,7 +153,6 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
       }
     }
     
-    // Small panels (< 500px wide or < 300px tall)
     if (width < 500 || height < 300) {
       return {
         size: 'small',
@@ -181,7 +174,6 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
       }
     }
     
-    // Medium panels (< 800px wide or < 500px tall)
     if (width < 800 || height < 500) {
       return {
         size: 'medium',
@@ -203,7 +195,6 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
       }
     }
     
-    // Large panels (full features)
     return {
       size: 'large',
       showSidebar: true,
@@ -224,7 +215,6 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
     }
   }, [panelSize, selectedDate, showSearch])
 
-  // Get filtered events
   const filteredEvents = useMemo(() => {
     if (!searchQuery) return events
     return events.filter(event => 
@@ -247,10 +237,8 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
     setShowEventModal(true)
   }
 
-  // Auto-hide search when query is cleared
   React.useEffect(() => {
     if (searchQuery === '' && showSearch) {
-      // Small delay to allow typing
       const timer = setTimeout(() => {
         setShowSearch(false)
       }, 2000)
@@ -258,10 +246,8 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
     }
   }, [searchQuery, showSearch])
 
-  // Enhanced keyboard shortcuts and auto-hide functionality
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't handle shortcuts when typing in inputs
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return
       }
@@ -340,7 +326,6 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
     )
   }
 
-  // For extremely small panels, show a minimal calendar-only view
   if (layoutConfig.size === 'micro' && panelSize.height < 150) {
     return (
       <div ref={containerRef} className={cn("flex h-full bg-white", className)}>
@@ -656,7 +641,6 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
               const isCurrentMonth = isSameMonth(date, currentDate)
               const isCurrentDay = isToday(date)
               
-              // Use configured max events per day
               const maxEvents = layoutConfig.maxEventsPerDay
               
               return (

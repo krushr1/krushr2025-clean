@@ -101,13 +101,13 @@
   border: 2px solid #ffffff;
   border-top: 2px solid transparent;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 2s linear 3;
 }
 
 .skeleton-shimmer {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 4s 2;
 }
 
 /* Font family standards */
@@ -171,8 +171,8 @@ function toggleSkeletonContent() {
     // Show skeleton
     card.innerHTML = `
       <div class="text-center">
-        <div class="shimmer-placeholder" style="height: 32px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; border-radius: 8px; margin-bottom: 16px; animation: shimmer 2s infinite;"></div>
-        <div class="shimmer-placeholder" style="height: 16px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; border-radius: 8px; margin: 0 auto; width: 60%; animation: shimmer 2s infinite;"></div>
+        <div class="shimmer-placeholder" style="height: 32px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; border-radius: 8px; margin-bottom: 16px; animation: shimmer 4s infinite;"></div>
+        <div class="shimmer-placeholder" style="height: 16px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; border-radius: 8px; margin: 0 auto; width: 60%; animation: shimmer 4s infinite;"></div>
       </div>
     `;
   }
@@ -799,7 +799,7 @@ function toggleSkeletonContent() {
                   
                   <!-- Benefits Checklist Component Card -->
                   <div class="card testimonial-slider-card-small">
-                    <img src="images/sarah-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <img src="images/lindsay-johnson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
                     <h2 class="pricing-card-heading">Benefits Checklist</h2>
                     <div class="text-200 medium">Animated reveal of key value propositions with checkmark icons</div>
                     <div class="divider _24px bg-neutral-300"></div>
@@ -823,7 +823,7 @@ function toggleSkeletonContent() {
                   
                   <!-- Dual CTA Buttons Component Card -->
                   <div class="card testimonial-slider-card-small">
-                    <img src="images/michael-foster-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <img src="images/john-carter-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
                     <h2 class="pricing-card-heading">Dual CTA Buttons</h2>
                     <div class="text-200 medium">Primary and secondary action buttons with consistent styling</div>
                     <div class="divider _24px bg-neutral-300"></div>
@@ -894,9 +894,9 @@ function toggleSkeletonContent() {
                       <p class="text-300" style="color: #64748b; margin-bottom: 8px;"><strong>Function:</strong> Animated reveal of key value propositions with checkmark icons</p>
                       <p class="text-300" style="color: #64748b; margin-bottom: 12px;"><strong>Animation:</strong> <code>opacity:0</code> with <code>data-w-id</code> triggers for progressive disclosure</p>
                       <div class="card documentation-card" style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #143197; margin-bottom: 12px;">
-                        <div class="flex align-top" style="margin-bottom: 8px; animation: checkReveal 3s ease-in-out infinite;">
-                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-24px" style="animation: checkBounce 3s ease-in-out infinite; animation-delay: 0.2s;">
-                          <div style="animation: textSlide 3s ease-in-out infinite; animation-delay: 0.4s; opacity: 0;">
+                        <div class="flex align-top" style="margin-bottom: 8px; animation: checkReveal 6s ease-in-out 1;">
+                          <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" class="mg-right-24px" style="animation: checkBounce 6s ease-in-out 1; animation-delay: 0.2s;">
+                          <div style="animation: textSlide 3s ease-in-out 1; animation-delay: 0.4s; opacity: 0;">
                             <h3 class="heading-h4-size-copy-copy mg-bottom-8px-copy-copy">Complete UI component library with working examples</h3>
                           </div>
                         </div>
@@ -1027,7 +1027,7 @@ function toggleSkeletonContent() {
                             Disabled
                           </button>
                           <button style="width: 100%; background: #143197; color: white; padding: 12px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: wait; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <div style="width: 16px; height: 16px; border: 2px solid white; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                            <div style="width: 16px; height: 16px; border: 2px solid white; border-top: 2px solid transparent; border-radius: 50%; animation: spin 2s linear infinite;"></div>
                             Loading...
                           </button>
                         </div>
@@ -1188,7 +1188,7 @@ function toggleSkeletonContent() {
                       <div class="card documentation-card info-card" style="background: #f0f9ff; padding: 16px; border-radius: 8px; border-left: 3px solid #57C7EB; margin-bottom: 12px;">
                         <div style="position: relative; width: 100%; height: 120px; background: #1a1a1a; border-radius: 8px; color: #ffffff; margin-bottom: 12px; overflow: hidden;">
                           <div style="
-                            animation: floatIn 3s ease-in-out infinite;
+                            animation: floatIn 3s ease-in-out 1;
                             transform: translate3d(0, 10%, 0);
                             opacity: 0;
                             animation-delay: 0.5s;
@@ -1222,7 +1222,7 @@ function toggleSkeletonContent() {
                       <div class="card documentation-card info-card" style="background: #f0f9ff; padding: 16px; border-radius: 8px; border-left: 3px solid #57C7EB; margin-bottom: 12px;">
                         <div style="position: relative; width: 100%; height: 160px; background: #1a1a1a; border-radius: 8px; color: #ffffff; margin-bottom: 12px; overflow: hidden;">
                           <div style="
-                            animation: floatInDesktop 3s ease-in-out infinite;
+                            animation: floatInDesktop 3s ease-in-out 1;
                             transform: translate3d(0, 10%, 0);
                             opacity: 0;
                             animation-delay: 1s;
@@ -1764,12 +1764,12 @@ function toggleSkeletonContent() {
 
 /* Apply to elements */
 .animation-check-bounce { 
-  animation: checkBounce 3s ease-in-out infinite; 
+  animation: checkBounce 6s ease-in-out 1; 
   animation-delay: 0.2s; 
 }
 
 .animation-text-slide { 
-  animation: textSlide 3s ease-in-out infinite; 
+  animation: textSlide 3s ease-in-out 1; 
   animation-delay: 0.4s; 
 }</code></pre>
                   </div>
@@ -4814,7 +4814,7 @@ var(--task-done) /* #10b981 */</code></pre>
                   </div>
                 
                   <div class="card testimonial-slider-card-small">
-                    <img src="images/sarah-smith-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <img src="images/sophie-moore-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
                     <h4 class="pricing-card-heading">Content Cards</h4>
                     <div class="text-200 medium color-neutral-600 mg-bottom-16px">Rounded cards with centered content</div>
                     <div class="divider _24px bg-neutral-300 mg-bottom-16px"></div>
@@ -4828,7 +4828,7 @@ var(--task-done) /* #10b981 */</code></pre>
                   </div>
                 
                   <div class="card testimonial-slider-card-small">
-                    <img src="images/alex-thompson-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
+                    <img src="images/andy-smith-testimonial-card-bg-techcloud-webflow-ecommerce-template.svg" loading="eager" alt="" class="testimonials-slider-card---bg-banner">
                     <h4 class="pricing-card-heading">Navigation Links</h4>
                     <div class="text-200 medium color-neutral-600 mg-bottom-16px">Dropdown style navigation elements</div>
                     <div class="divider _24px bg-neutral-300 mg-bottom-16px"></div>
@@ -7616,63 +7616,66 @@ var(--task-done) /* #10b981 */</code></pre>
                     <p class="paragraph-18px mg-bottom-24px" style="color: #64748b;"><strong>Learning platform UI patterns</strong> with course cards, assessment interfaces, progress tracking, and interactive components for educational applications.</p>
                     
                     <!-- EDUCATIONAL INTERFACE SHOWCASE -->
-                    <div style="margin-bottom: 80px;">
-                      <h3 class="heading-h4-size mg-bottom-32px" style="color: #143197; text-align: center;">Educational Interface Components</h3>
+                    <div style="margin-bottom: 100px;">
+                      <h3 class="heading-h4-size mg-bottom-32px" style="color: #143197; text-align: center; font-size: 28px; margin-bottom: 48px;">Educational Interface Components</h3>
                       
-                      <!-- Basic Learning Components Row -->
-                      <div style="margin-bottom: 80px;">
-                        <h4 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 32px; text-align: center;">Core Learning Components</h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto;">
-
+                      <!-- Core Learning Components Section -->
+                      <div style="margin-bottom: 160px;">
+                        <div style="text-align: center; margin-bottom: 64px;">
+                          <h4 style="color: #374151; font-size: 24px; font-weight: 700; margin-bottom: 16px;">Core Learning Components</h4>
+                          <p style="color: #64748b; font-size: 18px; max-width: 600px; margin: 0 auto; line-height: 1.6;">Essential building blocks for educational platforms including course cards, certificates, learning paths, and interactive code editors.</p>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 80px; max-width: 1400px; margin: 0 auto;">
                           <!-- Course Card -->
-                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                            <h5 style="color: #143197; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;">Course Cards</h5>
-                            <p style="color: #64748b; font-size: 16px; margin: 0 0 32px 0; line-height: 1.6;">Progress tracking and enrollment</p>
-                            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-bottom: 24px;">
-                              <div style="width: 80px; height: 60px; background: #143197; border-radius: 8px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 20px;">JS</div>
-                              <div style="color: #143197; font-weight: 600; font-size: 18px; margin-bottom: 12px;">JavaScript Basics</div>
-                              <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
+                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                            <h5 style="color: #143197; font-size: 26px; font-weight: 700; margin: 0 0 20px 0;">Course Cards</h5>
+                            <p style="color: #64748b; font-size: 16px; margin: 0 0 36px 0; line-height: 1.6;">Progress tracking and enrollment interface</p>
+                            <div style="background: #f8fafc; padding: 28px; border-radius: 16px; margin-bottom: 28px;">
+                              <div style="width: 80px; height: 60px; background: #143197; border-radius: 12px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 22px;">JS</div>
+                              <div style="color: #143197; font-weight: 600; font-size: 18px; margin-bottom: 16px;">JavaScript Basics</div>
+                              <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 12px;">
                                 <div style="width: 75%; height: 100%; background: #10b981; border-radius: 4px;"></div>
                               </div>
-                              <div style="color: #64748b; font-size: 14px;">75% Complete</div>
+                              <div style="color: #64748b; font-size: 14px; font-weight: 500;">75% Complete</div>
                             </div>
                           </div>
 
                           <!-- Certificates -->
-                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                            <h5 style="color: #143197; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;">Certificates</h5>
-                            <p style="color: #64748b; font-size: 16px; margin: 0 0 32px 0; line-height: 1.6;">Achievement verification</p>
-                            <div style="background: linear-gradient(135deg, #143197 0%, #1e40af 100%); padding: 24px; border-radius: 12px; color: white; margin-bottom: 24px;">
-                              <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">Certificate</div>
-                              <div style="font-size: 14px; margin-bottom: 16px;">Sarah Johnson</div>
-                              <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 20px;">🏆</div>
+                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                            <h5 style="color: #143197; font-size: 26px; font-weight: 700; margin: 0 0 20px 0;">Certificates</h5>
+                            <p style="color: #64748b; font-size: 16px; margin: 0 0 36px 0; line-height: 1.6;">Achievement verification and credentials</p>
+                            <div style="background: linear-gradient(135deg, #143197 0%, #1e40af 100%); padding: 28px; border-radius: 16px; color: white; margin-bottom: 28px;">
+                              <div style="font-weight: 600; font-size: 18px; margin-bottom: 12px;">Certificate</div>
+                              <div style="font-size: 16px; margin-bottom: 20px;">Sarah Johnson</div>
+                              <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 24px;">🏆</div>
                             </div>
                           </div>
 
                           <!-- Learning Paths -->
-                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                            <h5 style="color: #143197; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;">Learning Paths</h5>
-                            <p style="color: #64748b; font-size: 16px; margin: 0 0 32px 0; line-height: 1.6;">Sequential progression</p>
-                            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-bottom: 24px;">
-                              <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
-                                <div style="width: 32px; height: 32px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 600;">✓</div>
-                                <div style="width: 3px; height: 16px; background: #d1d5db;"></div>
-                                <div style="width: 32px; height: 32px; background: #143197; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 600;">2</div>
-                                <div style="width: 3px; height: 16px; background: #d1d5db;"></div>
-                                <div style="width: 32px; height: 32px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 16px; font-weight: 600;">3</div>
+                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                            <h5 style="color: #143197; font-size: 26px; font-weight: 700; margin: 0 0 20px 0;">Learning Paths</h5>
+                            <p style="color: #64748b; font-size: 16px; margin: 0 0 36px 0; line-height: 1.6;">Sequential course progression</p>
+                            <div style="background: #f8fafc; padding: 28px; border-radius: 16px; margin-bottom: 28px;">
+                              <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                                <div style="width: 36px; height: 36px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 600;">✓</div>
+                                <div style="width: 4px; height: 20px; background: #d1d5db; border-radius: 2px;"></div>
+                                <div style="width: 36px; height: 36px; background: #143197; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 600;">2</div>
+                                <div style="width: 4px; height: 20px; background: #d1d5db; border-radius: 2px;"></div>
+                                <div style="width: 36px; height: 36px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 16px; font-weight: 600;">3</div>
                               </div>
                             </div>
                           </div>
 
                           <!-- Code Editor -->
-                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                            <h5 style="color: #143197; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;">Code Editor</h5>
-                            <p style="color: #64748b; font-size: 16px; margin: 0 0 32px 0; line-height: 1.6;">Interactive coding exercises</p>
-                            <div style="background: #1a1a1a; padding: 20px; border-radius: 12px; color: white; text-align: left; margin-bottom: 24px;">
-                              <div style="display: flex; gap: 6px; margin-bottom: 12px;">
-                                <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
-                                <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
-                                <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+                          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                            <h5 style="color: #143197; font-size: 26px; font-weight: 700; margin: 0 0 20px 0;">Code Editor</h5>
+                            <p style="color: #64748b; font-size: 16px; margin: 0 0 36px 0; line-height: 1.6;">Interactive coding exercises</p>
+                            <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; color: white; text-align: left; margin-bottom: 28px;">
+                              <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                                <div style="width: 14px; height: 14px; background: #ef4444; border-radius: 50%;"></div>
+                                <div style="width: 14px; height: 14px; background: #f59e0b; border-radius: 50%;"></div>
+                                <div style="width: 14px; height: 14px; background: #10b981; border-radius: 50%;"></div>
                               </div>
                               <div style="font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6;">
                                 function add(a, b) {<br>
@@ -7682,107 +7685,114 @@ var(--task-done) /* #10b981 */</code></pre>
                               </div>
                             </div>
                           </div>
-
                         </div>
                       </div>
 
-                      <!-- Quiz Interface Showcase -->
-                      <div style="margin-bottom: 80px;">
-                        <h4 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 32px; text-align: center;">Quiz & Assessment Interface</h4>
-                        <div style="max-width: 800px; margin: 0 auto; background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                          <h5 style="color: #143197; font-size: 28px; font-weight: 700; margin: 0 0 16px 0; text-align: center;">Interactive Quiz</h5>
-                          <p style="color: #64748b; font-size: 18px; margin: 0 0 40px 0; text-align: center; line-height: 1.6;">Real-time assessment with progress tracking</p>
+                      <!-- Quiz Interface Section -->
+                      <div style="margin-bottom: 160px;">
+                        <div style="text-align: center; margin-bottom: 64px;">
+                          <h4 style="color: #374151; font-size: 24px; font-weight: 700; margin-bottom: 16px;">Quiz & Assessment Interface</h4>
+                          <p style="color: #64748b; font-size: 18px; max-width: 600px; margin: 0 auto; line-height: 1.6;">Interactive assessment tools with real-time progress tracking and immediate feedback systems.</p>
+                        </div>
+                        
+                        <div style="max-width: 900px; margin: 0 auto; background: white; border: 1px solid #e5e7eb; border-radius: 24px; padding: 48px; box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);">
+                          <h5 style="color: #143197; font-size: 32px; font-weight: 700; margin: 0 0 20px 0; text-align: center;">Interactive Quiz</h5>
+                          <p style="color: #64748b; font-size: 18px; margin: 0 0 48px 0; text-align: center; line-height: 1.6;">Real-time assessment with progress tracking</p>
                           
-                          <div style="background: #f8fafc; padding: 32px; border-radius: 16px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                              <div style="color: #143197; font-weight: 600; font-size: 20px;">Question 3 of 10</div>
-                              <div style="background: #143197; color: white; padding: 12px 20px; border-radius: 8px; font-size: 18px; font-weight: 600;">2:45</div>
+                          <div style="background: #f8fafc; padding: 40px; border-radius: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                              <div style="color: #143197; font-weight: 600; font-size: 22px;">Question 3 of 10</div>
+                              <div style="background: #143197; color: white; padding: 16px 24px; border-radius: 12px; font-size: 18px; font-weight: 600;">2:45</div>
                             </div>
                             
-                            <div style="width: 100%; height: 12px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 32px;">
-                              <div style="width: 30%; height: 100%; background: #143197; border-radius: 6px;"></div>
+                            <div style="width: 100%; height: 16px; background: #e5e7eb; border-radius: 8px; overflow: hidden; margin-bottom: 40px;">
+                              <div style="width: 30%; height: 100%; background: #143197; border-radius: 8px;"></div>
                             </div>
                             
-                            <div style="color: #374151; font-size: 22px; margin-bottom: 32px; font-weight: 500; text-align: center;">Which keyword declares variables in JavaScript?</div>
+                            <div style="color: #374151; font-size: 24px; margin-bottom: 40px; font-weight: 500; text-align: center;">Which keyword declares variables in JavaScript?</div>
                             
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;">
-                              <div style="padding: 16px 20px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 18px; cursor: pointer; transition: all 0.2s;">A) variable</div>
-                              <div style="padding: 16px 20px; border: 3px solid #143197; border-radius: 12px; font-size: 18px; background: #f0f4ff; cursor: pointer;">B) var</div>
-                              <div style="padding: 16px 20px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 18px; cursor: pointer; transition: all 0.2s;">C) declare</div>
-                              <div style="padding: 16px 20px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 18px; cursor: pointer; transition: all 0.2s;">D) v</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px;">
+                              <div style="padding: 20px 24px; border: 2px solid #e5e7eb; border-radius: 16px; font-size: 18px; cursor: pointer; transition: all 0.2s;">A) variable</div>
+                              <div style="padding: 20px 24px; border: 3px solid #143197; border-radius: 16px; font-size: 18px; background: #f0f4ff; cursor: pointer;">B) var</div>
+                              <div style="padding: 20px 24px; border: 2px solid #e5e7eb; border-radius: 16px; font-size: 18px; cursor: pointer; transition: all 0.2s;">C) declare</div>
+                              <div style="padding: 20px 24px; border: 2px solid #e5e7eb; border-radius: 16px; font-size: 18px; cursor: pointer; transition: all 0.2s;">D) v</div>
                             </div>
                             
                             <div style="display: flex; justify-content: space-between;">
-                              <div style="padding: 12px 24px; border: 2px solid #e5e7eb; border-radius: 8px; color: #6b7280; cursor: pointer; font-size: 16px;">Previous</div>
-                              <div style="padding: 12px 24px; background: #143197; color: white; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">Next Question</div>
+                              <div style="padding: 16px 32px; border: 2px solid #e5e7eb; border-radius: 12px; color: #6b7280; cursor: pointer; font-size: 16px; font-weight: 500;">Previous</div>
+                              <div style="padding: 16px 32px; background: #143197; color: white; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600;">Next Question</div>
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      <!-- Student Dashboard Showcase -->
-                      <div style="margin-bottom: 80px;">
-                        <h4 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 32px; text-align: center;">Student Dashboard Interface</h4>
-                        <div style="max-width: 900px; margin: 0 auto; background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                          <h5 style="color: #143197; font-size: 28px; font-weight: 700; margin: 0 0 16px 0; text-align: center;">Learning Progress Dashboard</h5>
-                          <p style="color: #64748b; font-size: 18px; margin: 0 0 40px 0; text-align: center; line-height: 1.6;">Comprehensive overview of student learning journey</p>
+                      <!-- Student Dashboard Section -->
+                      <div style="margin-bottom: 160px;">
+                        <div style="text-align: center; margin-bottom: 64px;">
+                          <h4 style="color: #374151; font-size: 24px; font-weight: 700; margin-bottom: 16px;">Student Dashboard Interface</h4>
+                          <p style="color: #64748b; font-size: 18px; max-width: 600px; margin: 0 auto; line-height: 1.6;">Comprehensive learning analytics with progress tracking, performance metrics, and activity visualization.</p>
+                        </div>
+                        
+                        <div style="max-width: 1000px; margin: 0 auto; background: white; border: 1px solid #e5e7eb; border-radius: 24px; padding: 48px; box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);">
+                          <h5 style="color: #143197; font-size: 32px; font-weight: 700; margin: 0 0 20px 0; text-align: center;">Learning Progress Dashboard</h5>
+                          <p style="color: #64748b; font-size: 18px; margin: 0 0 48px 0; text-align: center; line-height: 1.6;">Comprehensive overview of student learning journey</p>
                           
                           <!-- Stats Grid -->
-                          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; margin-bottom: 40px;">
-                            <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 16px;">
-                              <div style="color: #143197; font-weight: 700; font-size: 32px; margin-bottom: 8px;">12</div>
-                              <div style="color: #64748b; font-size: 16px;">Courses Enrolled</div>
+                          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; margin-bottom: 48px;">
+                            <div style="text-align: center; padding: 32px 24px; background: #f8fafc; border-radius: 20px;">
+                              <div style="color: #143197; font-weight: 700; font-size: 36px; margin-bottom: 12px;">12</div>
+                              <div style="color: #64748b; font-size: 16px; font-weight: 500;">Courses Enrolled</div>
                             </div>
-                            <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 16px;">
-                              <div style="color: #10b981; font-weight: 700; font-size: 32px; margin-bottom: 8px;">8</div>
-                              <div style="color: #64748b; font-size: 16px;">Completed</div>
+                            <div style="text-align: center; padding: 32px 24px; background: #f8fafc; border-radius: 20px;">
+                              <div style="color: #10b981; font-weight: 700; font-size: 36px; margin-bottom: 12px;">8</div>
+                              <div style="color: #64748b; font-size: 16px; font-weight: 500;">Completed</div>
                             </div>
-                            <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 16px;">
-                              <div style="color: #f59e0b; font-weight: 700; font-size: 32px; margin-bottom: 8px;">127</div>
-                              <div style="color: #64748b; font-size: 16px;">Hours Learned</div>
+                            <div style="text-align: center; padding: 32px 24px; background: #f8fafc; border-radius: 20px;">
+                              <div style="color: #f59e0b; font-weight: 700; font-size: 36px; margin-bottom: 12px;">127</div>
+                              <div style="color: #64748b; font-size: 16px; font-weight: 500;">Hours Learned</div>
                             </div>
-                            <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 16px;">
-                              <div style="color: #8b5cf6; font-weight: 700; font-size: 32px; margin-bottom: 8px;">89%</div>
-                              <div style="color: #64748b; font-size: 16px;">Average Score</div>
+                            <div style="text-align: center; padding: 32px 24px; background: #f8fafc; border-radius: 20px;">
+                              <div style="color: #8b5cf6; font-weight: 700; font-size: 36px; margin-bottom: 12px;">89%</div>
+                              <div style="color: #64748b; font-size: 16px; font-weight: 500;">Average Score</div>
                             </div>
                           </div>
 
                           <!-- Weekly Activity Chart -->
-                          <div style="background: #f8fafc; padding: 32px; border-radius: 16px;">
-                            <div style="color: #374151; font-weight: 600; font-size: 20px; margin-bottom: 24px; text-align: center;">Weekly Learning Activity</div>
-                            <div style="display: flex; gap: 16px; justify-content: center; align-items: end; margin-bottom: 24px;">
+                          <div style="background: #f8fafc; padding: 40px; border-radius: 20px;">
+                            <div style="color: #374151; font-weight: 600; font-size: 24px; margin-bottom: 32px; text-align: center;">Weekly Learning Activity</div>
+                            <div style="display: flex; gap: 20px; justify-content: center; align-items: end; margin-bottom: 32px;">
                               <div style="text-align: center;">
-                                <div style="width: 32px; height: 64px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
-                                <div style="color: #64748b; font-size: 14px;">Mon</div>
+                                <div style="width: 36px; height: 64px; background: #10b981; border-radius: 8px; margin-bottom: 12px;"></div>
+                                <div style="color: #64748b; font-size: 14px; font-weight: 500;">Mon</div>
                               </div>
                               <div style="text-align: center;">
-                                <div style="width: 32px; height: 48px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
-                                <div style="color: #64748b; font-size: 14px;">Tue</div>
+                                <div style="width: 36px; height: 48px; background: #10b981; border-radius: 8px; margin-bottom: 12px;"></div>
+                                <div style="color: #64748b; font-size: 14px; font-weight: 500;">Tue</div>
                               </div>
                               <div style="text-align: center;">
-                                <div style="width: 32px; height: 80px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
-                                <div style="color: #64748b; font-size: 14px;">Wed</div>
+                                <div style="width: 36px; height: 80px; background: #10b981; border-radius: 8px; margin-bottom: 12px;"></div>
+                                <div style="color: #64748b; font-size: 14px; font-weight: 500;">Wed</div>
                               </div>
                               <div style="text-align: center;">
-                                <div style="width: 32px; height: 40px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
-                                <div style="color: #64748b; font-size: 14px;">Thu</div>
+                                <div style="width: 36px; height: 40px; background: #10b981; border-radius: 8px; margin-bottom: 12px;"></div>
+                                <div style="color: #64748b; font-size: 14px; font-weight: 500;">Thu</div>
                               </div>
                               <div style="text-align: center;">
-                                <div style="width: 32px; height: 72px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
-                                <div style="color: #64748b; font-size: 14px;">Fri</div>
+                                <div style="width: 36px; height: 72px; background: #10b981; border-radius: 8px; margin-bottom: 12px;"></div>
+                                <div style="color: #64748b; font-size: 14px; font-weight: 500;">Fri</div>
                               </div>
                               <div style="text-align: center;">
-                                <div style="width: 32px; height: 56px; background: #10b981; border-radius: 6px; margin-bottom: 8px;"></div>
-                                <div style="color: #64748b; font-size: 14px;">Sat</div>
+                                <div style="width: 36px; height: 56px; background: #10b981; border-radius: 8px; margin-bottom: 12px;"></div>
+                                <div style="color: #64748b; font-size: 14px; font-weight: 500;">Sat</div>
                               </div>
                               <div style="text-align: center;">
-                                <div style="width: 32px; height: 88px; background: #143197; border-radius: 6px; margin-bottom: 8px;"></div>
-                                <div style="color: #64748b; font-size: 14px;">Sun</div>
+                                <div style="width: 36px; height: 88px; background: #143197; border-radius: 8px; margin-bottom: 12px;"></div>
+                                <div style="color: #64748b; font-size: 14px; font-weight: 500;">Sun</div>
                               </div>
                             </div>
                             <div style="text-align: center;">
-                              <div style="color: #f59e0b; font-weight: 700; font-size: 24px; margin-bottom: 8px;">7 day learning streak</div>
-                              <div style="color: #64748b; font-size: 16px;">Keep up the excellent work!</div>
+                              <div style="color: #f59e0b; font-weight: 700; font-size: 28px; margin-bottom: 12px;">7 day learning streak</div>
+                              <div style="color: #64748b; font-size: 18px;">Keep up the excellent work!</div>
                             </div>
                           </div>
                         </div>
@@ -11682,7 +11692,7 @@ var(--task-done) /* #10b981 */</code></pre>
               <div class="w-dyn-list">
                 <div role="list" class="w-dyn-items">
                   <div role="listitem" class="w-dyn-item">
-                    <a data-w-id="9f0b8505-99cb-9825-916c-c3e9dff54640" href="#/workspace" class="card integrations-slider-link-card w-inline-block"><img src="images/slack-logo.svg" loading="eager" alt="Slack Integration" class="max-w-70px mg-bottom-24px">
+                    <a data-w-id="9f0b8505-99cb-9825-916c-c3e9dff54640" href="#/workspace" class="card integrations-slider-link-card w-inline-block"><img src="images/slack-integration-logo.png" loading="eager" alt="Slack Integration" class="max-w-70px mg-bottom-24px">
                       <h3 class="card-link-title---hover-primary">Slack</h3>
                       <p class="color-neutral-600">Connect your workspace with Slack for seamless team communication</p>
                       <div class="badge-secondary light integrations-slider-card-badge">Team Chat</div>
@@ -13480,18 +13490,14 @@ var(--task-done) /* #10b981 */</code></pre>
     </div>
   </footer>
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=639e4c453c2d580eee7864d0" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-  <script src="js/webflow.js" type="text/javascript"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+  <!-- <script src="js/webflow.js" type="text/javascript"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script> -->
   <script>
-// get elements
-let menuLink = $(".menu_dp-link");
-let content = $(".menu_dropdown_content");
-let menuBG = $(".menu_bg");
-let dropdownWrap = $(".menu_content");
-let menuArrow = $(".menu_arrow-wrap");
-gsap.defaults({
-  duration: 0.4
-});
+// GSAP disabled to prevent page freeze
+console.log('Navigation scripts disabled for performance');
+</script>
+<script style="display: none;">
+// DISABLED CODE:
 function revealDropdown(currentLink, currentContent) {
   dropdownWrap.css("display", "flex");
   gsap.set(menuArrow, {
@@ -13553,7 +13559,17 @@ let showDropdown = gsap.timeline({
 });
 showDropdown.from(dropdownWrap, { opacity: 0, rotateX: -15, duration: 0.3 }).to(menuArrow, { opacity: 1, duration: 0.2 }, "<");
 // Link Hover In
+// Performance safeguard
+let animationInProgress = false;
+let animationTimeout;
+
 menuLink.on("mouseenter", function () {
+  // Prevent excessive animation triggering
+  if (animationInProgress) return;
+  
+  clearTimeout(animationTimeout);
+  animationInProgress = true;
+  
   // get elements
   let previousLink = menuLink.filter(".active").removeClass("active");
   let currentLink = $(this).addClass("active");
@@ -13567,6 +13583,11 @@ menuLink.on("mouseenter", function () {
   } else if (previousLink.index() !== currentLink.index()) {
     switchDropdown(currentLink, previousContent, currentContent);
   }
+  
+  // Reset animation flag after delay
+  animationTimeout = setTimeout(() => {
+    animationInProgress = false;
+  }, 500);
 });
 // Menu Hover Out
 $(".menu_dp-wrap").on("mouseleave", function () {

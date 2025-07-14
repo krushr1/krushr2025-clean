@@ -1,7 +1,3 @@
-/**
- * Enhanced Task Card Component
- * Professional task display with drag-drop support
- */
 
 import React from 'react'
 import { useSortable } from '@dnd-kit/sortable'

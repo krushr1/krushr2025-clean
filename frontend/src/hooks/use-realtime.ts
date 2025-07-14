@@ -1,15 +1,8 @@
-/**
- * Real-time integration hooks
- * Manages WebSocket connections and real-time data synchronization
- */
 
 import { useEffect, useCallback } from 'react'
 import { useAppStore } from '../stores/app-store'
 import { api } from '../lib/api'
 
-/**
- * Initialize real-time connection and data loading
- */
 export function useRealtimeConnection() {
   const {
     user,
@@ -31,7 +24,6 @@ export function useRealtimeConnection() {
     setError(null)
 
     try {
-      // Load initial data in parallel
       const [workspacesRes, kanbansRes, tasksRes, notificationsRes] = await Promise.all([
         api.getWorkspaces(),
         api.getKanbans(),
@@ -84,9 +76,6 @@ export function useRealtimeConnection() {
   }
 }
 
-/**
- * Hook for sending real-time updates
- */
 export function useRealtimeActions() {
   const { sendMessage } = useAppStore()
 
@@ -109,9 +98,6 @@ export function useRealtimeActions() {
   }
 }
 
-/**
- * Hook for optimistic updates with real-time sync
- */
 export function useOptimisticUpdates() {
   const { updateTask, addTask, deleteTask } = useAppStore()
   const { broadcastTaskUpdate } = useRealtimeActions()
@@ -121,22 +107,17 @@ export function useOptimisticUpdates() {
     updates: any,
     apiCall: () => Promise<any>
   ) => {
-    // Apply optimistic update immediately
     updateTask(taskId, updates)
     broadcastTaskUpdate({ id: taskId, ...updates })
 
     try {
-      // Sync with backend
       const result = await apiCall()
       if (result.success && result.data) {
-        // Update with server response if different
         updateTask(taskId, result.data)
       }
       return result
     } catch (error) {
-      // Revert optimistic update on error
       console.error('Failed to sync task update:', error)
-      // Could implement rollback logic here
       throw error
     }
   }, [updateTask, broadcastTaskUpdate])
@@ -151,17 +132,14 @@ export function useOptimisticUpdates() {
     addTask(optimisticTask)
 
     try {
-      // Create on backend
       const result = await apiCall()
       if (result.success && result.data) {
-        // Replace temp task with real task
         deleteTask(tempId)
         addTask(result.data)
         broadcastTaskUpdate(result.data)
       }
       return result
     } catch (error) {
-      // Remove temp task on error
       deleteTask(tempId)
       throw error
     }

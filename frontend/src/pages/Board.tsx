@@ -12,10 +12,6 @@ import KrushrLogo from '../components/common/KrushrLogo'
 import FloatingActionButton from '../components/ui/floating-action-button'
 import SimpleCreatePanel from '../components/forms/SimpleCreatePanel'
 
-/**
- * Dedicated board page for focused kanban task management
- * Integrates with real-time backend data and state management
- */
 export default function Board() {
   const { isAuthenticated } = useAuthStore()
   const [selectedKanban, setSelectedKanban] = useState<string | null>(null)
@@ -29,7 +25,6 @@ export default function Board() {
     { enabled: !!activeWorkspace?.id }
   )
 
-  // Auto-select first kanban
   useEffect(() => {
     if (kanbans.length > 0 && !selectedKanban) {
       setSelectedKanban(kanbans[0].id)
@@ -155,8 +150,6 @@ export default function Board() {
           onClose={() => setShowQuickTaskModal(false)}
           onSuccess={() => {
             setShowQuickTaskModal(false)
-            // Refresh data when task is created
-            // The KanbanBoard component will handle its own refresh
           }}
         />
       )}

@@ -102,7 +102,6 @@ export default function PanelToolbar({ workspaceId, panels = [], className }: Pa
   const utils = trpc.useUtils()
   const createPanel = trpc.panel.create.useMutation({
     onSuccess: () => {
-      // Invalidate and refetch panel list
       utils.panel.list.invalidate({ workspaceId })
       setDialogOpen(false)
       setSelectedType(null)
@@ -110,7 +109,6 @@ export default function PanelToolbar({ workspaceId, panels = [], className }: Pa
     }
   })
 
-  // Global panel control mutations
   const toggleMinimizeAll = trpc.panel.toggleMinimizeAll.useMutation({
     onSuccess: () => {
       utils.panel.list.invalidate({ workspaceId })
@@ -135,7 +133,6 @@ export default function PanelToolbar({ workspaceId, panels = [], className }: Pa
     }
   })
 
-  // Get available Kanban boards and Chat threads for selection
   const { data: kanbans = [] } = trpc.kanban.list.useQuery({ workspaceId })
   const { data: chatThreads = [] } = trpc.chat.listThreads.useQuery({ workspaceId })
 
@@ -143,7 +140,6 @@ export default function PanelToolbar({ workspaceId, panels = [], className }: Pa
     const panelType = PANEL_TYPES.find(p => p.type === type)
     if (!panelType) return
 
-    // Prepare panel data and size based on type
     let data: Record<string, any> = { workspaceId }
     let size = { width: 4, height: 3 }
 
@@ -179,7 +175,6 @@ export default function PanelToolbar({ workspaceId, panels = [], className }: Pa
 
     const title = customTitle.trim() || panelType.defaultTitle
 
-    // Prepare panel data and size based on type
     let data: Record<string, any> = { workspaceId }
     let size = { width: 4, height: 3 }
     
@@ -207,7 +202,6 @@ export default function PanelToolbar({ workspaceId, panels = [], className }: Pa
     })
   }
 
-  // Global control handlers
   const handleMinimizeAll = () => {
     const hasMinimized = panels.some((panel: any) => panel.is_minimized)
     toggleMinimizeAll.mutate({ 
@@ -234,7 +228,6 @@ export default function PanelToolbar({ workspaceId, panels = [], className }: Pa
     exitAllFullscreen.mutate({ workspaceId })
   }
 
-  // Check panel states for UI
   const hasMinimizedPanels = panels.some((panel: any) => panel.is_minimized)
   const hasLockedPanels = panels.some((panel: any) => panel.is_locked)
   const hasFullscreenPanels = panels.some((panel: any) => {
@@ -401,7 +394,7 @@ export default function PanelToolbar({ workspaceId, panels = [], className }: Pa
                         )}
                       >
                         <div className="flex items-center gap-2 mb-1">
-                          <Icon className="w-4 h-4 text-krushr-secondary" />
+                          <Icon className="w-4 h-4 text-krushr-coral-red" />
                           <span className="font-medium text-sm">{label}</span>
                         </div>
                         <p className="text-xs text-gray-600">{description}</p>

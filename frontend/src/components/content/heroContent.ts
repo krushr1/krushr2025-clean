@@ -1,7 +1,3 @@
-/**
- * Hero Section Content Data
- * Centralized content management for the landing page hero section
- */
 
 export const HERO_CONTENT = {
   notice: {

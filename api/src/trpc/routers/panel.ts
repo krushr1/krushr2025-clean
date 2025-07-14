@@ -59,6 +59,48 @@ export const panelRouter = router({
         throw new Error('Workspace not found or access denied')
       }
 
+      let panelData_processed = { ...data }
+
+      // Handle creating new resources for different panel types
+      if (data?.createNew && panelData.type === 'KANBAN') {
+        // Create a new empty Kanban board
+        const newKanban = await ctx.prisma.kanban.create({
+          data: {
+            title: panelData.title,
+            description: `Kanban board for ${panelData.title}`,
+            workspaceId: input.workspaceId,
+            position: 0,
+            columns: {
+              create: [
+                { title: 'To Do', position: 0, color: '#6b7280' },
+                { title: 'In Progress', position: 1, color: '#3b82f6' },
+                { title: 'Review', position: 2, color: '#f59e0b' },
+                { title: 'Done', position: 3, color: '#10b981' }
+              ]
+            }
+          }
+        })
+        
+        panelData_processed = {
+          workspaceId: input.workspaceId,
+          kanbanId: newKanban.id
+        }
+      } else if (data?.createNew && panelData.type === 'CHAT') {
+        // For chat panels, we'll create empty chat data
+        panelData_processed = {
+          workspaceId: input.workspaceId,
+          chatType: 'workspace',
+          messages: []
+        }
+      } else if (data?.createNew && panelData.type === 'NOTES') {
+        // For notes panels, start with empty content
+        panelData_processed = {
+          workspaceId: input.workspaceId,
+          notes: [],
+          currentNote: null
+        }
+      }
+
       return ctx.prisma.panel.create({
         data: {
           type: panelData.type,
@@ -68,7 +110,7 @@ export const panelRouter = router({
           position_y: position?.y ?? 0,
           width: size?.width ?? 6,
           height: size?.height ?? 4,
-          data: JSON.stringify(data ?? {})
+          data: JSON.stringify(panelData_processed)
         },
         include: {
           workspace: {

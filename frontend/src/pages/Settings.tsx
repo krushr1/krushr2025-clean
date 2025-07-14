@@ -15,7 +15,6 @@ export default function Settings() {
   const [preferences, setPreferences] = useState<any>(null)
   const [activeSessions, setActiveSessions] = useState<any[]>([])
   
-  // Profile form state
   const [profileForm, setProfileForm] = useState({
     name: '',
     avatar: '',
@@ -24,7 +23,6 @@ export default function Settings() {
     language: ''
   })
   
-  // Password form state
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
@@ -32,24 +30,20 @@ export default function Settings() {
   })
   const [showPasswords, setShowPasswords] = useState(false)
   
-  // Profile modal states
   const [showProfileModal, setShowProfileModal] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
   const [showSessionsModal, setShowSessionsModal] = useState(false)
   
-  // tRPC queries
   const userQuery = trpc.user.me.useQuery()
   const preferencesQuery = trpc.user.getPreferences.useQuery()
   const sessionsQuery = trpc.user.getActiveSessions.useQuery()
   
-  // tRPC mutations
   const updateProfileMutation = trpc.user.updateProfile.useMutation()
   const updatePasswordMutation = trpc.user.updatePassword.useMutation()
   const updatePreferencesMutation = trpc.user.updatePreferences.useMutation()
   const exportDataMutation = trpc.user.exportData.useMutation()
   const revokeSessionMutation = trpc.user.revokeSession.useMutation()
   
-  // Initialize data
   useEffect(() => {
     if (userQuery.data) {
       setCurrentUser(userQuery.data)
@@ -75,7 +69,6 @@ export default function Settings() {
     }
   }, [sessionsQuery.data])
   
-  // Handlers
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
     try {

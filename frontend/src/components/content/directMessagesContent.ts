@@ -1,7 +1,3 @@
-/**
- * Direct Messages Section Content Data
- * Centralized content management for the direct messaging features section
- */
 
 export const DIRECT_MESSAGES_CONTENT = {
   title: 'Master your direct messages',

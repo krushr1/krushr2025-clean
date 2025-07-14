@@ -1,7 +1,3 @@
-/**
- * Mobile Navigation Component
- * Bottom tab navigation for mobile devices
- */
 
 import React from 'react'
 import { Button } from '../ui/button'

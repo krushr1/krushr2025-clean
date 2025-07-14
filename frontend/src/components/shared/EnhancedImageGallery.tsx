@@ -1,18 +1,12 @@
 import React from 'react'
 import { EnhancedImageGalleryProps, ImageConfig } from '../types/sectionTypes'
 
-/**
- * Enhanced Image Gallery Component
- * Unified component for displaying images across all sections
- * Supports multiple variants and layouts while maintaining pixel-perfect appearance
- */
 export const EnhancedImageGallery: React.FC<EnhancedImageGalleryProps> = ({
   images,
   layout,
   variant,
   containerClassName = ''
 }) => {
-  // Get container class based on variant and layout
   const getContainerClass = () => {
     switch (variant) {
       case 'hero':
@@ -30,7 +24,6 @@ export const EnhancedImageGallery: React.FC<EnhancedImageGalleryProps> = ({
     }
   }
 
-  // Get inner container class for certain variants
   const getInnerContainerClass = () => {
     switch (variant) {
       case 'hero':
@@ -51,7 +44,6 @@ export const EnhancedImageGallery: React.FC<EnhancedImageGalleryProps> = ({
   const containerClass = getContainerClass()
   const innerContainerClass = getInnerContainerClass()
 
-  // Render images array
   const renderImages = (imageConfigs: ImageConfig[]) => {
     return imageConfigs.map((image, index) => (
       <img
@@ -66,9 +58,7 @@ export const EnhancedImageGallery: React.FC<EnhancedImageGalleryProps> = ({
     ))
   }
 
-  // Handle different layout patterns
   if (variant === 'communication') {
-    // Communication section has no inner container
     return (
       <div className={`${containerClass} ${containerClassName}`}>
         {renderImages(images)}
@@ -77,7 +67,6 @@ export const EnhancedImageGallery: React.FC<EnhancedImageGalleryProps> = ({
   }
 
   if (variant === 'superform') {
-    // Superform has a special nested structure
     return (
       <div className={`${containerClass} ${containerClassName}`}>
         <div className={innerContainerClass}>
@@ -87,7 +76,6 @@ export const EnhancedImageGallery: React.FC<EnhancedImageGalleryProps> = ({
     )
   }
 
-  // Standard structure for most variants
   return (
     <div className={`${containerClass} ${containerClassName}`}>
       <div className={innerContainerClass}>

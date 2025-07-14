@@ -1,7 +1,3 @@
-/**
- * Simple AttachmentUpload Component
- * Basic file upload that works reliably
- */
 
 import React, { useState, useRef } from 'react'
 import { Upload, X, File, Image, FileText, CheckCircle2, AlertCircle } from 'lucide-react'
@@ -74,11 +70,9 @@ export const AttachmentUploadSimple: React.FC<AttachmentUploadProps> = ({
           continue
         }
 
-        // Convert file to buffer
         const arrayBuffer = await file.arrayBuffer()
         const buffer = Array.from(new Uint8Array(arrayBuffer))
 
-        // Upload file
         await uploadMutation.mutateAsync({
           taskId,
           file: {

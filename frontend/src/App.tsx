@@ -1,6 +1,7 @@
 import { HashRouter, Route, Routes, Navigate } from 'react-router'
 import TRPCProvider from './providers/TRPCProvider'
 import { useAuthStore } from './stores/auth-store'
+import { useEffect } from 'react'
 import Test from './pages/Test'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -17,19 +18,30 @@ import Pricing from './pages/Pricing'
 import Workspace from './pages/Workspace'
 import Landing from './pages/Landing'
 
-/**
- * Protected Route Component
- */
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated, isLoading } = useAuthStore()
+  
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
+  }
+  
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
 }
 
-/**
- * Krushr Project Management Platform
- * Modern tRPC-powered project management with type safety
- */
 export default function App() {
+  const { hydrate } = useAuthStore()
+
+  useEffect(() => {
+    hydrate().catch(console.error)
+  }, [hydrate])
+
   return (
     <TRPCProvider>
       <HashRouter>
@@ -47,6 +59,8 @@ export default function App() {
           <Route path="/teams" element={<ProtectedRoute><Teams /></ProtectedRoute>} />
           <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
           <Route path="/workspace" element={<ProtectedRoute><Workspace /></ProtectedRoute>} />
+          <Route path="/workspace/:workspaceId" element={<ProtectedRoute><Workspace /></ProtectedRoute>} />
+          <Route path="/workspaces/new" element={<ProtectedRoute><Workspace /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         </Routes>

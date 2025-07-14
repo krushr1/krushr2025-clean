@@ -1,7 +1,3 @@
-/**
- * Layout Builder Section Content Data
- * Centralized content management for the layout builder introduction section
- */
 
 export const LAYOUT_BUILDER_CONTENT = {
   title: 'Build the layout of your dreams in 5 minutes',

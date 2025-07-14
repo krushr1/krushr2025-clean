@@ -24,7 +24,6 @@ interface Note {
   } | null
 }
 
-// Note colors - standard pastel post-it colors
 const NOTE_COLORS = [
   { name: 'Yellow', value: '#fef3c7', bgValue: '#fffbeb', border: '#f59e0b' },
   { name: 'Pink', value: '#fce7f3', bgValue: '#fdf2f8', border: '#ec4899' },
@@ -36,14 +35,11 @@ const NOTE_COLORS = [
   { name: 'None', value: '#ffffff', bgValue: '#ffffff', border: '#e5e7eb' }
 ]
 
-// Helper function to get note color
 const getNoteColor = (note: Note) => {
-  // For now, use folder color if available, otherwise default to white
   const folderColor = note.folder?.color || '#ffffff'
   return NOTE_COLORS.find(c => c.value.toLowerCase() === folderColor.toLowerCase()) || NOTE_COLORS[7]
 }
 
-// Note Card Component
 function NoteCard({ note, isActive, onClick, isFirst, isLast }: {
   note: Note
   isActive: boolean
@@ -119,7 +115,6 @@ function NoteCard({ note, isActive, onClick, isFirst, isLast }: {
   )
 }
 
-// Search Bar Component
 function SearchBar({ value, onChange, onCreateNote, isCreating }: {
   value: string
   onChange: (value: string) => void
@@ -153,7 +148,6 @@ function SearchBar({ value, onChange, onCreateNote, isCreating }: {
   )
 }
 
-// Editor Header Component
 function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, note, onPin, onColorChange }: {
   title: string
   onTitleChange: (title: string) => void
@@ -257,7 +251,6 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
   )
 }
 
-// Main Component
 const SimpleNotesPanel = React.forwardRef<HTMLDivElement, SimpleNotesPanelProps>(
   ({ workspaceId, className }, ref) => {
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null)
@@ -266,7 +259,6 @@ const SimpleNotesPanel = React.forwardRef<HTMLDivElement, SimpleNotesPanelProps>
   const [noteContent, setNoteContent] = useState('')
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null)
 
-  // tRPC queries
   const notesQuery = trpc.notes.list.useQuery({
     workspaceId,
     search: searchQuery || undefined
@@ -277,7 +269,6 @@ const SimpleNotesPanel = React.forwardRef<HTMLDivElement, SimpleNotesPanelProps>
     { enabled: !!activeNoteId }
   )
 
-  // Mutations
   const createNote = trpc.notes.create.useMutation({
     onSuccess: (note) => {
       setActiveNoteId(note.id)
@@ -327,7 +318,6 @@ const SimpleNotesPanel = React.forwardRef<HTMLDivElement, SimpleNotesPanelProps>
     }
   })
 
-  // Load active note data
   useEffect(() => {
     if (activeNoteQuery.data) {
       setNoteTitle(activeNoteQuery.data.title)
@@ -335,7 +325,6 @@ const SimpleNotesPanel = React.forwardRef<HTMLDivElement, SimpleNotesPanelProps>
     }
   }, [activeNoteQuery.data])
 
-  // Auto-save logic
   useEffect(() => {
     if (activeNoteId && (noteTitle || noteContent)) {
       if (saveTimer) clearTimeout(saveTimer)
@@ -380,10 +369,8 @@ const SimpleNotesPanel = React.forwardRef<HTMLDivElement, SimpleNotesPanelProps>
   }
 
   const handleColorChange = (noteId: string, color: string) => {
-    // For now, show a message that individual note colors aren't supported yet
     toast.info('Individual note colors require backend support. Notes currently use folder colors.')
     // TODO: Once backend supports note colors, use:
-    // updateNoteColor.mutate({ id: noteId, color })
   }
 
   const filteredNotes = notesQuery.data?.notes || []

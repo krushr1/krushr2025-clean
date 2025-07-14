@@ -1,7 +1,3 @@
-/**
- * Enhanced Calendar Component
- * Integrates tasks, deadlines, and meetings in unified view
- */
 
 import React, { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
@@ -50,11 +46,9 @@ export default function CalendarView({ className }: CalendarViewProps) {
 
   const { tasks } = useAppStore()
 
-  // Convert tasks to calendar events
   const calendarEvents = useMemo(() => {
     const events: CalendarEvent[] = []
 
-    // Add task deadlines
     tasks.forEach(task => {
       if (task.due_date) {
         events.push({
@@ -70,7 +64,6 @@ export default function CalendarView({ className }: CalendarViewProps) {
       }
     })
 
-    // Add mock meetings and milestones
     const now = new Date()
     events.push(
       {
@@ -98,7 +91,6 @@ export default function CalendarView({ className }: CalendarViewProps) {
     return events
   }, [tasks])
 
-  // Get current month calendar grid
   const getMonthCalendar = () => {
     const year = currentDate.getFullYear()
     const month = currentDate.getMonth()

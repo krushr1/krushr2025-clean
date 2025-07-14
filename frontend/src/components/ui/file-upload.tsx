@@ -1,7 +1,3 @@
-/**
- * File Upload Component
- * Drag-and-drop file upload with progress tracking
- */
 
 import React, { useRef, useState } from 'react'
 import { Upload, X, File, CheckCircle, AlertCircle } from 'lucide-react'

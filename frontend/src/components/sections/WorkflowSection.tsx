@@ -5,7 +5,6 @@ import { SectionBody } from '../layout/SectionBody'
 import { EnhancedImageGallery } from '../shared/EnhancedImageGallery'
 import { WORKFLOW_CONTENT } from '../content/workflowContent'
 
-// Convert content to new format
 const workflowSectionData = {
   title: WORKFLOW_CONTENT.title,
   description: WORKFLOW_CONTENT.description,
@@ -20,11 +19,6 @@ const workflowImages = [
   WORKFLOW_CONTENT.images.dashboard
 ]
 
-/**
- * Workflow Section Component - Refactored for Modern Architecture
- * Showcases workflow automation and task management capabilities
- * Now uses shared layout components for consistency and maintainability
- */
 export const WorkflowSection: React.FC = () => {
   const leftContent = (
     <>

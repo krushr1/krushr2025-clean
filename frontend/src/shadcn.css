@@ -584,15 +584,15 @@ h1, h2, h3, h4, h5, h6 {
 /* Krushr Brand Color Utilities */
 @layer utilities {
   .bg-krushr-coral-red {
-    background-color: hsl(var(--krushr-secondary));
+    background-color: hsl(var(--krushr-coral-red));
   }
   
   .text-krushr-coral-red {
-    color: hsl(var(--krushr-secondary));
+    color: hsl(var(--krushr-coral-red));
   }
   
   .border-krushr-coral-red {
-    border-color: hsl(var(--krushr-secondary));
+    border-color: hsl(var(--krushr-coral-red));
   }
   
   .ring-krushr-coral-red {

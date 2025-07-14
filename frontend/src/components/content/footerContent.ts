@@ -1,7 +1,3 @@
-/**
- * Footer Content Data
- * Centralized content management for the footer section
- */
 
 export const FOOTER_CONTENT = {
   logo: {

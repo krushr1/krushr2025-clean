@@ -43,7 +43,6 @@ interface Note {
 }
 
 const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspaceId, className }, ref) => {
-  // UI State
   const [searchTerm, setSearchTerm] = useState('')
   const [showArchived, setShowArchived] = useState(false)
   const [filterMode, setFilterMode] = useState<'all' | 'pinned' | 'recent'>('all')
@@ -52,7 +51,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
   const [leftPaneWidth, setLeftPaneWidth] = useState(380)
   const [isResizing, setIsResizing] = useState(false)
 
-  // Editor State
   const [editorState, setEditorState] = useState({
     title: '',
     content: '',
@@ -64,7 +62,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
   const containerRef = useRef<HTMLDivElement>(null)
   const resizerRef = useRef<HTMLDivElement>(null)
 
-  // Merge refs
   const mergedRef = useCallback((node: HTMLDivElement | null) => {
     containerRef.current = node
     if (typeof ref === 'function') {
@@ -74,7 +71,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     }
   }, [ref])
 
-  // tRPC
   const utils = trpc.useUtils()
   
   const { data: notesData, isLoading: notesLoading } = trpc.notes.list.useQuery({
@@ -133,7 +129,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     }
   })
 
-  // Responsive layout
   const handleResize = useCallback(() => {
     if (containerRef.current) {
       const containerWidth = containerRef.current.offsetWidth
@@ -157,7 +152,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     return () => resizeObserver.disconnect()
   }, [handleResize])
 
-  // Resizer mouse events
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing || !containerRef.current) return
@@ -185,7 +179,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     }
   }, [isResizing])
 
-  // Load note into editor when selected
   useEffect(() => {
     if (selectedNoteData && selectedNoteData.id !== editorState.noteId) {
       setEditorState({
@@ -197,7 +190,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     }
   }, [selectedNoteData?.id])
 
-  // Auto-save with debounce
   const debouncedTitle = useDebouncedValue(editorState.title, 1000)
   const debouncedContent = useDebouncedValue(editorState.content, 1000)
 
@@ -211,7 +203,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     }
   }, [debouncedTitle, debouncedContent])
 
-  // Handlers
   const handleNoteSelect = (noteId: string) => {
     setSelectedNoteId(noteId)
   }
@@ -251,7 +242,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     togglePinMutation.mutate({ id: noteId })
   }
 
-  // Filter notes
   const filteredNotes = notesData?.notes?.filter(note => {
     if (filterMode === 'pinned') return note.isPinned
     if (filterMode === 'recent') {
@@ -261,7 +251,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     return true
   }) || []
 
-  // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
@@ -276,12 +265,10 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     return date.toLocaleDateString()
   }
 
-  // Get word count
   const getWordCount = (content: string) => {
     return content?.trim().split(/\s+/).filter(word => word.length > 0).length || 0
   }
 
-  // Notes List Component
   const NotesList = () => (
     <div className="flex flex-col h-full bg-white">
       {/* Header */}
@@ -440,7 +427,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     </div>
   )
 
-  // Note Editor Component
   const NoteEditor = () => (
     <div className="flex flex-col h-full bg-white">
       {selectedNoteId ? (
@@ -594,7 +580,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
             </div>
           </>
         ) : (
-          /* Single Column Layout */
           <div className="flex-1">
             {selectedNoteId ? (
               <NoteEditor />

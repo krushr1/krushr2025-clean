@@ -12,10 +12,6 @@ interface ResponsiveImageProps {
   priority?: boolean
 }
 
-/**
- * Responsive Image Component
- * Optimized image loading with proper accessibility and responsive behavior
- */
 export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   src,
   srcSet,
@@ -29,7 +25,6 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   // Performance optimization for above-the-fold images
   const imageLoading = priority ? 'eager' : loading
   
-  // Variant-specific styling
   const variantStyles = {
     dashboard: {
       borderRadius: DESIGN_TOKENS.borderRadius.lg,
@@ -58,7 +53,6 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
       }}
       // Performance hint for browsers
       decoding="async"
-      // Preload hint for critical images
       {...(priority && { fetchPriority: 'high' as any })}
     />
   )

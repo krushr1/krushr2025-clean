@@ -1,7 +1,3 @@
-/**
- * TypeScript Interfaces for Landing Page Components
- * Comprehensive type definitions for type safety and developer experience
- */
 
 export interface HeroContent {
   readonly notice: {
@@ -94,7 +90,6 @@ interface BreakpointConfig {
   readonly desktop: string
 }
 
-// Component Props Interfaces
 export interface ButtonProps {
   variant: 'primary' | 'secondary'
   href: string

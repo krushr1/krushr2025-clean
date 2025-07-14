@@ -25,7 +25,12 @@
     "backup:list": "node backup-system.js list",
     "backup:restore": "node backup-system.js restore",
     "backup:quick": "./backup.sh quick",
-    "backup:clean": "node backup-system.js clean"
+    "backup:clean": "node backup-system.js clean",
+    "claude:start": "./start-claude-automation.sh",
+    "claude:stop": "./stop-claude-automation.sh",
+    "claude:orchestrator": "cd Github-CC-Research/claudecode-orchestrator && npm start",
+    "claude:auto-action": "cd Github-CC-Research/claude-code-auto-action && ./scripts/setup-auto-mode.sh",
+    "claude:status": "ps aux | grep -E \"(orchestrator|auto-action)\" | grep -v grep"
   },
   "workspaces": [
     "frontend",

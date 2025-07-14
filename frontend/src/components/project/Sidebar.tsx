@@ -5,9 +5,6 @@ import { trpc } from '../../lib/trpc'
 import KrushrLogo from '../common/KrushrLogo'
 import { useNavigate } from 'react-router'
 
-/**
- * Professional sidebar with dynamic user information and collapsible functionality
- */
 interface SidebarProps {
   currentPage: string
   onPageChange: (page: string) => void
@@ -31,7 +28,6 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
     }
   )
   
-  // Smart member display logic - always show something, even while loading
   const displayMembers = workspaceMembers.length > 0 ? workspaceMembers : []
   const shouldShowMembersList = activeWorkspace && !membersError
   const navigation = [
@@ -68,7 +64,6 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
 
   return (
     <div className={`${isCollapsed ? 'w-16' : 'w-64'} bg-sidebar border-r border-sidebar-border flex flex-col h-full transition-all duration-300`}>
-      {/* Header with Toggle */}
       <div className="p-4 border-b border-sidebar-border">
         <div className="flex items-center justify-between">
           <div className="flex-1">
@@ -88,7 +83,6 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
         </div>
       </div>
 
-      {/* Navigation */}
       <div className="p-4 border-b border-sidebar-border">
         <nav className="space-y-1">
           {navigation.map((item) => {
@@ -114,7 +108,6 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
             )
           })}
 
-          {/* Brandkit Folding Menu */}
           <div>
             <button
               onClick={() => setIsBrandkitOpen(!isBrandkitOpen)}
@@ -134,7 +127,6 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
               )}
             </button>
 
-            {/* Brandkit Submenu */}
             {isBrandkitOpen && !isCollapsed && (
               <div className="ml-6 mt-1 space-y-1">
                 {brandkitItems.map((item) => (
@@ -155,9 +147,8 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
         </nav>
       </div>
 
-      {/* Workspace Members Section - Redesigned for better UX */}
       {shouldShowMembersList && (
-        <div className={`${isCollapsed ? 'p-2' : 'p-4'} border-t border-sidebar-border`}>
+        <div className={`${isCollapsed ? 'p-2' : 'p-4'} border-t border-sidebar-border flex-1`}>
           {!isCollapsed && (
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-xs font-semibold text-sidebar-foreground/70 uppercase tracking-wide">
@@ -169,9 +160,7 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
             </div>
           )}
           
-          {/* Member List */}
           <div className={`space-y-2 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
-            {/* Show loading state */}
             {membersLoading && displayMembers.length === 0 && (
               <div className={`flex ${isCollapsed ? 'justify-center' : 'items-center space-x-3'} p-2`}>
                 <div className="w-8 h-8 rounded-full bg-sidebar-accent animate-pulse"></div>
@@ -184,7 +173,6 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
               </div>
             )}
             
-            {/* Show actual members */}
             {displayMembers.slice(0, isCollapsed ? 6 : 5).map((member) => (
               <div 
                 key={member.id} 
@@ -199,7 +187,6 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-krushr-primary to-krushr-primary/80 flex items-center justify-center text-white text-xs font-medium group-hover:scale-105 transition-transform">
                     {getInitials(member.name || 'U')}
                   </div>
-                  {/* Online status - more subtle */}
                   <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 border-2 border-sidebar rounded-full"></div>
                 </div>
                 
@@ -216,7 +203,6 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
               </div>
             ))}
             
-            {/* Overflow indicator */}
             {displayMembers.length > (isCollapsed ? 6 : 5) && (
               <div className={`${isCollapsed ? 'flex justify-center' : 'text-center pt-2'}`}>
                 {isCollapsed ? (
@@ -231,7 +217,6 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
               </div>
             )}
             
-            {/* Empty state */}
             {!membersLoading && displayMembers.length === 0 && !isCollapsed && (
               <div className="text-xs text-sidebar-foreground/60 text-center py-2">
                 No team members yet
@@ -241,7 +226,10 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
         </div>
       )}
 
-      {/* Footer - Current User */}
+      {!shouldShowMembersList && (
+        <div className="flex-1"></div>
+      )}
+
       {user && (
         <div className="p-4 border-t border-sidebar-border">
           {!isCollapsed ? (

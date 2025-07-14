@@ -5,10 +5,6 @@ import { trpc } from '../lib/trpc'
 import { FloatingInput } from '../components/ui/floating-input'
 import { Plus, Search, Mail, MapPin, MoreVertical, Loader2 } from 'lucide-react'
 
-/**
- * Teams page component for managing team members and their roles
- * Displays team member profiles, roles, and collaboration stats
- */
 export default function Teams() {
   const { isAuthenticated, user } = useAuthStore()
   const [searchTerm, setSearchTerm] = useState('')
@@ -35,7 +31,6 @@ export default function Teams() {
     )
   }
   
-  // Get all team members from all teams
   const allMembers = teams.flatMap(team => 
     team.members?.map(member => ({
       ...member,
@@ -44,7 +39,6 @@ export default function Teams() {
     })) || []
   )
   
-  // Filter members based on search and team
   const filteredMembers = allMembers.filter(member => {
     const matchesSearch = member.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          member.user?.email?.toLowerCase().includes(searchTerm.toLowerCase())

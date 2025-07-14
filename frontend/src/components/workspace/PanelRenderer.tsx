@@ -1,7 +1,8 @@
-import React, { useRef, lazy, Suspense, useState } from 'react'
+import React, { useRef, lazy, Suspense, useState, useEffect } from 'react'
 import { useToast } from '../../hooks/use-toast'
 import { Card, CardContent, CardHeader } from '../ui/card'
 import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 import { 
   Minimize2, 
   Maximize2, 
@@ -36,29 +37,23 @@ import {
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
 
-// Lazy load heavy components to improve initial load time
 const KanbanBoard = lazy(() => import('../kanban/KanbanBoard'))
 const Chat = lazy(() => import('../chat/Chat'))  
 const NotesPanel = lazy(() => import('../notes/NotesPanel'))
 const NewCalendarPanel = lazy(() => import('../calendar/NewCalendarPanel'))
 const Contacts = lazy(() => import('../contacts/Contacts'))
 
-// Import notes panel ref interface
 import type { NotesPanelRef } from '../notes/NotesPanel'
 
-// Import task creation panel
 import SimpleCreatePanel from '../forms/SimpleCreatePanel'
 
-// SimpleNotesPanel doesn't need ref interface - remove unused ref methods
 
-// Loading spinner component for panels
 const PanelLoadingSpinner = () => (
   <div className="flex items-center justify-center h-full">
     <Loader2 className="w-6 h-6 animate-spin text-krushr-primary" />
   </div>
 )
 
-// Error boundary for panel loading failures
 class PanelErrorBoundary extends React.Component<
   { children: React.ReactNode; fallback?: React.ReactNode },
   { hasError: boolean }
@@ -94,7 +89,6 @@ class PanelErrorBoundary extends React.Component<
 }
 
 // TODO: Import other components as they're created
-// import Email from '../email/Email'
 
 interface Panel {
   id: string
@@ -122,13 +116,19 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   const notesRef = useRef<NotesPanelRef>(null)
   const utils = trpc.useUtils()
   
-  // State for task creation panel
   const [showCreatePanel, setShowCreatePanel] = useState(false)
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [editedTitle, setEditedTitle] = useState(panel.title)
+
+  // Update editedTitle when panel title changes from external updates
+  useEffect(() => {
+    if (!isEditingTitle) {
+      setEditedTitle(panel.title)
+    }
+  }, [panel.title, isEditingTitle])
   
-  // Mutations for panel operations
   const toggleMinimize = trpc.panel.toggleMinimize.useMutation({
     onSuccess: () => {
-      // Invalidate and refetch panel list to ensure UI updates
       utils.panel.list.invalidate({ workspaceId })
       onRefresh?.()
     },
@@ -143,7 +143,6 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   })
   const toggleLock = trpc.panel.toggleLock.useMutation({
     onSuccess: () => {
-      // Invalidate and refetch panel list to ensure UI updates
       utils.panel.list.invalidate({ workspaceId })
       onRefresh?.()
     },
@@ -159,7 +158,6 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   const toggleFullscreen = trpc.panel.toggleFullscreen.useMutation({
     onSuccess: (updatedPanel) => {
       try {
-        // Fullscreen toggle successful
         const panelData = JSON.parse(updatedPanel.data)
         // Invalidate cache to ensure UI updates immediately
         utils.panel.list.invalidate({ workspaceId })
@@ -189,7 +187,6 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   })
   const deletePanel = trpc.panel.delete.useMutation({
     onSuccess: () => {
-      // Invalidate panel list after deletion
       utils.panel.list.invalidate({ workspaceId })
       onRefresh?.()
     },
@@ -203,27 +200,47 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     }
   })
 
-  // Get panel type icon using thin line Lucide icons for consistency with sidebar
+  const updatePanel = trpc.panel.update.useMutation({
+    onSuccess: () => {
+      utils.panel.list.invalidate({ workspaceId })
+      onRefresh?.()
+      setIsEditingTitle(false)
+      toast({
+        title: "Success",
+        description: "Panel title updated"
+      })
+    },
+    onError: (error) => {
+      console.error('Update failed:', error)
+      toast({
+        title: "Error", 
+        description: "Failed to update panel title",
+        variant: "destructive"
+      })
+      setEditedTitle(panel.title) // Reset to original title
+      setIsEditingTitle(false)
+    }
+  })
+
   const getPanelIcon = (type: string) => {
     switch (type) {
       case 'KANBAN':
-        return <FolderOpen className="w-4 h-4" />
+        return <FolderOpen className="w-4 h-4 text-krushr-coral-red" />
       case 'CHAT':
-        return <MessageCircle className="w-4 h-4" />
+        return <MessageCircle className="w-4 h-4 text-krushr-coral-red" />
       case 'CALENDAR':
-        return <Calendar className="w-4 h-4" />
+        return <Calendar className="w-4 h-4 text-krushr-coral-red" />
       case 'NOTES':
-        return <StickyNote className="w-4 h-4" />
+        return <StickyNote className="w-4 h-4 text-krushr-coral-red" />
       case 'EMAIL':
-        return <Mail className="w-4 h-4" />
+        return <Mail className="w-4 h-4 text-krushr-coral-red" />
       case 'CONTACTS':
-        return <Users className="w-4 h-4" />
+        return <Users className="w-4 h-4 text-krushr-coral-red" />
       default:
-        return <GripVertical className="w-4 h-4" />
+        return <GripVertical className="w-4 h-4 text-krushr-coral-red" />
     }
   }
 
-  // Render panel content based on type
   const renderPanelContent = () => {
     if (panel.is_minimized) {
       return null
@@ -231,7 +248,6 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
 
     switch (panel.type) {
       case 'KANBAN':
-        // Pass kanban ID from panel data if available
         const kanbanId = panel.data?.kanbanId
         if (!kanbanId) {
           return (
@@ -253,9 +269,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
         )
 
       case 'CHAT':
-        // Pass chat thread ID from panel data if available
         const chatId = panel.data?.chatId
-        // Always render the chat component - it will show demo messages if no threadId
         return (
           <PanelErrorBoundary>
             <Suspense fallback={<PanelLoadingSpinner />}>
@@ -337,28 +351,22 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   }
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    // Improved touch handling for mobile devices
     const target = e.target as HTMLElement
     if (target.closest('.panel-drag-handle')) {
-      // Allow touch dragging on drag handle
       e.stopPropagation()
     } else if (target.closest('.panel-content')) {
-      // Allow normal scrolling in panel content
       return
     }
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    // Improved touch handling for mobile devices
     const target = e.target as HTMLElement
     if (target.closest('.panel-drag-handle')) {
-      // Enable dragging on handle
       e.stopPropagation()
     }
   }
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    // Improved touch handling for mobile devices
     const target = e.target as HTMLElement
     if (target.closest('.panel-drag-handle')) {
       e.stopPropagation()
@@ -371,7 +379,40 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     }
   }
 
-  // Check if panel is fullscreen or focused
+  const handleTitleClick = () => {
+    if (!panel.is_locked) {
+      setIsEditingTitle(true)
+      setEditedTitle(panel.title)
+    }
+  }
+
+  const handleTitleSave = () => {
+    const trimmedTitle = editedTitle.trim()
+    if (trimmedTitle && trimmedTitle !== panel.title) {
+      updatePanel.mutate({
+        id: panel.id,
+        title: trimmedTitle
+      })
+    } else {
+      setIsEditingTitle(false)
+      setEditedTitle(panel.title)
+    }
+  }
+
+  const handleTitleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleTitleSave()
+    } else if (e.key === 'Escape') {
+      setIsEditingTitle(false)
+      setEditedTitle(panel.title)
+    }
+  }
+
+  const handleTitleBlur = () => {
+    handleTitleSave()
+  }
+
   const isFullscreen = panel.data?.isFullscreen || false
   const isFocused = panel.data?.isFocused || false
 
@@ -399,7 +440,28 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
           <div className="text-krushr-coral-red">
             {getPanelIcon(panel.type)}
           </div>
-          <h3 className="font-medium text-sm truncate">{panel.title}</h3>
+          {isEditingTitle ? (
+            <Input
+              value={editedTitle}
+              onChange={(e) => setEditedTitle(e.target.value)}
+              onKeyDown={handleTitleKeyDown}
+              onBlur={handleTitleBlur}
+              className="h-6 px-1 py-0 text-sm font-medium border-krushr-primary focus:border-krushr-primary focus:ring-1 focus:ring-krushr-primary"
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <h3 
+              className={cn(
+                "font-medium text-sm truncate",
+                !panel.is_locked && "cursor-pointer hover:text-krushr-primary transition-colors"
+              )}
+              onClick={handleTitleClick}
+              title={panel.is_locked ? "Panel is locked" : "Click to edit title"}
+            >
+              {panel.title}
+            </h3>
+          )}
           {panel.is_locked && (
             <Lock className="w-3 h-3 text-amber-600 flex-shrink-0" />
           )}
@@ -565,8 +627,3 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     </Card>
   )
 }
-
-/**
- * PanelRenderer - Factory component for rendering different panel types
- * Handles panel chrome (header, controls) and content rendering
- */

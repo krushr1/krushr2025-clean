@@ -1,7 +1,3 @@
-/**
- * tRPC Provider
- * Wraps the app with tRPC and React Query providers
- */
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from 'react'

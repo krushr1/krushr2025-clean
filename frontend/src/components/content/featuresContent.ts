@@ -1,7 +1,3 @@
-/**
- * Features Section Content Data
- * Centralized content management for the features section
- */
 
 export const FEATURES_CONTENT = {
   title: 'Put your workflow on one super-page',

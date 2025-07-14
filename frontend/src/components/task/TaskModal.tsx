@@ -1,7 +1,3 @@
-/**
- * Task Creation/Edit Modal
- * Comprehensive form for managing tasks with all fields
- */
 
 import React, { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog'
@@ -44,7 +40,6 @@ export default function TaskModal({
 }: TaskModalProps) {
   const isEditMode = !!task
   
-  // Form state
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<Priority>(Priority.MEDIUM)
@@ -55,7 +50,6 @@ export default function TaskModal({
   const [currentTag, setCurrentTag] = useState('')
   const [estimatedHours, setEstimatedHours] = useState<string>('')
 
-  // Queries
   const { data: users = [] } = trpc.user.listWorkspaceMembers.useQuery(
     { workspaceId },
     { enabled: !!workspaceId }
@@ -65,7 +59,6 @@ export default function TaskModal({
     { enabled: !!workspaceId }
   )
   
-  // Attachment query - refetch when task changes
   const { 
     data: attachments = [], 
     refetch: refetchAttachments,
@@ -75,7 +68,6 @@ export default function TaskModal({
     { enabled: !!task?.id && isEditMode }
   )
   
-  // Mutations
   const createTaskMutation = trpc.task.create.useMutation({
     onSuccess: () => {
       onSuccess?.()
@@ -91,7 +83,6 @@ export default function TaskModal({
     }
   })
 
-  // Delete attachment mutation
   const deleteAttachmentMutation = trpc.upload.deleteFile.useMutation({
     onSuccess: () => {
       refetchAttachments()
@@ -101,7 +92,6 @@ export default function TaskModal({
     }
   })
 
-  // Initialize form with task data in edit mode
   useEffect(() => {
     if (task) {
       setTitle(task.title || '')
@@ -400,7 +390,6 @@ export default function TaskModal({
                   targetId={task.id}
                   onUploadComplete={async (uploadedAttachments) => {
                     console.log('Uploaded attachments:', uploadedAttachments)
-                    // Refresh attachments immediately to show the new uploads
                     await refetchAttachments()
                   }}
                 />

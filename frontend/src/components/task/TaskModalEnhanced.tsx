@@ -1,7 +1,3 @@
-/**
- * Enhanced Task Modal with Comments
- * Complete task management with integrated comment system
- */
 
 import React, { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog'
@@ -61,7 +57,6 @@ export default function TaskModalEnhanced({
   const isEditMode = !!task
   const [activeTab, setActiveTab] = useState(defaultTab)
   
-  // Form state
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<Priority>(Priority.MEDIUM)
@@ -72,7 +67,6 @@ export default function TaskModalEnhanced({
   const [currentTag, setCurrentTag] = useState('')
   const [estimatedHours, setEstimatedHours] = useState<string>('')
 
-  // Queries
   const { data: users = [] } = trpc.user.listWorkspaceMembers.useQuery(
     { workspaceId },
     { enabled: !!workspaceId }
@@ -82,7 +76,6 @@ export default function TaskModalEnhanced({
     { enabled: !!workspaceId }
   )
   
-  // Attachment query - refetch when task changes
   const { 
     data: attachments = [], 
     refetch: refetchAttachments,
@@ -92,10 +85,8 @@ export default function TaskModalEnhanced({
     { enabled: !!task?.id && isEditMode }
   )
 
-  // Get comment count for tab badge
   const commentCount = useCommentCount(task?.id || '')
   
-  // Mutations
   const createTaskMutation = trpc.task.create.useMutation({
     onSuccess: () => {
       onSuccess?.()
@@ -107,11 +98,9 @@ export default function TaskModalEnhanced({
   const updateTaskMutation = trpc.task.update.useMutation({
     onSuccess: () => {
       onSuccess?.()
-      // Don't close modal on update - allow continued editing
     }
   })
 
-  // Delete attachment mutation
   const deleteAttachmentMutation = trpc.upload.deleteFile.useMutation({
     onSuccess: () => {
       refetchAttachments()
@@ -121,7 +110,6 @@ export default function TaskModalEnhanced({
     }
   })
 
-  // Initialize form with task data in edit mode
   useEffect(() => {
     if (task) {
       setTitle(task.title || '')
@@ -135,7 +123,6 @@ export default function TaskModalEnhanced({
     }
   }, [task])
 
-  // Reset form when modal closes
   useEffect(() => {
     if (!open) {
       resetForm()

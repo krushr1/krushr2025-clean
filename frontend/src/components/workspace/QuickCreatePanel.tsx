@@ -1,7 +1,3 @@
-/**
- * Quick Create Panel - Workspace Integration
- * Floating panel for universal content creation
- */
 
 import React, { useState } from 'react'
 import { PlusIcon, XIcon, MinimizeIcon, MaximizeIcon } from 'lucide-react'
@@ -141,7 +137,6 @@ export default function QuickCreatePanel({
     )
   }
   
-  // Docked position - use the same side panel as tasks
   return (
     <SimpleCreatePanel
       workspaceId={workspaceId}

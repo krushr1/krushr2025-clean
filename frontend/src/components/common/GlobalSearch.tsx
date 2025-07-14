@@ -1,7 +1,3 @@
-/**
- * Global Search Component
- * Search across workspaces, projects, tasks, and more
- */
 
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router'
@@ -42,7 +38,6 @@ export default function GlobalSearch({ open, onClose }: GlobalSearchProps) {
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
 
-  // Search queries
   const { data: searchResults, isLoading } = trpc.search.global.useQuery(
     { query },
     { 
@@ -51,7 +46,6 @@ export default function GlobalSearch({ open, onClose }: GlobalSearchProps) {
     }
   )
 
-  // Reset state when closing
   useEffect(() => {
     if (!open) {
       setQuery('')
@@ -59,7 +53,6 @@ export default function GlobalSearch({ open, onClose }: GlobalSearchProps) {
     }
   }, [open])
 
-  // Focus input when opening
   useEffect(() => {
     if (open && inputRef.current) {
       inputRef.current.focus()
@@ -93,7 +86,6 @@ export default function GlobalSearch({ open, onClose }: GlobalSearchProps) {
   }
 
   const handleSelect = (result: any) => {
-    // Navigate based on result type
     switch (result.type) {
       case 'task':
         navigate(`/board?task=${result.id}`)

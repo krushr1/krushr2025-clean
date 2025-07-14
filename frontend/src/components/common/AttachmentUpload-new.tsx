@@ -1,7 +1,3 @@
-/**
- * Enhanced AttachmentUpload Component
- * Robust file upload with drag-and-drop, progress tracking, and error handling
- */
 
 import React, { useState, useCallback, useRef } from 'react'
 import { useDropzone } from 'react-dropzone'
@@ -94,13 +90,11 @@ export const AttachmentUploadNew: React.FC<AttachmentUploadProps> = ({
       
       toast.success(`${variables.file.filename} uploaded successfully`)
       
-      // Check if all uploads are complete
       setUploadFiles(prev => {
         const allComplete = prev.every(f => f.status === 'success' || f.status === 'error')
         if (allComplete) {
           setIsUploading(false)
           onUploadComplete?.()
-          // Clear completed uploads after a delay
           setTimeout(() => {
             setUploadFiles(current => current.filter(f => f.status === 'error'))
           }, 2000)
@@ -126,18 +120,15 @@ export const AttachmentUploadNew: React.FC<AttachmentUploadProps> = ({
       return
     }
 
-    // Validate files
     const validFiles: File[] = []
     const errors: string[] = []
 
     for (const file of files) {
-      // Check file size
       if (file.size > maxSize) {
         errors.push(`${file.name}: File too large (max ${formatFileSize(maxSize)})`)
         continue
       }
 
-      // Check file type
       if (!acceptedTypes.includes(file.type)) {
         errors.push(`${file.name}: File type not supported`)
         continue
@@ -146,7 +137,6 @@ export const AttachmentUploadNew: React.FC<AttachmentUploadProps> = ({
       validFiles.push(file)
     }
 
-    // Show errors
     if (errors.length > 0) {
       errors.forEach(error => toast.error(error))
     }
@@ -155,7 +145,6 @@ export const AttachmentUploadNew: React.FC<AttachmentUploadProps> = ({
       return
     }
 
-    // Add files to upload queue
     const newUploadFiles: UploadFile[] = validFiles.map(file => ({
       file,
       id: generateId(),
@@ -166,21 +155,17 @@ export const AttachmentUploadNew: React.FC<AttachmentUploadProps> = ({
     setUploadFiles(prev => [...prev, ...newUploadFiles])
     setIsUploading(true)
 
-    // Start uploading files
     for (const uploadFile of newUploadFiles) {
       try {
-        // Update status to uploading
         setUploadFiles(prev => prev.map(f => 
           f.id === uploadFile.id 
             ? { ...f, status: 'uploading', progress: 10 }
             : f
         ))
 
-        // Convert file to buffer
         const arrayBuffer = await uploadFile.file.arrayBuffer()
         const buffer = Array.from(new Uint8Array(arrayBuffer))
 
-        // Simulate progress updates
         const progressInterval = setInterval(() => {
           setUploadFiles(prev => prev.map(f => 
             f.id === uploadFile.id && f.progress < 90
@@ -189,7 +174,6 @@ export const AttachmentUploadNew: React.FC<AttachmentUploadProps> = ({
           ))
         }, 200)
 
-        // Upload file
         await uploadMutation.mutateAsync({
           taskId,
           file: {
@@ -203,7 +187,6 @@ export const AttachmentUploadNew: React.FC<AttachmentUploadProps> = ({
         clearInterval(progressInterval)
 
       } catch (error) {
-        // Error is handled by mutation onError
         console.error('Upload error:', error)
       }
     }

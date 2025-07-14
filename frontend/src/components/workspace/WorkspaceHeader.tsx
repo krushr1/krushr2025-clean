@@ -1,7 +1,3 @@
-/**
- * Workspace Header with Universal Quick Create
- * Header component with integrated quick create functionality
- */
 
 import React, { useState } from 'react'
 import { PlusIcon, SearchIcon, BellIcon, SettingsIcon } from 'lucide-react'

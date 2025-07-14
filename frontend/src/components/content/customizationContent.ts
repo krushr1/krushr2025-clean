@@ -1,7 +1,3 @@
-/**
- * Customization Section Content Data
- * Centralized content management for the layout customization section
- */
 
 export const CUSTOMIZATION_CONTENT = {
   title: 'Create, move, and resize everything, just how you want it',

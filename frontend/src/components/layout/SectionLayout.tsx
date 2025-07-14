@@ -1,11 +1,6 @@
 import React from 'react'
 import { SectionLayoutProps, SectionVariant, LAYOUT_CONFIGS } from '../types/sectionTypes'
 
-/**
- * Unified Section Layout Component
- * Provides consistent layout structure across all landing page sections
- * Eliminates code duplication while maintaining pixel-perfect appearance
- */
 export const SectionLayout: React.FC<SectionLayoutProps> = ({ 
   variant, 
   children, 
@@ -26,10 +21,6 @@ export const SectionLayout: React.FC<SectionLayoutProps> = ({
   )
 }
 
-/**
- * Section Layout with Custom Grid Structure
- * For sections that need the full grid structure exposed
- */
 interface SectionLayoutWithGridProps {
   variant: SectionVariant
   leftContent: React.ReactNode

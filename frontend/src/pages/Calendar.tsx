@@ -3,10 +3,6 @@ import CalendarView from '../components/calendar/CalendarView'
 import { useRealtimeConnection } from '../hooks/use-realtime'
 import { Loader2 } from 'lucide-react'
 
-/**
- * Enhanced Calendar Page
- * Integrated task deadlines and meeting management
- */
 export default function Calendar() {
   const { isLoading } = useRealtimeConnection()
 

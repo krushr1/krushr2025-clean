@@ -28,7 +28,6 @@ export default function CompactTaskModal({
 }: CompactTaskModalProps) {
   const isEditMode = !!task
 
-  // Form state
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<Priority>(Priority.MEDIUM)
@@ -44,16 +43,13 @@ export default function CompactTaskModal({
   const [pendingFiles, setPendingFiles] = useState<File[]>([])
   const [uploadingFiles, setUploadingFiles] = useState(false)
 
-  // Queries
   const { data: workspaceUsers } = trpc.user.getWorkspaceUsers.useQuery({ workspaceId })
   
-  // Mutations
   const createTaskMutation = trpc.task.create.useMutation()
   const updateTaskMutation = trpc.task.update.useMutation()
   const deleteTaskMutation = trpc.task.delete.useMutation()
   const uploadTaskFile = trpc.upload.uploadTaskFile.useMutation()
 
-  // Initialize form data
   useEffect(() => {
     if (task) {
       setTitle(task.title || '')
@@ -108,7 +104,6 @@ export default function CompactTaskModal({
         createdTask = await createTaskMutation.mutateAsync(taskData)
       }
 
-      // Upload pending files if any
       if (pendingFiles.length > 0 && createdTask?.id) {
         setUploadingFiles(true)
         for (const file of pendingFiles) {
@@ -142,7 +137,6 @@ export default function CompactTaskModal({
     }
   }
 
-  // Helper function to convert File to ArrayBuffer
   const fileToArrayBuffer = (file: File): Promise<ArrayBuffer> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -158,17 +152,14 @@ export default function CompactTaskModal({
     })
   }
 
-  // Handle file selection for new tasks
   const handleFileSelect = (files: File[]) => {
     setPendingFiles(prev => [...prev, ...files])
   }
 
-  // Remove pending file
   const removePendingFile = (index: number) => {
     setPendingFiles(prev => prev.filter((_, i) => i !== index))
   }
 
-  // Format file size helper
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
@@ -192,14 +183,12 @@ export default function CompactTaskModal({
     }
   }
 
-  // Calendar helpers
   const generateCalendarDays = () => {
     const start = startOfMonth(calendarDate)
     const end = endOfMonth(calendarDate)
     const days = eachDayOfInterval({ start, end })
     const startDay = getDay(start)
     
-    // Add empty cells for days before month start
     const emptyDays = Array(startDay).fill(null)
     
     return [...emptyDays, ...days]
@@ -207,32 +196,26 @@ export default function CompactTaskModal({
 
   const handleDateSelect = (date: Date) => {
     setDueDate(date)
-    // No longer need to close calendar since it's always visible
   }
 
-  // Quick date helpers
   const setQuickDate = (days: number) => {
     const date = new Date()
     date.setDate(date.getDate() + days)
     setDueDate(date)
   }
 
-  // Context-aware defaults based on column
   useEffect(() => {
     if (!isEditMode && kanbanColumnId && !task) {
       setSelectedColumnId(kanbanColumnId)
       
-      // Smart defaults based on common kanban column patterns
       const columnIdLower = kanbanColumnId.toLowerCase()
       
-      // Priority defaults
       if (columnIdLower.includes('urgent') || columnIdLower.includes('critical')) {
         setPriority(Priority.URGENT)
       } else if (columnIdLower.includes('high') || columnIdLower.includes('important')) {
         setPriority(Priority.HIGH)
       }
       
-      // Status defaults based on column context
       if (columnIdLower.includes('progress') || columnIdLower.includes('doing') || columnIdLower.includes('active')) {
         setStatus(TaskStatus.IN_PROGRESS)
       } else if (columnIdLower.includes('review') || columnIdLower.includes('testing') || columnIdLower.includes('qa')) {
@@ -605,7 +588,6 @@ export default function CompactTaskModal({
                             const isImage = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExt || '')
                             const isDoc = ['pdf', 'doc', 'docx', 'txt', 'md'].includes(fileExt || '')
                             
-                            // Use appropriate icon color based on file type
                             const iconColor = isImage ? 'text-krushr-success' : isDoc ? 'text-krushr-info' : 'text-krushr-gray'
                             
                             return (

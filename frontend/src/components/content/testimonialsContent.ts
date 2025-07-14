@@ -1,7 +1,3 @@
-/**
- * Testimonials Section Content Data
- * Centralized content management for the testimonials section
- */
 
 export const TESTIMONIALS_CONTENT = {
   title: 'The reviews say it all',

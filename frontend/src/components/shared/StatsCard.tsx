@@ -7,10 +7,6 @@ interface StatsCardProps {
   className?: string
 }
 
-/**
- * Reusable Stats Card Component
- * Displays statistical information with large numbers and descriptions
- */
 export const StatsCard: React.FC<StatsCardProps> = ({
   number,
   suffix = '',

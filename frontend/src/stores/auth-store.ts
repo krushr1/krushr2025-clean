@@ -15,14 +15,13 @@ interface User {
 }
 
 interface AuthState {
-  // State
   user: User | null
   token: string | null
   isAuthenticated: boolean
   isLoading: boolean
   
-  // Actions
   hydrate: () => void
+  fetchUser: () => Promise<void>
   setUser: (user: User) => void
   setToken: (token: string) => void
   logout: () => void
@@ -32,39 +31,73 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      // Initial state - DEV: Always logged in
-      user: {
-        id: 'dev-user-123',
-        name: 'Development User',
-        email: 'dev@krushr.com',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dev',
-        createdAt: new Date()
-      },
-      token: 'dev-token-123',
-      isAuthenticated: true,
-      isLoading: false,
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isLoading: true,
 
-      // Initialize from localStorage - DEV: Always stay logged in
-      hydrate: () => {
+      hydrate: async () => {
         if (typeof window !== 'undefined') {
-          // DEV MODE: Force development login state
-          localStorage.setItem('auth-token', 'dev-token-123')
+          // Check if token exists in localStorage first
+          const existingToken = localStorage.getItem('auth-token')
+          if (!existingToken) {
+            localStorage.setItem('auth-token', 'dev-token-123')
+          }
+          
           set({ 
-            user: {
-              id: 'dev-user-123',
-              name: 'Development User',
-              email: 'dev@krushr.com',
-              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dev',
-              createdAt: new Date()
-            },
-            token: 'dev-token-123',
-            isAuthenticated: true,
-            isLoading: false 
+            token: existingToken || 'dev-token-123',
+            isLoading: true 
+          })
+
+          // Fetch user data from API
+          await get().fetchUser()
+        }
+      },
+
+      fetchUser: async () => {
+        const token = get().token
+        if (!token) return
+
+        try {
+          const response = await fetch('http://localhost:3002/trpc/user.me', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+
+          if (response.ok) {
+            const data = await response.json()
+            const userData = data.result.data
+            
+            set({
+              user: {
+                id: userData.id,
+                name: userData.name,
+                email: userData.email,
+                avatar: userData.avatar,
+                createdAt: new Date(userData.createdAt)
+              },
+              isAuthenticated: true,
+              isLoading: false
+            })
+          } else {
+            set({
+              user: null,
+              isAuthenticated: false,
+              isLoading: false
+            })
+          }
+        } catch (error) {
+          console.error('Failed to fetch user:', error)
+          set({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false
           })
         }
       },
 
-      // Actions
       setUser: (user) => 
         set({ 
           user, 

@@ -27,7 +27,6 @@ interface Note {
   } | null
 }
 
-// Note colors - standard pastel post-it colors
 const NOTE_COLORS = [
   { name: 'Yellow', value: '#fef3c7', bgValue: '#fffbeb', border: '#f59e0b' },
   { name: 'Pink', value: '#fce7f3', bgValue: '#fdf2f8', border: '#ec4899' },
@@ -39,9 +38,7 @@ const NOTE_COLORS = [
   { name: 'None', value: '#ffffff', bgValue: '#ffffff', border: '#e5e7eb' }
 ]
 
-// Helper function to get note color
 const getNoteColor = (note: Note) => {
-  // Use individual note color first, then folder color, then default to white
   const noteColor = note.color || note.folder?.color || '#ffffff'
   const colorConfig = NOTE_COLORS.find(c => c.value.toLowerCase() === noteColor.toLowerCase()) || NOTE_COLORS[7]
   
@@ -57,7 +54,6 @@ const getNoteColor = (note: Note) => {
   return colorConfig
 }
 
-// Note Card Component
 function NoteCard({ note, isActive, onClick, isFirst, isLast, onArchiveToggle }: {
   note: Note
   isActive: boolean
@@ -123,7 +119,6 @@ function NoteCard({ note, isActive, onClick, isFirst, isLast, onArchiveToggle }:
   )
 }
 
-// Search Bar Component
 function SearchBar({ value, onChange, onCreateNote, isCreating }: {
   value: string
   onChange: (value: string) => void
@@ -158,7 +153,6 @@ function SearchBar({ value, onChange, onCreateNote, isCreating }: {
   )
 }
 
-// Editor Header Component
 function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, note, onPin, onColorChange, onArchive, onExport, isSingleColumn, onBack }: {
   title: string
   onTitleChange: (title: string) => void
@@ -295,7 +289,6 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
   )
 }
 
-// Main Component
 const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
   ({ workspaceId, className }, ref) => {
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null)
@@ -308,7 +301,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
   const containerRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
-  // tRPC queries
   const notesQuery = trpc.notes.list.useQuery({
     workspaceId,
     search: searchQuery || undefined
@@ -319,7 +311,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
     { enabled: !!activeNoteId }
   )
 
-  // Mutations
   const createNote = trpc.notes.create.useMutation({
     onSuccess: (note) => {
       setActiveNoteId(note.id)
@@ -369,7 +360,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
     }
   })
 
-  // Simple client-side export since backend doesn't have export endpoint
   const handleExportNotes = () => {
     try {
       const notesToExport = filteredNotes.filter(note => !note.isArchived)
@@ -409,7 +399,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
     }
   })
 
-  // Load active note data
   useEffect(() => {
     if (activeNoteQuery.data) {
       setNoteTitle(activeNoteQuery.data.title)
@@ -417,7 +406,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
     }
   }, [activeNoteQuery.data])
 
-  // Responsive layout detection
   useEffect(() => {
     const checkSize = () => {
       if (containerRef.current) {
@@ -425,7 +413,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
         const shouldBeSingleColumn = width < 600 || isMobile
         setIsSingleColumn(shouldBeSingleColumn)
         
-        // Auto-show editor on mobile when note is selected
         if (shouldBeSingleColumn && activeNoteId && !showEditor) {
           setShowEditor(true)
         }
@@ -444,7 +431,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
     return () => resizeObserver.disconnect()
   }, [activeNoteId, isMobile, showEditor])
 
-  // Auto-save logic
   useEffect(() => {
     if (activeNoteId && (noteTitle || noteContent)) {
       if (saveTimer) clearTimeout(saveTimer)
@@ -482,7 +468,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
 
   const handleSelectNote = (note: Note) => {
     setActiveNoteId(note.id)
-    // Auto-show editor in single column mode
     if (isSingleColumn) {
       setShowEditor(true)
     }
@@ -490,7 +475,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
 
   const handleBackToList = () => {
     setShowEditor(false)
-    // Clear active note selection when going back to list
     setActiveNoteId(null)
   }
 
@@ -503,7 +487,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
   }
 
   const handleColorChange = (noteId: string, color: string) => {
-    // Update note with individual color
     updateNote.mutate({
       id: noteId,
       color: color

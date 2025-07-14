@@ -6,7 +6,6 @@ import { EnhancedFeaturesList } from '../shared/EnhancedFeaturesList'
 import { HERO_CONTENT } from '../content/heroContent'
 import { DESIGN_TOKENS } from '../content/designTokens'
 
-// Reusable components
 const NoticeBar: React.FC = () => (
   <div className="pricing-template-notice">
     <div className="text-block-6">

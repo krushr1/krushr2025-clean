@@ -1,7 +1,3 @@
-/**
- * Kanban Quick Create Integration
- * Inline form for creating tasks directly in Kanban columns
- */
 
 import React, { useState } from 'react'
 import { PlusIcon } from 'lucide-react'

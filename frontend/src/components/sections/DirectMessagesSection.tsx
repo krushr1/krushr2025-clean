@@ -2,7 +2,6 @@ import React from 'react'
 import { ButtonGroup } from '../shared/ButtonGroup'
 import { DIRECT_MESSAGES_CONTENT } from '../content/directMessagesContent'
 
-// Reusable components following established patterns
 const DirectMessagesFeaturesList: React.FC = () => (
   <div className="w-clearfix">
     <div className="grid-1-column gap-row-32px">
@@ -51,11 +50,6 @@ const DirectMessagesImage: React.FC = () => {
   )
 }
 
-/**
- * Direct Messages Section Component
- * Showcases direct messaging and chat capabilities
- * Uses the same container structure as customization section
- */
 export const DirectMessagesSection: React.FC = () => {
   return (
     <div className="grid-2-columns _1fr---1-2fr gap-row-64px box-2">

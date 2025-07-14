@@ -1,18 +1,12 @@
 import React from 'react'
 import { SectionHeaderProps } from '../types/sectionTypes'
 
-/**
- * Section Header Component
- * Provides consistent header structure across all sections
- * Handles title, subtitle, and description rendering
- */
 export const SectionHeader: React.FC<SectionHeaderProps> = ({ 
   title, 
   subtitle, 
   description, 
   variant 
 }) => {
-  // Determine layout class based on variant
   const getLayoutClass = () => {
     switch (variant) {
       case 'hero':

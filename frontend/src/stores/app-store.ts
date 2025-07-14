@@ -1,14 +1,9 @@
-/**
- * Krushr Global State Management
- * Zustand store with real-time WebSocket integration
- */
 
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { User, Kanban, Task, Team, Workspace, Notification } from '../../../shared/types.js'
 import { WEBSOCKET_EVENTS } from '../../../shared/constants.js'
 
-// WebSocket connection state
 interface WebSocketState {
   connected: boolean
   socket: WebSocket | null
@@ -16,13 +11,11 @@ interface WebSocketState {
   maxReconnectAttempts: number
 }
 
-// Application state interface
 interface AppState {
   // Authentication
   user: User | null
   isAuthenticated: boolean
   
-  // Core Data
   workspaces: Workspace[]
   activeWorkspace: Workspace | null
   teams: Team[]
@@ -30,16 +23,13 @@ interface AppState {
   tasks: Task[]
   notifications: Notification[]
   
-  // UI State
   sidebarOpen: boolean
   currentPage: string
   loading: boolean
   error: string | null
   
-  // WebSocket
   websocket: WebSocketState
   
-  // Actions
   setUser: (user: User | null) => void
   setActiveWorkspace: (workspace: Workspace) => void
   setWorkspaces: (workspaces: Workspace[]) => void
@@ -57,7 +47,6 @@ interface AppState {
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
   
-  // WebSocket Actions
   connectWebSocket: () => void
   disconnectWebSocket: () => void
   sendMessage: (event: string, data: any) => void
@@ -65,7 +54,6 @@ interface AppState {
 
 export const useAppStore = create<AppState>()(
   subscribeWithSelector((set, get) => ({
-    // Initial State
     user: null,
     isAuthenticated: false,
     workspaces: [],
@@ -88,7 +76,6 @@ export const useAppStore = create<AppState>()(
     // Authentication Actions
     setUser: (user) => set({ user, isAuthenticated: !!user }),
     
-    // Data Actions
     setActiveWorkspace: (workspace) => set({ activeWorkspace: workspace }),
     setWorkspaces: (workspaces) => set({ workspaces }),
     setTeams: (teams) => set({ teams }),
@@ -121,13 +108,11 @@ export const useAppStore = create<AppState>()(
       )
     })),
 
-    // UI Actions
     setSidebarOpen: (open) => set({ sidebarOpen: open }),
     setCurrentPage: (page) => set({ currentPage: page }),
     setLoading: (loading) => set({ loading }),
     setError: (error) => set({ error }),
 
-    // WebSocket Actions
     connectWebSocket: () => {
       const state = get()
       if (state.websocket.socket || !state.isAuthenticated) return
@@ -170,7 +155,6 @@ export const useAppStore = create<AppState>()(
             }
           }))
           
-          // Attempt reconnection
           const currentState = get()
           if (currentState.websocket.reconnectAttempts < currentState.websocket.maxReconnectAttempts) {
             setTimeout(() => {
@@ -223,7 +207,6 @@ export const useAppStore = create<AppState>()(
   }))
 )
 
-// WebSocket message handler
 function handleWebSocketMessage(
   message: any, 
   set: any, 
@@ -250,13 +233,11 @@ function handleWebSocketMessage(
       
     case WEBSOCKET_EVENTS.PERSONAL_CHAT_MESSAGE:
     case WEBSOCKET_EVENTS.TEAM_CHAT_MESSAGE:
-      // Handle chat messages (will implement in chat feature)
       console.log('Chat message received:', data)
       break
       
     case WEBSOCKET_EVENTS.USER_ONLINE:
     case WEBSOCKET_EVENTS.USER_OFFLINE:
-      // Handle user presence (will implement in team feature)
       console.log('User presence change:', data)
       break
       
@@ -265,7 +246,6 @@ function handleWebSocketMessage(
   }
 }
 
-// Selectors for optimized component subscriptions
 export const useAuth = () => useAppStore((state) => ({
   user: state.user,
   isAuthenticated: state.isAuthenticated,

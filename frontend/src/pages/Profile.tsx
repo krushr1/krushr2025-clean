@@ -1,10 +1,6 @@
 import Layout from '../components/project/Layout'
 import { Edit3, Mail, MapPin, Calendar, Activity } from 'lucide-react'
 
-/**
- * Profile page component for user account management
- * Displays user information, activity, and account settings
- */
 export default function Profile() {
   const userStats = [
     { label: 'Tasks Completed', value: '147', color: 'bg-green-100 text-green-800' },

@@ -1,8 +1,3 @@
-/**
- * Universal Input Form - Kanban Variant 3 (Power User)
- * Advanced Kanban features for power users (20% advanced use cases)
- * Comprehensive form with all Kanban functionality
- */
 
 import React, { useState, useCallback } from 'react'
 import { format } from 'date-fns'
@@ -12,7 +7,6 @@ import {
   ChevronRightIcon, SettingsIcon, ZapIcon, UsersIcon
 } from 'lucide-react'
 
-// UI Components
 import { Button } from '../ui/button'
 import { FloatingInput } from '../ui/floating-input'
 import { Textarea } from '../ui/textarea'
@@ -25,7 +19,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 
-// tRPC and Types
 import { trpc } from '../../lib/trpc'
 import { UniversalFormData, ContentType } from '../../types/universal-form'
 import { Priority, TaskStatus } from '../../types/enums'
@@ -80,7 +73,6 @@ export default function UniversalInputFormKanbanV3({
   integrationMode = 'modal'
 }: UniversalInputFormKanbanV3Props) {
   
-  // ===== STATE MANAGEMENT =====
   const [formData, setFormData] = useState<UniversalFormData>({
     ...DEFAULT_FORM_DATA,
     workspaceId,
@@ -96,7 +88,6 @@ export default function UniversalInputFormKanbanV3({
     advanced: false
   })
   
-  // ===== FORM HANDLERS =====
   const updateField = useCallback(<K extends keyof UniversalFormData>(
     field: K, 
     value: UniversalFormData[K]
@@ -104,7 +95,6 @@ export default function UniversalInputFormKanbanV3({
     setFormData(prev => ({ ...prev, [field]: value }))
   }, [])
   
-  // ===== MUTATIONS =====
   const createTaskMutation = trpc.task.create.useMutation({
     onSuccess: (data) => {
       onSuccess?.(formData)
@@ -112,7 +102,6 @@ export default function UniversalInputFormKanbanV3({
     }
   })
   
-  // ===== HELPER FUNCTIONS =====
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
   }

@@ -1,7 +1,3 @@
-/**
- * Effortless Productivity Section Content Data
- * Centralized content management for the productivity features section
- */
 
 export const PRODUCTIVITY_CONTENT = {
   title: 'Effortless Productivity',

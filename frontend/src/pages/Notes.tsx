@@ -2,9 +2,6 @@ import NotesPanel from '../components/notes/NotesPanel'
 import { PageErrorBoundary } from '../components/ErrorBoundary'
 import { useAuthStore } from '../stores/auth-store'
 
-/**
- * Notes page component using the full NotesPanel component
- */
 export default function Notes() {
   const { currentWorkspace } = useAuthStore()
   

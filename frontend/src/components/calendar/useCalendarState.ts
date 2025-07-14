@@ -4,19 +4,27 @@ import { trpc } from '../../lib/trpc'
 
 export const useCalendarState = () => {
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [viewMode, setViewMode] = useState<ViewMode>('month')
+  // Initialize with localStorage value or 'month' as fallback
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    try {
+      const saved = localStorage.getItem('calendar-view-mode')
+      return (saved as ViewMode) || 'month'
+    } catch {
+      return 'month'
+    }
+  })
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
-  // Get user preferences
   const { data: preferences } = trpc.preferences.get.useQuery()
   const updateCalendarViewMutation = trpc.preferences.updateCalendarView.useMutation()
 
-  // Initialize view mode from user preferences
+  // Update viewMode when preferences load, but only if different from current
   useEffect(() => {
-    if (preferences?.defaultCalendarView) {
+    if (preferences?.defaultCalendarView && preferences.defaultCalendarView !== viewMode) {
       setViewMode(preferences.defaultCalendarView as ViewMode)
+      localStorage.setItem('calendar-view-mode', preferences.defaultCalendarView)
     }
-  }, [preferences])
+  }, [preferences?.defaultCalendarView, viewMode])
 
   const navigateMonth = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate)
@@ -32,14 +40,14 @@ export const useCalendarState = () => {
     setCurrentDate(new Date())
   }
 
-  // Enhanced setViewMode that persists to backend
   const setViewModeWithPersistence = async (newViewMode: ViewMode) => {
     setViewMode(newViewMode)
+    // Save to localStorage immediately for instant persistence
+    localStorage.setItem('calendar-view-mode', newViewMode)
     try {
       await updateCalendarViewMutation.mutateAsync({ view: newViewMode })
     } catch (error) {
       console.error('Failed to save calendar view preference:', error)
-      // Optionally show a toast notification about the failure
     }
   }
 

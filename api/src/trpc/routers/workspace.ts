@@ -39,13 +39,18 @@ export const workspaceRouter = router({
               projects: true,
               teams: true,
               kanbans: true,
+              members: true,
             },
           },
         },
         orderBy: { createdAt: 'desc' },
       })
 
-      return workspaces
+      // Add memberCount for frontend compatibility
+      return workspaces.map(workspace => ({
+        ...workspace,
+        memberCount: workspace._count.members + 1, // +1 for owner
+      }))
     }),
 
   /**
@@ -133,6 +138,57 @@ export const workspaceRouter = router({
       }
 
       return workspace
+    }),
+
+  /**
+   * Get workspace by ID (alias for get - frontend compatibility)
+   */
+  findById: publicProcedure
+    .use(isAuthenticated)
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const workspace = await ctx.prisma.workspace.findFirst({
+        where: {
+          id: input.id,
+          OR: [
+            { ownerId: ctx.user.id },
+            { members: { some: { userId: ctx.user.id } } },
+          ],
+        },
+        include: {
+          owner: {
+            select: { id: true, name: true, email: true, avatar: true },
+          },
+          members: {
+            include: {
+              user: {
+                select: { id: true, name: true, email: true, avatar: true },
+              },
+            },
+          },
+          _count: {
+            select: {
+              projects: true,
+              teams: true,
+              kanbans: true,
+              members: true,
+            },
+          },
+        },
+      })
+
+      if (!workspace) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Workspace not found',
+        })
+      }
+
+      // Add memberCount for frontend compatibility
+      return {
+        ...workspace,
+        memberCount: workspace._count.members + 1, // +1 for owner
+      }
     }),
 
   /**

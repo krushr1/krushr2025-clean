@@ -1,7 +1,3 @@
-/**
- * TaskCommentEditor Component
- * Rich text editor for creating and editing task comments with mention support
- */
 
 import React, { useState, useCallback, useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
@@ -49,13 +45,11 @@ export default function TaskCommentEditor({
   const [attachments, setAttachments] = useState<any[]>([])
   const editorRef = useRef<HTMLDivElement>(null)
 
-  // Get workspace members for mentions
   const { data: workspaceMembers = [] } = trpc.user.listWorkspaceMembers.useQuery(
     { workspaceId },
     { enabled: !!workspaceId }
   )
 
-  // Mutations
   const createComment = trpc.comment.create.useMutation({
     onSuccess: (comment) => {
       onSubmit?.(comment)
@@ -81,7 +75,6 @@ export default function TaskCommentEditor({
     }
   })
 
-  // TipTap editor configuration
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -154,11 +147,9 @@ export default function TaskCommentEditor({
       },
     },
     onUpdate: ({ editor }) => {
-      // Auto-save drafts could be implemented here
     },
   })
 
-  // Handle form submission
   const handleSubmit = useCallback(async () => {
     if (!editor || isSubmitting) return
 
@@ -185,13 +176,11 @@ export default function TaskCommentEditor({
         })
       }
     } catch (error) {
-      // Error handling is done in the mutation callbacks
     } finally {
       setIsSubmitting(false)
     }
   }, [editor, isSubmitting, taskId, commentId, isEditing, createComment, updateComment])
 
-  // Handle keyboard shortcuts
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
       e.preventDefault()
@@ -203,7 +192,6 @@ export default function TaskCommentEditor({
     }
   }, [handleSubmit, onCancel])
 
-  // Toolbar button actions
   const toggleBold = () => editor?.chain().focus().toggleBold().run()
   const toggleItalic = () => editor?.chain().focus().toggleItalic().run()
   const toggleBulletList = () => editor?.chain().focus().toggleBulletList().run()
@@ -215,13 +203,11 @@ export default function TaskCommentEditor({
     }
   }
 
-  // Insert emoji
   const insertEmoji = (emoji: string) => {
     editor?.chain().focus().insertContent(emoji).run()
     setShowEmojis(false)
   }
 
-  // Check if content is empty
   const isEmpty = editor?.isEmpty ?? true
 
   return (

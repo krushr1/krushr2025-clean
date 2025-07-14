@@ -1,7 +1,3 @@
-/**
- * Enhanced Chat Interface
- * Project-contextual team communication with file sharing
- */
 
 import React, { useState, useRef, useEffect } from 'react'
 import { Card, CardContent, CardHeader } from '../ui/card'
@@ -95,7 +91,6 @@ export default function ChatInterface({ className }: ChatInterfaceProps) {
   const { user } = useAppStore()
   const { connected, sendMessage } = useWebSocket()
 
-  // Mock data - will be replaced with real chat data
   const channels: ChatChannel[] = [
     {
       id: 'general',
@@ -183,7 +178,6 @@ export default function ChatInterface({ className }: ChatInterfaceProps) {
   }, [selectedChannel, channels])
 
   useEffect(() => {
-    // Scroll to bottom within the chat container only, not the entire page
     const scrollContainer = messagesEndRef.current?.closest('[data-radix-scroll-area-viewport]')
     if (scrollContainer && messagesEndRef.current) {
       scrollContainer.scrollTop = scrollContainer.scrollHeight

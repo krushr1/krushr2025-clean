@@ -23,10 +23,6 @@ import {
   BarChart3
 } from 'lucide-react'
 
-/**
- * Smart Dashboard Home Page
- * Real-time command center with activity feeds and quick actions
- */
 export default function Home() {
   const { user, isAuthenticated } = useAuthStore()
   const navigate = useNavigate()

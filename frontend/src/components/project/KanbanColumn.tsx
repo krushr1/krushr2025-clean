@@ -1,10 +1,6 @@
 import TaskCard from './TaskCard'
 import { Plus } from 'lucide-react'
 
-/**
- * Kanban column component with professional styling
- * Contains task cards and column header with muted colors
- */
 interface KanbanColumnProps {
   title: string
   tasks: Array<{

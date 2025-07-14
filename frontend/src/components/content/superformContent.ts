@@ -1,7 +1,3 @@
-/**
- * Superform Section Content Data
- * Centralized content management for the powerful input form section
- */
 
 export const SUPERFORM_CONTENT = {
   title: 'Easy, powerful, input',

@@ -45,9 +45,7 @@ interface AgendaItem {
   notes?: string
 }
 
-// Realistic agenda data for a successful project leader
 const SAMPLE_AGENDA_DATA: AgendaItem[] = [
-  // Today
   {
     id: '1',
     title: 'Leadership Team Sync',
@@ -102,7 +100,6 @@ const SAMPLE_AGENDA_DATA: AgendaItem[] = [
     notes: 'Include ROI projections for 3 senior engineers. CFO meeting Monday.'
   },
 
-  // Tomorrow
   {
     id: '5',
     title: 'Architecture Review Board',
@@ -143,7 +140,6 @@ const SAMPLE_AGENDA_DATA: AgendaItem[] = [
     notes: 'Cost analysis complete. AWS 23% more cost-effective for our use case.'
   },
 
-  // Day after tomorrow
   {
     id: '8',
     title: 'Product Roadmap Review',
@@ -212,7 +208,6 @@ export default function AgendaView({ workspaceId, className }: AgendaViewProps) 
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set(['today']))
   const [selectedItem, setSelectedItem] = useState<AgendaItem | null>(null)
 
-  // Group agenda items by day
   const groupedAgenda = useMemo(() => {
     const today = new Date()
     const tomorrow = addDays(today, 1)

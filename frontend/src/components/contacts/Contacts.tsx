@@ -1,7 +1,3 @@
-/**
- * Contacts Panel Component - Contact and customer management for workspace panels
- * Optimized for panel usage with search, filtering, and contact details
- */
 
 import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '../ui/button'
@@ -55,7 +51,6 @@ export default function Contacts({ workspaceId, className }: ContactsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const resizerRef = useRef<HTMLDivElement>(null)
 
-  // Mock data for demo - replace with real tRPC calls
   const mockContacts: Contact[] = [
     {
       id: '1',
@@ -136,7 +131,6 @@ export default function Contacts({ workspaceId, className }: ContactsProps) {
     return date.toLocaleDateString()
   }
 
-  // Resize functionality
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing || !containerRef.current) return

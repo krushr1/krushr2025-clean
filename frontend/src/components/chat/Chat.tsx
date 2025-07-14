@@ -1,7 +1,3 @@
-/**
- * Chat Panel Component - Compact chat interface for workspace panels
- * Integrated with the full chat functionality but optimized for panels
- */
 
 import React from 'react'
 import { cn } from '../../lib/utils'

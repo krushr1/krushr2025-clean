@@ -7,7 +7,6 @@ import PanelRenderer from './PanelRenderer'
 import { cn, debounce } from '../../lib/utils'
 import { useLayoutPersistence } from '../../hooks/use-layout-persistence'
 
-// Make GridLayout responsive with width provider but use fixed layout
 const ResponsiveGridLayout = WidthProvider(Responsive)
 const FixedGridLayout = WidthProvider(GridLayout)
 
@@ -30,10 +29,8 @@ interface Panel {
 }
 
 export default function PanelWorkspace({ workspaceId, className }: PanelWorkspaceProps) {
-  // State for focused panel (keep local state for focus, but not fullscreen)
   const [focusedPanelId, setFocusedPanelId] = useState<string | null>(null)
 
-  // Fetch panels for this workspace with fresh data on mount
   const { data: panels = [], refetch } = trpc.panel.list.useQuery(
     { workspaceId },
     { 
@@ -54,7 +51,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     }
   )
 
-  // Container width tracking for responsive layout
   const [containerWidth, setContainerWidth] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.innerWidth // Use full width
@@ -62,12 +58,10 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     return 1600
   })
   
-  // Update container width when window resizes
   useEffect(() => {
     const updateWidth = () => {
       const container = document.querySelector('.panel-workspace-container')
       if (container) {
-        // Use full available width
         const width = container.clientWidth || window.innerWidth
         setContainerWidth(width)
       }
@@ -78,7 +72,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     return () => window.removeEventListener('resize', updateWidth)
   }, [])
 
-  // Layout persistence hook (enabled for auto-save)
   const {
     onLayoutChange: onLayoutPersistenceChange,
     performAutoSave,
@@ -90,7 +83,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     enabled: false // Temporarily disable to prevent conflicts with real-time updates
   })
   
-  // Find fullscreen panel from database state, not local state
   const fullscreenPanel = panels.find(panel => {
     try {
       const panelData = typeof panel.data === 'string' ? JSON.parse(panel.data) : panel.data
@@ -101,11 +93,9 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   })
   const updatePositions = trpc.panel.updatePositions.useMutation({
     onSuccess: () => {
-      // Optionally refetch or use optimistic updates
     }
   })
 
-  // Panel control mutations for keyboard shortcuts
   const toggleFullscreen = trpc.panel.toggleFullscreen.useMutation({
     onSuccess: () => {
       refetch()
@@ -118,28 +108,22 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     }
   })
 
-  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Only handle shortcuts when no input is focused
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return
       }
 
-      // Escape key exits fullscreen
       if (e.key === 'Escape' && fullscreenPanel) {
         e.preventDefault()
-        // Exit fullscreen mode
         toggleFullscreen.mutate({ id: fullscreenPanel.id })
       }
 
-      // Cmd/Ctrl + M toggles minimize on focused panel
       if ((e.metaKey || e.ctrlKey) && e.key === 'm' && focusedPanelId) {
         e.preventDefault()
         toggleMinimize.mutate({ id: focusedPanelId })
       }
 
-      // Cmd/Ctrl + F toggles fullscreen on focused panel
       if ((e.metaKey || e.ctrlKey) && e.key === 'f' && focusedPanelId) {
         e.preventDefault()
         toggleFullscreen.mutate({ id: focusedPanelId })
@@ -150,19 +134,14 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [fullscreenPanel, focusedPanelId, panels])
 
-  // Handle fullscreen changes - now just triggers a refetch since state is in database
   const handleFullscreen = useCallback((panelId: string, isFullscreen: boolean) => {
-    // The state is already updated in the database by the mutation
-    // Just refetch to get the latest data
     refetch()
   }, [refetch])
 
-  // Handle panel focus
   const handleFocus = useCallback((panelId: string) => {
     setFocusedPanelId(panelId)
   }, [])
 
-  // Debounced update function to prevent excessive database calls (defined early for use in handlers)
   const debouncedUpdatePositions = useMemo(() => 
     debounce((updates: any[]) => {
       if (updates.length > 0) {
@@ -175,9 +154,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     [workspaceId, updatePositions]
   )
 
-  // iOS-style smart layout change handler (defined early for use in drag handlers)
   const handleLayoutChange = useCallback((newLayout: Layout[]) => {
-    // Only update if we have panels and the layout actually changed
     if (panels.length === 0 || !newLayout) return
     
     console.log('🔄 Layout Change Handler:', {
@@ -186,7 +163,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
       newLayout: newLayout.map(item => ({ id: item.i, x: item.x, y: item.y, w: item.w, h: item.h }))
     })
 
-    // Preserve exact positions and dimensions - minimal constraints only
     const optimizedLayout = newLayout.map(item => ({
       ...item,
       w: Math.max(2, Math.min(24, item.w)), // Ensure width between 2-24 grid units
@@ -221,27 +197,21 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
         height: item.h
       }))
 
-    // Only update if there are actual changes
     if (updates.length > 0) {
       console.log('💾 Applying layout updates:', updates.length, 'panels')
       debouncedUpdatePositions(updates)
     }
 
     // Note: Removed onLayoutPersistenceChange call to prevent conflicts
-    // Layout persistence is now handled only by real-time panel updates
   }, [panels, debouncedUpdatePositions, onLayoutPersistenceChange])
 
-  // Store original layout for potential snap-back (iOS behavior)
   const [originalLayout, setOriginalLayout] = useState<Layout[] | null>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  // iOS-style snap-back on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isDragging && originalLayout) {
         console.log('🔄 Escape pressed - snapping back to original layout')
-        // This would need to be implemented with a ref to the grid layout
-        // For now, we'll rely on the natural drag cancellation behavior
       }
     }
 
@@ -251,22 +221,17 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     }
   }, [isDragging, originalLayout])
 
-  // Fluid, receptive panel drag handlers with iOS-style behavior
   const handlePanelDragStart = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
-    // Store current layout for potential snap-back
     setOriginalLayout([...layout])
     setIsDragging(true)
     
-    // Enhanced visual feedback for dragging with Krushr colors
     element.style.zIndex = '9998' // Below fullscreen panels
     element.style.opacity = '0.95'
     element.style.transition = 'transform 0.15s ease-out, box-shadow 0.15s ease-out'
     element.style.transform += ' scale(1.02)'
     
-    // Use Krushr brand colors for better visual consistency
     element.style.boxShadow = '0 8px 20px rgba(20, 49, 151, 0.15), 0 4px 8px rgba(0,0,0,0.1)'
     
-    // Add Krushr primary color border
     element.style.border = '2px solid rgba(20, 49, 151, 0.4)'
     
     console.log('🎯 Drag started - stored original layout:', {
@@ -276,10 +241,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   }, [])
 
   const handlePanelDrag = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
-    // iOS-style collision handling - other panels move out of the way intelligently
-    // React Grid Layout handles this automatically with compactType="vertical"
     
-    // Welcoming placeholder styling - shows where panel will land
     if (placeholder) {
       placeholder.style = {
         ...placeholder.style,
@@ -290,14 +252,12 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
       }
     }
     
-    // Smooth visual feedback during drag
     element.style.transform = element.style.transform.replace(/scale\([^)]*\)/, 'scale(1.02)')
   }, [])
 
   const handlePanelDragStop = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
     setIsDragging(false)
     
-    // Check if position actually changed significantly (iOS behavior)
     const positionChanged = Math.abs(oldItem.x - newItem.x) > 0.1 || Math.abs(oldItem.y - newItem.y) > 0.1
     const sizeChanged = Math.abs(oldItem.w - newItem.w) > 0.1 || Math.abs(oldItem.h - newItem.h) > 0.1
     
@@ -309,7 +269,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
       newPos: { x: newItem.x, y: newItem.y }
     })
     
-    // Smooth transition back to normal state
     element.style.transition = 'all 0.3s ease-out'
     element.style.zIndex = ''
     element.style.opacity = ''
@@ -319,22 +278,18 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     element.style.boxShadow = ''
     element.style.border = ''
     
-    // Immediately save the layout change (no delays)
     if (positionChanged || sizeChanged) {
       console.log('💾 Saving layout change immediately')
       handleLayoutChange(layout)
     }
     
-    // Clean up transition after animation
     setTimeout(() => {
       element.style.transition = ''
       setOriginalLayout(null)
     }, 300)
   }, [handleLayoutChange])
 
-  // Responsive panel resize handlers
   const handlePanelResizeStart = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
-    // Enhanced visual feedback for resizing with Krushr success color
     element.style.zIndex = '9997' // Below dragging panels
     element.style.opacity = '0.98'
     element.style.transition = 'border 0.15s ease-out'
@@ -342,7 +297,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   }, [])
 
   const handlePanelResize = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
-    // Welcoming resize preview
     if (placeholder) {
       placeholder.style = {
         ...placeholder.style,
@@ -355,22 +309,18 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   }, [])
 
   const handlePanelResizeStop = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
-    // Smooth transition back to normal state
     element.style.transition = 'all 0.2s ease-out'
     element.style.zIndex = ''
     element.style.opacity = ''
     element.style.border = ''
     
-    // Clean up transition after animation
     setTimeout(() => {
       element.style.transition = ''
     }, 200)
     
-    // Trigger gentle layout update
     handleLayoutChange(layout)
   }, [handleLayoutChange])
 
-  // Convert panels to grid layout format - fixed size regardless of screen
   const layout = useMemo(() => {
     const gridLayout = panels.map(panel => ({
       i: panel.id,
@@ -392,7 +342,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
       gridLayout: gridLayout.map(l => ({ id: l.i, w: l.w, h: l.h, x: l.x, y: l.y, minW: l.minW, minH: l.minH, maxW: l.maxW, maxH: l.maxH }))
     })
     
-    // Check for any constraints that might be causing shrinkage
     gridLayout.forEach(item => {
       if (item.w < item.minW || item.h < item.minH) {
         console.warn('⚠️ Panel size below minimum:', item)
@@ -404,7 +353,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
 
 
 
-  // Increased columns for more granular sizing control
   const cols = 24
 
   if (panels.length === 0) {
@@ -476,13 +424,11 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
           box-shadow: 0 8px 24px rgba(31, 187, 101, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* iOS-style magnetic snap indicators with Krushr branding */
         .react-grid-item.snapping {
           border: 2px solid rgba(20, 49, 151, 0.6);
           box-shadow: 0 0 0 4px rgba(20, 49, 151, 0.1);
         }
 
-        /* Enhanced animations for panel interactions */
         .react-grid-item.focusing {
           animation: focusPulse 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -493,12 +439,10 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
           100% { transform: scale(1); }
         }
 
-        /* Smooth transitions for layout compaction */
         .react-grid-layout {
           transition: height 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        /* Invisible full-edge resize handles */
         .react-resizable-handle {
           position: absolute;
           background-color: transparent !important;
@@ -517,7 +461,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
           display: none !important;
         }
 
-        /* Corner handles - larger and more accessible */
         .react-resizable-handle-se {
           bottom: 0;
           right: 0;
@@ -550,7 +493,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
           cursor: nw-resize;
         }
 
-        /* Full-length edge handles - wider and easier to grab */
         .react-resizable-handle-e {
           top: 0;
           right: -6px;

@@ -1,7 +1,3 @@
-/**
- * Hook for workspace layout persistence
- * Handles saving, loading, and auto-saving panel layouts
- */
 
 import { useCallback, useEffect, useRef } from 'react'
 import { Layout, Layouts } from 'react-grid-layout'
@@ -49,7 +45,6 @@ export function useLayoutPersistence({
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout>()
   const lastSavedLayoutRef = useRef<string>('')
 
-  // tRPC mutations and queries
   const savePresetMutation = trpc.layout.savePreset.useMutation({
     onSuccess: (data) => {
       toast({
@@ -72,7 +67,6 @@ export function useLayoutPersistence({
         title: 'Layout Loaded',
         description: data.message,
       })
-      // Trigger a page refresh or panel refetch to show the new layout
       window.location.reload()
     },
     onError: (error) => {
@@ -129,9 +123,7 @@ export function useLayoutPersistence({
     }
   })
 
-  // Convert panels to layout data format
   const generateLayoutData = useCallback((currentPanels: Panel[], layouts?: Layouts): LayoutData => {
-    // Use provided layouts or generate from panels
     const gridLayout = layouts || {
       lg: currentPanels.map(panel => ({
         i: panel.id,
@@ -154,7 +146,6 @@ export function useLayoutPersistence({
     }
   }, [])
 
-  // Save current layout as named preset
   const savePreset = useCallback((name: string, description?: string, isDefault = false) => {
     if (!enabled || !workspaceId || panels.length === 0) return
 
@@ -169,7 +160,6 @@ export function useLayoutPersistence({
     })
   }, [enabled, workspaceId, panels, generateLayoutData, savePresetMutation])
 
-  // Load a preset by ID
   const loadPreset = useCallback((presetId: string) => {
     if (!enabled || !workspaceId) return
 
@@ -179,7 +169,6 @@ export function useLayoutPersistence({
     })
   }, [enabled, workspaceId, loadPresetMutation])
 
-  // Delete a preset
   const deletePreset = useCallback((presetId: string) => {
     if (!enabled || !workspaceId) return
 
@@ -189,7 +178,6 @@ export function useLayoutPersistence({
     })
   }, [enabled, workspaceId, deletePresetMutation])
 
-  // Set default preset
   const setDefaultPreset = useCallback((presetId: string) => {
     if (!enabled || !workspaceId) return
 
@@ -199,14 +187,12 @@ export function useLayoutPersistence({
     })
   }, [enabled, workspaceId, setDefaultMutation])
 
-  // Auto-save current layout
   const performAutoSave = useCallback(() => {
     if (!enabled || !workspaceId || panels.length === 0) return
 
     const layoutData = generateLayoutData(panels)
     const layoutString = JSON.stringify(layoutData)
 
-    // Only save if layout has changed
     if (layoutString !== lastSavedLayoutRef.current) {
       autoSaveMutation.mutate({
         workspaceId,
@@ -216,35 +202,28 @@ export function useLayoutPersistence({
     }
   }, [enabled, workspaceId, panels, generateLayoutData, autoSaveMutation])
 
-  // Schedule auto-save
   const scheduleAutoSave = useCallback(() => {
     if (!enabled || autoSaveInterval <= 0) return
 
-    // Clear existing timeout
     if (autoSaveTimeoutRef.current) {
       clearTimeout(autoSaveTimeoutRef.current)
     }
 
-    // Schedule new auto-save
     autoSaveTimeoutRef.current = setTimeout(() => {
       performAutoSave()
       scheduleAutoSave() // Schedule next auto-save
     }, autoSaveInterval)
   }, [enabled, autoSaveInterval, performAutoSave])
 
-  // Handle layout changes (debounced auto-save)
   const onLayoutChange = useCallback((layouts: Layouts) => {
     if (!enabled) return
 
-    // Update last saved layout reference with new layout
     const layoutData = generateLayoutData(panels, layouts)
     lastSavedLayoutRef.current = JSON.stringify(layoutData)
 
-    // Schedule auto-save
     scheduleAutoSave()
   }, [enabled, panels, generateLayoutData, scheduleAutoSave])
 
-  // Start auto-save on mount and clean up on unmount
   useEffect(() => {
     if (enabled && panels.length > 0) {
       scheduleAutoSave()
@@ -257,18 +236,15 @@ export function useLayoutPersistence({
     }
   }, [enabled, panels.length, scheduleAutoSave])
 
-  // Save immediately when panels change significantly
   useEffect(() => {
     if (enabled && panels.length > 0) {
       const layoutData = generateLayoutData(panels)
       const layoutString = JSON.stringify(layoutData)
       
-      // If this is a significant change (panel added/removed), save immediately
       if (lastSavedLayoutRef.current && layoutString !== lastSavedLayoutRef.current) {
         const lastData = JSON.parse(lastSavedLayoutRef.current)
         const currentData = layoutData
         
-        // Check if panel count changed (significant change)
         if (lastData.panels.length !== currentData.panels.length) {
           performAutoSave()
         }
@@ -277,7 +253,6 @@ export function useLayoutPersistence({
   }, [enabled, panels, generateLayoutData, performAutoSave])
 
   return {
-    // Preset management
     presets,
     savePreset,
     loadPreset,
@@ -285,20 +260,16 @@ export function useLayoutPersistence({
     setDefaultPreset,
     refetchPresets,
 
-    // Auto-save
     performAutoSave,
     onLayoutChange,
 
-    // Loading states
     isSaving: savePresetMutation.isLoading,
     isLoading: loadPresetMutation.isLoading,
     isDeleting: deletePresetMutation.isLoading,
     isSettingDefault: setDefaultMutation.isLoading,
 
-    // Auto-save state
     isAutoSaving: autoSaveMutation.isLoading,
 
-    // Utils
     generateLayoutData
   }
 }

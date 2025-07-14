@@ -1,7 +1,3 @@
-/**
- * Responsive Layout Component
- * Adaptive layout that works across all device sizes
- */
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
@@ -18,7 +14,6 @@ import {
   ChevronDown
 } from 'lucide-react'
 import { useAuthStore } from '../../stores/auth-store'
-// import { useRealtimeConnection } from '../../hooks/use-realtime' // Temporarily disabled
 import Sidebar from '../project/Sidebar'
 import MobileNavigation from './MobileNavigation'
 import NotificationBell from '../notifications/NotificationBell'
@@ -39,11 +34,9 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
   const [showSearch, setShowSearch] = useState(false)
 
   const { user } = useAuthStore()
-  // const { isConnected } = useRealtimeConnection() // Temporarily disabled
   const isConnected = true // Mock connected state for now
   const activeWorkspace = null // Mock workspace for now
 
-  // Detect mobile screen size
   useEffect(() => {
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768)
@@ -54,7 +47,6 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
-  // Update current page based on URL
   useEffect(() => {
     const path = window.location.pathname.slice(1) || 'home'
     setCurrentPage(path)

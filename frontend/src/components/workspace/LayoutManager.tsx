@@ -1,6 +1,3 @@
-/**
- * LayoutManager - UI controls for saving and loading workspace layouts
- */
 
 import React, { useState } from 'react'
 import { Button } from '../ui/button'
@@ -89,7 +86,6 @@ export default function LayoutManager({ workspaceId, panels, className }: Layout
 
     savePreset(saveForm.name.trim(), saveForm.description.trim() || undefined, saveForm.isDefault)
     
-    // Reset form and close dialog
     setSaveForm({ name: '', description: '', isDefault: false })
     setSaveDialogOpen(false)
   }
@@ -133,17 +129,6 @@ export default function LayoutManager({ workspaceId, panels, className }: Layout
         </div>
       )}
 
-      {/* Manual save button */}
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleManualSave}
-        disabled={!hasUnsavedChanges || isAutoSaving}
-        className="flex items-center gap-2"
-      >
-        <Save className="w-4 h-4" />
-        <span className="hidden sm:inline">Save Now</span>
-      </Button>
 
       {/* Save as preset */}
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
@@ -355,22 +340,6 @@ export default function LayoutManager({ workspaceId, panels, className }: Layout
         </DialogContent>
       </Dialog>
 
-      {/* Settings dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm">
-            <Settings2 className="w-4 h-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Layout Options</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => refetchPresets()}>
-            <CheckCircle className="w-4 h-4 mr-2" />
-            Refresh Presets
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </div>
   )
 }

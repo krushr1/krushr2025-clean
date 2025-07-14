@@ -1,7 +1,3 @@
-/**
- * Floating Action Button Component
- * Krushr-branded FAB for quick actions
- */
 
 import React from 'react'
 import { Button } from './button'

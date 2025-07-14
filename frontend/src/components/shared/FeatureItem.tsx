@@ -5,10 +5,6 @@ interface FeatureItemProps {
   className?: string
 }
 
-/**
- * Reusable Feature Item Component
- * Displays checkmark icon with feature text - maintains exact Webflow styling
- */
 export const FeatureItem: React.FC<FeatureItemProps> = ({ 
   text, 
   className = "heading-h4-size mg-bottom-8px" 

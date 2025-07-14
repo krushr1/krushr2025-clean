@@ -20,10 +20,6 @@ const sizeMap = {
   lg: 24
 } as const
 
-/**
- * Scalable Icon Component
- * SVG-based icons for consistent, accessible visual elements
- */
 export const Icon: React.FC<IconProps> = ({
   name,
   size = 'md',

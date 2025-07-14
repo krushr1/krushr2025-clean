@@ -1,13 +1,8 @@
-/**
- * Universal Input Form - Compact Panel Version
- * Space-efficient, scrollable form optimized for workspace panels
- */
 
 import React, { useState, useCallback, useMemo } from 'react'
 import { format } from 'date-fns'
 import { ChevronDownIcon, ChevronRightIcon, CalendarIcon, PlusIcon, XIcon, UploadIcon } from 'lucide-react'
 
-// UI Components
 import { Button } from '../ui/button'
 import { FloatingInput } from '../ui/floating-input'
 import { Textarea } from '../ui/textarea'
@@ -19,7 +14,6 @@ import { Calendar } from '../ui/calendar'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Badge } from '../ui/badge'
 
-// tRPC and Types
 import { trpc } from '../../lib/trpc'
 import { UniversalFormData, ContentType } from '../../types/universal-form'
 import { Priority, TaskStatus } from '../../types/enums'
@@ -80,7 +74,6 @@ export default function UniversalInputFormCompact({
   showHeader = true
 }: UniversalInputFormCompactProps) {
   
-  // ===== STATE MANAGEMENT =====
   const [formData, setFormData] = useState<UniversalFormData>({
     ...DEFAULT_FORM_DATA,
     contentType,
@@ -96,7 +89,6 @@ export default function UniversalInputFormCompact({
     workflow: false
   })
   
-  // ===== FORM HANDLERS =====
   const updateField = useCallback(<K extends keyof UniversalFormData>(
     field: K, 
     value: UniversalFormData[K]
@@ -104,7 +96,6 @@ export default function UniversalInputFormCompact({
     setFormData(prev => ({ ...prev, [field]: value }))
   }, [])
   
-  // ===== MUTATIONS =====
   const createTaskMutation = trpc.task.create.useMutation({
     onSuccess: (data) => {
       onSuccess?.(formData, ContentType.TASK)
@@ -119,7 +110,6 @@ export default function UniversalInputFormCompact({
     }
   }) || { mutate: () => {}, isLoading: false }
   
-  // ===== HELPER FUNCTIONS =====
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
   }

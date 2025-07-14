@@ -11,10 +11,6 @@ interface ButtonProps {
   icon?: React.ReactNode
 }
 
-/**
- * Reusable Button Component
- * Supports primary/secondary variants with consistent styling and accessibility
- */
 export const Button: React.FC<ButtonProps> = ({
   variant,
   href,

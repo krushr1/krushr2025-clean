@@ -76,9 +76,6 @@ import {
   PriorityConfig
 } from '../../types/universal-form'
 
-/**
- * Priority configuration with visual indicators
- */
 const PRIORITY_CONFIGS: Record<Priority, PriorityConfig> = {
   [Priority.LOW]: { level: Priority.LOW, dots: 1, color: 'bg-krushr-priority-low' },
   [Priority.MEDIUM]: { level: Priority.MEDIUM, dots: 2, color: 'bg-krushr-priority-medium' },
@@ -86,9 +83,6 @@ const PRIORITY_CONFIGS: Record<Priority, PriorityConfig> = {
   [Priority.CRITICAL]: { level: Priority.CRITICAL, dots: 4, color: 'bg-krushr-priority-critical' }
 }
 
-/**
- * Default workflow configuration
- */
 const DEFAULT_WORKFLOW: WorkflowConfig = {
   createVideoMeeting: true,
   createCall: true,
@@ -105,9 +99,6 @@ const DEFAULT_WORKFLOW: WorkflowConfig = {
   ]
 }
 
-/**
- * Default recurring configuration
- */
 const DEFAULT_RECURRING: RecurringConfig = {
   enabled: false,
   pattern: 'weekly',
@@ -115,9 +106,6 @@ const DEFAULT_RECURRING: RecurringConfig = {
   daysOfWeek: []
 }
 
-/**
- * UniversalInputForm Component
- */
 export default function UniversalInputForm({
   open,
   onClose,
@@ -136,9 +124,7 @@ export default function UniversalInputForm({
   maxDescriptionLength = 5000
 }: UniversalFormProps) {
   
-  // ===== STATE MANAGEMENT =====
   
-  // Form data state
   const [formData, setFormData] = useState<UniversalFormData>(() => ({
     contentType,
     title: '',
@@ -157,7 +143,6 @@ export default function UniversalInputForm({
     ...initialData
   }))
   
-  // UI state
   const [currentTag, setCurrentTag] = useState('')
   const [newChecklistItem, setNewChecklistItem] = useState('')
   const [expandedSections, setExpandedSections] = useState({
@@ -174,7 +159,6 @@ export default function UniversalInputForm({
     warnings: {}
   })
   
-  // ===== QUERIES =====
   const { data: users = [] } = trpc.user.listWorkspaceMembers.useQuery(
     { workspaceId },
     { enabled: !!workspaceId }
@@ -188,7 +172,6 @@ export default function UniversalInputForm({
     { enabled: !!workspaceId }
   )
   
-  // ===== MUTATIONS =====
   const createTaskMutation = trpc.task.create.useMutation({
     onSuccess: (data) => {
       onSuccess?.(formData, ContentType.TASK)
@@ -207,11 +190,7 @@ export default function UniversalInputForm({
   
   const uploadFileMutation = trpc.upload.uploadTaskFile?.useMutation?.() || { mutate: () => {}, isLoading: false }
   
-  // ===== FORM HANDLERS =====
   
-  /**
-   * Generic field update handler
-   */
   const updateField = useCallback(<K extends keyof UniversalFormData>(
     field: K, 
     value: UniversalFormData[K]
@@ -219,17 +198,12 @@ export default function UniversalInputForm({
     setFormData(prev => ({ ...prev, [field]: value }))
   }, [])
 
-  // ===== FILE UPLOAD HANDLERS =====
   
-  /**
-   * Handle file uploads with progress tracking
-   */
   const handleFileUpload = useCallback(async (files: File[]) => {
     try {
       const newAttachments: FileAttachment[] = []
       
       for (const file of files) {
-        // Create file attachment object
         const attachment: FileAttachment = {
           name: file.name,
           size: file.size,
@@ -239,26 +213,20 @@ export default function UniversalInputForm({
         newAttachments.push(attachment)
       }
       
-      // Add to form state immediately for UI feedback
       updateField('attachments', [...formData.attachments, ...newAttachments])
       
       // Note: Actual upload will happen on form submission
-      // This allows users to see files before saving
       
     } catch (error) {
       console.error('File preparation error:', error)
     }
   }, [formData.attachments, updateField])
   
-  /**
-   * Remove file attachment
-   */
   const handleRemoveFile = useCallback((index: number) => {
     const newAttachments = formData.attachments.filter((_, i) => i !== index)
     updateField('attachments', newAttachments)
   }, [formData.attachments, updateField])
   
-  // ===== COMPUTED VALUES =====
   const isEditMode = useMemo(() => !!formData.id, [formData.id])
   const isLoading = useMemo(() => 
     createTaskMutation.isLoading || 
@@ -267,9 +235,6 @@ export default function UniversalInputForm({
     [createTaskMutation.isLoading, createNoteMutation.isLoading, uploadFileMutation.isLoading]
   )
   
-  /**
-   * Reset form to initial state
-   */
   const resetForm = useCallback(() => {
     setFormData({
       contentType,
@@ -293,19 +258,14 @@ export default function UniversalInputForm({
     setValidation({ isValid: true, errors: {}, warnings: {} })
   }, [contentType, workspaceId, initialData])
   
-  /**
-   * Validate form data
-   */
   const validateForm = useCallback((): FormValidation => {
     const errors: Record<string, string> = {}
     const warnings: Record<string, string> = {}
     
-    // Required field validation
     if (requiredFields.includes('title') && !formData.title.trim()) {
       errors.title = 'Title is required'
     }
     
-    // Length validation
     if (formData.title.length > maxTitleLength) {
       errors.title = `Title must be less than ${maxTitleLength} characters`
     }
@@ -314,12 +274,10 @@ export default function UniversalInputForm({
       errors.description = `Description must be less than ${maxDescriptionLength} characters`
     }
     
-    // Date validation
     if (formData.startDate && formData.endDate && formData.startDate > formData.endDate) {
       errors.dates = 'Start date must be before end date'
     }
     
-    // Task-specific validation
     if (formData.contentType === ContentType.TASK && !formData.assigneeId) {
       warnings.assignee = 'Consider assigning this task to someone'
     }
@@ -334,9 +292,6 @@ export default function UniversalInputForm({
     return result
   }, [formData, requiredFields, maxTitleLength, maxDescriptionLength])
   
-  /**
-   * Handle form submission
-   */
   const handleSubmit = useCallback(async () => {
     const validation = validateForm()
     if (!validation.isValid) return
@@ -383,18 +338,11 @@ export default function UniversalInputForm({
     }
   }, [formData, validateForm, createTaskMutation, createNoteMutation, projectId, kanbanColumnId])
   
-  // ===== SECTION HANDLERS =====
   
-  /**
-   * Toggle section expansion
-   */
   const toggleSection = useCallback((section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
   }, [])
   
-  /**
-   * Add new tag
-   */
   const handleAddTag = useCallback(() => {
     if (currentTag && !formData.tags.includes(currentTag)) {
       updateField('tags', [...formData.tags, currentTag])
@@ -402,16 +350,10 @@ export default function UniversalInputForm({
     }
   }, [currentTag, formData.tags, updateField])
   
-  /**
-   * Remove tag
-   */
   const handleRemoveTag = useCallback((tag: string) => {
     updateField('tags', formData.tags.filter(t => t !== tag))
   }, [formData.tags, updateField])
   
-  /**
-   * Add checklist item
-   */
   const handleAddChecklistItem = useCallback(() => {
     if (newChecklistItem.trim()) {
       const newItem: ChecklistItem = {
@@ -424,27 +366,17 @@ export default function UniversalInputForm({
     }
   }, [newChecklistItem, formData.checklist, updateField])
   
-  /**
-   * Update checklist item
-   */
   const handleUpdateChecklistItem = useCallback((index: number, updates: Partial<ChecklistItem>) => {
     const newChecklist = [...formData.checklist]
     newChecklist[index] = { ...newChecklist[index], ...updates }
     updateField('checklist', newChecklist)
   }, [formData.checklist, updateField])
   
-  /**
-   * Remove checklist item
-   */
   const handleRemoveChecklistItem = useCallback((index: number) => {
     updateField('checklist', formData.checklist.filter((_, i) => i !== index))
   }, [formData.checklist, updateField])
   
-  // ===== RENDER HELPERS =====
   
-  /**
-   * Render priority dots
-   */
   const renderPriorityDots = useCallback((priority: Priority) => {
     const config = PRIORITY_CONFIGS[priority]
     return (
@@ -462,9 +394,6 @@ export default function UniversalInputForm({
     )
   }, [])
   
-  /**
-   * Render section header
-   */
   const renderSectionHeader = useCallback((
     title: string, 
     sectionKey: keyof typeof expandedSections,
@@ -494,14 +423,12 @@ export default function UniversalInputForm({
     </div>
   ), [expandedSections, toggleSection])
   
-  // Initialize form with initial data
   useEffect(() => {
     if (initialData) {
       setFormData(prev => ({ ...prev, ...initialData }))
     }
   }, [initialData])
   
-  // ===== MAIN RENDER =====
   
   return (
     <Dialog open={open} onOpenChange={onClose}>

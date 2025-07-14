@@ -9,15 +9,12 @@ export const useChatActions = (threadId?: string) => {
   const messageInputRef = useRef<HTMLInputElement>(null)
 
   const sendChatMessage = trpc.chat.sendMessage.useMutation({
-    // onSuccess: () => refetch messages
   })
 
   const addReaction = trpc.chat.addReaction.useMutation({
-    // onSuccess: () => refetch messages
   })
 
   const removeReaction = trpc.chat.removeReaction.useMutation({
-    // onSuccess: () => refetch messages
   })
 
   const handleSendMessage = () => {

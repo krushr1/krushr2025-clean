@@ -1,7 +1,3 @@
-/**
- * AI Section Content Data
- * Centralized content management for the AI automation section
- */
 
 export const AI_CONTENT = {
   title: 'Adaptive OpenAI o1 learns your style',

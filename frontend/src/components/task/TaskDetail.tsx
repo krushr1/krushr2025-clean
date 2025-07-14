@@ -54,7 +54,6 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
   const [newChecklistItem, setNewChecklistItem] = useState('')
   const [showEditModal, setShowEditModal] = useState(false)
 
-  // Queries
   const { data: task, refetch } = trpc.task.get.useQuery(
     { id: taskId },
     { 
@@ -87,7 +86,6 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
     }
   )
 
-  // Mutations
   const addCommentMutation = trpc.comment.create.useMutation({
     onSuccess: () => {
       setComment('')
@@ -96,7 +94,6 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
     },
     onError: (error) => {
       console.error('Failed to add comment:', error)
-      // Could show toast notification here
     }
   })
   
@@ -510,7 +507,6 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
                     className="text-sm border-none shadow-none px-0 focus-visible:ring-0"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter' && newChecklistItem.trim()) {
-                        // Get or create checklist first
                         const checklistId = task.checklists?.[0]?.id
                         if (checklistId) {
                           addChecklistItemMutation.mutate({
@@ -518,7 +514,6 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
                             text: newChecklistItem.trim()
                           })
                         } else {
-                          // Need to create checklist first - simplified for now
                           console.log('Need to create checklist first')
                         }
                       }
@@ -691,8 +686,3 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
     </>
   )
 }
-
-/**
- * Task Detail View
- * Comprehensive view of a task with comments, activity, and attachments
- */

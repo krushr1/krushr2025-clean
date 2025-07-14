@@ -11,6 +11,21 @@ import { TRPCError } from '@trpc/server'
 
 export const userRouter = router({
   /**
+   * Get current authenticated user
+   */
+  me: publicProcedure
+    .use(isAuthenticated)
+    .query(async ({ ctx }) => {
+      return {
+        id: ctx.user.id,
+        name: ctx.user.name,
+        email: ctx.user.email,
+        avatar: ctx.user.avatar,
+        createdAt: ctx.user.createdAt,
+      }
+    }),
+
+  /**
    * List workspace members
    */
   listWorkspaceMembers: publicProcedure

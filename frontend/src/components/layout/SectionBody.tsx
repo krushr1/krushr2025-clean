@@ -4,17 +4,12 @@ import { ButtonGroup } from '../shared/ButtonGroup'
 import { StatsCard } from '../shared/StatsCard'
 import { SectionBodyProps } from '../types/sectionTypes'
 
-/**
- * Section Body Component
- * Handles the main content rendering for sections including features, stats, and buttons
- */
 export const SectionBody: React.FC<SectionBodyProps> = ({ 
   features, 
   stats, 
   buttons, 
   variant 
 }) => {
-  // Determine feature list variant based on section variant
   const getFeatureListVariant = () => {
     switch (variant) {
       case 'hero':

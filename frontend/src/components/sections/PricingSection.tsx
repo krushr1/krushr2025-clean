@@ -1,11 +1,6 @@
 import React from 'react'
 import { PRICING_CONTENT } from '../content/pricingContent'
 
-/**
- * Pricing Section Component
- * Displays pricing plans, social proof logos, and CTA
- * Pixel-perfect recreation of the original HTML structure
- */
 export const PricingSection: React.FC = () => {
   const renderPricingCard = (plan: typeof PRICING_CONTENT.plans[0], index: number) => (
     <div 
@@ -32,7 +27,6 @@ export const PricingSection: React.FC = () => {
         <div className="divider _24px bg-neutral-300"></div>
         <div className="grid-1-column-3 gap-row-16px mg-bottom-40px">
           {plan.features.map((feature, index) => {
-            // Special handling for empty features (first feature in Lite plan)
             if (feature === '') {
               return (
                 <div key={index} className="flex align-top">
@@ -41,7 +35,6 @@ export const PricingSection: React.FC = () => {
               )
             }
 
-            // Special styling for certain features
             const isSpecialFeature = feature.includes('ChatGPT o1')
             const isBoldFeature = feature.includes('Automations') || feature.includes('Connected email') || feature.includes('beta discount')
 

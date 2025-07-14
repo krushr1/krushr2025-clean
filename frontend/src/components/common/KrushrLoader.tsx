@@ -1,7 +1,3 @@
-/**
- * Krushr Branded Loader Component
- * Loading spinner with Krushr branding
- */
 
 import React from 'react'
 import { cn } from '../../lib/utils'

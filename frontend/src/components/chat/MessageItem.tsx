@@ -75,7 +75,6 @@ export const MessageItem: React.FC<MessageItemProps> = ({
     )
   }
 
-  // Incoming message
   return (
     <div className="group">
       {message.replyTo && (

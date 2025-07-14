@@ -1,7 +1,3 @@
-/**
- * Custom hooks for Krushr data management
- * Provides state management for Laravel backend integration
- */
 
 import { useState, useEffect } from 'react'
 import { User, Kanban, Task, Team, Workspace, Notification } from '../../../shared/types'
@@ -61,7 +57,6 @@ export function useAuth() {
   return { user, loading, error, login, logout }
 }
 
-// Workspaces hook
 export function useWorkspaces() {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([])
   const [loading, setLoading] = useState(true)
@@ -101,7 +96,6 @@ export function useWorkspaces() {
   return { workspaces, loading, error, createWorkspace }
 }
 
-// Kanbans hook
 export function useKanbans() {
   const [kanbans, setKanbans] = useState<Kanban[]>([])
   const [loading, setLoading] = useState(true)
@@ -155,7 +149,6 @@ export function useKanbans() {
   return { kanbans, loading, error, createKanban, updateKanban }
 }
 
-// Individual Kanban hook
 export function useKanban(id: string | null) {
   const [kanban, setKanban] = useState<Kanban | null>(null)
   const [loading, setLoading] = useState(!!id)
@@ -199,7 +192,6 @@ export function useKanban(id: string | null) {
   return { kanban, loading, error, updateKanban }
 }
 
-// Tasks hook
 export function useTasks(kanbanId?: string) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
@@ -266,7 +258,6 @@ export function useTasks(kanbanId?: string) {
   return { tasks, loading, error, createTask, updateTask, deleteTask }
 }
 
-// Notifications hook
 export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)

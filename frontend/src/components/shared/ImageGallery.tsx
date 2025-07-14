@@ -13,10 +13,6 @@ interface ImageGalleryProps {
   containerClassName: string
 }
 
-/**
- * Reusable Image Gallery Component
- * Maintains exact Webflow styling and responsive behavior
- */
 export const ImageGallery: React.FC<ImageGalleryProps> = ({
   images,
   containerClassName

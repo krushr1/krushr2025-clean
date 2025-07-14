@@ -1,14 +1,8 @@
-/**
- * Universal Input Form - Kanban Variant 2
- * Focused on core Kanban features for 80% of users
- * Clean, efficient design following Krushr brandkit standards
- */
 
 import React, { useState, useCallback } from 'react'
 import { format } from 'date-fns'
 import { CalendarIcon, PlusIcon, XIcon, TagIcon, UserIcon, ClipboardListIcon } from 'lucide-react'
 
-// UI Components
 import { Button } from '../ui/button'
 import { FloatingInput } from '../ui/floating-input'
 import { Textarea } from '../ui/textarea'
@@ -19,7 +13,6 @@ import { Calendar } from '../ui/calendar'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Badge } from '../ui/badge'
 
-// tRPC and Types
 import { trpc } from '../../lib/trpc'
 import { UniversalFormData, ContentType } from '../../types/universal-form'
 import { Priority, TaskStatus } from '../../types/enums'
@@ -67,7 +60,6 @@ export default function UniversalInputFormKanbanV2({
   integrationMode = 'modal'
 }: UniversalInputFormKanbanV2Props) {
   
-  // ===== STATE MANAGEMENT =====
   const [formData, setFormData] = useState<UniversalFormData>({
     ...DEFAULT_FORM_DATA,
     workspaceId,
@@ -76,7 +68,6 @@ export default function UniversalInputFormKanbanV2({
   
   const [currentTag, setCurrentTag] = useState('')
   
-  // ===== FORM HANDLERS =====
   const updateField = useCallback(<K extends keyof UniversalFormData>(
     field: K, 
     value: UniversalFormData[K]
@@ -84,7 +75,6 @@ export default function UniversalInputFormKanbanV2({
     setFormData(prev => ({ ...prev, [field]: value }))
   }, [])
   
-  // ===== MUTATIONS =====
   const createTaskMutation = trpc.task.create.useMutation({
     onSuccess: (data) => {
       onSuccess?.(formData)
@@ -92,7 +82,6 @@ export default function UniversalInputFormKanbanV2({
     }
   })
   
-  // ===== HELPER FUNCTIONS =====
   const addTag = () => {
     if (currentTag.trim() && !formData.tags.includes(currentTag.trim())) {
       updateField('tags', [...formData.tags, currentTag.trim()])

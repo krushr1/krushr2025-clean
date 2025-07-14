@@ -28,19 +28,13 @@ export async function createContext({ req }: CreateFastifyContextOptions): Promi
     
     // DEV MODE: Accept development token
     if (token === 'dev-token-123') {
-      // Return development user
-      user = {
-        id: 'dev-user-123',
-        name: 'Development User',
-        email: 'dev@krushr.com',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dev',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        hashedPassword: '', // Not needed for dev
-        provider: 'development',
-        providerId: 'dev-123'
-      } as User
-      isAuthenticated = true
+      // Return Alice user from database
+      user = await prisma.user.findUnique({
+        where: { email: 'alice@krushr.dev' }
+      })
+      if (user) {
+        isAuthenticated = true
+      }
     } else {
       try {
         const session = await validateSession(token)

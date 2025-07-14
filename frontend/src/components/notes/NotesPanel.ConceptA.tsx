@@ -47,7 +47,6 @@ const noteColors = [
 ]
 
 const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspaceId, className }, ref) => {
-  // UI State
   const [searchTerm, setSearchTerm] = useState('')
   const [showArchived, setShowArchived] = useState(false)
   const [filterMode, setFilterMode] = useState<'all' | 'pinned' | 'recent'>('all')
@@ -55,7 +54,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
   const [viewMode, setViewMode] = useState<'grid' | 'editor'>('grid')
   const [noteColors, setNoteColors] = useState<Record<string, string>>({})
 
-  // Editor State
   const [editorState, setEditorState] = useState({
     title: '',
     content: '',
@@ -67,7 +65,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
   const debouncedSearchTerm = useDebouncedValue(searchTerm, 300)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Merge refs
   const mergedRef = useCallback((node: HTMLDivElement | null) => {
     containerRef.current = node
     if (typeof ref === 'function') {
@@ -77,7 +74,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     }
   }, [ref])
 
-  // tRPC
   const utils = trpc.useUtils()
   
   const { data: notesData, isLoading: notesLoading } = trpc.notes.list.useQuery({
@@ -140,7 +136,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     }
   })
 
-  // Load note into editor when selected
   useEffect(() => {
     if (selectedNoteData && selectedNoteData.id !== editorState.noteId) {
       setEditorState({
@@ -153,7 +148,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     }
   }, [selectedNoteData?.id])
 
-  // Auto-save with debounce
   const debouncedTitle = useDebouncedValue(editorState.title, 1000)
   const debouncedContent = useDebouncedValue(editorState.content, 1000)
 
@@ -167,7 +161,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     }
   }, [debouncedTitle, debouncedContent])
 
-  // Handlers
   const handleNoteSelect = (noteId: string) => {
     setSelectedNoteId(noteId)
     setViewMode('editor')
@@ -220,7 +213,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     togglePinMutation.mutate({ id: noteId })
   }
 
-  // Filter notes
   const filteredNotes = notesData?.notes?.filter(note => {
     if (filterMode === 'pinned') return note.isPinned
     if (filterMode === 'recent') {
@@ -230,13 +222,11 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     return true
   }) || []
 
-  // Get note color
   const getNoteColor = (noteId: string) => {
     const colorName = noteColors[noteId] || 'yellow'
     return noteColors.find(c => c.name === colorName) || noteColors[0]
   }
 
-  // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
@@ -249,7 +239,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     return date.toLocaleDateString()
   }
 
-  // Grid View Component
   const GridView = () => (
     <div className="flex flex-col h-full bg-krushr-gray-50">
       {/* Header */}
@@ -396,7 +385,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(({ workspac
     </div>
   )
 
-  // Editor View Component
   const EditorView = () => {
     const color = noteColors.find(c => c.name === editorState.color) || noteColors[0]
     

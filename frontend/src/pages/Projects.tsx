@@ -5,10 +5,6 @@ import { trpc } from '../lib/trpc'
 import { FloatingInput } from '../components/ui/floating-input'
 import { Plus, Search, Calendar, Users, Activity, MoreVertical, Loader2 } from 'lucide-react'
 
-/**
- * Projects page component for managing multiple projects
- * Displays project overview, progress, and team assignments
- */
 export default function Projects() {
   const { isAuthenticated } = useAuthStore()
   const [searchTerm, setSearchTerm] = useState('')
@@ -35,7 +31,6 @@ export default function Projects() {
     )
   }
   
-  // Filter projects based on search and status
   const filteredProjects = projects.filter(project => {
     const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          project.description?.toLowerCase().includes(searchTerm.toLowerCase())

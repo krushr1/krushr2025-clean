@@ -1,7 +1,3 @@
-/**
- * Pricing Section Content Data
- * Centralized content management for the pricing section
- */
 
 export const PRICING_CONTENT = {
   title: 'Pick the plan that\'s right for you',

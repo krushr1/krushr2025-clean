@@ -109,10 +109,8 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
     }
     
     if (attachment.mimeType.startsWith('image/')) {
-      // Open image in new tab for preview
       window.open(attachment.downloadUrl, '_blank')
     } else if (attachment.mimeType === 'application/pdf') {
-      // Open PDF in new tab
       window.open(attachment.downloadUrl, '_blank')
     } else {
       toast.info('Preview not available for this file type')

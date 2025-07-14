@@ -1,7 +1,3 @@
-/**
- * Simple AttachmentList Component  
- * Displays attachments with working thumbnails and buttons
- */
 
 import React, { useState } from 'react'
 import { 

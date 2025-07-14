@@ -1,7 +1,3 @@
-/**
- * File Upload Component
- * Handles file uploads with drag-and-drop support
- */
 
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
@@ -47,7 +43,6 @@ export default function FileUpload({
   const [uploadingFiles, setUploadingFiles] = useState<Map<string, UploadingFile>>(new Map())
 
   const handleFileUpload = useCallback(async (acceptedFiles: File[]) => {
-    // Initialize upload status for each file
     const newUploadingFiles = new Map(uploadingFiles)
     acceptedFiles.forEach(file => {
       newUploadingFiles.set(file.name, {
@@ -59,10 +54,8 @@ export default function FileUpload({
     setUploadingFiles(newUploadingFiles)
 
     try {
-      // Simulate progress for demo - replace with actual upload logic
       await onUpload(acceptedFiles)
       
-      // Mark all as success
       acceptedFiles.forEach(file => {
         newUploadingFiles.set(file.name, {
           file,
@@ -72,7 +65,6 @@ export default function FileUpload({
       })
       setUploadingFiles(new Map(newUploadingFiles))
       
-      // Remove successful uploads after delay
       setTimeout(() => {
         setUploadingFiles(prev => {
           const updated = new Map(prev)
@@ -85,7 +77,6 @@ export default function FileUpload({
         })
       }, 3000)
     } catch (error) {
-      // Mark as error
       acceptedFiles.forEach(file => {
         newUploadingFiles.set(file.name, {
           file,

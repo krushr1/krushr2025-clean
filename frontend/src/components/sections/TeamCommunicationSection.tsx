@@ -5,7 +5,6 @@ import { SectionBody } from '../layout/SectionBody'
 import { EnhancedImageGallery } from '../shared/EnhancedImageGallery'
 import { TEAM_COMMUNICATION_CONTENT } from '../content/teamCommunicationContent'
 
-// Convert content to new format
 const teamCommSectionData = {
   title: TEAM_COMMUNICATION_CONTENT.title,
   subtitle: TEAM_COMMUNICATION_CONTENT.subtitle,
@@ -19,11 +18,6 @@ const teamCommImages = [
   TEAM_COMMUNICATION_CONTENT.images.meetingInterface
 ]
 
-/**
- * Team Communication Section Component - Refactored for Reusability
- * Showcases communication and collaboration features
- * Now uses shared layout components for consistency and maintainability
- */
 export const TeamCommunicationSection: React.FC = () => {
   const leftContent = (
     <>

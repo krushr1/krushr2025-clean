@@ -1,7 +1,3 @@
-/**
- * Team Communication Section Content Data
- * Centralized content management for the team communication section
- */
 
 export const TEAM_COMMUNICATION_CONTENT = {
   title: 'Effortless team communication',

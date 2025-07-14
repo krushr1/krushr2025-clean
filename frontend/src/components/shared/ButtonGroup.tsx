@@ -14,10 +14,6 @@ interface ButtonGroupProps {
   className?: string
 }
 
-/**
- * Reusable Button Group Component
- * Maintains exact Webflow styling and behavior across sections
- */
 export const ButtonGroup: React.FC<ButtonGroupProps> = ({
   primaryButton,
   secondaryButton,

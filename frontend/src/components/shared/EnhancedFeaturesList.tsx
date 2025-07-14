@@ -2,11 +2,6 @@ import React from 'react'
 import { FeatureItem } from './FeatureItem'
 import { EnhancedFeaturesListProps, FEATURE_LIST_CONFIGS } from '../types/sectionTypes'
 
-/**
- * Enhanced Features List Component
- * Unified component for displaying feature lists across all sections
- * Supports multiple variants while maintaining pixel-perfect appearance
- */
 export const EnhancedFeaturesList: React.FC<EnhancedFeaturesListProps> = ({ 
   features, 
   variant, 
@@ -14,7 +9,6 @@ export const EnhancedFeaturesList: React.FC<EnhancedFeaturesListProps> = ({
 }) => {
   const containerClass = FEATURE_LIST_CONFIGS[variant]
   
-  // Handle nested structure for certain variants
   if (variant === 'nested') {
     return (
       <div className={`grid-1-column-list gap-row-32px-copy ${className}`}>
@@ -31,7 +25,6 @@ export const EnhancedFeaturesList: React.FC<EnhancedFeaturesListProps> = ({
     )
   }
   
-  // Standard layout for most variants
   return (
     <div className={`${containerClass} ${className}`}>
       {features.map((feature, index) => (

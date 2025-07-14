@@ -5,7 +5,6 @@ import { ImageGallery } from '../shared/ImageGallery'
 import { SectionContainer } from '../shared/SectionContainer'
 import { FEATURES_CONTENT } from '../content/featuresContent'
 
-// Reusable components following the same pattern as HeroSection
 const FeaturesList: React.FC = () => (
   <div className="grid-1-column-2 gap-row-32px">
     {FEATURES_CONTENT.features.map((feature, index) => (
@@ -40,11 +39,6 @@ const FeaturesButtons: React.FC = () => (
   />
 )
 
-/**
- * Features Section Component
- * Showcases the main features and capabilities of the Krushr platform
- * Following the same clean architecture pattern as HeroSection
- */
 export const FeaturesSection: React.FC = () => {
   return (
     <SectionContainer>

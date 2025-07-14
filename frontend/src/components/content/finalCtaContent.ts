@@ -1,7 +1,3 @@
-/**
- * Final CTA Section Content Data
- * Centralized content management for the final call-to-action section
- */
 
 export const FINAL_CTA_CONTENT = {
   title: 'Upgrade to Krushr for free, now.',

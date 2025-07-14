@@ -1,7 +1,3 @@
-/**
- * Shared enums for frontend
- * Should match the backend enums
- */
 
 export enum Priority {
   LOW = 'low',

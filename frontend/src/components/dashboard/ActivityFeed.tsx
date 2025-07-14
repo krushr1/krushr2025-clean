@@ -1,7 +1,3 @@
-/**
- * Real-time Activity Feed Component
- * Shows recent activity across all projects and teams
- */
 
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
@@ -43,7 +39,6 @@ interface ActivityFeedProps {
 }
 
 export default function ActivityFeed({ className }: ActivityFeedProps) {
-  // Mock data - will be replaced with real-time data
   const activities: ActivityItem[] = [
     {
       id: '1',

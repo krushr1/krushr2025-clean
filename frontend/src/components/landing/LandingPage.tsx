@@ -1,9 +1,5 @@
 import React from 'react'
 
-/**
- * LandingPage Component
- * Modern React implementation of the Krushr landing page
- */
 export function LandingPage() {
   return (
     <div className="min-h-screen bg-white">

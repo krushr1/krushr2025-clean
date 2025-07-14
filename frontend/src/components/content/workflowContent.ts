@@ -1,7 +1,3 @@
-/**
- * Workflow Section Content Data
- * Centralized content management for the revolutionized workflow section
- */
 
 export const WORKFLOW_CONTENT = {
   title: 'Revolutionized Workflow: All On One Page, Your Way',

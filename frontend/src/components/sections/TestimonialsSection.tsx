@@ -2,12 +2,6 @@ import React from 'react'
 import { TESTIMONIALS_CONTENT } from '../content/testimonialsContent'
 import { PricingSection } from './PricingSection'
 
-/**
- * Testimonials Section Component
- * Displays customer testimonials in a slider format
- * Includes pricing section as part of the same container
- * Pixel-perfect recreation of the original HTML structure
- */
 export const TestimonialsSection: React.FC = () => {
   return (
     <div 

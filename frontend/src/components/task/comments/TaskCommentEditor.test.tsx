@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TaskCommentEditor } from './TaskCommentEditor'
 
-// Mock TipTap editor
 vi.mock('@tiptap/react', () => ({
   useEditor: vi.fn(() => ({
     commands: {
@@ -116,7 +115,6 @@ describe('TaskCommentEditor', () => {
     const editor = screen.getByTestId('editor-content')
     await user.type(editor, '@')
     
-    // Check if mention dropdown appears (mocked behavior)
     await waitFor(() => {
       expect(screen.queryByTestId('mention-dropdown')).toBeInTheDocument()
     })
@@ -138,7 +136,6 @@ describe('TaskCommentEditor', () => {
     const fileInput = screen.getByTestId('file-input')
     expect(fileInput).toBeInTheDocument()
     
-    // Simulate file selection
     const file = new File(['test content'], 'test.txt', { type: 'text/plain' })
     await user.upload(fileInput, file)
     
@@ -216,11 +213,9 @@ describe('TaskCommentEditor', () => {
     
     const editor = screen.getByTestId('editor-content')
     
-    // Test Ctrl+B for bold
     await user.type(editor, '{Meta>}b{/Meta}')
     expect(mockEditor.commands.toggleBold).toHaveBeenCalled()
     
-    // Test Ctrl+I for italic
     await user.type(editor, '{Meta>}i{/Meta}')
     expect(mockEditor.commands.toggleItalic).toHaveBeenCalled()
   })

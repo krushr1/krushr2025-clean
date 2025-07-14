@@ -1,7 +1,3 @@
-/**
- * Notification Toast Component
- * Real-time notification alerts that appear as toasts
- */
 
 import React, { useEffect, useState } from 'react'
 import { Card } from '../ui/card'
@@ -39,7 +35,6 @@ export default function NotificationToast({
   const [isClosing, setIsClosing] = useState(false)
 
   useEffect(() => {
-    // Animate in
     const timer = setTimeout(() => setIsVisible(true), 100)
     return () => clearTimeout(timer)
   }, [])

@@ -1,7 +1,3 @@
-/**
- * Universal Input Form Demo Component
- * Demonstrates how to use the Universal Input Form in different contexts
- */
 
 import React, { useState } from 'react'
 import { Button } from '../ui/button'
@@ -25,7 +21,6 @@ export default function UniversalFormDemo() {
   const handleFormSuccess = (data: UniversalFormData, contentType: ContentType) => {
     console.log('Form submitted successfully:', { data, contentType })
     
-    // Add to recent items for demo
     const newItem = {
       id: Date.now().toString(),
       title: data.title,

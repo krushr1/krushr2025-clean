@@ -1,7 +1,3 @@
-/**
- * Frontend type definitions
- * Matches the backend Prisma schema
- */
 
 export interface User {
   id: string

@@ -1,7 +1,3 @@
-/**
- * Comments State Management
- * Zustand store for task comments with real-time updates
- */
 
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
@@ -76,24 +72,18 @@ interface CommentDraft {
 }
 
 interface CommentsState {
-  // Comments data by task ID
   commentsByTask: Record<string, TaskComment[]>
   
-  // Loading states
   loadingTasks: Set<string>
   
-  // Draft comments (auto-saved)
   drafts: Record<string, CommentDraft>
   
-  // UI state
   expandedThreads: Set<string>
   editingComments: Set<string>
   replyingToComments: Set<string>
   
-  // Real-time updates
   lastUpdate: Record<string, string>
   
-  // Actions
   setComments: (taskId: string, comments: TaskComment[]) => void
   addComment: (comment: TaskComment) => void
   updateComment: (commentId: string, updates: Partial<TaskComment>) => void
@@ -101,18 +91,15 @@ interface CommentsState {
   addReaction: (commentId: string, reaction: CommentReaction) => void
   removeReaction: (commentId: string, reactionId: string) => void
   
-  // Draft management
   saveDraft: (taskId: string, content: string) => void
   getDraft: (taskId: string) => string | null
   clearDraft: (taskId: string) => void
   
-  // UI state management
   setLoading: (taskId: string, loading: boolean) => void
   toggleThread: (commentId: string) => void
   setEditing: (commentId: string, editing: boolean) => void
   setReplying: (commentId: string, replying: boolean) => void
   
-  // Utilities
   getCommentCount: (taskId: string) => number
   getCommentsByTask: (taskId: string) => TaskComment[]
   getThreadedComments: (taskId: string) => TaskComment[]
@@ -121,7 +108,6 @@ interface CommentsState {
 
 export const useCommentsStore = create<CommentsState>()(
   subscribeWithSelector((set, get) => ({
-    // Initial state
     commentsByTask: {},
     loadingTasks: new Set(),
     drafts: {},
@@ -130,7 +116,6 @@ export const useCommentsStore = create<CommentsState>()(
     replyingToComments: new Set(),
     lastUpdate: {},
 
-    // Comment data actions
     setComments: (taskId, comments) => {
       set(state => ({
         commentsByTask: {
@@ -241,7 +226,6 @@ export const useCommentsStore = create<CommentsState>()(
       })
     },
 
-    // Draft management
     saveDraft: (taskId, content) => {
       set(state => ({
         drafts: {
@@ -268,7 +252,6 @@ export const useCommentsStore = create<CommentsState>()(
       })
     },
 
-    // UI state management
     setLoading: (taskId, loading) => {
       set(state => {
         const newLoadingTasks = new Set(state.loadingTasks)
@@ -317,7 +300,6 @@ export const useCommentsStore = create<CommentsState>()(
       })
     },
 
-    // Utility functions
     getCommentCount: (taskId) => {
       const state = get()
       return (state.commentsByTask[taskId] || []).length
@@ -332,11 +314,9 @@ export const useCommentsStore = create<CommentsState>()(
       const state = get()
       const comments = state.commentsByTask[taskId] || []
       
-      // Organize comments into threads
       const topLevelComments = comments.filter(comment => !comment.parentId)
       const repliesMap = new Map<string, TaskComment[]>()
 
-      // Group replies by parent comment ID
       comments
         .filter(comment => comment.parentId)
         .forEach(reply => {
@@ -347,7 +327,6 @@ export const useCommentsStore = create<CommentsState>()(
           repliesMap.get(parentId)!.push(reply)
         })
 
-      // Attach replies to their parent comments
       return topLevelComments.map(comment => ({
         ...comment,
         replies: repliesMap.get(comment.id) || []
@@ -365,7 +344,6 @@ export const useCommentsStore = create<CommentsState>()(
   }))
 )
 
-// Selectors for optimized component subscriptions
 export const useTaskComments = (taskId: string) => 
   useCommentsStore(state => state.getCommentsByTask(taskId))
 
@@ -390,5 +368,4 @@ export const useCommentUI = () => useCommentsStore(state => ({
   setReplying: state.setReplying
 }))
 
-// Export the store and types
 export type { TaskComment, CommentMention, CommentReaction, CommentAttachment }

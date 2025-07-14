@@ -1,7 +1,3 @@
-/**
- * Notification Bell Component
- * Clickable bell icon with notification count and dropdown
- */
 
 import React, { useState } from 'react'
 import { Button } from '../ui/button'

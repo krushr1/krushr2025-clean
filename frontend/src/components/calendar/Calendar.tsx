@@ -20,7 +20,6 @@ export default function Calendar({ workspaceId, className }: CalendarProps) {
     isLoadingPreferences
   } = useCalendarState()
 
-  // Get calendar events from backend if workspaceId is provided
   const { data: backendEvents, isLoading: eventsLoading } = trpc.calendar.list.useQuery(
     {
       workspaceId: workspaceId!,
@@ -33,10 +32,8 @@ export default function Calendar({ workspaceId, className }: CalendarProps) {
     }
   )
 
-  // Use backend events if available, otherwise fall back to mock data
   const events = workspaceId ? (backendEvents || []) : mockEvents
 
-  // Show loading state while preferences or events are being fetched
   if (isLoadingPreferences || (workspaceId && eventsLoading)) {
     return (
       <div className={cn('flex flex-col h-full bg-white', className)}>
@@ -72,8 +69,3 @@ export default function Calendar({ workspaceId, className }: CalendarProps) {
     </div>
   )
 }
-
-/**
- * Calendar Panel Component - Schedule and event management for workspace panels
- * Optimized for panel usage with multiple view modes and event management
- */

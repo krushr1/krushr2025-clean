@@ -1,9 +1,4 @@
-/**
- * Shared Types for Landing Page Sections
- * Provides consistent type definitions across all section components
- */
 
-// Base configuration types
 export interface ImageConfig {
   src: string
   srcSet?: string
@@ -26,7 +21,6 @@ export interface StatData {
   label: string
 }
 
-// Section content structure types
 export interface BaseSectionContent {
   title: string
   subtitle?: string
@@ -48,7 +42,6 @@ export interface StatsSectionContent extends BaseSectionContent {
   images: Record<string, ImageConfig>
 }
 
-// Layout configuration types
 export type SectionVariant = 'hero' | 'features' | 'ai' | 'superform' | 'communication' | 'aiPowered' | 'productivity' | 'workflow'
 
 export interface LayoutConfig {
@@ -64,12 +57,10 @@ export interface SectionLayoutProps {
   className?: string
 }
 
-// Component variant types
 export type FeatureListVariant = 'hero' | 'standard' | 'nested' | 'compact'
 export type ImageGalleryVariant = 'hero' | 'features' | 'ai' | 'superform' | 'communication' | 'aiPowered' | 'productivity' | 'workflow'
 export type ImageLayoutType = 'stacked' | 'side-by-side' | 'custom'
 
-// Enhanced component props
 export interface EnhancedFeaturesListProps {
   features: readonly string[]
   variant: FeatureListVariant
@@ -83,7 +74,6 @@ export interface EnhancedImageGalleryProps {
   containerClassName?: string
 }
 
-// Section component composition props
 export interface SectionHeaderProps {
   title: string
   subtitle?: string
@@ -107,7 +97,6 @@ export interface SectionImagesProps {
   layout: ImageLayoutType
 }
 
-// Layout configuration constants
 export const LAYOUT_CONFIGS: Record<SectionVariant, LayoutConfig> = {
   hero: {
     containerClass: 'desktop-wrapper-section-with-images',
@@ -151,7 +140,6 @@ export const LAYOUT_CONFIGS: Record<SectionVariant, LayoutConfig> = {
   }
 }
 
-// Feature list configuration
 export const FEATURE_LIST_CONFIGS: Record<FeatureListVariant, string> = {
   hero: 'grid-1-column-1-copy gap-row-32px-copy',
   standard: 'grid-1-column-list gap-row-32px-copy',

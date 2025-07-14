@@ -1,7 +1,3 @@
-/**
- * Mobile-Optimized Kanban Component
- * Touch-friendly interface for mobile devices
- */
 
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'

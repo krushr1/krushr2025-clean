@@ -1,7 +1,3 @@
-/**
- * TaskCommentList Component
- * Display list of comments with threading and real-time updates
- */
 
 import React, { useState, useEffect, useMemo } from 'react'
 import { Button } from '../../ui/button'
@@ -56,7 +52,6 @@ export default function TaskCommentList({
   const [showEditor, setShowEditor] = useState(false)
   const { connected: wsConnected } = useWebSocket()
 
-  // Fetch comments
   const {
     data: comments = [],
     isLoading,
@@ -72,7 +67,6 @@ export default function TaskCommentList({
     }
   )
 
-  // Auto-refresh comments when WebSocket is connected
   useEffect(() => {
     if (wsConnected) {
       const interval = setInterval(() => {
@@ -83,12 +77,10 @@ export default function TaskCommentList({
     }
   }, [wsConnected, refetch])
 
-  // Organize comments into threads (top-level comments with their replies)
   const commentThreads = useMemo(() => {
     const topLevelComments = comments.filter(comment => !comment.parentId)
     const repliesMap = new Map<string, TaskComment[]>()
 
-    // Group replies by parent comment ID
     comments
       .filter(comment => comment.parentId)
       .forEach(reply => {
@@ -99,13 +91,11 @@ export default function TaskCommentList({
         repliesMap.get(parentId)!.push(reply)
       })
 
-    // Attach replies to their parent comments
     const threaded = topLevelComments.map(comment => ({
       ...comment,
       replies: repliesMap.get(comment.id) || []
     }))
 
-    // Sort by creation date
     return threaded.sort((a, b) => {
       const dateA = new Date(a.createdAt).getTime()
       const dateB = new Date(b.createdAt).getTime()
@@ -113,31 +103,24 @@ export default function TaskCommentList({
     })
   }, [comments, sortOrder])
 
-  // Handle comment updates (refresh the list)
   const handleCommentUpdate = () => {
     refetch()
   }
 
-  // Handle new comment submission
   const handleNewComment = (comment: any) => {
     setShowEditor(false)
     refetch()
     toast.success('Comment added successfully')
   }
 
-  // Handle reply to comment
   const handleReplyToComment = (parentComment: TaskComment) => {
-    // Scroll to the parent comment and show its reply editor
-    // This is handled within TaskCommentItem
     refetch()
   }
 
-  // Toggle sort order
   const toggleSortOrder = () => {
     setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')
   }
 
-  // Get comment count (including replies)
   const totalCommentCount = comments.length
 
   if (error) {

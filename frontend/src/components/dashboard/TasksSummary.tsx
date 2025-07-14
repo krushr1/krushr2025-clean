@@ -1,7 +1,3 @@
-/**
- * Tasks Summary Widget
- * Shows overview of tasks across all projects
- */
 
 import React from 'react'
 import { useNavigate } from 'react-router'
@@ -18,7 +14,6 @@ import {
   ArrowRight,
   TrendingUp
 } from 'lucide-react'
-// import { useAppStore } from '../../stores/app-store'
 import { cn } from '../../lib/utils'
 
 interface TasksSummaryProps {
@@ -28,7 +23,6 @@ interface TasksSummaryProps {
 export default function TasksSummary({ className }: TasksSummaryProps) {
   const navigate = useNavigate()
   
-  // Mock data for now - will be replaced with real tRPC data
   const tasks = [
     { id: '1', title: 'Complete Dashboard', due_date: '2025-06-27', priority: 'high', kanban_column_id: 'in-progress' },
     { id: '2', title: 'Review Code', due_date: '2025-06-28', priority: 'medium', kanban_column_id: 'done' },
@@ -36,7 +30,6 @@ export default function TasksSummary({ className }: TasksSummaryProps) {
     { id: '4', title: 'Fix Bug #123', due_date: '2025-06-24', priority: 'high', kanban_column_id: 'done' },
   ]
 
-  // Calculate task statistics
   const totalTasks = tasks.length
   const completedTasks = tasks.filter(task => 
     task.kanban_column_id.includes('done') || task.kanban_column_id.includes('complete')

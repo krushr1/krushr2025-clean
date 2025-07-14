@@ -101,7 +101,6 @@ describe('TaskCommentList', () => {
   it('displays timestamps correctly', () => {
     render(<TaskCommentList {...mockProps} />)
     
-    // Should show relative time (e.g., "2 hours ago")
     expect(screen.getByText(/ago/)).toBeInTheDocument()
   })
 
@@ -124,7 +123,6 @@ describe('TaskCommentList', () => {
   it('shows edit and delete options for own comments', () => {
     render(<TaskCommentList {...mockProps} />)
     
-    // First comment is by current user (user-1)
     const firstComment = screen.getAllByTestId('comment-item')[0]
     const moreButton = firstComment.querySelector('[data-testid="comment-options"]')
     
@@ -134,7 +132,6 @@ describe('TaskCommentList', () => {
   it('hides edit/delete options for other users comments', () => {
     render(<TaskCommentList {...mockProps} />)
     
-    // Second comment is by different user (user-2)
     const secondComment = screen.getAllByTestId('comment-item')[1]
     const editButton = secondComment.querySelector('[data-testid="edit-comment"]')
     
@@ -145,7 +142,6 @@ describe('TaskCommentList', () => {
     const user = userEvent.setup()
     render(<TaskCommentList {...mockProps} />)
     
-    // Click edit on first comment (owned by current user)
     const editButton = screen.getByTestId('edit-comment')
     await user.click(editButton)
     
@@ -159,7 +155,6 @@ describe('TaskCommentList', () => {
     const deleteButton = screen.getByTestId('delete-comment')
     await user.click(deleteButton)
     
-    // Should show confirmation dialog
     expect(screen.getByTestId('delete-confirmation')).toBeInTheDocument()
     
     const confirmButton = screen.getByTestId('confirm-delete')
@@ -175,7 +170,6 @@ describe('TaskCommentList', () => {
     const reactionButton = screen.getByTestId('add-reaction')
     await user.click(reactionButton)
     
-    // Should show emoji picker
     expect(screen.getByTestId('emoji-picker')).toBeInTheDocument()
     
     const thumbsUpEmoji = screen.getByTestId('emoji-👍')
@@ -236,7 +230,6 @@ describe('TaskCommentList', () => {
   it('handles real-time updates correctly', async () => {
     const { rerender } = render(<TaskCommentList {...mockProps} />)
     
-    // Simulate new comment being added
     const newComment = {
       id: 'comment-3',
       content: '<p>New real-time comment</p>',
@@ -257,7 +250,6 @@ describe('TaskCommentList', () => {
       expect(screen.getByText('New real-time comment')).toBeInTheDocument()
     })
     
-    // Should highlight new comment
     expect(screen.getByTestId('comment-item-comment-3')).toHaveClass('new-comment')
   })
 
@@ -274,7 +266,6 @@ describe('TaskCommentList', () => {
     const newestFirstOption = screen.getByTestId('sort-newest-first')
     await user.click(newestFirstOption)
     
-    // Comments should be reordered
     const commentItems = screen.getAllByTestId('comment-item')
     expect(commentItems[0]).toHaveTextContent('Jane Smith') // Newer comment first
   })
@@ -290,7 +281,6 @@ describe('TaskCommentList', () => {
       expect(item).toHaveAttribute('role', 'listitem')
     })
     
-    // Reaction buttons should have proper aria-labels
     const reactionButton = screen.getByTestId('add-reaction')
     expect(reactionButton).toHaveAttribute('aria-label', 'Add reaction')
   })
@@ -299,7 +289,6 @@ describe('TaskCommentList', () => {
     const user = userEvent.setup()
     render(<TaskCommentList {...mockProps} />)
     
-    // Tab through comment options
     await user.tab()
     expect(screen.getByTestId('comment-options')).toHaveFocus()
     

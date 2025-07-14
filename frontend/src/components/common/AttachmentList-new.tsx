@@ -1,7 +1,3 @@
-/**
- * Enhanced AttachmentList Component
- * Robust attachment display with comprehensive error handling
- */
 
 import React, { useState } from 'react'
 import { 
@@ -208,13 +204,11 @@ export const AttachmentListNew: React.FC<AttachmentListProps> = ({
 
   const handleDownload = async (attachment: Attachment) => {
     try {
-      // Create download link with proper filename
       const link = document.createElement('a')
       link.href = attachment.downloadUrl
       link.download = attachment.filename
       link.target = '_blank'
       
-      // Add to DOM, trigger click, then remove
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -229,7 +223,6 @@ export const AttachmentListNew: React.FC<AttachmentListProps> = ({
     if (attachment.mimeType.startsWith('image/')) {
       setImagePreview(attachment.downloadUrl)
     } else if (attachment.mimeType === 'application/pdf') {
-      // Open PDF in new tab
       window.open(attachment.downloadUrl, '_blank', 'noopener,noreferrer')
     } else {
       toast.info('Preview not available for this file type')

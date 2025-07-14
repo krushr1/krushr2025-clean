@@ -1,7 +1,3 @@
-/**
- * TaskCommentItem Component
- * Display individual comment with reactions, replies, and edit capabilities
- */
 
 import React, { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar'
@@ -49,7 +45,6 @@ interface TaskCommentItemProps {
   className?: string
 }
 
-// Quick reaction emojis
 const QUICK_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '😡']
 
 export default function TaskCommentItem({
@@ -68,7 +63,6 @@ export default function TaskCommentItem({
   const isAuthor = currentUser?.id === comment.authorId
   const canDelete = isAuthor // Could add admin permissions here
 
-  // Mutations
   const deleteComment = trpc.comment.delete.useMutation({
     onSuccess: () => {
       onUpdate?.()
@@ -89,14 +83,12 @@ export default function TaskCommentItem({
     }
   }) || { mutate: () => {}, isLoading: false }
 
-  // Handle comment deletion
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete this comment?')) {
       deleteComment.mutate({ id: comment.id })
     }
   }
 
-  // Handle editing
   const handleEdit = () => {
     setIsEditing(true)
   }
@@ -110,7 +102,6 @@ export default function TaskCommentItem({
     setIsEditing(false)
   }
 
-  // Handle reply
   const handleReply = () => {
     if (onReply) {
       onReply(comment)
@@ -128,7 +119,6 @@ export default function TaskCommentItem({
     setShowReplyEditor(false)
   }
 
-  // Handle reactions
   const handleReaction = (emoji: string) => {
     toggleReaction.mutate({
       commentId: comment.id,
@@ -137,7 +127,6 @@ export default function TaskCommentItem({
     setShowReactions(false)
   }
 
-  // Format timestamp
   const formatTimestamp = (timestamp: string) => {
     try {
       return formatDistanceToNow(new Date(timestamp), { addSuffix: true })
@@ -146,7 +135,6 @@ export default function TaskCommentItem({
     }
   }
 
-  // Group reactions by emoji
   const groupedReactions = comment.reactions?.reduce((acc: any, reaction: any) => {
     if (!acc[reaction.emoji]) {
       acc[reaction.emoji] = {
@@ -164,7 +152,6 @@ export default function TaskCommentItem({
     return acc
   }, {}) || {}
 
-  // Don't render deleted comments
   if (comment.isDeleted) {
     return (
       <div className={cn("flex gap-3 py-2 opacity-50", className)}>

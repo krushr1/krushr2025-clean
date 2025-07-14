@@ -1,11 +1,6 @@
 import React from 'react'
 import { LAYOUT_BUILDER_CONTENT } from '../content/layoutBuilderContent'
 
-/**
- * Layout Builder Section Component
- * Simple header section introducing the layout building capabilities
- * Uses a unique structure that doesn't fit the standard layout patterns
- */
 export const LayoutBuilderSection: React.FC = () => {
   return (
     <div id="section" className="section-copy bg-neutral-200">

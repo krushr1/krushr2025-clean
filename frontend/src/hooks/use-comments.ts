@@ -1,7 +1,3 @@
-/**
- * useComments Hook
- * Custom hook for managing task comments with tRPC integration
- */
 
 import { useEffect, useCallback } from 'react'
 import { trpc } from '../lib/trpc'
@@ -21,7 +17,6 @@ export function useComments(taskId: string) {
     markAsUpdated
   } = useCommentsStore()
 
-  // Fetch comments query
   const {
     data: comments = [],
     isLoading,
@@ -45,7 +40,6 @@ export function useComments(taskId: string) {
     }
   )
 
-  // Create comment mutation
   const createComment = trpc.comment.create.useMutation({
     onMutate: () => {
       setLoading(taskId, true)
@@ -55,7 +49,6 @@ export function useComments(taskId: string) {
       setLoading(taskId, false)
       markAsUpdated(taskId)
       
-      // Send WebSocket notification
       if (wsConnected) {
         sendMessage('COMMENT_ADDED', {
           taskId,
@@ -73,7 +66,6 @@ export function useComments(taskId: string) {
     }
   })
 
-  // Update comment mutation
   const updateCommentMutation = trpc.comment.update.useMutation({
     onSuccess: (comment) => {
       updateComment(comment.id, comment)
@@ -86,7 +78,6 @@ export function useComments(taskId: string) {
     }
   })
 
-  // Delete comment mutation
   const deleteComment = trpc.comment.delete.useMutation({
     onSuccess: (_, variables) => {
       removeComment(variables.id)
@@ -99,10 +90,8 @@ export function useComments(taskId: string) {
     }
   })
 
-  // Toggle reaction mutation (if available)
   const toggleReaction = trpc.comment.toggleReaction?.useMutation({
     onSuccess: () => {
-      // Refetch comments to get updated reactions
       refetch()
     },
     onError: (error) => {
@@ -110,14 +99,12 @@ export function useComments(taskId: string) {
     }
   }) || { mutate: () => {}, isLoading: false }
 
-  // Set initial loading state
   useEffect(() => {
     if (isLoading) {
       setLoading(taskId, true)
     }
   }, [isLoading, taskId, setLoading])
 
-  // Auto-refresh comments when WebSocket is connected
   useEffect(() => {
     if (wsConnected && taskId) {
       const interval = setInterval(() => {
@@ -128,16 +115,11 @@ export function useComments(taskId: string) {
     }
   }, [wsConnected, taskId, refetch])
 
-  // WebSocket event handlers
   useEffect(() => {
     if (wsConnected) {
-      // Listen for comment events
-      // This would be implemented in the WebSocket message handler
-      // For now, we'll rely on periodic refetching
     }
   }, [wsConnected, taskId])
 
-  // Memoized handlers
   const handleCreateComment = useCallback(
     (content: string) => {
       createComment.mutate({
@@ -179,34 +161,27 @@ export function useComments(taskId: string) {
     refetch()
   }, [refetch])
 
-  // Get comments from store (this will be real-time)
   const storeComments = getCommentsByTask(taskId)
 
   return {
-    // Data
     comments: storeComments.length > 0 ? storeComments : comments,
     
-    // Loading states
     isLoading: isLoading || createComment.isLoading,
     isRefetching,
     isCreating: createComment.isLoading,
     isUpdating: updateCommentMutation.isLoading,
     isDeleting: deleteComment.isLoading,
     
-    // Error state
     error,
     
-    // Actions
     createComment: handleCreateComment,
     updateComment: handleUpdateComment,
     deleteComment: handleDeleteComment,
     toggleReaction: handleToggleReaction,
     refresh: handleRefresh,
     
-    // WebSocket status
     wsConnected,
     
-    // Mutation objects (for direct access if needed)
     mutations: {
       create: createComment,
       update: updateCommentMutation,

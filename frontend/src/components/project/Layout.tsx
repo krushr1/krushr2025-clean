@@ -6,16 +6,11 @@ interface LayoutProps {
   children: ReactNode
 }
 
-/**
- * Main layout component that wraps all pages
- * Provides consistent sidebar navigation and content area
- */
 export default function Layout({ children }: LayoutProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const [currentPage, setCurrentPage] = useState('home')
 
-  // Update current page based on URL (works with HashRouter)
   useEffect(() => {
     const pathToPageMap: Record<string, string> = {
       '/': 'home',
@@ -29,11 +24,8 @@ export default function Layout({ children }: LayoutProps) {
       '/projects': 'projects',
     }
     
-    // For HashRouter, we need to check location.pathname (the part after #)
-    // location.pathname is the actual route, location.hash would be empty with HashRouter
     const currentPath = location.pathname
     const page = pathToPageMap[currentPath] || 'home'
-    // console.log('Layout - Current path:', currentPath, 'Mapped to page:', page)
     setCurrentPage(page)
   }, [location.pathname])
 

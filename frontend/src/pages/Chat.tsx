@@ -4,10 +4,6 @@ import { useAuthStore } from '../stores/auth-store'
 import { trpc } from '../lib/trpc'
 import { Loader2 } from 'lucide-react'
 
-/**
- * Enhanced Chat Page
- * Project-contextual team communication with real-time features
- */
 export default function Chat() {
   const { isAuthenticated } = useAuthStore()
   const { data: threads = [], isLoading } = trpc.chat.getThreads.useQuery()

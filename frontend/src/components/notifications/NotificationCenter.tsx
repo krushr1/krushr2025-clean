@@ -1,7 +1,3 @@
-/**
- * Notification Center Component
- * Centralized notification management with real-time updates
- */
 
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'

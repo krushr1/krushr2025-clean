@@ -8,7 +8,6 @@ import { INTEGRATE_CONTENT } from '../content/integrateContent'
  * Note: Contains Webflow dynamic content (w-dyn-list) with empty state
  */
 export const IntegrateSection: React.FC = () => {
-  // Create slide items with exact structure - first 4 without view integration, next 8 with it
   const renderSlideItem = (dataWId: string, hasViewIntegration = false) => (
     <div className="slide-item-mg w-slide">
       <div className="w-dyn-list">

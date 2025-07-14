@@ -1,9 +1,5 @@
 import { Calendar, MessageCircle, Paperclip, MoreHorizontal } from 'lucide-react'
 
-/**
- * Individual task card component with professional styling
- * Displays task information with muted colors and compact layout
- */
 interface TaskCardProps {
   task: {
     id: string

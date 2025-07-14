@@ -57,15 +57,12 @@ export default function SimpleCreatePanel({
   const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false)
   const [showDatePicker, setShowDatePicker] = useState(false)
 
-  // Get workspace members for assignee selection
   const workspaceMembersQuery = trpc.user.listWorkspaceMembers.useQuery({ workspaceId })
   const workspaceMembers = workspaceMembersQuery.data || []
 
-  // Refs for click outside detection
   const assigneeRef = useRef<HTMLDivElement>(null)
   const datePickerRef = useRef<HTMLDivElement>(null)
 
-  // Click outside to close dropdowns
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (assigneeRef.current && !assigneeRef.current.contains(event.target as Node)) {
@@ -80,7 +77,6 @@ export default function SimpleCreatePanel({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Reset form when closed
   const resetForm = () => {
     setTitle('')
     setDescription('')
@@ -102,11 +98,9 @@ export default function SimpleCreatePanel({
     onClose()
   }
 
-  // Create task mutation
   const createTaskMutation = trpc.task.create.useMutation({
     onSuccess: async (newTask) => {
       try {
-        // Add any pending comments after task creation
         for (const localComment of comments) {
           await addCommentMutation.mutateAsync({
             taskId: newTask.id,
@@ -114,7 +108,6 @@ export default function SimpleCreatePanel({
           })
         }
 
-        // Upload any pending files after task creation
         for (const attachment of attachments) {
           if (attachment.file) {
             const formData = new FormData()
@@ -136,7 +129,6 @@ export default function SimpleCreatePanel({
         console.error('Failed to process post-creation actions:', error)
       }
 
-      // Reset form and close
       resetForm()
       onSuccess?.()
       onClose()
@@ -146,7 +138,6 @@ export default function SimpleCreatePanel({
     }
   })
 
-  // Add comment mutation
   const addCommentMutation = trpc.comment.create.useMutation({
     onSuccess: () => {
       setComment('')
@@ -155,7 +146,6 @@ export default function SimpleCreatePanel({
 
   const handleAddComment = () => {
     if (comment.trim()) {
-      // For task creation, store comment temporarily to add after task creation
       const newComment = {
         id: Date.now().toString(),
         content: comment.trim(),
@@ -606,8 +596,3 @@ export default function SimpleCreatePanel({
     </Sheet>
   )
 }
-
-/**
- * Simple Create Panel
- * Clean side panel for creating tasks using the same pattern as TaskDetail
- */

@@ -1,12 +1,7 @@
-/**
- * API integration layer for Krushr Laravel backend
- * Provides typed interfaces for all backend communication
- */
 
 import { ApiResponse, PaginatedResponse, User, Kanban, Task, Team, Workspace, Notification } from '../../../shared/types'
 import { API_ENDPOINTS, HTTP_STATUS } from '../../../shared/constants'
 
-// Base API configuration
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? 'https://api.krushr.app' 
   : 'http://localhost:8000/api'
@@ -75,7 +70,6 @@ class ApiClient {
     return this.request<User>(API_ENDPOINTS.ME)
   }
 
-  // Workspaces
   async getWorkspaces(): Promise<ApiResponse<Workspace[]>> {
     return this.request<Workspace[]>(API_ENDPOINTS.WORKSPACES)
   }
@@ -87,7 +81,6 @@ class ApiClient {
     })
   }
 
-  // Teams
   async getTeams(): Promise<ApiResponse<Team[]>> {
     return this.request<Team[]>(API_ENDPOINTS.TEAMS)
   }
@@ -99,7 +92,6 @@ class ApiClient {
     })
   }
 
-  // Kanbans
   async getKanbans(): Promise<ApiResponse<Kanban[]>> {
     return this.request<Kanban[]>(API_ENDPOINTS.KANBANS)
   }
@@ -122,7 +114,6 @@ class ApiClient {
     })
   }
 
-  // Tasks
   async getTasks(kanbanId?: string): Promise<ApiResponse<Task[]>> {
     const endpoint = kanbanId 
       ? `${API_ENDPOINTS.TASKS}?kanban_id=${kanbanId}`
@@ -150,7 +141,6 @@ class ApiClient {
     })
   }
 
-  // Notifications
   async getNotifications(): Promise<ApiResponse<Notification[]>> {
     return this.request<Notification[]>(API_ENDPOINTS.NOTIFICATIONS)
   }
@@ -162,10 +152,8 @@ class ApiClient {
   }
 }
 
-// Export singleton instance
 export const api = new ApiClient(API_BASE_URL)
 
-// Export individual functions for convenience
 export const auth = {
   login: api.login.bind(api),
   logout: api.logout.bind(api),

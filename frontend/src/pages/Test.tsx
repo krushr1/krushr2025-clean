@@ -1,6 +1,3 @@
-/**
- * Test page to verify tRPC connection and Universal Input Form
- */
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
@@ -24,13 +21,9 @@ export default function Test() {
   const navigate = useNavigate()
 
   // Redirect to home if already authenticated (disabled for integration testing)
-  // useEffect(() => {
   //   if (isAuthenticated) {
-  //     navigate('/home')
-  //   }
   // }, [isAuthenticated, navigate])
 
-  // tRPC hooks
   const loginMutation = trpc.auth.login.useMutation({
     onSuccess: (data) => {
       setUser(data.user)

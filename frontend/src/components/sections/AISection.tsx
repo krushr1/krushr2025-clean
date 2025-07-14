@@ -5,7 +5,6 @@ import { SectionBody } from '../layout/SectionBody'
 import { EnhancedImageGallery } from '../shared/EnhancedImageGallery'
 import { AI_CONTENT } from '../content/aiContent'
 
-// Convert content to new format
 const aiSectionData = {
   title: AI_CONTENT.title,
   description: AI_CONTENT.description,
@@ -19,11 +18,6 @@ const aiImages = [
   AI_CONTENT.images.chatGPT
 ]
 
-/**
- * AI Section Component - Refactored for Reusability
- * Showcases AI automation capabilities and learning features
- * Now uses shared layout components for consistency and maintainability
- */
 export const AISection: React.FC = () => {
   const leftContent = (
     <>

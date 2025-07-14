@@ -2,7 +2,6 @@ import React from 'react'
 import { CUSTOMIZATION_CONTENT } from '../content/customizationContent'
 import { DirectMessagesSection } from './DirectMessagesSection'
 
-// Reusable components following established patterns
 const CustomizationFeaturesList: React.FC = () => (
   <div className="w-clearfix">
     <div className="grid-1-column gap-row-32px">
@@ -45,12 +44,6 @@ const CustomizationImage: React.FC = () => {
   )
 }
 
-/**
- * Customization Section Component
- * Showcases layout customization capabilities with 3 key features
- * Also includes the DirectMessagesSection within the same container
- * Uses a unique container structure that differs from standard sections
- */
 export const CustomizationSection: React.FC = () => {
   return (
     <div className="container-light-contrast reduce-btm-margin w-container">

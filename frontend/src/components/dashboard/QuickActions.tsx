@@ -1,7 +1,3 @@
-/**
- * Quick Actions Panel
- * Provides fast access to common actions
- */
 
 import React from 'react'
 import { useNavigate } from 'react-router'

@@ -3,7 +3,8 @@ import { rimraf } from 'rimraf'
 import stylePlugin from 'esbuild-style-plugin'
 import autoprefixer from 'autoprefixer'
 import tailwindcss from 'tailwindcss'
-import { cp } from 'fs/promises'
+import { cp, stat, copyFile, mkdir } from 'fs/promises'
+import { dirname, relative } from 'path'
 import chokidar from 'chokidar'
 
 const args = process.argv.slice(2)
@@ -11,27 +12,70 @@ const isProd = args[0] === '--production'
 
 await rimraf('dist')
 
-// Function to copy public assets
-async function copyPublicAssets() {
+const fileStats = new Map()
+
+async function smartCopyFile(src, dest) {
   try {
-    await cp('public', 'dist', { recursive: true })
-    console.log('✅ Copied public assets to dist')
+    const srcStat = await stat(src)
+    const srcTime = srcStat.mtime.getTime()
     
-    // Rename the static landing page from index.html to home.html
-    // This ensures the React app's index.html takes precedence
-    const { rename } = await import('fs/promises')
+    let shouldCopy = true
     try {
-      await rename('dist/index.html', 'dist/home.html')
-      console.log('✅ Renamed static landing page to home.html')
+      const destStat = await stat(dest)
+      const destTime = destStat.mtime.getTime()
+      const lastKnownTime = fileStats.get(src) || 0
       
-      // Now rename our React app HTML to index.html
-      await rename('dist/react-index.html', 'dist/index.html')
-      console.log('✅ Set React app as main index.html')
-    } catch (renameError) {
-      console.log('⚠️  Error in HTML renaming:', renameError.message)
+      shouldCopy = srcTime > destTime || srcTime > lastKnownTime
+    } catch {
+      shouldCopy = true
+    }
+    
+    if (shouldCopy) {
+      await mkdir(dirname(dest), { recursive: true })
+      await copyFile(src, dest)
+      fileStats.set(src, srcTime)
+      console.log(`Copied: ${relative('.', src)} → ${relative('.', dest)}`)
+      return true
+    }
+    return false
+  } catch (error) {
+    console.error(`Failed to copy ${src}:`, error.message)
+    return false
+  }
+}
+
+async function copyPublicAssets(changedFile = null) {
+  try {
+    if (changedFile) {
+      const relativePath = relative('public', changedFile)
+      const destPath = `dist/${relativePath}`
+      await smartCopyFile(changedFile, destPath)
+    } else {
+      await cp('public', 'dist', { 
+        recursive: true,
+        filter: async (src, dest) => {
+          if (src.endsWith('.html') || src.endsWith('.css') || src.endsWith('.js')) {
+            return await smartCopyFile(src, dest)
+          } else {
+            return true
+          }
+        }
+      })
+      console.log('Public assets copied')
+    }
+    
+    if (!changedFile) {
+      const { copyFile } = await import('fs/promises')
+      try {
+        // Copy react app as main index
+        await copyFile('index.html', 'dist/index.html')
+        console.log('React app set as main index.html')
+      } catch (copyError) {
+        console.log('React index copy failed:', copyError.message)
+      }
     }
   } catch (error) {
-    console.log('⚠️  No public folder found, skipping copy')
+    console.log('Copy failed:', error.message)
   }
 }
 
@@ -43,7 +87,7 @@ await copyPublicAssets()
  */
 const esbuildOpts = {
   color: true,
-  entryPoints: ['src/main.tsx', 'react-index.html'],
+  entryPoints: ['src/main.tsx', 'index.html'],
   assetNames: '[name]',
   publicPath: '/',
   outdir: 'dist',
@@ -78,25 +122,6 @@ if (isProd) {
 } else {
   const ctx = await esbuild.context(esbuildOpts)
   await ctx.watch()
-  
-  // Watch public folder for changes with chokidar
-  const watcher = chokidar.watch('public', {
-    ignored: /(^|[\/\\])\../, // ignore dotfiles
-    persistent: true
-  })
-  
-  let debounceTimer
-  watcher.on('change', (path) => {
-    clearTimeout(debounceTimer)
-    debounceTimer = setTimeout(copyPublicAssets, 200)
-  })
-  
-  watcher.on('add', (path) => {
-    clearTimeout(debounceTimer)
-    debounceTimer = setTimeout(copyPublicAssets, 200)
-  })
-  
-  console.log('👀 Watching public folder for changes with chokidar...')
   
   const { hosts, port } = await ctx.serve({
     port: parseInt(process.env.PORT) || 8001,

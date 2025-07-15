@@ -123,6 +123,17 @@ if (isProd) {
   const ctx = await esbuild.context(esbuildOpts)
   await ctx.watch()
   
+  // Watch public directory for changes and copy immediately
+  const publicWatcher = chokidar.watch('public/**/*', {
+    ignored: /(^|[\/\\])\../, // ignore dotfiles
+    persistent: true
+  })
+  
+  publicWatcher.on('change', async (path) => {
+    console.log(`Public file changed: ${path}`)
+    await copyPublicAssets(path)
+  })
+  
   const { hosts, port } = await ctx.serve({
     port: parseInt(process.env.PORT) || 8001,
     host: '127.0.0.1',
@@ -132,4 +143,5 @@ if (isProd) {
   hosts.forEach((host) => {
     console.log(`http://${host}:${port}`)
   })
+  console.log('Watching public/ directory for changes...')
 }

@@ -1,13 +1,11 @@
-import { GoogleGenAI } from '@google/genai'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 import { config } from '../config'
 
 export class AiService {
-  private client: GoogleGenAI
+  private client: GoogleGenerativeAI
 
   constructor() {
-    this.client = new GoogleGenAI({
-      apiKey: config.GEMINI_API_KEY
-    })
+    this.client = new GoogleGenerativeAI(config.GEMINI_API_KEY)
   }
 
   async generateResponse(
@@ -27,37 +25,38 @@ export class AiService {
     const startTime = Date.now()
     
     try {
-      // Convert messages to Gemini format
+      // Get the model
+      const model = this.client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+
+      // Convert messages to Gemini format  
       const contents = messages.map(msg => ({
-        role: msg.role,
+        role: msg.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: msg.content }]
       }))
 
-      const response = await this.client.models.generateContent({
-        model: 'gemini-2.5-flash',
+      const response = await model.generateContent({
         contents,
         generationConfig: {
           maxOutputTokens: options.maxTokens || 4096,
-          temperature: options.temperature || 0.7,
-          ...(options.thinkingBudget !== undefined && { thinkingBudget: options.thinkingBudget })
+          temperature: options.temperature || 0.7
         }
       })
 
       const responseTime = Date.now() - startTime
-      const content = response.text || ''
+      const content = response.response.text() || ''
       
       // Estimate token count (rough approximation)
       const tokenCount = this.estimateTokenCount(content)
       
       // Calculate cost (example pricing - adjust based on actual Gemini pricing)
-      const cost = this.calculateCost(tokenCount, 'gemini-2.5-flash')
+      const cost = this.calculateCost(tokenCount, 'gemini-1.5-flash')
 
       return {
         content,
         tokenCount,
         cost,
         responseTime,
-        thinkingTokens: response.usageMetadata?.candidatesTokenCount || 0
+        thinkingTokens: response.response.usageMetadata?.candidatesTokenCount || 0
       }
     } catch (error) {
       console.error('AI Service Error:', error)

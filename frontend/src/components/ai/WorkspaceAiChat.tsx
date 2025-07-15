@@ -224,10 +224,31 @@ export default function WorkspaceAiChat({
     return 'none'
   }
 
-  // Handle drag functionality with intelligent snapping
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value)
+  }
+
+  const handleInputClick = (e: React.MouseEvent) => {
+    // Allow normal input behavior
+  }
+
+  const handleInputFocus = (e: React.FocusEvent) => {
+    // Allow normal input behavior
+  }
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isFloating) return
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+    
+    // Prevent drag on input area
+    const target = e.target as HTMLElement
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.closest('input') || target.closest('textarea')) {
+      return
+    }
+    
+    // Only allow drag from specific drag handle
+    if (!target.closest('.drag-handle')) {
+      return
+    }
     
     e.stopPropagation()
     setIsDragging(true)
@@ -380,19 +401,6 @@ export default function WorkspaceAiChat({
     }
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation()
-    setMessage(e.target.value)
-  }
-
-  const handleInputClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-  }
-
-  const handleInputFocus = (e: React.FocusEvent) => {
-    e.stopPropagation()
-  }
-
   const formatCost = (cost: number) => {
     return cost < 0.01 ? '<$0.01' : `$${cost.toFixed(3)}`
   }
@@ -523,7 +531,7 @@ export default function WorkspaceAiChat({
           {isFloating && (
             <div 
               className={cn(
-                "absolute left-1/2 top-1 w-12 h-1 bg-gray-300 rounded-full cursor-grab transform -translate-x-1/2 hover:bg-gray-400 transition-colors",
+                "absolute left-1/2 top-1 w-12 h-1 bg-gray-300 rounded-full cursor-grab transform -translate-x-1/2 hover:bg-gray-400 transition-colors drag-handle",
                 isDragging && "cursor-grabbing bg-krushr-primary"
               )}
               onMouseDown={handleMouseDown}
@@ -711,7 +719,7 @@ export default function WorkspaceAiChat({
           {/* Draggable handle for minimized state */}
           <div 
             className={cn(
-              "flex items-center space-x-2 flex-1 min-w-0 cursor-grab hover:cursor-grab",
+              "flex items-center space-x-2 flex-1 min-w-0 cursor-grab hover:cursor-grab drag-handle",
               isDragging && "cursor-grabbing"
             )}
             onMouseDown={handleMouseDown}

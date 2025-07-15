@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# /push - Custom Claude Code command to push all pending changes
+# Usage: /push [optional commit message]
+
+set -e
+
+# Change to project root
+cd "$(dirname "$0")/../.."
+
+echo "🔍 Checking for pending changes..."
+
+# Check if there are any changes to commit
+if git diff --quiet && git diff --cached --quiet; then
+    echo "✅ No changes to commit"
+    
+    # Check if we're ahead of origin
+    if git status --porcelain=v1 2>/dev/null | grep -q "^##.*ahead"; then
+        echo "📤 Pushing existing commits to remote..."
+        git push origin main
+        echo "✅ All commits pushed successfully"
+    else
+        echo "✅ Already up to date with remote"
+    fi
+    exit 0
+fi
+
+# Get commit message from argument or use default
+COMMIT_MSG="${1:-"Update project files
+
+Automated commit of pending changes via /push command.
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"}"
+
+echo "📝 Staging all changes..."
+git add .
+
+echo "💾 Committing changes..."
+git commit -m "$COMMIT_MSG"
+
+echo "📤 Pushing to remote..."
+git push origin main
+
+echo "✅ All pending changes successfully pushed!"
+echo "📊 Repository status:"
+git status --short

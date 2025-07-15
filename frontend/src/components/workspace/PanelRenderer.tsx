@@ -25,7 +25,8 @@ import {
   Focus,
   Loader2,
   AlertCircle,
-  FolderOpen
+  FolderOpen,
+  Bot
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -42,6 +43,7 @@ const Chat = lazy(() => import('../chat/Chat'))
 const NotesPanel = lazy(() => import('../notes/NotesPanel'))
 const NewCalendarPanel = lazy(() => import('../calendar/NewCalendarPanel'))
 const Contacts = lazy(() => import('../contacts/Contacts'))
+const WorkspaceAiChat = lazy(() => import('../ai/WorkspaceAiChat'))
 
 import type { NotesPanelRef } from '../notes/NotesPanel'
 
@@ -228,6 +230,8 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
         return <FolderOpen className="w-4 h-4 text-krushr-coral-red" />
       case 'CHAT':
         return <MessageCircle className="w-4 h-4 text-krushr-coral-red" />
+      case 'AI_CHAT':
+        return <Bot className="w-4 h-4 text-krushr-primary" />
       case 'CALENDAR':
         return <Calendar className="w-4 h-4 text-krushr-coral-red" />
       case 'NOTES':
@@ -274,6 +278,15 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
           <PanelErrorBoundary>
             <Suspense fallback={<PanelLoadingSpinner />}>
               <Chat threadId={chatId} className="h-full" />
+            </Suspense>
+          </PanelErrorBoundary>
+        )
+
+      case 'AI_CHAT':
+        return (
+          <PanelErrorBoundary>
+            <Suspense fallback={<PanelLoadingSpinner />}>
+              <WorkspaceAiChat workspaceId={workspaceId} className="h-full" />
             </Suspense>
           </PanelErrorBoundary>
         )
@@ -470,7 +483,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
         
         <div className="flex items-center gap-0.5 flex-shrink-0">
           {/* Panel-specific actions dropdown */}
-          {(panel.type === 'KANBAN' || panel.type === 'CHAT' || panel.type === 'NOTES') && (
+          {(panel.type === 'KANBAN' || panel.type === 'CHAT' || panel.type === 'AI_CHAT' || panel.type === 'NOTES') && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
@@ -516,6 +529,21 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
                     <DropdownMenuItem className="text-xs">
                       <Search className="w-3 h-3 mr-2" />
                       Search Chat
+                    </DropdownMenuItem>
+                  </>
+                ) : panel.type === 'AI_CHAT' ? (
+                  <>
+                    <DropdownMenuItem className="text-xs">
+                      <Plus className="w-3 h-3 mr-2" />
+                      New Conversation
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      <MessageCircle className="w-3 h-3 mr-2" />
+                      Conversations
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      <Search className="w-3 h-3 mr-2" />
+                      Search Messages
                     </DropdownMenuItem>
                   </>
                 ) : (

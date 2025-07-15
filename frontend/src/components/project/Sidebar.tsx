@@ -63,7 +63,7 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
   }
 
   return (
-    <div className={`${isCollapsed ? 'w-16' : 'w-64'} bg-sidebar border-r border-sidebar-border flex flex-col h-full transition-all duration-300`}>
+    <div className={`${isCollapsed ? 'w-16' : 'w-48'} bg-sidebar border-r border-sidebar-border flex flex-col h-full transition-all duration-300`}>
       <div className="p-4 border-b border-sidebar-border">
         <div className="flex items-center justify-between">
           <div className="flex-1">

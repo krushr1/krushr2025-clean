@@ -26,7 +26,8 @@ import {
   Lock,
   Unlock,
   Trash2,
-  Loader2
+  Loader2,
+  Bot
 } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
@@ -86,6 +87,13 @@ const PANEL_TYPES = [
     label: 'Chat',
     description: 'Team communication and messaging',
     defaultTitle: 'Team Chat'
+  },
+  { 
+    type: 'AI_CHAT', 
+    icon: Bot, 
+    label: 'AI Assistant',
+    description: 'Gemini 2.5 Flash AI-powered assistant',
+    defaultTitle: 'AI Assistant'
   },
   { 
     type: 'CALENDAR', 

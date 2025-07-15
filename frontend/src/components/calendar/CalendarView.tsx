@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 import { useAppStore } from '../../stores/app-store'
 import { Task } from '../../../../shared/types'
-import { formatDate } from '../../../../shared/utils'
+import { formatDate, formatDateShort } from '../../../../shared/utils'
 import { cn } from '../../lib/utils'
 
 interface CalendarEvent {
@@ -315,9 +315,9 @@ export default function CalendarView({ className }: CalendarViewProps) {
 
       {/* Selected Date Details */}
       {selectedDate && (
-        <div className="flex-shrink-0 border-t bg-gray-50 p-4">
+        <div className="flex-shrink-0 border-t bg-red-100 p-4">
           <h4 className="font-medium text-gray-900 mb-2">
-            {formatDate(selectedDate.toISOString())}
+            SELECTED: {formatDateShort(selectedDate.toISOString())}
           </h4>
           <div className="space-y-2">
             {calendarEvents

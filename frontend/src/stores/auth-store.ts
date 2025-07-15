@@ -20,7 +20,7 @@ interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   
-  hydrate: () => void
+  hydrate: () => Promise<void>
   fetchUser: () => Promise<void>
   setUser: (user: User) => void
   setToken: (token: string) => void

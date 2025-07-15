@@ -123,6 +123,7 @@ export default function Login() {
               <Button
                 type="submit"
                 className="w-full"
+                style={{ backgroundColor: '#143197', color: 'white' }}
                 disabled={loginMutation.isLoading}
               >
                 {loginMutation.isLoading ? (

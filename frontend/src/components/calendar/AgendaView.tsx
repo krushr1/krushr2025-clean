@@ -24,6 +24,7 @@ import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { cn } from '../../lib/utils'
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, addDays, isToday, isTomorrow, isYesterday } from 'date-fns'
+import { formatDateShort } from '../../../../shared/utils'
 
 interface AgendaViewProps {
   workspaceId: string
@@ -222,13 +223,13 @@ export default function AgendaView({ workspaceId, className }: AgendaViewProps) 
       },
       {
         key: 'tomorrow',
-        label: 'Tomorrow',
+        label: `Tomorrow (${formatDateShort(tomorrow)})`,
         date: tomorrow,
         items: SAMPLE_AGENDA_DATA.filter(item => isSameDay(item.startTime, tomorrow))
       },
       {
         key: 'dayafter',
-        label: format(dayAfter, 'EEEE'),
+        label: formatDateShort(dayAfter),
         date: dayAfter,
         items: SAMPLE_AGENDA_DATA.filter(item => isSameDay(item.startTime, dayAfter))
       }

@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Card, CardContent, CardHeader } from '../ui/card'
 import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 import { FloatingInput } from '../ui/floating-input'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Badge } from '../ui/badge'

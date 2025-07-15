@@ -42,7 +42,7 @@ export const getCalendarDays = (currentDate: Date): CalendarDay[] => {
   const days: CalendarDay[] = []
   
   for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-    const date = new Date(year, month, -i)
+    const date = new Date(year, month, 0 - i)
     days.push({ date, isCurrentMonth: false })
   }
   

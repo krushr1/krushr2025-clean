@@ -94,7 +94,7 @@ function NoteCard({ note, isActive, onClick, isFirst, isLast, onArchiveToggle }:
     >
       <div className="flex items-start justify-between gap-2 mb-3">
         <h4 className={cn(
-          "font-medium line-clamp-2 flex-1 font-brand",
+          "text-sm font-medium line-clamp-2 flex-1 font-brand",
           isActive ? "text-krushr-primary" : "text-gray-900"
         )}>
           {note.title || 'Untitled'}

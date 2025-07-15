@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { ScrollArea } from '../ui/scroll-area'
 import { 
@@ -224,17 +225,7 @@ export default function WorkspaceAiChat({
     return 'none'
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value)
-  }
 
-  const handleInputClick = (e: React.MouseEvent) => {
-    // Allow normal input behavior
-  }
-
-  const handleInputFocus = (e: React.FocusEvent) => {
-    // Allow normal input behavior
-  }
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isFloating) return
@@ -917,42 +908,33 @@ export default function WorkspaceAiChat({
         </ScrollArea>
       )}
 
-      {/* Input area - compact design */}
+      {/* Input area - simple design */}
       {!isMinimized && (
         <div className="p-3 border-t border-gray-200 bg-gray-50/50">
-        {/* Message input */}
-        <div className="flex items-center space-x-2">
-          <div className="relative flex-1">
-            <input
+          {/* Simple message input */}
+          <div className="flex items-center space-x-2">
+            <Input
               ref={messageInputRef}
               type="text"
-              id="floating_ai_message"
-              placeholder=" "
+              placeholder="Ask AI anything..."
               value={message}
-              onChange={handleInputChange}
+              onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              onClick={handleInputClick}
-              onFocus={handleInputFocus}
               disabled={isLoading}
-              className="block px-3 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary peer transition-all duration-200 font-manrope h-10"
+              className="h-10 flex-1"
+              onClick={(e) => e.stopPropagation()}
+              onFocus={(e) => e.stopPropagation()}
             />
-            <label
-              htmlFor="floating_ai_message"
-              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
+            <Button
+              onClick={handleSendMessage}
+              disabled={!message.trim() || isLoading}
+              size="sm"
+              className="h-10 w-10 p-0"
             >
-              Ask AI anything...
-            </label>
+              <Send className="w-3 h-3" />
+            </Button>
           </div>
-          <Button
-            onClick={handleSendMessage}
-            disabled={!message.trim() || isLoading}
-            size="sm"
-            className="h-10 w-10 p-0"
-          >
-            <Send className="w-3 h-3" />
-          </Button>
         </div>
-      </div>
       )}
     </div>
     </FloatingWrapper>

@@ -230,17 +230,28 @@ export default function WorkspaceAiChat({
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isFloating) return
     
-    // Prevent drag on input area
+    // Prevent drag on interactive elements
     const target = e.target as HTMLElement
-    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.closest('input') || target.closest('textarea')) {
+    if (
+      target.tagName === 'INPUT' || 
+      target.tagName === 'TEXTAREA' || 
+      target.tagName === 'BUTTON' ||
+      target.closest('input') || 
+      target.closest('textarea') || 
+      target.closest('button') ||
+      target.closest('[role="button"]') ||
+      target.closest('[data-interactive]')
+    ) {
       return
     }
     
-    // Only allow drag from specific drag handle
-    if (!target.closest('.drag-handle')) {
+    // Allow drag from header area or specific drag handle
+    const isInHeader = target.closest('.chat-header') || target.closest('.drag-handle')
+    if (!isInHeader) {
       return
     }
     
+    e.preventDefault()
     e.stopPropagation()
     setIsDragging(true)
     setIsAnimating(false)
@@ -515,7 +526,7 @@ export default function WorkspaceAiChat({
       )}>
         {/* Header with floating controls */}
         <div className={cn(
-          "relative flex items-center justify-between p-3 border-b border-gray-200 rounded-t-xl",
+          "relative flex items-center justify-between p-3 border-b border-gray-200 rounded-t-xl chat-header",
           isFloating ? "bg-gradient-to-r from-krushr-primary/5 to-transparent" : "bg-white"
         )}>
           {/* Modern drag handle for floating mode */}

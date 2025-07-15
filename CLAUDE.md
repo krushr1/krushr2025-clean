@@ -801,6 +801,228 @@ cf-swarm "performance audit and optimization across entire stack"
 
 **Result**: Parallel execution, auto-approvals, 40x cache speedup, comprehensive automation.
 
+## AI Integration Architecture (Gemini 2.5 Flash)
+
+### **Core AI System**
+Krushr integrates Google's Gemini 2.5 Flash model for intelligent project management assistance, conversation management, and actionable item parsing.
+
+**Key Components:**
+- **AI Service**: `api/src/lib/ai.ts` - Main AI integration with conversation management
+- **AI Router**: `api/src/trpc/routers/ai.ts` - tRPC endpoints for AI functionality
+- **Frontend Components**: `frontend/src/components/ai/` - Chat interface and AI interactions
+- **Database Models**: AiConversation, AiMessage - Persistent conversation storage
+
+### **Intelligent Thinking Budget System**
+The AI automatically calculates optimal thinking budgets (0-24,576 tokens) based on query complexity:
+
+**Complexity Scoring:**
+- **High Complexity (16K-24K tokens)**: Analysis, architecture, problem-solving, debugging
+- **Medium Complexity (8K-16K tokens)**: Code generation, workflows, implementation
+- **Low Complexity (2K-8K tokens)**: Definitions, tutorials, simple tasks
+- **Minimal Complexity (0-2K tokens)**: Greetings, confirmations, basic responses
+
+**Auto-Optimization Features:**
+- **Query Analysis**: Regex patterns identify complexity indicators
+- **Technical Term Detection**: Adjusts budget based on technical vocabulary
+- **Context Awareness**: Considers conversation history and length
+- **Actionable Detection**: Increases budget for task/note/event creation
+
+### **Actionable Item Parsing**
+The AI automatically detects and can create database items from natural language:
+
+**Supported Item Types:**
+```typescript
+// Task Detection Patterns
+"need to fix the login bug by Friday" → Task with deadline
+"create a new user dashboard" → Task with description
+"review the API documentation" → Task with assignment hints
+
+// Note Detection Patterns  
+"remember to update the deployment guide" → Note with content
+"document the new authentication flow" → Note with technical content
+
+// Project Detection Patterns
+"launch the mobile app initiative" → Project with scope
+"complete overhaul of the user system" → Project with complexity
+
+// Event Detection Patterns
+"schedule a standup meeting tomorrow" → Calendar event with date
+"book a demo presentation next week" → Calendar event with type
+```
+
+### **Conversation Management**
+**Database Schema:**
+```typescript
+model AiConversation {
+  id: String
+  title: String
+  userId: String
+  workspaceId: String
+  totalTokens: Int
+  totalCost: Float
+  messages: AiMessage[]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+model AiMessage {
+  id: String
+  conversationId: String
+  role: String // 'user' | 'assistant'
+  content: String
+  tokenCount: Int
+  cost: Float
+  thinkingBudget: Int
+  responseTime: Int
+  createdAt: DateTime
+}
+```
+
+### **API Endpoints**
+```typescript
+// Start new conversation
+trpc.ai.createConversation.mutate({
+  workspaceId: "workspace-id",
+  title: "Project Planning Discussion"
+})
+
+// Send message with auto thinking budget
+trpc.ai.sendMessage.mutate({
+  conversationId: "conv-id",
+  message: "Create a task to implement user authentication",
+  thinkingBudget: 16000 // Optional override
+})
+
+// Parse actions without creating items
+trpc.ai.parseAndCreateActions.mutate({
+  workspaceId: "workspace-id",
+  message: "Schedule team meeting and create progress report task",
+  autoCreate: false // Preview only
+})
+
+// Create items automatically
+trpc.ai.parseAndCreateActions.mutate({
+  workspaceId: "workspace-id", 
+  message: "Add task for API testing due tomorrow",
+  autoCreate: true // Creates database items
+})
+```
+
+### **Environment Configuration**
+**Required Environment Variables:**
+```bash
+# API Configuration (.env in api/)
+GEMINI_API_KEY="your-gemini-api-key-here"
+AI_ENABLED="true"
+AI_MODEL="gemini-2.5-flash"
+AI_MAX_TOKENS="4096"
+AI_TEMPERATURE="0.7"
+AI_MAX_THINKING_BUDGET="24576"
+```
+
+**API Key Setup:**
+1. **Get Gemini API Key**: Visit [Google AI Studio](https://aistudio.google.com/)
+2. **Configure Environment**: Add to `api/.env` file
+3. **Verify Setup**: Check `api/src/config/index.ts` for key validation
+4. **Test Integration**: Use `/ai/test` endpoint or run AI chat in frontend
+
+### **Workspace Context System**
+The AI maintains full awareness of workspace context:
+
+**System Prompt Features:**
+- **Database Schema Awareness**: Understands all Prisma models and relationships
+- **Workspace Isolation**: Only accesses data from current workspace
+- **User Permission Respect**: Follows role-based access control
+- **Security**: Never exposes data from other workspaces
+
+**Context Information:**
+- Current workspace ID and settings
+- User roles and permissions
+- Existing projects, tasks, and team members
+- Recent activity and conversation history
+
+### **Performance & Cost Optimization**
+**Cost Management:**
+- **Token Estimation**: Accurate token counting for cost calculation
+- **Budget Optimization**: Automatic thinking budget adjustment
+- **Response Caching**: Prevents duplicate expensive operations
+- **Usage Tracking**: Per-conversation cost monitoring
+
+**Performance Features:**
+- **Response Time Tracking**: Monitors AI response latency
+- **Error Handling**: Graceful degradation on API failures
+- **Retry Logic**: Automatic retry with exponential backoff
+- **Rate Limiting**: Prevents API quota exhaustion
+
+### **Security & Privacy**
+**Data Protection:**
+- **Workspace Isolation**: AI cannot access other workspace data
+- **User Authentication**: All AI endpoints require valid JWT tokens
+- **Input Validation**: All user inputs validated before AI processing
+- **Conversation Privacy**: Messages only visible to conversation participants
+
+**AI Safety:**
+- **Content Filtering**: Prevents harmful or inappropriate responses
+- **Context Boundaries**: AI cannot perform unauthorized actions
+- **Audit Logging**: All AI interactions logged for security review
+- **Error Isolation**: AI failures don't affect core application functionality
+
+### **Usage Examples**
+**Basic AI Chat:**
+```typescript
+// Frontend usage
+const { mutate: sendMessage } = trpc.ai.sendMessage.useMutation()
+
+const handleSendMessage = (message: string) => {
+  sendMessage({
+    conversationId: currentConversation.id,
+    message,
+    // thinkingBudget automatically calculated
+  })
+}
+```
+
+**Actionable Item Creation:**
+```typescript
+// Preview actions before creating
+const { mutate: previewActions } = trpc.ai.previewActions.useMutation()
+
+previewActions({
+  workspaceId: currentWorkspace.id,
+  message: "Create tasks for API testing and documentation"
+})
+
+// Auto-create items
+const { mutate: createActions } = trpc.ai.parseAndCreateActions.useMutation()
+
+createActions({
+  workspaceId: currentWorkspace.id,
+  message: "Add meeting with client next Tuesday at 2pm",
+  autoCreate: true
+})
+```
+
+### **Troubleshooting**
+**Common Issues:**
+- **API Key Missing**: Check GEMINI_API_KEY in environment variables
+- **Rate Limiting**: Implement exponential backoff for high-volume usage
+- **Token Limits**: Monitor usage and adjust maxTokens configuration
+- **Response Quality**: Tune temperature and thinking budget for better results
+
+**Debug Commands:**
+```bash
+# Check AI configuration
+curl http://localhost:3002/ai/config
+
+# Test AI connection
+curl -X POST http://localhost:3002/trpc/ai.test \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello, test message"}'
+
+# Monitor AI usage
+tail -f api/logs/ai-usage.log
+```
+
 ## Enhanced System Architecture (2025)
 
 ### **Backend Enhancements**

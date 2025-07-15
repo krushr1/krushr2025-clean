@@ -131,11 +131,15 @@ export default function WorkspaceAiChat({
   // Initialize floating position with smart default
   useEffect(() => {
     if (isFloating) {
-      // Smart default position: center-right with padding, ensuring it's on screen
+      // Smart default position: center of viewport with slight offset to right
+      const centerX = (window.innerWidth - 400) / 2 + 100 // Center + 100px offset to right
+      const centerY = (window.innerHeight - 600) / 2 // Perfect center vertically
+      
       const defaultPosition = {
-        x: Math.max(20, window.innerWidth - 420), // 400px width + 20px padding
-        y: Math.max(20, Math.min(window.innerHeight - 640, (window.innerHeight - 600) / 2)) // Center vertically or with padding
+        x: Math.max(20, Math.min(centerX, window.innerWidth - 420)), // Ensure it's on screen
+        y: Math.max(20, Math.min(centerY, window.innerHeight - 620)) // Ensure it's on screen
       }
+      
       setPosition(defaultPosition)
       setSnapZone('none') // Let the system determine the correct snap zone
       setIsMinimized(false) // Reset minimized state

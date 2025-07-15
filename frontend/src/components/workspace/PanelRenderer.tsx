@@ -388,7 +388,16 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     toggleFullscreen.mutate({ id: panel.id })
   }
 
-  const handleFocus = () => {
+  const handleFocus = (e: React.MouseEvent) => {
+    // Don't trigger focus handling for floating panels
+    if (isFloating) return
+    
+    // Don't interfere with input/textarea focus
+    const target = e.target as HTMLElement
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.closest('input') || target.closest('textarea')) {
+      return
+    }
+    
     setFocus.mutate({ id: panel.id, focused: true })
     onFocus?.(panel.id)
   }

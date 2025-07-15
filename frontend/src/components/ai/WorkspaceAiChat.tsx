@@ -11,7 +11,11 @@ import {
   Plus,
   MessageSquare,
   Sparkles,
-  Brain
+  Brain,
+  Maximize2,
+  Minimize2,
+  X,
+  Move
 } from 'lucide-react'
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
@@ -20,9 +24,18 @@ import { useAppStore } from '../../stores/app-store'
 interface WorkspaceAiChatProps {
   workspaceId: string
   className?: string
+  isFloating?: boolean
+  onToggleFloating?: () => void
+  onClose?: () => void
 }
 
-export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiChatProps) {
+export default function WorkspaceAiChat({ 
+  workspaceId, 
+  className, 
+  isFloating = false, 
+  onToggleFloating, 
+  onClose 
+}: WorkspaceAiChatProps) {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const [thinkingBudget, setThinkingBudget] = useState(8000)
@@ -30,9 +43,14 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
   const [isLoading, setIsLoading] = useState(false)
   const [showConversations, setShowConversations] = useState(false)
   const [optimisticMessage, setOptimisticMessage] = useState<string | null>(null)
+  const [isMinimized, setIsMinimized] = useState(false)
+  const [position, setPosition] = useState({ x: 100, y: 100 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   
   const messageInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const floatingRef = useRef<HTMLDivElement>(null)
   
   const { user } = useAppStore()
   
@@ -68,7 +86,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       // Refetch conversation to show new messages (both user and AI response)
       refetchConversation()
       refetchUsageStats()
-      // Keep focus on input field after AI response
+      // Keep focus after AI response for continued conversation
       setTimeout(() => {
         if (messageInputRef.current) {
           messageInputRef.current.focus()
@@ -78,7 +96,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     onError: () => {
       setIsLoading(false)
       setOptimisticMessage(null)
-      // Keep focus on input field even on error
+      // Keep focus even on error for user to retry
       setTimeout(() => {
         if (messageInputRef.current) {
           messageInputRef.current.focus()
@@ -94,7 +112,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       setOptimisticMessage(null)
       refetchConversation()
       refetchUsageStats()
-      // Keep focus on input field after actions are parsed
+      // Keep focus after actions are parsed for continued conversation
       setTimeout(() => {
         if (messageInputRef.current) {
           messageInputRef.current.focus()
@@ -104,7 +122,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     onError: () => {
       setIsLoading(false)
       setOptimisticMessage(null)
-      // Keep focus on input field even on error
+      // Keep focus even on error for user to retry
       setTimeout(() => {
         if (messageInputRef.current) {
           messageInputRef.current.focus()
@@ -126,12 +144,68 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     }
   }, [conversations, selectedConversation])
 
+  // Load saved position for floating mode
   useEffect(() => {
-    // Auto-focus input field when component mounts or conversation changes
-    if (messageInputRef.current) {
-      messageInputRef.current.focus()
+    if (isFloating) {
+      const savedPosition = localStorage.getItem('ai-chat-position')
+      if (savedPosition) {
+        setPosition(JSON.parse(savedPosition))
+      }
     }
-  }, [selectedConversation])
+  }, [isFloating])
+
+  // Save position when it changes
+  useEffect(() => {
+    if (isFloating) {
+      localStorage.setItem('ai-chat-position', JSON.stringify(position))
+    }
+  }, [position, isFloating])
+
+  // Handle drag functionality
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!isFloating) return
+    
+    setIsDragging(true)
+    const rect = floatingRef.current?.getBoundingClientRect()
+    if (rect) {
+      setDragOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      })
+    }
+  }
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !isFloating) return
+      
+      const newX = e.clientX - dragOffset.x
+      const newY = e.clientY - dragOffset.y
+      
+      // Keep within viewport bounds
+      const maxX = window.innerWidth - 400 // Assuming 400px width
+      const maxY = window.innerHeight - 300 // Assuming 300px height
+      
+      setPosition({
+        x: Math.max(0, Math.min(newX, maxX)),
+        y: Math.max(0, Math.min(newY, maxY))
+      })
+    }
+
+    const handleMouseUp = () => {
+      setIsDragging(false)
+    }
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isDragging, dragOffset, isFloating])
 
   const handleSendMessage = async () => {
     if (!message.trim()) return
@@ -144,7 +218,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     setMessage('')
     setIsLoading(true)
     
-    // Keep focus on input field after sending
+    // Keep focus after sending message since user is actively chatting
     setTimeout(() => {
       if (messageInputRef.current) {
         messageInputRef.current.focus()
@@ -164,12 +238,6 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
         setIsLoading(false)
         setOptimisticMessage(null)
         setMessage(currentMessage) // Restore message on error
-        // Keep focus on input field when restoring message
-        setTimeout(() => {
-          if (messageInputRef.current) {
-            messageInputRef.current.focus()
-          }
-        }, 100)
         return
       }
     }
@@ -206,12 +274,6 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     } catch (error) {
       // Restore message on error
       setMessage(currentMessage)
-      // Keep focus on input field when restoring message
-      setTimeout(() => {
-        if (messageInputRef.current) {
-          messageInputRef.current.focus()
-        }
-      }, 100)
     }
   }
 
@@ -230,10 +292,93 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     return tokens > 1000 ? `${(tokens / 1000).toFixed(1)}K` : tokens.toString()
   }
 
+  const renderMarkdown = (content: string) => {
+    // Simple markdown parsing for AI responses
+    let formatted = content
+    
+    // First handle bold text (must come before italic to avoid conflicts)
+    formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
+    
+    // Then handle italic text, but avoid already processed bold text
+    formatted = formatted.replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '<em class="italic">$1</em>')
+    
+    // Convert bullet points (lines starting with * or -) to proper list items
+    const lines = formatted.split('\n')
+    let inList = false
+    const processedLines = []
+    
+    for (const line of lines) {
+      const trimmed = line.trim()
+      
+      // Check for bullet points (but not already processed bold/italic)
+      if (trimmed.startsWith('*') && !trimmed.includes('<strong>') && !trimmed.includes('<em>')) {
+        if (!inList) {
+          processedLines.push('<ul class="list-disc list-inside space-y-1 ml-4 mt-2">')
+          inList = true
+        }
+        processedLines.push(`<li class="text-sm">${trimmed.substring(1).trim()}</li>`)
+      } else if (trimmed.startsWith('-') && !trimmed.includes('<strong>') && !trimmed.includes('<em>')) {
+        if (!inList) {
+          processedLines.push('<ul class="list-disc list-inside space-y-1 ml-4 mt-2">')
+          inList = true
+        }
+        processedLines.push(`<li class="text-sm">${trimmed.substring(1).trim()}</li>`)
+      } else {
+        if (inList) {
+          processedLines.push('</ul>')
+          inList = false
+        }
+        if (trimmed) {
+          processedLines.push(`<p class="mb-2">${trimmed}</p>`)
+        }
+      }
+    }
+    
+    if (inList) {
+      processedLines.push('</ul>')
+    }
+    
+    return processedLines.join('\n')
+  }
+
+  // Floating window wrapper
+  const FloatingWrapper = ({ children }: { children: React.ReactNode }) => {
+    if (!isFloating) return <>{children}</>
+    
+    return (
+      <div 
+        ref={floatingRef}
+        className="fixed bg-white border border-gray-300 rounded-lg shadow-2xl z-[9999] transition-all duration-200"
+        style={{
+          left: position.x,
+          top: position.y,
+          width: isMinimized ? '320px' : '400px',
+          height: isMinimized ? '60px' : '600px',
+          maxHeight: '80vh',
+          cursor: isDragging ? 'grabbing' : 'default'
+        }}
+      >
+        {children}
+      </div>
+    )
+  }
+
   return (
-    <div className={cn('h-full flex flex-col bg-white', className)}>
-      {/* Header similar to chat panel */}
-      <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gradient-to-r from-krushr-primary/5 to-transparent">
+    <FloatingWrapper>
+      <div className={cn(
+        'flex flex-col bg-white',
+        isFloating ? 'h-full rounded-lg' : 'h-full',
+        className
+      )}>
+        {/* Header with floating controls */}
+        <div 
+          className={cn(
+            "flex items-center justify-between p-3 border-b border-gray-200 bg-gradient-to-r from-krushr-primary/5 to-transparent",
+            isFloating && "cursor-grab rounded-t-lg",
+            isDragging && "cursor-grabbing"
+          )}
+          onMouseDown={handleMouseDown}
+        >
         <div className="flex items-center space-x-2">
           <div className="flex items-center space-x-2">
             <div className="relative">
@@ -260,61 +405,116 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
         
         <div className="flex items-center space-x-1">
           {/* Thinking budget controls - compact header version */}
-          <div className="flex items-center space-x-1 mr-2">
-            <Brain className="w-3 h-3 text-gray-400" />
-            <button
-              onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
-              className={`px-1.5 py-0.5 text-xs rounded ${
-                autoThinkingBudget
-                  ? 'bg-krushr-primary text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-              title={autoThinkingBudget ? 'Auto thinking budget' : 'Manual thinking budget'}
-            >
-              {autoThinkingBudget ? 'Auto' : 'Manual'}
-            </button>
-            {!autoThinkingBudget && (
-              <>
-                <input
-                  type="range"
-                  min="0"
-                  max="24576"
-                  value={thinkingBudget}
-                  onChange={(e) => setThinkingBudget(Number(e.target.value))}
-                  className="w-16 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                  title={`Thinking budget: ${thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}`}
-                />
-                <span className="text-xs text-gray-500 w-8 text-right">
-                  {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
-                </span>
-              </>
-            )}
-          </div>
-          
-          {conversations && conversations.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowConversations(!showConversations)}
-              className="h-7 px-2 text-xs"
-            >
-              <MessageSquare className="w-3 h-3 mr-1" />
-              {conversations.length}
-            </Button>
+          {!isMinimized && (
+            <div className="flex items-center space-x-1 mr-2">
+              <Brain className="w-3 h-3 text-gray-400" />
+              <button
+                onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
+                className={`px-1.5 py-0.5 text-xs rounded ${
+                  autoThinkingBudget
+                    ? 'bg-krushr-primary text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+                title={autoThinkingBudget ? 'Auto thinking budget' : 'Manual thinking budget'}
+              >
+                {autoThinkingBudget ? 'Auto' : 'Manual'}
+              </button>
+              {!autoThinkingBudget && (
+                <>
+                  <input
+                    type="range"
+                    min="0"
+                    max="24576"
+                    value={thinkingBudget}
+                    onChange={(e) => setThinkingBudget(Number(e.target.value))}
+                    className="w-16 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    title={`Thinking budget: ${thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}`}
+                  />
+                  <span className="text-xs text-gray-500 w-8 text-right">
+                    {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
+                  </span>
+                </>
+              )}
+            </div>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => createConversation.mutate({ workspaceId })}
-            className="h-7 px-2"
-          >
-            <Plus className="w-3 h-3" />
-          </Button>
+          
+          {/* Floating window controls */}
+          {isFloating && (
+            <div className="flex items-center space-x-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMinimized(!isMinimized)}
+                className="h-6 w-6 p-0"
+                title={isMinimized ? 'Maximize' : 'Minimize'}
+              >
+                {isMinimized ? <Maximize2 className="w-3 h-3" /> : <Minimize2 className="w-3 h-3" />}
+              </Button>
+              {onToggleFloating && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onToggleFloating}
+                  className="h-6 w-6 p-0"
+                  title="Dock to panel"
+                >
+                  <Move className="w-3 h-3" />
+                </Button>
+              )}
+              {onClose && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onClose}
+                  className="h-6 w-6 p-0"
+                  title="Close"
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+              )}
+            </div>
+          )}
+          
+          {/* Standard panel controls */}
+          {!isFloating && (
+            <>
+              {conversations && conversations.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowConversations(!showConversations)}
+                  className="h-7 px-2 text-xs"
+                >
+                  <MessageSquare className="w-3 h-3 mr-1" />
+                  {conversations.length}
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => createConversation.mutate({ workspaceId })}
+                className="h-7 px-2"
+              >
+                <Plus className="w-3 h-3" />
+              </Button>
+              {onToggleFloating && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onToggleFloating}
+                  className="h-7 px-2"
+                  title="Pop out to floating window"
+                >
+                  <Maximize2 className="w-3 h-3" />
+                </Button>
+              )}
+            </>
+          )}
         </div>
       </div>
 
       {/* Conversation selector (collapsible) */}
-      {showConversations && conversations && conversations.length > 0 && (
+      {!isMinimized && showConversations && conversations && conversations.length > 0 && (
         <div className="border-b border-gray-200 bg-gray-50 max-h-32 overflow-y-auto">
           <div className="p-2 space-y-1">
             {conversations.map((conversation) => (
@@ -351,7 +551,8 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       )}
 
       {/* Messages area */}
-      <ScrollArea className="flex-1 p-3">
+      {!isMinimized && (
+        <ScrollArea className="flex-1 p-3">
         <div className="space-y-4">
           {selectedConversation && currentConversation ? (
             <>
@@ -403,7 +604,14 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
                         ? 'bg-krushr-primary/10 p-2 rounded-lg border border-krushr-primary/20' 
                         : 'text-gray-900'
                     )}>
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
+                      {msg.role === 'user' ? (
+                        <p className="whitespace-pre-wrap">{msg.content}</p>
+                      ) : (
+                        <div 
+                          className="max-w-none"
+                          dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.content) }}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -502,10 +710,12 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
           
           <div ref={messagesEndRef} />
         </div>
-      </ScrollArea>
+        </ScrollArea>
+      )}
 
       {/* Input area - compact design */}
-      <div className="p-3 border-t border-gray-200 bg-gray-50/50">
+      {!isMinimized && (
+        <div className="p-3 border-t border-gray-200 bg-gray-50/50">
         {/* Message input */}
         <div className="flex items-center space-x-2">
           <div className="relative flex-1">
@@ -537,6 +747,8 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
           </Button>
         </div>
       </div>
+      )}
     </div>
+    </FloatingWrapper>
   )
 }

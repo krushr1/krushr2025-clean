@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Button } from '../ui/button'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { ScrollArea } from '../ui/scroll-area'
@@ -453,7 +454,7 @@ export default function WorkspaceAiChat({
       y: Math.max(0, Math.min(position.y, window.innerHeight - (isMinimized ? 60 : 600)))
     }
     
-    return (
+    const floatingContent = (
       <div 
         ref={floatingRef}
         className={`fixed bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] 
@@ -480,6 +481,9 @@ export default function WorkspaceAiChat({
         {children}
       </div>
     )
+    
+    // Render floating window directly to document.body to escape panel container positioning
+    return createPortal(floatingContent, document.body)
   }
 
   return (

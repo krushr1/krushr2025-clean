@@ -1,7 +1,25 @@
 # KRUSHR Development Guidelines - CLEAN REPOSITORY
+
+**CRITICAL: NO EMOJIS ANYWHERE**
+Never use emojis in code, documentation, UI, commit messages, or any project files. This is a strict requirement.
+
+**CRITICAL: UI/UX COMPONENT REQUIREMENTS**
+When creating new pages or UI components, you MUST:
+1. ONLY use established components from the existing component library
+2. NEVER create new UI components from scratch
+3. NEVER create "sloppy interpretations" or loose sketches of UI
+4. ALWAYS use pixel-perfect, thematically identical UI/UX
+5. Reference existing components in `/src/components/` directory structure
+6. Use established design tokens from `/frontend/tailwind.config.js`
+7. Follow brandkit specifications from `/frontend/public/brandkit.html`
+8. Maintain consistent spacing, typography, and color schemes
+9. Copy existing component patterns and adapt them appropriately
+
+**VIOLATION CONSEQUENCES**: Any UI created that deviates from established patterns will be rejected. Always examine existing components first, then adapt them to new requirements while maintaining visual consistency.
+
 Deploy multiple concurrent agents where beneficial for thoroughness and/or processing efficiency
 
-## 🎯 CURRENT DEVELOPMENT STATUS (Updated: 2025-07-14)
+## CURRENT DEVELOPMENT STATUS (Updated: 2025-07-15)
 
 ### **Session Context Preserved** 
 - **Memory Sync**: Complete project context stored in knowledge graph with 7 entities and 8 relations
@@ -11,42 +29,46 @@ Deploy multiple concurrent agents where beneficial for thoroughness and/or proce
 - **Configuration**: Claude Code v1.0.43 with auto-approval system active
 
 ### **Recent Progress**
-- ✅ **UI Consistency Fixes**: Button standardization, font unification (Manrope), layout improvements
-- ✅ **Build System**: Enhanced asset pipeline with reduced console verbosity
-- ✅ **Design System**: Comprehensive brandkit integration and token system
-- ✅ **File Management**: Dual upload strategies with thumbnail generation and deduplication
-- ✅ **Database Schema**: Complete with 2025 enterprise features (25+ models)
-- ✅ **MCP Enhancement**: Optimized memory and filesystem servers for larger context
-- ✅ **Workflow Automation**: Advanced productivity tools installed and operational
-- ✅ **Memory System**: Project architecture and component system documented in knowledge graph
+- COMPLETE **Gemini 2.5 Flash AI Integration**: Full AI chat system with conversation management and workspace context
+- COMPLETE **Calendar Accuracy Fix**: Real calendar date alignment corrected for proper day-of-week positioning  
+- COMPLETE **Custom Claude Commands**: New /push command for automated git workflow management
+- COMPLETE **Enhanced Build System**: Public directory file watching and automatic asset optimization
+- COMPLETE **AI Backend Architecture**: New ai.ts router with usage tracking, billing, and actionable item parsing
+- COMPLETE **UI Consistency Fixes**: Button standardization, font unification (Manrope), layout improvements
+- COMPLETE **Build System**: Enhanced asset pipeline with reduced console verbosity
+- COMPLETE **Design System**: Comprehensive brandkit integration and token system
+- COMPLETE **File Management**: Dual upload strategies with thumbnail generation and deduplication
+- COMPLETE **Database Schema**: Complete with 2025 enterprise features (25+ models)
+- COMPLETE **MCP Enhancement**: Optimized memory and filesystem servers for larger context
+- COMPLETE **Workflow Automation**: Advanced productivity tools installed and operational
+- COMPLETE **Memory System**: Project architecture and component system documented in knowledge graph
 
 ### **Current System Status**
-- **Frontend**: Running on port 8001 ✅
-- **API**: Issues on port 3002 ⚠️ (Authentication context schema mismatch identified)
-- **Database**: SQLite development database operational ✅
-- **Testing**: E2E framework working, unit tests needed ⚠️
-- **Memory System**: Enhanced knowledge graph active with 7 entities and 8 relations ✅
-- **Automation Tools**: Cache system (40x speedup), orchestrator, multi-agent systems active ✅
+- **Frontend**: Running on port 8001 OPERATIONAL
+- **API**: Running on port 3002 OPERATIONAL (Authentication issues resolved)
+- **Database**: SQLite development database operational OPERATIONAL
+- **AI System**: Gemini 2.5 Flash integration active OPERATIONAL
+- **Testing**: E2E framework working, unit tests needed NEEDS_WORK
+- **Memory System**: Enhanced knowledge graph active with 7 entities and 8 relations OPERATIONAL
+- **Automation Tools**: Cache system (40x speedup), orchestrator, multi-agent systems active OPERATIONAL
 
 ### **Comprehensive System Analysis Complete**
-- **22 tRPC Routers**: Full API architecture mapped with authentication, task management, workspace multi-tenancy
+- **18+ tRPC Routers**: Full API architecture mapped with authentication, AI integration, task management, workspace multi-tenancy
 - **25+ Prisma Models**: Complete database schema with enterprise features and relationships
 - **50+ UI Components**: shadcn/ui component library with 8 feature-based directories
 - **Design System**: Krushr brand tokens (#143197 primary, #EB5857 secondary) and Manrope typography
 - **Enterprise Features**: Time tracking, AI analysis, task dependencies, file deduplication, real-time collaboration
 
-### **Critical Issues Identified & Context**
-- **Auth Schema Mismatch**: `api/src/trpc/context.ts:19` expects `hashedPassword`, schema defines `password`
-- **Dev Mode Lock-in**: Frontend hardcoded to `dev-token-123` preventing production auth
+### **Remaining Development Tasks**
 - **Missing Test Infrastructure**: No unit/integration tests, only E2E via Puppeteer
-- **Performance**: 421KB CSS bundle needs optimization
-- **Uncommitted Work**: 11 modified files need staging and commit
+- **Performance**: CSS bundle optimization needed
+- **Production Deployment**: Docker and CI/CD pipeline setup required
 
 ### **Next Priority Actions**
-1. **Fix Authentication**: Resolve schema mismatch in context.ts
-2. **Commit Changes**: Stage and commit UI consistency improvements
-3. **Start API Server**: Get backend running on port 3002
-4. **Add Testing**: Implement unit test infrastructure (Jest/Vitest)
+1. **Enhanced AI Features**: Expand Gemini integration capabilities and workspace context
+2. **Unit Testing**: Implement comprehensive test infrastructure (Jest/Vitest) 
+3. **Performance Optimization**: CSS bundle and build optimization
+4. **Production Deployment**: Docker and CI/CD pipeline setup
 
 ## Quick Start
 
@@ -79,10 +101,12 @@ docker-compose up -d          # Full containerized environment
 Root/
 ├── api/                    # Node.js + tRPC + Prisma (PRIMARY)
 │   ├── src/lib/             # Core libraries
+│   │   ├── ai.ts            # Gemini 2.5 Flash AI integration
 │   │   ├── thumbnail.ts     # Multi-strategy image processing
 │   │   ├── upload.ts        # Legacy upload system
 │   │   └── auth.ts          # JWT + session authentication
-│   ├── src/trpc/routers/    # 17 specialized API routes
+│   ├── src/trpc/routers/    # 18+ specialized API routes
+│   │   ├── ai.ts            # AI conversation management
 │   │   ├── task.ts          # Enhanced task management (2025)
 │   │   ├── upload-new.ts    # Enterprise file upload
 │   │   ├── notes.ts         # Rich text note system
@@ -114,6 +138,7 @@ Root/
 - JWT auth with sessions + CSRF protection
 - WebSocket for real-time collaboration
 - Sharp/Canvas for image processing (15MB upload limit)
+- Gemini 2.5 Flash AI integration with @google/generative-ai
 
 **Frontend (frontend/):**
 - React 18.3.1 + TypeScript 5.6.3
@@ -368,11 +393,14 @@ export GEMINI_API_KEY="AIzaSyDULGUk9ib6aOle0f9sYssL0eKtuGBQVXc"
 ## Core Development Principles
 
 * **Type Safety First**: Maintain end-to-end TypeScript safety via tRPC
+* **Component Library First**: Always use existing components from `/src/components/` - never create new UI from scratch
+* **Design System Compliance**: Reference brandkit specifications for all UI work
 * **Read Before Edit**: Always understand existing code before changes
 * **Test-Driven**: Write tests, implement features, refactor
 * **Atomic Commits**: Commit logical milestones frequently
 * **Plan Then Code**: Get architectural approval before implementation
 * **No Placeholders**: Build real solutions, never skip implementations
+* **Pixel-Perfect UI**: All UI must match existing patterns exactly - no loose interpretations
 
 ## Essential Commands
 
@@ -517,6 +545,8 @@ docker-compose logs -f        # Monitor logs
 ## Custom Claude Commands
 
 ```bash
+/push                        # Stage, commit, and push all changes
+/push "Custom message"       # Push with custom commit message
 /prime                        # Advanced session initialization
 /backup "description"         # Create intelligent backup
 /trpc-debug "issue"          # Debug tRPC/type issues
@@ -741,17 +771,17 @@ source ~/.bashrc
 cf-swarm "optimize entire codebase performance"
 ```
 
-### **Cache System Performance** 💾
+### **Cache System Performance**
 - **Status**: Auto-running (2 daemons active)
 - **Performance**: 40x+ speedup for Claude operations
 - **Storage**: 22,558 files cached (183MB)
 - **Files**: `claude_cache_daemon.py`, `claude_cache.py`
 
 ### **Integration Status**
-- **✅ Native Krushr Commands**: 37 custom slash commands in `.claude/commands/`
-- **✅ MCP Servers**: Memory, filesystem, puppeteer auto-active
-- **✅ Cache System**: Background performance optimization
-- **⚠️ External Tools**: Require manual activation (not yet integrated as slash commands)
+- **COMPLETE Native Krushr Commands**: 38+ custom slash commands in `.claude/commands/` including /push
+- **COMPLETE MCP Servers**: Memory, filesystem, puppeteer auto-active
+- **COMPLETE Cache System**: Background performance optimization
+- **NEEDS_WORK External Tools**: Require manual activation (not yet integrated as slash commands)
 
 ### **Power User Workflow**
 ```bash
@@ -774,14 +804,16 @@ cf-swarm "performance audit and optimization across entire stack"
 ## Enhanced System Architecture (2025)
 
 ### **Backend Enhancements**
-- **17 Specialized tRPC Routers**: Modular API with enterprise-grade features
+- **18+ Specialized tRPC Routers**: Modular API with enterprise-grade features including AI integration
+- **Gemini 2.5 Flash AI System**: Complete AI conversation management with workspace context awareness
 - **Enhanced Task System**: Story points, business value, AI scheduling, time tracking
 - **Dual Upload Systems**: Legacy + enterprise for seamless migration
 - **Session Authentication**: JWT + database sessions with automatic cleanup
 - **Real-time Collaboration**: WebSocket rooms with user presence tracking
-- **AI Integration Points**: Task analysis, priority suggestions, risk assessment
+- **AI Integration Points**: Task analysis, priority suggestions, risk assessment, actionable item parsing
 
 ### **Frontend Architecture**
+- **AI Chat Integration**: Workspace-aware AI chat components with conversation management
 - **Universal Form System**: 6 specialized variants for different creation workflows
 - **Professional Kanban**: @dnd-kit integration with bulk operations
 - **Rich Text Editing**: TipTap-based notes with comprehensive formatting
@@ -790,6 +822,7 @@ cf-swarm "performance audit and optimization across entire stack"
 - **Zustand + WebSocket**: Real-time state management with optimistic updates
 
 ### **Enterprise Features**
+- **AI-Powered Productivity**: Gemini 2.5 Flash integration with actionable item parsing
 - **Multi-tenant Workspaces**: Role-based access control
 - **Advanced Project Management**: Dependencies, time tracking, custom fields
 - **File Management**: Deduplication, thumbnails, metadata extraction
@@ -799,13 +832,16 @@ cf-swarm "performance audit and optimization across entire stack"
 ## Key Files for New Developers
 
 | File | Purpose |
+|------|---------|
+| `api/src/lib/ai.ts` | Gemini 2.5 Flash AI integration |
+| `api/src/trpc/routers/ai.ts` | AI conversation management router |
 | `api/src/trpc/router.ts` | Main API router |
 | `api/prisma/schema.prisma` | Database schema |
 | `frontend/src/App.tsx` | Main React app |
 | `frontend/src/lib/trpc.ts` | Frontend API client |
-| `frontend/public/brandkit.html` | **📖 Complete design system documentation** |
-| `frontend/public/krushr-landing-brandkit.html` | **🚀 Landing page component library** |
-| `frontend/tailwind.config.js` | **🎨 Brand tokens & Tailwind config** |
+| `frontend/public/brandkit.html` | **Complete design system documentation** |
+| `frontend/public/krushr-landing-brandkit.html` | **Landing page component library** |
+| `frontend/tailwind.config.js` | **Brand tokens & Tailwind config** |
 | `docker-compose.yml` | Complete dev environment |
 | `backup-system.js` | Backup management |
 

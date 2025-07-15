@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '../ui/button'
-import { Input } from '../ui/input'
 import { Avatar, AvatarFallback } from '../ui/avatar'
-import { Badge } from '../ui/badge'
 import { ScrollArea } from '../ui/scroll-area'
 import { 
   Send, 
@@ -12,7 +10,6 @@ import {
   Clock,
   Plus,
   MessageSquare,
-  Settings,
   Sparkles,
   Brain
 } from 'lucide-react'
@@ -168,7 +165,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSendMessage()
@@ -212,6 +209,38 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
         </div>
         
         <div className="flex items-center space-x-1">
+          {/* Thinking budget controls - compact header version */}
+          <div className="flex items-center space-x-1 mr-2">
+            <Brain className="w-3 h-3 text-gray-400" />
+            <button
+              onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
+              className={`px-1.5 py-0.5 text-xs rounded ${
+                autoThinkingBudget
+                  ? 'bg-krushr-primary text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+              title={autoThinkingBudget ? 'Auto thinking budget' : 'Manual thinking budget'}
+            >
+              {autoThinkingBudget ? 'Auto' : 'Manual'}
+            </button>
+            {!autoThinkingBudget && (
+              <>
+                <input
+                  type="range"
+                  min="0"
+                  max="24576"
+                  value={thinkingBudget}
+                  onChange={(e) => setThinkingBudget(Number(e.target.value))}
+                  className="w-16 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  title={`Thinking budget: ${thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}`}
+                />
+                <span className="text-xs text-gray-500 w-8 text-right">
+                  {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
+                </span>
+              </>
+            )}
+          </div>
+          
           {conversations && conversations.length > 0 && (
             <Button
               variant="ghost"
@@ -427,63 +456,32 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
 
       {/* Input area - compact design */}
       <div className="p-3 border-t border-gray-200 bg-gray-50/50">
-        {/* Thinking budget controls */}
-        <div className="flex items-center space-x-2 mb-2">
-          <label className="text-xs text-gray-500 flex-shrink-0">Thinking:</label>
-          
-          {/* Auto/Manual toggle */}
-          <button
-            onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
-            className={`px-2 py-1 text-xs rounded ${
-              autoThinkingBudget
-                ? 'bg-krushr-primary text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {autoThinkingBudget ? 'Auto' : 'Manual'}
-          </button>
-          
-          {/* Manual slider (only shown when not auto) */}
-          {!autoThinkingBudget && (
-            <>
-              <input
-                type="range"
-                min="0"
-                max="24576"
-                value={thinkingBudget}
-                onChange={(e) => setThinkingBudget(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-              />
-              <span className="text-xs text-gray-500 w-12 text-right">
-                {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
-              </span>
-            </>
-          )}
-          
-          {/* Auto mode indicator */}
-          {autoThinkingBudget && (
-            <span className="text-xs text-gray-500 flex-1">
-              Budget auto-calculated per query
-            </span>
-          )}
-        </div>
-        
         {/* Message input */}
         <div className="flex items-center space-x-2">
-          <Input
-            ref={messageInputRef}
-            placeholder="Ask AI anything..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            disabled={isLoading}
-            className="flex-1 h-8 text-sm"
-          />
+          <div className="relative flex-1">
+            <input
+              ref={messageInputRef}
+              type="text"
+              id="floating_ai_message"
+              placeholder=" "
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isLoading}
+              className="block px-3 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary peer transition-all duration-200 font-manrope h-10"
+            />
+            <label
+              htmlFor="floating_ai_message"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
+            >
+              Ask AI anything...
+            </label>
+          </div>
           <Button
             onClick={handleSendMessage}
             disabled={!message.trim() || isLoading}
             size="sm"
-            className="h-8 w-8 p-0"
+            className="h-10 w-10 p-0"
           >
             <Send className="w-3 h-3" />
           </Button>

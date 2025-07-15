@@ -198,8 +198,8 @@ export default function WorkspaceAiChat({
     }
 
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
+      document.addEventListener('mousemove', handleMouseMove, { passive: false })
+      document.addEventListener('mouseup', handleMouseUp, { passive: false })
     }
 
     return () => {
@@ -356,7 +356,8 @@ export default function WorkspaceAiChat({
           width: isMinimized ? '320px' : '400px',
           height: isMinimized ? '60px' : '600px',
           maxHeight: '80vh',
-          cursor: isDragging ? 'grabbing' : 'default'
+          cursor: isDragging ? 'grabbing' : 'default',
+          pointerEvents: 'auto' // Ensure pointer events are enabled
         }}
       >
         {children}
@@ -732,7 +733,14 @@ export default function WorkspaceAiChat({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
+              onClick={(e) => {
+                e.stopPropagation()
+                if (messageInputRef.current) {
+                  messageInputRef.current.focus()
+                }
+              }}
               disabled={isLoading}
+              style={{ pointerEvents: 'auto' }}
               className="block px-3 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary peer transition-all duration-200 font-manrope h-10"
             />
             <label

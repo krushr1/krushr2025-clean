@@ -75,6 +75,8 @@ export default function WorkspaceAiChat({
       setSelectedConversation(conversation.id)
       refetchConversations()
       setShowConversations(false)
+      // After creating new conversation, user likely wants to start typing
+      setTimeout(() => messageInputRef.current?.focus(), 100)
     }
   })
   
@@ -86,12 +88,12 @@ export default function WorkspaceAiChat({
       // Refetch conversation to show new messages (both user and AI response)
       refetchConversation()
       refetchUsageStats()
-      // Note: Removed automatic focus after AI response - let user control focus
+      // After successful message send, user likely wants to continue typing
+      setTimeout(() => messageInputRef.current?.focus(), 50)
     },
     onError: () => {
       setIsLoading(false)
       setOptimisticMessage(null)
-      // Note: Removed automatic focus on error - let user control focus
     }
   })
 
@@ -102,12 +104,12 @@ export default function WorkspaceAiChat({
       setOptimisticMessage(null)
       refetchConversation()
       refetchUsageStats()
-      // Note: Removed automatic focus after actions - let user control focus
+      // After successful action parsing, user likely wants to continue typing
+      setTimeout(() => messageInputRef.current?.focus(), 50)
     },
     onError: () => {
       setIsLoading(false)
       setOptimisticMessage(null)
-      // Note: Removed automatic focus on error - let user control focus
     }
   })
 
@@ -198,7 +200,6 @@ export default function WorkspaceAiChat({
     setMessage('')
     setIsLoading(true)
     
-    // Note: Removed automatic focus after sending - let user control focus naturally
     
     // Create new conversation if none selected
     if (!conversationId) {
@@ -704,19 +705,14 @@ export default function WorkspaceAiChat({
               id="floating_ai_message"
               placeholder=" "
               value={message}
-              onChange={(e) => {
-                console.log('Input onChange:', e.target.value)
-                setMessage(e.target.value)
-              }}
+              onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              onFocus={() => console.log('Input focused')}
-              onBlur={() => console.log('Input blurred')}
               disabled={isLoading}
               className="block px-3 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary peer transition-all duration-200 font-manrope h-10"
             />
             <label
               htmlFor="floating_ai_message"
-              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope pointer-events-none"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
             >
               Ask AI anything...
             </label>

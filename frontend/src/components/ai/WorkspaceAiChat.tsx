@@ -165,6 +165,7 @@ export default function WorkspaceAiChat({
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isFloating) return
     
+    console.log('Drag handle clicked', { isFloating })
     e.stopPropagation()
     setIsDragging(true)
     const rect = floatingRef.current?.getBoundingClientRect()
@@ -193,13 +194,15 @@ export default function WorkspaceAiChat({
       })
     }
 
-    const handleMouseUp = () => {
+    const handleMouseUp = (e: MouseEvent) => {
+      // Only handle mouseup if we're actually dragging
+      if (!isDragging) return
       setIsDragging(false)
     }
 
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove, { passive: false })
-      document.addEventListener('mouseup', handleMouseUp, { passive: false })
+    if (isDragging && isFloating) {
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
     }
 
     return () => {
@@ -342,30 +345,27 @@ export default function WorkspaceAiChat({
     return processedLines.join('\n')
   }
 
-  // Floating window wrapper - temporarily disabled to debug input issues
+  // Floating window wrapper
   const FloatingWrapper = ({ children }: { children: React.ReactNode }) => {
-    // Temporarily disable floating mode to test input field
-    return <>{children}</>
+    if (!isFloating) return <>{children}</>
     
-    // if (!isFloating) return <>{children}</>
-    
-    // return (
-    //   <div 
-    //     ref={floatingRef}
-    //     className="fixed bg-white border border-gray-300 rounded-lg shadow-2xl z-[9999] transition-all duration-200"
-    //     style={{
-    //       left: position.x,
-    //       top: position.y,
-    //       width: isMinimized ? '320px' : '400px',
-    //       height: isMinimized ? '60px' : '600px',
-    //       maxHeight: '80vh',
-    //       cursor: isDragging ? 'grabbing' : 'default',
-    //       pointerEvents: 'auto' // Ensure pointer events are enabled
-    //     }}
-    //   >
-    //     {children}
-    //   </div>
-    // )
+    return (
+      <div 
+        ref={floatingRef}
+        className="fixed bg-white border border-gray-300 rounded-lg shadow-2xl z-[9999] transition-all duration-200"
+        style={{
+          left: position.x,
+          top: position.y,
+          width: isMinimized ? '320px' : '400px',
+          height: isMinimized ? '60px' : '600px',
+          maxHeight: '80vh',
+          cursor: isDragging ? 'grabbing' : 'default',
+          pointerEvents: 'auto' // Ensure pointer events are enabled
+        }}
+      >
+        {children}
+      </div>
+    )
   }
 
   return (
@@ -737,6 +737,7 @@ export default function WorkspaceAiChat({
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               onClick={(e) => {
+                console.log('Input clicked', { isDragging, isFloating })
                 e.stopPropagation()
                 if (messageInputRef.current) {
                   messageInputRef.current.focus()

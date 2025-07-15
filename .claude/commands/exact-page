@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Exact Page Creation - Copy-Paste Only Landing Pages
+# Usage: /exact-page [new-page-name] [source-page] [content-focus]
+
+echo "🔄 **EXACT PAGE CREATION - COPY-PASTE ONLY**"
+echo ""
+echo "**STRICT RULES:**"
+echo "- ONLY copy-paste exact code sections from source"
+echo "- NO creative interpretation or modifications"
+echo "- NO new CSS, HTML structure, or components"
+echo "- ONLY change page title, meta description, and content text"
+echo ""
+echo "**PROCESS:**"
+echo "1. Read exact line ranges from source file"
+echo "2. Copy-paste header section (navigation, CSS includes)"
+echo "3. Copy-paste main content section with ZERO modifications"
+echo "4. Copy-paste footer section exactly"
+echo "5. Change ONLY: title tag, meta description, H1/H2 text content"
+echo ""
+echo "**SOURCE FILES TO REFERENCE:**"
+echo "- /Users/justindoff/Cursor Projects/krushr-clean/frontend/public/home.html"
+echo "- /Users/justindoff/Cursor Projects/krushr-clean/frontend/public/design-system-landing.html"
+echo "- /Users/justindoff/Cursor Projects/krushr-clean/frontend/public/brandkit.html"
+echo ""
+echo "**OUTPUT:** Create new page using EXACT existing code patterns only"
+echo ""
+echo "💡 **REMEMBER:** If it's not already proven in the library, don't add it!"

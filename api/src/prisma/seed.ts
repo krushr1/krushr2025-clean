@@ -461,6 +461,66 @@ async function main() {
 
   logger.success(`✅ Created sample notifications`)
 
+  // Create workspace panels
+  const panels = [
+    {
+      id: 'panel-kanban-main',
+      type: 'KANBAN',
+      title: 'Main Development Board',
+      position_x: 0,
+      position_y: 0,
+      width: 12,
+      height: 8,
+      workspaceId: workspace.id,
+      data: JSON.stringify({ kanbanId: kanban.id }),
+    },
+    {
+      id: 'panel-notes',
+      type: 'NOTES',
+      title: 'Project Notes',
+      position_x: 12,
+      position_y: 0,
+      width: 6,
+      height: 6,
+      workspaceId: workspace.id,
+      data: JSON.stringify({}),
+    },
+    {
+      id: 'panel-chat',
+      type: 'CHAT',
+      title: 'Team Chat',
+      position_x: 18,
+      position_y: 0,
+      width: 6,
+      height: 6,
+      workspaceId: workspace.id,
+      data: JSON.stringify({ teamId: team.id }),
+    },
+    {
+      id: 'panel-calendar',
+      type: 'CALENDAR',
+      title: 'Project Calendar',
+      position_x: 12,
+      position_y: 6,
+      width: 12,
+      height: 6,
+      workspaceId: workspace.id,
+      data: JSON.stringify({}),
+    },
+  ]
+
+  await Promise.all(
+    panels.map(panel =>
+      prisma.panel.upsert({
+        where: { id: panel.id },
+        update: {},
+        create: panel,
+      })
+    )
+  )
+
+  logger.success(`✅ Created ${panels.length} workspace panels`)
+
   logger.success('🎉 Database seeding completed successfully!')
   logger.info('📧 Demo users created:')
   users.forEach(user => {

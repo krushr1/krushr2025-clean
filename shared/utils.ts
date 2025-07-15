@@ -13,6 +13,18 @@ export const formatDate = (date: string | Date): string => {
 };
 
 /**
+ * Format date to M/D/YY format
+ */
+export const formatDateShort = (date: string | Date): string => {
+  const d = new Date(date);
+  return d.toLocaleDateString('en-US', {
+    year: '2-digit',
+    month: 'numeric',
+    day: 'numeric'
+  });
+};
+
+/**
  * Format datetime to readable string
  */
 export const formatDateTime = (date: string | Date): string => {

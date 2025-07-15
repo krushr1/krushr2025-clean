@@ -35,6 +35,8 @@ model User {
   workspaces             WorkspaceMember[]
   ownedWorkspaces        Workspace[]               @relation("WorkspaceOwner")
   calendarEvents         CalendarEvent[]
+  aiConversations        AiConversation[]
+  aiUsage                AiUsage[]
 
   @@map("users")
 }
@@ -68,6 +70,8 @@ model Workspace {
   members       WorkspaceMember[]
   owner         User                    @relation("WorkspaceOwner", fields: [ownerId], references: [id])
   calendarEvents CalendarEvent[]
+  aiConversations AiConversation[]
+  aiUsage       AiUsage[]
 
   @@map("workspaces")
 }
@@ -606,3 +610,54 @@ model CalendarReminder {
 
 // Calendar enums are implemented as string constraints in validation schemas
 // SQLite doesn't support native enums, so we use strings with validation
+
+// AI Assistant Models
+model AiConversation {
+  id            String       @id @default(cuid())
+  userId        String
+  workspaceId   String
+  title         String?      // Optional conversation title
+  context       String?      // Context or purpose of conversation
+  isActive      Boolean      @default(true)
+  totalTokens   Int          @default(0)
+  totalCost     Float        @default(0.0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace     Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  messages      AiMessage[]
+  
+  @@map("ai_conversations")
+}
+
+model AiMessage {
+  id               String         @id @default(cuid())
+  conversationId   String
+  role             String         // "user" or "assistant"
+  content          String         // Message content
+  tokenCount       Int            @default(0)
+  cost             Float          @default(0.0)
+  model            String         @default("gemini-2.5-flash")
+  thinkingBudget   Int?           // Thinking tokens used
+  responseTime     Int?           // Response time in milliseconds
+  createdAt        DateTime       @default(now())
+  conversation     AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  @@map("ai_messages")
+}
+
+model AiUsage {
+  id            String    @id @default(cuid())
+  userId        String
+  workspaceId   String
+  date          DateTime  @default(now())
+  model         String    @default("gemini-2.5-flash")
+  totalTokens   Int       @default(0)
+  totalCost     Float     @default(0.0)
+  requestCount  Int       @default(0)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, workspaceId, date, model])
+  @@map("ai_usage")
+}

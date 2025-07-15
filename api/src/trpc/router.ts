@@ -26,6 +26,7 @@ import { layoutRouter } from './routers/layout'
 import { templateRouter } from './routers/template'
 import { calendarRouter } from './routers/calendar'
 import { preferencesRouter } from './routers/preferences'
+import { aiRouter } from './routers/ai'
 
 /**
  * Main application router
@@ -54,6 +55,7 @@ export const appRouter = router({
   template: templateRouter,
   calendar: calendarRouter,
   preferences: preferencesRouter,
+  ai: aiRouter,
 })
 
 export type AppRouter = typeof appRouter

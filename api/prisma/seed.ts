@@ -15,6 +15,7 @@ async function main() {
   await prisma.notification.deleteMany()
   await prisma.taskComment.deleteMany()
   await prisma.task.deleteMany()
+  await prisma.panel.deleteMany()
   await prisma.kanban.deleteMany()
   await prisma.project.deleteMany()
   await prisma.teamMember.deleteMany()
@@ -261,6 +262,62 @@ async function main() {
     ]
   })
 
+  // Create default workspace panels
+  await prisma.panel.createMany({
+    data: [
+      {
+        type: 'KANBAN',
+        title: 'Frontend Board',
+        position_x: 0,
+        position_y: 0,
+        width: 12,
+        height: 8,
+        workspaceId: workspace.id,
+        data: JSON.stringify({ kanbanId: frontendBoard.id }),
+      },
+      {
+        type: 'KANBAN',
+        title: 'Backend Board',
+        position_x: 12,
+        position_y: 0,
+        width: 12,
+        height: 8,
+        workspaceId: workspace.id,
+        data: JSON.stringify({ kanbanId: backendBoard.id }),
+      },
+      {
+        type: 'NOTES',
+        title: 'Project Notes',
+        position_x: 0,
+        position_y: 8,
+        width: 8,
+        height: 6,
+        workspaceId: workspace.id,
+        data: JSON.stringify({}),
+      },
+      {
+        type: 'CHAT',
+        title: 'Team Chat',
+        position_x: 8,
+        position_y: 8,
+        width: 8,
+        height: 6,
+        workspaceId: workspace.id,
+        data: JSON.stringify({ threadId: team.id }),
+      },
+      {
+        type: 'CALENDAR',
+        title: 'Project Calendar',
+        position_x: 16,
+        position_y: 8,
+        width: 8,
+        height: 6,
+        workspaceId: workspace.id,
+        data: JSON.stringify({}),
+      },
+    ]
+  })
+
   console.log('✅ Database seeding completed!')
   console.log(`📊 Created:`)
   console.log(`   - 3 users (alice@krushr.dev, bob@krushr.dev, charlie@krushr.dev)`)
@@ -270,6 +327,7 @@ async function main() {
   console.log(`   - 2 kanban boards`)
   console.log(`   - 6 tasks`)
   console.log(`   - 4 notifications`)
+  console.log(`   - 5 workspace panels`)
   console.log(``)
   console.log(`🔑 Login credentials:`)
   console.log(`   Email: alice@krushr.dev | Password: password123`)

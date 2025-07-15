@@ -12,7 +12,7 @@ loadEnv()
 const configSchema = z.object({
   // Server
   PORT: z.coerce.number().default(3002),
-  HOST: z.string().default('0.0.0.0'),
+  HOST: z.string().default('127.0.0.1'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 
   // Database
@@ -40,6 +40,9 @@ const configSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   EMAIL_SERVICE_URL: z.string().optional(),
+  
+  // AI Assistant
+  GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required for AI features'),
 })
 
 function loadConfig() {
@@ -59,6 +62,7 @@ function loadConfig() {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     EMAIL_SERVICE_URL: process.env.EMAIL_SERVICE_URL,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   }
 
   try {

@@ -27,6 +27,22 @@ export const activityRouter = router({
     }),
 
   /**
+   * Get recent activities for workspace
+   */
+  getRecent: publicProcedure
+    .use(isAuthenticated)
+    .input(
+      z.object({
+        workspaceId: z.string(),
+        limit: z.number().min(1).max(50).default(10),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      // TODO: Implement when Activity model exists - return mock data for now
+      return []
+    }),
+
+  /**
    * Create activity log entry
    */
   create: publicProcedure

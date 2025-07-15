@@ -813,19 +813,54 @@ Krushr integrates Google's Gemini 2.5 Flash model for intelligent project manage
 - **Database Models**: AiConversation, AiMessage - Persistent conversation storage
 
 ### **Intelligent Thinking Budget System**
-The AI automatically calculates optimal thinking budgets (0-24,576 tokens) based on query complexity:
+The AI automatically calculates optimal thinking budgets (0-24,576 tokens) based on query complexity using Gemini 2.5 Flash's reasoning capabilities.
 
-**Complexity Scoring:**
+**What is Thinking?**
+Thinking is a reasoning capability in Gemini 2.5 series models that improves multi-step problem solving by allowing the model to reason through complex problems step-by-step before generating a response. This results in higher quality outputs for complex tasks.
+
+**Budget Configuration:**
+- **0**: Disable thinking (fastest, cheapest - $0.60/M tokens)
+- **-1**: Dynamic thinking (model decides optimal budget automatically)
+- **1-24,576**: Specific token budget for thinking (higher cost - $3.50/M tokens)
+
+**Automatic Complexity Scoring:**
 - **High Complexity (16K-24K tokens)**: Analysis, architecture, problem-solving, debugging
 - **Medium Complexity (8K-16K tokens)**: Code generation, workflows, implementation
 - **Low Complexity (2K-8K tokens)**: Definitions, tutorials, simple tasks
-- **Minimal Complexity (0-2K tokens)**: Greetings, confirmations, basic responses
+- **Minimal Complexity (0 tokens)**: Greetings, confirmations, basic responses
 
 **Auto-Optimization Features:**
 - **Query Analysis**: Regex patterns identify complexity indicators
 - **Technical Term Detection**: Adjusts budget based on technical vocabulary
 - **Context Awareness**: Considers conversation history and length
 - **Actionable Detection**: Increases budget for task/note/event creation
+
+**Implementation Details:**
+```typescript
+// Configuration in ai.ts
+const generationConfig: any = {
+  maxOutputTokens: options.maxTokens || 4096,
+  temperature: options.temperature || 0.7
+}
+
+// Add thinking budget if specified
+if (actualThinkingBudget > 0) {
+  generationConfig.thinkingConfig = {
+    thinkingBudget: actualThinkingBudget
+  }
+}
+```
+
+**Cost Implications:**
+- **Without Thinking**: $0.60 per million tokens (faster responses)
+- **With Thinking**: $3.50 per million tokens (higher quality reasoning)
+- **Automatic Budget**: Optimizes cost vs. quality based on query complexity
+
+**Best Practices:**
+- Use higher budgets for complex analysis and problem-solving
+- Set budget to 0 for simple queries to minimize cost
+- Monitor usage metadata to track thinking token consumption
+- Review thought summaries in development to understand reasoning process
 
 ### **Actionable Item Parsing**
 The AI automatically detects and can create database items from natural language:
@@ -921,10 +956,20 @@ AI_MAX_THINKING_BUDGET="24576"
 ```
 
 **API Key Setup:**
-1. **Get Gemini API Key**: Visit [Google AI Studio](https://aistudio.google.com/)
+1. **Get Gemini API Key**: Visit [Google AI Studio](https://aistudio.google.com/) or [AI Studio](https://ai.google.dev/)
 2. **Configure Environment**: Add to `api/.env` file
 3. **Verify Setup**: Check `api/src/config/index.ts` for key validation
 4. **Test Integration**: Use `/ai/test` endpoint or run AI chat in frontend
+
+**Gemini 2.5 Flash Models:**
+- **Gemini 2.5 Flash**: Standard model with thinking capabilities
+- **Gemini 2.5 Flash-Lite**: Lighter version with reduced thinking budget
+- **Gemini 2.5 Pro**: Premium model with enhanced thinking capabilities
+
+**Additional Resources:**
+- **Official Thinking Documentation**: [ai.google.dev/gemini-api/docs/thinking](https://ai.google.dev/gemini-api/docs/thinking)
+- **Pricing Information**: Standard vs. thinking token rates
+- **Best Practices**: Query optimization and budget management
 
 ### **Workspace Context System**
 The AI maintains full awareness of workspace context:
@@ -1019,9 +1064,18 @@ curl -X POST http://localhost:3002/trpc/ai.test \
   -H "Content-Type: application/json" \
   -d '{"message": "Hello, test message"}'
 
+# Test thinking budget extremes
+curl -X POST http://localhost:3002/trpc/ai.testThinkingBudgetExtremes
+
 # Monitor AI usage
 tail -f api/logs/ai-usage.log
 ```
+
+**Thinking Budget Testing:**
+The system includes a test endpoint that demonstrates budget allocation extremes:
+- **Minimal Query**: "hi" → 0 tokens (no thinking needed)
+- **Complex Query**: Technical analysis request → 24,576 tokens (maximum thinking)
+- **Cost Comparison**: Shows $0.60/M vs $3.50/M token pricing difference
 
 ## Enhanced System Architecture (2025)
 

@@ -13,7 +13,8 @@ import {
   Plus,
   MessageSquare,
   Settings,
-  Sparkles
+  Sparkles,
+  Brain
 } from 'lucide-react'
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
@@ -28,8 +29,10 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const [thinkingBudget, setThinkingBudget] = useState(8000)
+  const [autoThinkingBudget, setAutoThinkingBudget] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [showConversations, setShowConversations] = useState(false)
+  const [optimisticMessage, setOptimisticMessage] = useState<string | null>(null)
   
   const messageInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -41,13 +44,13 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     workspaceId
   })
   
-  const { data: currentConversation } = trpc.ai.getConversation.useQuery({
+  const { data: currentConversation, refetch: refetchConversation } = trpc.ai.getConversation.useQuery({
     conversationId: selectedConversation!
   }, {
     enabled: !!selectedConversation
   })
   
-  const { data: usageStats } = trpc.ai.getUsageStats.useQuery({
+  const { data: usageStats, refetch: refetchUsageStats } = trpc.ai.getUsageStats.useQuery({
     workspaceId,
     days: 30
   })
@@ -64,9 +67,28 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     onSuccess: () => {
       setMessage('')
       setIsLoading(false)
+      setOptimisticMessage(null)
+      // Refetch conversation to show new messages (both user and AI response)
+      refetchConversation()
+      refetchUsageStats()
     },
     onError: () => {
       setIsLoading(false)
+      setOptimisticMessage(null)
+    }
+  })
+
+  const parseAndCreateActionsMutation = trpc.ai.parseAndCreateActions.useMutation({
+    onSuccess: () => {
+      setMessage('')
+      setIsLoading(false)
+      setOptimisticMessage(null)
+      refetchConversation()
+      refetchUsageStats()
+    },
+    onError: () => {
+      setIsLoading(false)
+      setOptimisticMessage(null)
     }
   })
 
@@ -74,7 +96,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [currentConversation?.messages])
+  }, [currentConversation?.messages, optimisticMessage, isLoading])
 
   useEffect(() => {
     // Auto-select first conversation if none selected
@@ -87,24 +109,63 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     if (!message.trim()) return
     
     let conversationId = selectedConversation
+    const currentMessage = message.trim()
+    
+    // Show user message immediately (optimistic update)
+    setOptimisticMessage(currentMessage)
+    setMessage('')
+    setIsLoading(true)
     
     // Create new conversation if none selected
     if (!conversationId) {
-      setIsLoading(true)
-      const newConversation = await createConversation.mutateAsync({
-        workspaceId,
-        title: undefined,
-        context: 'Workspace AI assistant'
-      })
-      conversationId = newConversation.id
+      try {
+        const newConversation = await createConversation.mutateAsync({
+          workspaceId,
+          title: undefined,
+          context: 'Workspace AI assistant'
+        })
+        conversationId = newConversation.id
+      } catch (error) {
+        setIsLoading(false)
+        setOptimisticMessage(null)
+        setMessage(currentMessage) // Restore message on error
+        return
+      }
     }
     
-    setIsLoading(true)
-    await sendMessage.mutateAsync({
-      conversationId: conversationId!,
-      message,
-      thinkingBudget
-    })
+    // Check if message seems actionable and try intelligent parsing first
+    const shouldParseActions = /(?:need to|have to|must|should|todo|task|create|build|fix|update|review|test|deploy|note|remember|jot down|write down|document|project|initiative|campaign|feature|milestone|meeting|call|appointment|schedule|book)/i.test(currentMessage)
+    
+    if (shouldParseActions) {
+      try {
+        const parseResult = await parseAndCreateActionsMutation.mutateAsync({
+          workspaceId,
+          message: currentMessage,
+          autoCreate: true,
+          conversationId
+        })
+        
+        // Show notification if items were created
+        if (parseResult.createdItems.length > 0) {
+          console.log('Created actionable items:', parseResult.createdItems)
+        }
+        return
+      } catch (parseError) {
+        console.warn('Failed to parse actions, falling back to regular chat:', parseError)
+      }
+    }
+    
+    // Fallback to regular chat message
+    try {
+      await sendMessage.mutateAsync({
+        conversationId: conversationId!,
+        message: currentMessage,
+        thinkingBudget: autoThinkingBudget ? undefined : thinkingBudget
+      })
+    } catch (error) {
+      // Restore message on error
+      setMessage(currentMessage)
+    }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -214,53 +275,114 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       <ScrollArea className="flex-1 p-3">
         <div className="space-y-4">
           {selectedConversation && currentConversation ? (
-            currentConversation.messages.map((msg) => (
-              <div key={msg.id} className="flex items-start space-x-3">
-                <Avatar className="w-7 h-7 flex-shrink-0">
-                  <AvatarFallback className="text-xs">
-                    {msg.role === 'user' ? (
-                      <User className="w-4 h-4" />
-                    ) : (
-                      <Bot className="w-4 h-4" />
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <span className="font-medium text-xs text-gray-900">
-                      {msg.role === 'user' ? user?.name || 'You' : 'AI'}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {new Date(msg.createdAt).toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
-                    </span>
-                    {msg.role === 'assistant' && (
-                      <div className="flex items-center space-x-1 text-xs text-gray-400">
-                        <Zap className="w-3 h-3" />
-                        <span>{formatTokens(msg.tokenCount)}</span>
-                        {msg.responseTime && (
-                          <>
-                            <Clock className="w-3 h-3 ml-1" />
-                            <span>{msg.responseTime}ms</span>
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  <div className={cn(
-                    'text-sm',
-                    msg.role === 'user' 
-                      ? 'bg-krushr-primary/10 p-2 rounded-lg border border-krushr-primary/20' 
-                      : 'text-gray-900'
-                  )}>
-                    <p className="whitespace-pre-wrap">{msg.content}</p>
+            <>
+              {currentConversation.messages.map((msg) => (
+                <div key={msg.id} className="flex items-start space-x-3">
+                  <Avatar className="w-7 h-7 flex-shrink-0">
+                    <AvatarFallback className="text-xs">
+                      {msg.role === 'user' ? (
+                        <User className="w-4 h-4" />
+                      ) : (
+                        <Bot className="w-4 h-4" />
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="font-medium text-xs text-gray-900">
+                        {msg.role === 'user' ? user?.name || 'You' : 'AI'}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {new Date(msg.createdAt).toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </span>
+                      {msg.role === 'assistant' && (
+                        <div className="flex items-center space-x-1 text-xs text-gray-400">
+                          <Zap className="w-3 h-3" />
+                          <span>{formatTokens(msg.tokenCount)}</span>
+                          {msg.thinkingBudget && msg.thinkingBudget > 0 && (
+                            <>
+                              <Brain className="w-3 h-3 ml-1" />
+                              <span>{formatTokens(msg.thinkingBudget)}</span>
+                            </>
+                          )}
+                          {msg.responseTime && (
+                            <>
+                              <Clock className="w-3 h-3 ml-1" />
+                              <span>{msg.responseTime}ms</span>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className={cn(
+                      'text-sm',
+                      msg.role === 'user' 
+                        ? 'bg-krushr-primary/10 p-2 rounded-lg border border-krushr-primary/20' 
+                        : 'text-gray-900'
+                    )}>
+                      <p className="whitespace-pre-wrap">{msg.content}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+              
+              {/* Optimistic user message */}
+              {optimisticMessage && (
+                <div className="flex items-start space-x-3 opacity-70">
+                  <Avatar className="w-7 h-7 flex-shrink-0">
+                    <AvatarFallback className="text-xs">
+                      <User className="w-4 h-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="font-medium text-xs text-gray-900">
+                        {user?.name || 'You'}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {new Date().toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </span>
+                    </div>
+                    <div className="text-sm bg-krushr-primary/10 p-2 rounded-lg border border-krushr-primary/20">
+                      <p className="whitespace-pre-wrap">{optimisticMessage}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Loading AI response */}
+              {isLoading && optimisticMessage && (
+                <div className="flex items-start space-x-3 opacity-70">
+                  <Avatar className="w-7 h-7 flex-shrink-0">
+                    <AvatarFallback className="text-xs">
+                      <Bot className="w-4 h-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="font-medium text-xs text-gray-900">AI</span>
+                      <span className="text-xs text-gray-500">thinking...</span>
+                    </div>
+                    <div className="text-sm text-gray-500 animate-pulse">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-8">
               <Bot className="w-12 h-12 text-gray-300 mx-auto mb-3" />
@@ -305,20 +427,45 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
 
       {/* Input area - compact design */}
       <div className="p-3 border-t border-gray-200 bg-gray-50/50">
-        {/* Thinking budget slider - simplified */}
+        {/* Thinking budget controls */}
         <div className="flex items-center space-x-2 mb-2">
           <label className="text-xs text-gray-500 flex-shrink-0">Thinking:</label>
-          <input
-            type="range"
-            min="0"
-            max="24576"
-            value={thinkingBudget}
-            onChange={(e) => setThinkingBudget(Number(e.target.value))}
-            className="flex-1 h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          />
-          <span className="text-xs text-gray-500 w-12 text-right">
-            {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
-          </span>
+          
+          {/* Auto/Manual toggle */}
+          <button
+            onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
+            className={`px-2 py-1 text-xs rounded ${
+              autoThinkingBudget
+                ? 'bg-krushr-primary text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {autoThinkingBudget ? 'Auto' : 'Manual'}
+          </button>
+          
+          {/* Manual slider (only shown when not auto) */}
+          {!autoThinkingBudget && (
+            <>
+              <input
+                type="range"
+                min="0"
+                max="24576"
+                value={thinkingBudget}
+                onChange={(e) => setThinkingBudget(Number(e.target.value))}
+                className="flex-1 h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              />
+              <span className="text-xs text-gray-500 w-12 text-right">
+                {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
+              </span>
+            </>
+          )}
+          
+          {/* Auto mode indicator */}
+          {autoThinkingBudget && (
+            <span className="text-xs text-gray-500 flex-1">
+              Budget auto-calculated per query
+            </span>
+          )}
         </div>
         
         {/* Message input */}

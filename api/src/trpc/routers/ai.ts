@@ -127,9 +127,11 @@ export const aiRouter = router({
           }
         ]
 
-        // Generate AI response
+        // Generate AI response with intelligent thinking budget
         const aiResponse = await aiService.generateResponse(messageHistory, {
-          thinkingBudget: input.thinkingBudget
+          thinkingBudget: input.thinkingBudget,
+          workspaceId: conversation.workspaceId,
+          autoThinkingBudget: true
         })
 
         // Save AI response
@@ -140,7 +142,7 @@ export const aiRouter = router({
             content: aiResponse.content,
             tokenCount: aiResponse.tokenCount,
             cost: aiResponse.cost,
-            thinkingBudget: aiResponse.thinkingTokens,
+            thinkingBudget: aiResponse.actualThinkingBudget,
             responseTime: aiResponse.responseTime
           }
         })
@@ -313,5 +315,219 @@ export const aiRouter = router({
       })
 
       return { success: true }
+    }),
+
+  // Parse user input into actionable items and optionally create them
+  parseAndCreateActions: protectedProcedure
+    .input(z.object({
+      workspaceId: z.string(),
+      message: z.string().min(1, 'Message cannot be empty'),
+      autoCreate: z.boolean().default(false), // Whether to automatically create the parsed items
+      conversationId: z.string().optional() // Optional conversation context
+    }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        // Verify workspace access
+        const workspaceMember = await prisma.workspaceMember.findFirst({
+          where: {
+            userId: ctx.user.id,
+            workspaceId: input.workspaceId
+          }
+        })
+
+        if (!workspaceMember) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Access denied to workspace'
+          })
+        }
+
+        // Generate AI response with intelligent parsing and thinking budget
+        const aiResponse = await aiService.generateResponse([{
+          role: 'user',
+          content: input.message
+        }], {
+          workspaceId: input.workspaceId,
+          autoThinkingBudget: true
+        })
+
+        const parsedActions = aiResponse.parsedActions || []
+        const createdItems = []
+
+        // If autoCreate is enabled, create the parsed items in the database
+        if (input.autoCreate && parsedActions.length > 0) {
+          for (const action of parsedActions) {
+            try {
+              switch (action.type) {
+                case 'task':
+                  const task = await prisma.task.create({
+                    data: {
+                      title: action.data.title,
+                      description: action.data.description || '',
+                      priority: action.data.priority || 'medium',
+                      dueDate: action.data.dueDate,
+                      createdById: ctx.user.id,
+                      projectId: null, // Could be enhanced to parse project context
+                      kanbanColumnId: null // Could be enhanced to detect target column
+                    }
+                  })
+                  createdItems.push({ type: 'task', item: task })
+                  break
+
+                case 'note':
+                  const note = await prisma.note.create({
+                    data: {
+                      title: action.data.title,
+                      content: action.data.content,
+                      authorId: ctx.user.id,
+                      workspaceId: input.workspaceId
+                    }
+                  })
+                  createdItems.push({ type: 'note', item: note })
+                  break
+
+                case 'project':
+                  const project = await prisma.project.create({
+                    data: {
+                      name: action.data.name,
+                      description: action.data.description || '',
+                      workspaceId: input.workspaceId,
+                      status: 'ACTIVE'
+                    }
+                  })
+                  createdItems.push({ type: 'project', item: project })
+                  break
+
+                case 'event':
+                  const event = await prisma.calendarEvent.create({
+                    data: {
+                      title: action.data.title,
+                      description: action.data.description || '',
+                      startTime: action.data.startTime,
+                      endTime: action.data.endTime || new Date(action.data.startTime.getTime() + 60 * 60 * 1000), // Default 1 hour
+                      type: action.data.type || 'EVENT',
+                      workspaceId: input.workspaceId,
+                      createdById: ctx.user.id
+                    }
+                  })
+                  createdItems.push({ type: 'event', item: event })
+                  break
+              }
+            } catch (createError) {
+              console.error(`Failed to create ${action.type}:`, createError)
+              // Continue with other items even if one fails
+            }
+          }
+        }
+
+        // Save the interaction if part of a conversation
+        if (input.conversationId) {
+          const conversation = await prisma.aiConversation.findFirst({
+            where: {
+              id: input.conversationId,
+              userId: ctx.user.id
+            }
+          })
+
+          if (conversation) {
+            // Save user message
+            await prisma.aiMessage.create({
+              data: {
+                conversationId: input.conversationId,
+                role: 'user',
+                content: input.message,
+                tokenCount: aiService['estimateTokenCount'](input.message)
+              }
+            })
+
+            // Save AI response
+            await prisma.aiMessage.create({
+              data: {
+                conversationId: input.conversationId,
+                role: 'assistant',
+                content: aiResponse.content,
+                tokenCount: aiResponse.tokenCount,
+                cost: aiResponse.cost,
+                thinkingBudget: aiResponse.actualThinkingBudget,
+                responseTime: aiResponse.responseTime
+              }
+            })
+          }
+        }
+
+        return {
+          aiResponse: aiResponse.content,
+          parsedActions,
+          createdItems,
+          usage: {
+            tokens: aiResponse.tokenCount,
+            cost: aiResponse.cost,
+            responseTime: aiResponse.responseTime
+          }
+        }
+      } catch (error) {
+        console.error('Parse and create actions error:', error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to parse and create actions'
+        })
+      }
+    }),
+
+  // Preview what actions would be created without actually creating them
+  previewActions: protectedProcedure
+    .input(z.object({
+      workspaceId: z.string(),
+      message: z.string().min(1, 'Message cannot be empty')
+    }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        // Verify workspace access
+        const workspaceMember = await prisma.workspaceMember.findFirst({
+          where: {
+            userId: ctx.user.id,
+            workspaceId: input.workspaceId
+          }
+        })
+
+        if (!workspaceMember) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Access denied to workspace'
+          })
+        }
+
+        // Generate AI response with parsing preview and intelligent thinking budget
+        const aiResponse = await aiService.generateResponse([{
+          role: 'user',
+          content: `Preview what actionable items you would create from this input: "${input.message}"`
+        }], {
+          workspaceId: input.workspaceId,
+          autoThinkingBudget: true
+        })
+
+        return {
+          aiResponse: aiResponse.content,
+          parsedActions: aiResponse.parsedActions || [],
+          usage: {
+            tokens: aiResponse.tokenCount,
+            cost: aiResponse.cost,
+            responseTime: aiResponse.responseTime
+          }
+        }
+      } catch (error) {
+        console.error('Preview actions error:', error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to preview actions'
+        })
+      }
+    }),
+
+  // Test endpoint to demonstrate thinking budget extremes
+  testThinkingBudgetExtremes: protectedProcedure
+    .query(async ({ ctx }) => {
+      const testResults = aiService.testBudgetExtremes()
+      return testResults
     })
 })

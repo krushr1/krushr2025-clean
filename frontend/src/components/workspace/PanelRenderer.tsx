@@ -1,4 +1,4 @@
-import React, { useRef, lazy, Suspense, useState, useEffect } from 'react'
+import React, { useRef, lazy, Suspense, useState, useEffect, useMemo } from 'react'
 import { useToast } from '../../hooks/use-toast'
 import { Card, CardContent, CardHeader } from '../ui/card'
 import { Button } from '../ui/button'
@@ -117,7 +117,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   const { toast } = useToast()
   const notesRef = useRef<NotesPanelRef>(null)
   const utils = trpc.useUtils()
-  const [floatingPanels, setFloatingPanels] = useState<Set<string>>(new Set())
+  const [floatingPanels, setFloatingPanels] = useState<Set<string>>(() => new Set())
   
   const [showCreatePanel, setShowCreatePanel] = useState(false)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -180,7 +180,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     })
   }
 
-  const isFloating = floatingPanels.has(panel.id)
+  const isFloating = useMemo(() => floatingPanels.has(panel.id), [floatingPanels, panel.id])
   const toggleFullscreen = trpc.panel.toggleFullscreen.useMutation({
     onSuccess: (updatedPanel) => {
       try {

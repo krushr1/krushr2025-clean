@@ -704,8 +704,13 @@ export default function WorkspaceAiChat({
               id="floating_ai_message"
               placeholder=" "
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                console.log('Input onChange:', e.target.value)
+                setMessage(e.target.value)
+              }}
               onKeyDown={handleKeyDown}
+              onFocus={() => console.log('Input focused')}
+              onBlur={() => console.log('Input blurred')}
               disabled={isLoading}
               className="block px-3 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary peer transition-all duration-200 font-manrope h-10"
             />

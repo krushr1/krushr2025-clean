@@ -167,6 +167,12 @@ export default function WorkspaceAiChat({
     if (!isFloating) return
     
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't interfere with input/textarea interactions
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.closest('input') || target.closest('textarea')) {
+        return
+      }
+      
       // ESC to minimize/restore
       if (e.key === 'Escape') {
         e.stopPropagation()
@@ -923,7 +929,7 @@ export default function WorkspaceAiChat({
       {!isMinimized && (
         <div className="p-3 border-t border-gray-200 bg-gray-50/50">
           {/* Simple message input */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2" data-interactive>
             <Input
               ref={messageInputRef}
               type="text"
@@ -933,14 +939,25 @@ export default function WorkspaceAiChat({
               onKeyDown={handleKeyDown}
               disabled={isLoading}
               className="h-10 flex-1"
-              onClick={(e) => e.stopPropagation()}
-              onFocus={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation()
+                // Ensure focus on the input
+                messageInputRef.current?.focus()
+              }}
+              onFocus={(e) => {
+                e.stopPropagation()
+              }}
+              onMouseDown={(e) => {
+                e.stopPropagation()
+              }}
+              data-interactive
             />
             <Button
               onClick={handleSendMessage}
               disabled={!message.trim() || isLoading}
               size="sm"
               className="h-10 w-10 p-0"
+              data-interactive
             >
               <Send className="w-3 h-3" />
             </Button>

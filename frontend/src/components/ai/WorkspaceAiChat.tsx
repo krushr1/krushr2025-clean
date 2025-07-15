@@ -227,6 +227,7 @@ export default function WorkspaceAiChat({
   // Handle drag functionality with intelligent snapping
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isFloating) return
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
     
     e.stopPropagation()
     setIsDragging(true)

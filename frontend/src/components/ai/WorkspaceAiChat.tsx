@@ -157,9 +157,10 @@ export default function WorkspaceAiChat({
   }
 
   useEffect(() => {
+    // Only add event listeners when actually dragging
+    if (!isDragging || !isFloating) return
+
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !isFloating) return
-      
       const newX = e.clientX - dragOffset.x
       const newY = e.clientY - dragOffset.y
       
@@ -173,20 +174,16 @@ export default function WorkspaceAiChat({
       })
     }
 
-    const handleMouseUp = (e: MouseEvent) => {
-      // Only handle mouseup if we're actually dragging
-      if (!isDragging) return
+    const handleMouseUp = () => {
       setIsDragging(false)
     }
 
-    if (isDragging && isFloating) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-    }
+    document.addEventListener('mousemove', handleMouseMove, { capture: true })
+    document.addEventListener('mouseup', handleMouseUp, { capture: true })
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('mousemove', handleMouseMove, { capture: true })
+      document.removeEventListener('mouseup', handleMouseUp, { capture: true })
     }
   }, [isDragging, dragOffset, isFloating])
 
@@ -333,8 +330,7 @@ export default function WorkspaceAiChat({
           width: isMinimized ? '320px' : '400px',
           height: isMinimized ? '60px' : '600px',
           maxHeight: '80vh',
-          cursor: isDragging ? 'grabbing' : 'default',
-          pointerEvents: 'auto' // Ensure pointer events are enabled
+          cursor: isDragging ? 'grabbing' : 'default'
         }}
       >
         {children}
@@ -710,19 +706,12 @@ export default function WorkspaceAiChat({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              onClick={(e) => {
-                e.stopPropagation()
-                if (messageInputRef.current) {
-                  messageInputRef.current.focus()
-                }
-              }}
               disabled={isLoading}
-              style={{ pointerEvents: 'auto' }}
               className="block px-3 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary peer transition-all duration-200 font-manrope h-10"
             />
             <label
               htmlFor="floating_ai_message"
-              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope pointer-events-none"
             >
               Ask AI anything...
             </label>

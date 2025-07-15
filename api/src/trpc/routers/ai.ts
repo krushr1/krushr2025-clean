@@ -356,6 +356,38 @@ export const aiRouter = router({
 
         // If autoCreate is enabled, create the parsed items in the database
         if (input.autoCreate && parsedActions.length > 0) {
+          // Find the "frontend board" Kanban or fall back to first available board
+          const targetKanban = await prisma.kanban.findFirst({
+            where: {
+              workspaceId: input.workspaceId,
+              title: {
+                contains: 'frontend',
+                mode: 'insensitive'
+              }
+            },
+            include: {
+              columns: {
+                orderBy: { position: 'asc' }
+              }
+            }
+          }) || await prisma.kanban.findFirst({
+            where: {
+              workspaceId: input.workspaceId
+            },
+            include: {
+              columns: {
+                orderBy: { position: 'asc' }
+              }
+            }
+          })
+
+          // Find the first TODO-like column in the target board
+          const defaultKanbanColumn = targetKanban?.columns.find(col => 
+            ['TODO', 'To Do', 'Backlog', 'New', 'Open'].some(title => 
+              col.title.toLowerCase().includes(title.toLowerCase())
+            )
+          ) || targetKanban?.columns[0] // Fall back to first column
+
           for (const action of parsedActions) {
             try {
               switch (action.type) {
@@ -368,9 +400,10 @@ export const aiRouter = router({
                       dueDate: action.data.dueDate,
                       createdById: ctx.user.id,
                       projectId: null, // Could be enhanced to parse project context
-                      kanbanColumnId: null // Could be enhanced to detect target column
+                      kanbanColumnId: defaultKanbanColumn?.id || null // Assign to default column if available
                     }
                   })
+                  console.log(`[AI] Created task "${task.title}" in column "${defaultKanbanColumn?.title || 'none'}" (Board: "${targetKanban?.title || 'none'}")`)
                   createdItems.push({ type: 'task', item: task })
                   break
 

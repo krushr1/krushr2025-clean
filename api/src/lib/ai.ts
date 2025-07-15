@@ -48,11 +48,12 @@ export class AiService {
         }
       }
 
-      // Add the system prompt as the first message if this is a new conversation
+      // Always add the system prompt as the first message for consistent behavior
       const systemPrompt = this.generateSystemPrompt(options.workspaceId)
-      const enhancedMessages = messages.length === 1 ? 
-        [{ role: 'user' as const, content: systemPrompt + '\n\n' + messages[0].content }] : 
-        messages
+      const enhancedMessages = [
+        { role: 'user' as const, content: systemPrompt },
+        ...messages
+      ]
 
       // Convert messages to Gemini format  
       const contents = enhancedMessages.map(msg => ({

@@ -86,22 +86,12 @@ export default function WorkspaceAiChat({
       // Refetch conversation to show new messages (both user and AI response)
       refetchConversation()
       refetchUsageStats()
-      // Keep focus after AI response for continued conversation
-      setTimeout(() => {
-        if (messageInputRef.current) {
-          messageInputRef.current.focus()
-        }
-      }, 100)
+      // Note: Removed automatic focus after AI response - let user control focus
     },
     onError: () => {
       setIsLoading(false)
       setOptimisticMessage(null)
-      // Keep focus even on error for user to retry
-      setTimeout(() => {
-        if (messageInputRef.current) {
-          messageInputRef.current.focus()
-        }
-      }, 100)
+      // Note: Removed automatic focus on error - let user control focus
     }
   })
 
@@ -112,22 +102,12 @@ export default function WorkspaceAiChat({
       setOptimisticMessage(null)
       refetchConversation()
       refetchUsageStats()
-      // Keep focus after actions are parsed for continued conversation
-      setTimeout(() => {
-        if (messageInputRef.current) {
-          messageInputRef.current.focus()
-        }
-      }, 100)
+      // Note: Removed automatic focus after actions - let user control focus
     },
     onError: () => {
       setIsLoading(false)
       setOptimisticMessage(null)
-      // Keep focus even on error for user to retry
-      setTimeout(() => {
-        if (messageInputRef.current) {
-          messageInputRef.current.focus()
-        }
-      }, 100)
+      // Note: Removed automatic focus on error - let user control focus
     }
   })
 
@@ -165,7 +145,6 @@ export default function WorkspaceAiChat({
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isFloating) return
     
-    console.log('Drag handle clicked', { isFloating })
     e.stopPropagation()
     setIsDragging(true)
     const rect = floatingRef.current?.getBoundingClientRect()
@@ -222,12 +201,7 @@ export default function WorkspaceAiChat({
     setMessage('')
     setIsLoading(true)
     
-    // Keep focus after sending message since user is actively chatting
-    setTimeout(() => {
-      if (messageInputRef.current) {
-        messageInputRef.current.focus()
-      }
-    }, 10)
+    // Note: Removed automatic focus after sending - let user control focus naturally
     
     // Create new conversation if none selected
     if (!conversationId) {
@@ -737,7 +711,6 @@ export default function WorkspaceAiChat({
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               onClick={(e) => {
-                console.log('Input clicked', { isDragging, isFloating })
                 e.stopPropagation()
                 if (messageInputRef.current) {
                   messageInputRef.current.focus()

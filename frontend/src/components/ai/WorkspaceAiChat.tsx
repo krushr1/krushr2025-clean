@@ -68,10 +68,22 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       // Refetch conversation to show new messages (both user and AI response)
       refetchConversation()
       refetchUsageStats()
+      // Keep focus on input field after AI response
+      setTimeout(() => {
+        if (messageInputRef.current) {
+          messageInputRef.current.focus()
+        }
+      }, 100)
     },
     onError: () => {
       setIsLoading(false)
       setOptimisticMessage(null)
+      // Keep focus on input field even on error
+      setTimeout(() => {
+        if (messageInputRef.current) {
+          messageInputRef.current.focus()
+        }
+      }, 100)
     }
   })
 
@@ -82,10 +94,22 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       setOptimisticMessage(null)
       refetchConversation()
       refetchUsageStats()
+      // Keep focus on input field after actions are parsed
+      setTimeout(() => {
+        if (messageInputRef.current) {
+          messageInputRef.current.focus()
+        }
+      }, 100)
     },
     onError: () => {
       setIsLoading(false)
       setOptimisticMessage(null)
+      // Keep focus on input field even on error
+      setTimeout(() => {
+        if (messageInputRef.current) {
+          messageInputRef.current.focus()
+        }
+      }, 100)
     }
   })
 
@@ -102,6 +126,13 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     }
   }, [conversations, selectedConversation])
 
+  useEffect(() => {
+    // Auto-focus input field when component mounts or conversation changes
+    if (messageInputRef.current) {
+      messageInputRef.current.focus()
+    }
+  }, [selectedConversation])
+
   const handleSendMessage = async () => {
     if (!message.trim()) return
     
@@ -112,6 +143,13 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     setOptimisticMessage(currentMessage)
     setMessage('')
     setIsLoading(true)
+    
+    // Keep focus on input field after sending
+    setTimeout(() => {
+      if (messageInputRef.current) {
+        messageInputRef.current.focus()
+      }
+    }, 10)
     
     // Create new conversation if none selected
     if (!conversationId) {
@@ -126,6 +164,12 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
         setIsLoading(false)
         setOptimisticMessage(null)
         setMessage(currentMessage) // Restore message on error
+        // Keep focus on input field when restoring message
+        setTimeout(() => {
+          if (messageInputRef.current) {
+            messageInputRef.current.focus()
+          }
+        }, 100)
         return
       }
     }
@@ -162,6 +206,12 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     } catch (error) {
       // Restore message on error
       setMessage(currentMessage)
+      // Keep focus on input field when restoring message
+      setTimeout(() => {
+        if (messageInputRef.current) {
+          messageInputRef.current.focus()
+        }
+      }, 100)
     }
   }
 

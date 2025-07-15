@@ -6,7 +6,7 @@ import { router, protectedProcedure } from '../base'
  * Supports unlimited instances of different panel types
  */
 
-const PANEL_TYPES = ['KANBAN', 'CHAT', 'CALENDAR', 'NOTES', 'EMAIL', 'CONTACTS'] as const
+const PANEL_TYPES = ['KANBAN', 'CHAT', 'CALENDAR', 'NOTES', 'EMAIL', 'CONTACTS', 'AI_CHAT'] as const
 
 const panelInputSchema = z.object({
   type: z.enum(PANEL_TYPES),
@@ -98,6 +98,15 @@ export const panelRouter = router({
           workspaceId: input.workspaceId,
           notes: [],
           currentNote: null
+        }
+      } else if (data?.createNew && panelData.type === 'AI_CHAT') {
+        // For AI chat panels, start with empty conversation
+        panelData_processed = {
+          workspaceId: input.workspaceId,
+          conversationId: null,
+          messages: [],
+          model: 'gpt-4',
+          systemPrompt: 'You are a helpful AI assistant integrated into the Krushr workspace.'
         }
       }
 

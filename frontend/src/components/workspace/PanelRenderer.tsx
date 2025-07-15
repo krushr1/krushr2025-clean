@@ -117,6 +117,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   const { toast } = useToast()
   const notesRef = useRef<NotesPanelRef>(null)
   const utils = trpc.useUtils()
+  const [floatingPanels, setFloatingPanels] = useState<Set<string>>(new Set())
   
   const [showCreatePanel, setShowCreatePanel] = useState(false)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -157,6 +158,29 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
       })
     }
   })
+
+  // Handle floating mode toggle
+  const handleToggleFloating = () => {
+    setFloatingPanels(prev => {
+      const newFloatingPanels = new Set(prev)
+      if (newFloatingPanels.has(panel.id)) {
+        newFloatingPanels.delete(panel.id)
+      } else {
+        newFloatingPanels.add(panel.id)
+      }
+      return newFloatingPanels
+    })
+  }
+
+  const handleCloseFloating = () => {
+    setFloatingPanels(prev => {
+      const newFloatingPanels = new Set(prev)
+      newFloatingPanels.delete(panel.id)
+      return newFloatingPanels
+    })
+  }
+
+  const isFloating = floatingPanels.has(panel.id)
   const toggleFullscreen = trpc.panel.toggleFullscreen.useMutation({
     onSuccess: (updatedPanel) => {
       try {
@@ -286,7 +310,13 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
         return (
           <PanelErrorBoundary>
             <Suspense fallback={<PanelLoadingSpinner />}>
-              <WorkspaceAiChat workspaceId={workspaceId} className="h-full" />
+              <WorkspaceAiChat 
+                workspaceId={workspaceId} 
+                className="h-full" 
+                isFloating={isFloating}
+                onToggleFloating={handleToggleFloating}
+                onClose={handleCloseFloating}
+              />
             </Suspense>
           </PanelErrorBoundary>
         )
@@ -544,6 +574,11 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
                     <DropdownMenuItem className="text-xs">
                       <Search className="w-3 h-3 mr-2" />
                       Search Messages
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-xs" onClick={handleToggleFloating}>
+                      <Bot className="w-3 h-3 mr-2" />
+                      {isFloating ? 'Dock to Panel' : 'Pop Out to Float'}
                     </DropdownMenuItem>
                   </>
                 ) : (

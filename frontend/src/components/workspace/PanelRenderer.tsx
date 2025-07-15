@@ -45,8 +45,6 @@ const NewCalendarPanel = lazy(() => import('../calendar/NewCalendarPanel'))
 const Contacts = lazy(() => import('../contacts/Contacts'))
 const WorkspaceAiChat = lazy(() => import('../ai/WorkspaceAiChat'))
 
-import type { NotesPanelRef } from '../notes/NotesPanel'
-
 import SimpleCreatePanel from '../forms/SimpleCreatePanel'
 
 
@@ -115,7 +113,6 @@ interface PanelRendererProps {
 
 export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscreen, onFocus }: PanelRendererProps) {
   const { toast } = useToast()
-  const notesRef = useRef<NotesPanelRef>(null)
   const utils = trpc.useUtils()
   const [floatingPanels, setFloatingPanels] = useState<Set<string>>(() => new Set())
   
@@ -291,7 +288,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
         return (
           <div className="h-full">
             <Suspense fallback={<PanelLoadingSpinner />}>
-              <KanbanBoard kanban={{ id: kanbanId, workspaceId: panel.data?.workspaceId }} className="h-full" />
+              <KanbanBoard kanban={{ id: kanbanId, workspaceId }} className="h-full" />
             </Suspense>
           </div>
         )
@@ -324,14 +321,14 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
       case 'CALENDAR':
         return (
           <Suspense fallback={<PanelLoadingSpinner />}>
-            <NewCalendarPanel workspaceId={panel.data?.workspaceId} className="h-full" />
+            <NewCalendarPanel workspaceId={workspaceId} className="h-full" />
           </Suspense>
         )
 
       case 'NOTES':
         return (
           <Suspense fallback={<PanelLoadingSpinner />}>
-            <NotesPanel ref={notesRef} workspaceId={workspaceId} className="h-full" />
+            <NotesPanel workspaceId={workspaceId} className="h-full" />
           </Suspense>
         )
 
@@ -348,7 +345,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
       case 'CONTACTS':
         return (
           <Suspense fallback={<PanelLoadingSpinner />}>
-            <Contacts workspaceId={panel.data?.workspaceId} className="h-full" />
+            <Contacts workspaceId={workspaceId} className="h-full" />
           </Suspense>
         )
 
@@ -372,20 +369,21 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     toggleLock.mutate({ id: panel.id })
   }
 
-  const handleExportNotes = () => {
-    if (panel.type === 'NOTES' && notesRef.current) {
-      notesRef.current.exportNotes()
-    }
-  }
-
-  const handleCreateNewNote = () => {
-    if (panel.type === 'NOTES' && notesRef.current) {
-      notesRef.current.createNewNote()
-    }
-  }
-
   const handleToggleFullscreen = () => {
     toggleFullscreen.mutate({ id: panel.id })
+  }
+
+  const handleDelete = () => {
+    if (confirm(`Delete panel "${panel.title}"?`)) {
+      deletePanel.mutate({ id: panel.id })
+    }
+  }
+
+  const handleTitleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!panel.is_locked) {
+      setIsEditingTitle(true)
+    }
   }
 
   const handleFocus = (e: React.MouseEvent) => {
@@ -422,19 +420,6 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     const target = e.target as HTMLElement
     if (target.closest('.panel-drag-handle')) {
       e.stopPropagation()
-    }
-  }
-
-  const handleDelete = () => {
-    if (confirm(`Delete panel "${panel.title}"?`)) {
-      deletePanel.mutate({ id: panel.id })
-    }
-  }
-
-  const handleTitleClick = () => {
-    if (!panel.is_locked) {
-      setIsEditingTitle(true)
-      setEditedTitle(panel.title)
     }
   }
 
@@ -592,17 +577,9 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
                   </>
                 ) : (
                   <>
-                    <DropdownMenuItem className="text-xs" onClick={handleCreateNewNote}>
-                      <Plus className="w-3 h-3 mr-2" />
-                      New Note
-                    </DropdownMenuItem>
                     <DropdownMenuItem className="text-xs">
                       <Search className="w-3 h-3 mr-2" />
                       Search Notes
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs" onClick={handleExportNotes}>
-                      <StickyNote className="w-3 h-3 mr-2" />
-                      Export Notes
                     </DropdownMenuItem>
                   </>
                 )}

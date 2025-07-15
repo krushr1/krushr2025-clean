@@ -28,6 +28,7 @@ interface WorkspaceAiChatProps {
   isFloating?: boolean
   onToggleFloating?: () => void
   onClose?: () => void
+  onPopoutStateChange?: (isFloating: boolean) => void
 }
 
 export default function WorkspaceAiChat({ 
@@ -35,7 +36,8 @@ export default function WorkspaceAiChat({
   className, 
   isFloating = false, 
   onToggleFloating, 
-  onClose 
+  onClose,
+  onPopoutStateChange
 }: WorkspaceAiChatProps) {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
   const [message, setMessage] = useState('')
@@ -224,7 +226,7 @@ export default function WorkspaceAiChat({
 
   // Handle drag functionality with intelligent snapping
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!isFloating || isMinimized) return
+    if (!isFloating) return
     
     e.stopPropagation()
     setIsDragging(true)
@@ -486,6 +488,11 @@ export default function WorkspaceAiChat({
     return createPortal(floatingContent, document.body)
   }
 
+  // Notify parent when popout state changes
+  useEffect(() => {
+    onPopoutStateChange?.(isFloating)
+  }, [isFloating, onPopoutStateChange])
+
   return (
     <FloatingWrapper>
       <div className={cn(
@@ -684,10 +691,18 @@ export default function WorkspaceAiChat({
         </div>
       )}
 
-      {/* Minimized state - compact notification bar */}
+      {/* Minimized state - compact notification bar with drag handle */}
       {isMinimized && isFloating && (
         <div className="flex items-center justify-between px-3 py-2 h-full">
-          <div className="flex items-center space-x-2 flex-1 min-w-0">
+          {/* Draggable handle for minimized state */}
+          <div 
+            className={cn(
+              "flex items-center space-x-2 flex-1 min-w-0 cursor-grab hover:cursor-grab",
+              isDragging && "cursor-grabbing"
+            )}
+            onMouseDown={handleMouseDown}
+            title="Drag to move"
+          >
             <div className="w-2 h-2 bg-krushr-primary rounded-full animate-pulse" />
             <span className="text-sm font-medium text-gray-700 truncate">
               {isLoading ? 'AI is thinking...' : 'AI Assistant'}

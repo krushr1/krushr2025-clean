@@ -40,12 +40,17 @@ export const useAuthStore = create<AuthState>()(
         if (typeof window !== 'undefined') {
           // Check if token exists in localStorage first
           const existingToken = localStorage.getItem('auth-token')
-          if (!existingToken) {
+          
+          // Only use dev token in development environment
+          if (!existingToken && process.env.NODE_ENV === 'development') {
             localStorage.setItem('auth-token', 'dev-token-123')
           }
           
+          const tokenToUse = existingToken || 
+            (process.env.NODE_ENV === 'development' ? 'dev-token-123' : null)
+          
           set({ 
-            token: existingToken || 'dev-token-123',
+            token: tokenToUse,
             isLoading: true 
           })
 

@@ -11,8 +11,8 @@ export const trpc = createTRPCReact<AppRouter>()
 function getAuthToken(): string | null {
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('auth-token')
-    // If no token in localStorage, return dev token directly
-    if (!token) {
+    // Only provide dev token in development environment
+    if (!token && process.env.NODE_ENV === 'development') {
       localStorage.setItem('auth-token', 'dev-token-123')
       return 'dev-token-123'
     }

@@ -6,6 +6,7 @@
 import { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify'
 import { prisma } from '../lib/database'
 import { validateSession } from '../lib/auth'
+import { isDevelopment } from '../config'
 import type { User } from '@prisma/client'
 
 export interface Context {
@@ -26,8 +27,8 @@ export async function createContext({ req }: CreateFastifyContextOptions): Promi
   if (authHeader?.startsWith('Bearer ')) {
     const token = authHeader.slice(7)
     
-    // DEV MODE: Accept development token
-    if (token === 'dev-token-123') {
+    // DEV MODE: Accept development token only in development environment
+    if (token === 'dev-token-123' && isDevelopment) {
       // Return Alice user from database
       user = await prisma.user.findUnique({
         where: { email: 'alice@krushr.dev' }

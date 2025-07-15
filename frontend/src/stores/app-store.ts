@@ -71,9 +71,9 @@ export const useAppStore = create<AppState>()(
       socket: null,
       reconnectAttempts: 0,
       maxReconnectAttempts: 5,
-    },
+          },
 
-    // Authentication Actions
+      // Authentication Actions
     setUser: (user) => set({ user, isAuthenticated: !!user }),
     
     setActiveWorkspace: (workspace) => set({ activeWorkspace: workspace }),

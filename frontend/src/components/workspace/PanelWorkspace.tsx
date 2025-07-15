@@ -25,30 +25,29 @@ interface Panel {
   height: number
   is_minimized: boolean
   is_locked: boolean
-  data: Record<string, any>
+  data?: any
 }
 
 export default function PanelWorkspace({ workspaceId, className }: PanelWorkspaceProps) {
   const [focusedPanelId, setFocusedPanelId] = useState<string | null>(null)
 
-  const { data: panels = [], refetch } = trpc.panel.list.useQuery(
+  const { data: allPanels = [], refetch } = trpc.panel.list.useQuery(
     { workspaceId },
     { 
-      staleTime: 0, // Always fetch fresh data
-      gcTime: 60000, // Keep in cache for 1 minute only (was cacheTime)
-      refetchOnWindowFocus: false, // Don't refetch on window focus
-      refetchOnMount: 'always', // Always refetch on component mount
-      onSuccess: (data) => {
-        console.log('🔍 Panels loaded from database:', {
-          count: data.length,
-          panels: data.map(p => ({ 
-            id: p.id, 
-            title: p.title,
-            dimensions: { w: p.width, h: p.height, x: p.position_x, y: p.position_y }
-          }))
-        })
-      }
+      staleTime: 0,
+      gcTime: 60000,
+      refetchOnWindowFocus: false,
+      refetchOnMount: 'always',
     }
+  )
+
+  // Track hidden panels
+  const [hiddenPanelIds, setHiddenPanelIds] = useState<Set<string>>(new Set())
+
+  // Visible panels for layout
+  const panels = useMemo(() =>
+    allPanels.filter(panel => !hiddenPanelIds.has(panel.id)) as any[],
+    [allPanels, hiddenPanelIds]
   )
 
   const [containerWidth, setContainerWidth] = useState(() => {
@@ -171,7 +170,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
 
     const updates = optimizedLayout
       .filter(item => {
-        const panel = panels.find(p => p.id === item.i)
+        const panel = allPanels.find(p => p.id === item.i)
         const hasChanges = panel && (
           panel.position_x !== item.x ||
           panel.position_y !== item.y ||
@@ -203,7 +202,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     }
 
     // Note: Removed onLayoutPersistenceChange call to prevent conflicts
-  }, [panels, debouncedUpdatePositions, onLayoutPersistenceChange])
+  }, [panels, debouncedUpdatePositions, onLayoutPersistenceChange, allPanels])
 
   const [originalLayout, setOriginalLayout] = useState<Layout[] | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -241,17 +240,6 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   }, [])
 
   const handlePanelDrag = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
-    
-    if (placeholder) {
-      placeholder.style = {
-        ...placeholder.style,
-        background: 'rgba(34, 197, 94, 0.15)', // Gentle green - welcoming
-        border: '2px dashed rgba(34, 197, 94, 0.4)',
-        borderRadius: '12px',
-        transition: 'all 0.2s ease-out'
-      }
-    }
-    
     element.style.transform = element.style.transform.replace(/scale\([^)]*\)/, 'scale(1.02)')
   }, [])
 
@@ -296,17 +284,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     element.style.border = '2px solid rgba(31, 187, 101, 0.5)' // Krushr success color
   }, [])
 
-  const handlePanelResize = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
-    if (placeholder) {
-      placeholder.style = {
-        ...placeholder.style,
-        background: 'rgba(16, 185, 129, 0.1)', // Very subtle green
-        border: '2px dashed rgba(16, 185, 129, 0.4)',
-        borderRadius: '12px',
-        transition: 'all 0.15s ease-out'
-      }
-    }
-  }, [])
+  const handlePanelResize = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {}, [])
 
   const handlePanelResizeStop = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
     element.style.transition = 'all 0.2s ease-out'
@@ -334,7 +312,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
       maxH: 50,
       isDraggable: !panel.is_locked,
       isResizable: !panel.is_locked
-    }))
+    } as Layout))
     
     console.log('📊 Panel to Grid Layout Conversion:', {
       panelCount: panels.length,
@@ -343,7 +321,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     })
     
     gridLayout.forEach(item => {
-      if (item.w < item.minW || item.h < item.minH) {
+      if ((item.w || 0) < (item.minW || 2) || (item.h || 0) < (item.minH || 2)) {
         console.warn('⚠️ Panel size below minimum:', item)
       }
     })
@@ -552,14 +530,15 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
         onResizeStart={handlePanelResizeStart}
         onResizeStop={handlePanelResizeStop}
       >
-        {panels.map(panel => (
+        {allPanels.map(panel => (
           <div 
             key={panel.id} 
             className="panel-container"
             data-panel-type={panel.type}
+            style={{ display: hiddenPanelIds.has(panel.id) ? 'none' : 'block' }}
           >
-            <PanelRenderer 
-              panel={panel} 
+                                      <PanelRenderer 
+              panel={{ ...panel, data: panel.data || {} }}
               workspaceId={workspaceId}
               onRefresh={refetch}
               onFullscreen={handleFullscreen}

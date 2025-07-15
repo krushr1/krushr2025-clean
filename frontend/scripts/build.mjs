@@ -10,6 +10,9 @@ import chokidar from 'chokidar'
 const args = process.argv.slice(2)
 const isProd = args[0] === '--production'
 
+// Set NODE_ENV environment variable
+process.env.NODE_ENV = isProd ? 'production' : 'development'
+
 await rimraf('dist')
 
 const fileStats = new Map()
@@ -101,6 +104,9 @@ const esbuildOpts = {
   splitting: true,
   chunkNames: 'chunks/[name]-[hash]',
   jsx: 'automatic',
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+  },
   loader: {
     '.html': 'copy',
     '.png': 'file',

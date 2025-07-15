@@ -165,6 +165,12 @@ export default function WorkspaceAiChat({
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isFloating) return
     
+    // Don't start drag if clicking on interactive elements
+    const target = e.target as HTMLElement
+    if (target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.closest('button') || target.closest('input')) {
+      return
+    }
+    
     setIsDragging(true)
     const rect = floatingRef.current?.getBoundingClientRect()
     if (rect) {
@@ -718,7 +724,7 @@ export default function WorkspaceAiChat({
         <div className="p-3 border-t border-gray-200 bg-gray-50/50">
         {/* Message input */}
         <div className="flex items-center space-x-2">
-          <div className="relative flex-1">
+          <div className="relative flex-1" onClick={() => messageInputRef.current?.focus()}>
             <input
               ref={messageInputRef}
               type="text"
@@ -727,6 +733,7 @@ export default function WorkspaceAiChat({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
+              onFocus={() => setIsDragging(false)} // Ensure dragging is disabled when input is focused
               disabled={isLoading}
               className="block px-3 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary peer transition-all duration-200 font-manrope h-10"
             />

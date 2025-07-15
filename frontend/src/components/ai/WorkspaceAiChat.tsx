@@ -379,6 +379,19 @@ export default function WorkspaceAiChat({
     }
   }
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation()
+    setMessage(e.target.value)
+  }
+
+  const handleInputClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+  }
+
+  const handleInputFocus = (e: React.FocusEvent) => {
+    e.stopPropagation()
+  }
+
   const formatCost = (cost: number) => {
     return cost < 0.01 ? '<$0.01' : `$${cost.toFixed(3)}`
   }
@@ -907,8 +920,10 @@ export default function WorkspaceAiChat({
               id="floating_ai_message"
               placeholder=" "
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleInputChange}
               onKeyDown={handleKeyDown}
+              onClick={handleInputClick}
+              onFocus={handleInputFocus}
               disabled={isLoading}
               className="block px-3 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary peer transition-all duration-200 font-manrope h-10"
             />

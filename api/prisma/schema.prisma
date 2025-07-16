@@ -8,35 +8,35 @@ datasource db {
 }
 
 model User {
-  id              String             @id @default(cuid())
-  email           String             @unique
-  name            String
-  avatar          String?
-  password        String
-  emailVerified   DateTime?
-  timezone        String             @default("UTC")
-  dateFormat      String             @default("MM/DD/YYYY")
-  language        String             @default("en")
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-  sentMessages           ChatMessage[]             @relation("MessageSender")
-  chatReactions          ChatReaction[]            @relation("ChatReactions")
-  notes                  Note[]
-  notifications          Notification[]
-  preferences            UserPreferences?
-  sessions               Session[]
-  taskComments           TaskComment[]
-  taskCommentMentions    TaskCommentMention[]
-  taskCommentReactions   TaskCommentReaction[]
-  taskTimeEntries        TaskTimeEntry[]
-  tasks                  Task[]                    @relation("TaskAssignee")
-  createdTasks           Task[]                    @relation("TaskCreator")
-  teamMembers            TeamMember[]
-  workspaces             WorkspaceMember[]
-  ownedWorkspaces        Workspace[]               @relation("WorkspaceOwner")
-  calendarEvents         CalendarEvent[]
-  aiConversations        AiConversation[]
-  aiUsage                AiUsage[]
+  id                   String                @id @default(cuid())
+  email                String                @unique
+  name                 String
+  avatar               String?
+  password             String
+  emailVerified        DateTime?
+  timezone             String                @default("UTC")
+  dateFormat           String                @default("MM/DD/YYYY")
+  language             String                @default("en")
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  aiConversations      AiConversation[]
+  aiUsage              AiUsage[]
+  calendarEvents       CalendarEvent[]
+  sentMessages         ChatMessage[]         @relation("MessageSender")
+  chatReactions        ChatReaction[]        @relation("ChatReactions")
+  notes                Note[]
+  notifications        Notification[]
+  sessions             Session[]
+  taskCommentMentions  TaskCommentMention[]
+  taskCommentReactions TaskCommentReaction[]
+  taskComments         TaskComment[]
+  taskTimeEntries      TaskTimeEntry[]
+  createdTasks         Task[]                @relation("TaskCreator")
+  tasks                Task[]                @relation("TaskAssignee")
+  teamMembers          TeamMember[]
+  preferences          UserPreferences?
+  workspaces           WorkspaceMember[]
+  ownedWorkspaces      Workspace[]           @relation("WorkspaceOwner")
 
   @@map("users")
 }
@@ -53,25 +53,25 @@ model Session {
 }
 
 model Workspace {
-  id            String                  @id @default(cuid())
-  name          String
-  description   String?
-  settings      String                  @default("{}")
-  createdAt     DateTime                @default(now())
-  updatedAt     DateTime                @updatedAt
-  ownerId       String
-  kanbans       Kanban[]
-  noteFolders   NoteFolder[]
-  notes         Note[]
-  panels        Panel[]
-  projects      Project[]
-  teams         Team[]
-  layoutPresets WorkspaceLayoutPreset[]
-  members       WorkspaceMember[]
-  owner         User                    @relation("WorkspaceOwner", fields: [ownerId], references: [id])
-  calendarEvents CalendarEvent[]
+  id              String                  @id @default(cuid())
+  name            String
+  description     String?
+  settings        String                  @default("{}")
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  ownerId         String
   aiConversations AiConversation[]
-  aiUsage       AiUsage[]
+  aiUsage         AiUsage[]
+  calendarEvents  CalendarEvent[]
+  kanbans         Kanban[]
+  noteFolders     NoteFolder[]
+  notes           Note[]
+  panels          Panel[]
+  projects        Project[]
+  teams           Team[]
+  layoutPresets   WorkspaceLayoutPreset[]
+  members         WorkspaceMember[]
+  owner           User                    @relation("WorkspaceOwner", fields: [ownerId], references: [id])
 
   @@map("workspaces")
 }
@@ -165,57 +165,53 @@ model KanbanColumn {
 }
 
 model Task {
-  id             String           @id @default(cuid())
-  title          String
-  description    String?
-  status         String           @default("TODO")
-  priority       String           @default("medium")
-  position       Int              @default(0)
-  dueDate        DateTime?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  projectId      String?
-  kanbanColumnId String?
-  createdById    String
-  assigneeId     String?
-  estimatedHours Float?
-  
-  // Enhanced 2025 Enterprise Fields
-  startDate           DateTime?
-  completedAt         DateTime?
-  storyPoints         Int?
-  actualHours         Float?
-  epicId              String?
-  parentTaskId        String?
-  template            String?
-  recurringPattern    String?
-  watchers            String           @default("[]")
-  customFields        String           @default("{}")
-  aiSummary           String?
-  aiPriority          String?
-  riskLevel           String           @default("LOW")
-  businessValue       Int?
-  complexity          Int?
-  blockedReason       String?
-  blockedBy           String?
-  isBlocked           Boolean          @default(false)
-  isTemplate          Boolean          @default(false)
-  isPrivate           Boolean          @default(false)
-  
-  // Relations
-  attachments    TaskAttachment[]
-  checklists     TaskChecklist[]
-  comments       TaskComment[]
-  tags           TaskTag[]
-  subtasks       Task[]               @relation("TaskHierarchy")
-  parentTask     Task?                @relation("TaskHierarchy", fields: [parentTaskId], references: [id])
-  timeEntries    TaskTimeEntry[]
-  dependencies   TaskDependency[]     @relation("DependentTask")
-  dependents     TaskDependency[]     @relation("BlockingTask")
-  assignee       User?                @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  createdBy      User                 @relation("TaskCreator", fields: [createdById], references: [id])
-  kanbanColumn   KanbanColumn?        @relation(fields: [kanbanColumnId], references: [id])
-  project        Project?             @relation(fields: [projectId], references: [id])
+  id               String           @id @default(cuid())
+  title            String
+  description      String?
+  status           String           @default("TODO")
+  priority         String           @default("medium")
+  position         Int              @default(0)
+  dueDate          DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  projectId        String?
+  kanbanColumnId   String?
+  createdById      String
+  assigneeId       String?
+  estimatedHours   Float?
+  startDate        DateTime?
+  completedAt      DateTime?
+  storyPoints      Int?
+  actualHours      Float?
+  epicId           String?
+  parentTaskId     String?
+  template         String?
+  recurringPattern String?
+  watchers         String           @default("[]")
+  customFields     String           @default("{}")
+  aiSummary        String?
+  aiPriority       String?
+  riskLevel        String           @default("LOW")
+  businessValue    Int?
+  complexity       Int?
+  blockedReason    String?
+  blockedBy        String?
+  isBlocked        Boolean          @default(false)
+  isTemplate       Boolean          @default(false)
+  isPrivate        Boolean          @default(false)
+  attachments      TaskAttachment[]
+  checklists       TaskChecklist[]
+  comments         TaskComment[]
+  dependents       TaskDependency[] @relation("BlockingTask")
+  dependencies     TaskDependency[] @relation("DependentTask")
+  tags             TaskTag[]
+  timeEntries      TaskTimeEntry[]
+  project          Project?         @relation(fields: [projectId], references: [id])
+  kanbanColumn     KanbanColumn?    @relation(fields: [kanbanColumnId], references: [id])
+  createdBy        User             @relation("TaskCreator", fields: [createdById], references: [id])
+  assignee         User?            @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  parentTask       Task?            @relation("TaskHierarchy", fields: [parentTaskId], references: [id])
+  subtasks         Task[]           @relation("TaskHierarchy")
 
   @@map("tasks")
 }
@@ -252,54 +248,48 @@ model TaskChecklistItem {
 }
 
 model TaskComment {
-  id        String   @id @default(cuid())
-  content   String   // Rich text content (HTML/JSON)
-  plainText String?  // Plain text version for search/indexing
+  id        String                @id @default(cuid())
+  content   String
+  plainText String?
   taskId    String
   authorId  String
-  parentId  String?  // For threaded comments/replies
-  isEdited  Boolean  @default(false)
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Relations
-  author    User              @relation(fields: [authorId], references: [id])
-  task      Task              @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  parent    TaskComment?      @relation("CommentReplies", fields: [parentId], references: [id])
-  replies   TaskComment[]     @relation("CommentReplies")
+  parentId  String?
+  isEdited  Boolean               @default(false)
+  isDeleted Boolean               @default(false)
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
   mentions  TaskCommentMention[]
   reactions TaskCommentReaction[]
+  parent    TaskComment?          @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   TaskComment[]         @relation("CommentReplies")
+  task      Task                  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author    User                  @relation(fields: [authorId], references: [id])
 
   @@map("task_comments")
 }
 
 model TaskCommentMention {
-  id        String   @id @default(cuid())
+  id        String      @id @default(cuid())
   commentId String
   userId    String
-  startPos  Int      // Start position in content
-  endPos    Int      // End position in content
-  createdAt DateTime @default(now())
-  
-  // Relations
-  comment   TaskComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  startPos  Int
+  endPos    Int
+  createdAt DateTime    @default(now())
   user      User        @relation(fields: [userId], references: [id])
+  comment   TaskComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@unique([commentId, userId, startPos])
   @@map("task_comment_mentions")
 }
 
 model TaskCommentReaction {
-  id        String   @id @default(cuid())
+  id        String      @id @default(cuid())
   commentId String
   userId    String
-  emoji     String   // Emoji character or code
-  createdAt DateTime @default(now())
-  
-  // Relations
-  comment   TaskComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  emoji     String
+  createdAt DateTime    @default(now())
   user      User        @relation(fields: [userId], references: [id])
+  comment   TaskComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@unique([commentId, userId, emoji])
   @@map("task_comment_reactions")
@@ -327,24 +317,24 @@ model TaskTimeEntry {
   description String?
   startTime   DateTime
   endTime     DateTime?
-  duration    Int?      // Duration in minutes
+  duration    Int?
   billable    Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user        User      @relation(fields: [userId], references: [id])
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@map("task_time_entries")
 }
 
 model TaskDependency {
   id              String   @id @default(cuid())
-  dependentTaskId String   // Task that depends on another
-  blockingTaskId  String   // Task that blocks the dependent task
-  type            String   @default("FINISH_TO_START") // FINISH_TO_START, START_TO_START, etc.
+  dependentTaskId String
+  blockingTaskId  String
+  type            String   @default("FINISH_TO_START")
   createdAt       DateTime @default(now())
-  dependentTask   Task     @relation("DependentTask", fields: [dependentTaskId], references: [id], onDelete: Cascade)
   blockingTask    Task     @relation("BlockingTask", fields: [blockingTaskId], references: [id], onDelete: Cascade)
+  dependentTask   Task     @relation("DependentTask", fields: [dependentTaskId], references: [id], onDelete: Cascade)
 
   @@unique([dependentTaskId, blockingTaskId])
   @@map("task_dependencies")
@@ -364,20 +354,20 @@ model ChatThread {
 }
 
 model ChatMessage {
-  id          String              @id @default(cuid())
+  id          String           @id @default(cuid())
   content     String
-  type        String              @default("TEXT")
+  type        String           @default("TEXT")
   threadId    String
   senderId    String
   replyToId   String?
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
   attachments ChatAttachment[]
+  replyTo     ChatMessage?     @relation("MessageReply", fields: [replyToId], references: [id])
+  replies     ChatMessage[]    @relation("MessageReply")
+  thread      ChatThread       @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  sender      User             @relation("MessageSender", fields: [senderId], references: [id])
   reactions   ChatReaction[]
-  sender      User                @relation("MessageSender", fields: [senderId], references: [id])
-  thread      ChatThread          @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  replyTo     ChatMessage?        @relation("MessageReply", fields: [replyToId], references: [id])
-  replies     ChatMessage[]       @relation("MessageReply")
 
   @@map("chat_messages")
 }
@@ -388,8 +378,8 @@ model ChatReaction {
   messageId String
   userId    String
   createdAt DateTime    @default(now())
-  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
   user      User        @relation("ChatReactions", fields: [userId], references: [id], onDelete: Cascade)
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
   @@unique([messageId, userId, emoji])
   @@map("chat_reactions")
@@ -450,7 +440,6 @@ model Note {
   id          String           @id @default(cuid())
   title       String
   content     String           @default("")
-  color       String?          @default("#ffffff")
   isPinned    Boolean          @default(false)
   isArchived  Boolean          @default(false)
   folderId    String?
@@ -458,6 +447,7 @@ model Note {
   workspaceId String
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+  color       String?          @default("#ffffff")
   attachments NoteAttachment[]
   tags        NoteTag[]
   workspace   Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
@@ -522,142 +512,137 @@ model NoteAttachment {
 }
 
 model UserPreferences {
-  id                          String   @id @default(cuid())
-  userId                      String   @unique
-  theme                       String   @default("system") // light, dark, system
-  colorScheme                 String   @default("blue")   // blue, green, purple, orange
-  compactMode                 Boolean  @default(false)
-  fontSize                    String   @default("medium") // small, medium, large
-  sidebarBehavior            String   @default("auto")    // always, auto, manual
-  desktopNotifications       Boolean  @default(true)
-  emailNotifications         Boolean  @default(true)
-  emailDigestFrequency       String   @default("daily")   // immediate, daily, weekly, off
-  notifyTaskAssignments      Boolean  @default(true)
-  notifyCommentsMentions     Boolean  @default(true)
-  notifyTeamInvitations      Boolean  @default(true)
-  notifyProjectDeadlines     Boolean  @default(true)
-  notifyFileUploads          Boolean  @default(false)
-  notificationSound          Boolean  @default(true)
-  quietHoursStart            String?  // "22:00"
-  quietHoursEnd              String?  // "08:00"
-  defaultTaskPriority        String   @default("medium") // low, medium, high, critical
-  autoSaveFrequency          Int      @default(30)       // seconds
-  defaultCalendarView        String   @default("month")  // month, week, day, agenda
-  calendarWeekStartsOn       Int      @default(0)        // 0 = Sunday, 1 = Monday
-  createdAt                  DateTime @default(now())
-  updatedAt                  DateTime @updatedAt
-  user                       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                     String   @id @default(cuid())
+  userId                 String   @unique
+  theme                  String   @default("system")
+  colorScheme            String   @default("blue")
+  compactMode            Boolean  @default(false)
+  fontSize               String   @default("medium")
+  sidebarBehavior        String   @default("auto")
+  desktopNotifications   Boolean  @default(true)
+  emailNotifications     Boolean  @default(true)
+  emailDigestFrequency   String   @default("daily")
+  notifyTaskAssignments  Boolean  @default(true)
+  notifyCommentsMentions Boolean  @default(true)
+  notifyTeamInvitations  Boolean  @default(true)
+  notifyProjectDeadlines Boolean  @default(true)
+  notifyFileUploads      Boolean  @default(false)
+  notificationSound      Boolean  @default(true)
+  quietHoursStart        String?
+  quietHoursEnd          String?
+  defaultTaskPriority    String   @default("medium")
+  autoSaveFrequency      Int      @default(30)
+  defaultCalendarView    String   @default("month")
+  calendarWeekStartsOn   Int      @default(0)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_preferences")
 }
 
-// Calendar and Events
 model CalendarEvent {
-  id            String                @id @default(cuid())
-  title         String
-  description   String?
-  startTime     DateTime
-  endTime       DateTime
-  allDay        Boolean               @default(false)
-  location      String?
-  color         String                @default("blue") // blue, green, purple, orange, red
-  type          String                @default("EVENT") // MEETING, TASK, REMINDER, EVENT, DEADLINE, MILESTONE
-  status        String                @default("CONFIRMED") // CONFIRMED, TENTATIVE, CANCELLED
-  priority      String                @default("MEDIUM") // LOW, MEDIUM, HIGH, CRITICAL
-  isRecurring   Boolean               @default(false)
-  recurrenceRule String?              // RRULE format for recurring events
-  timezone      String                @default("UTC")
-  visibility    String                @default("DEFAULT") // DEFAULT, PUBLIC, PRIVATE
-  workspaceId   String
-  createdById   String
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-  attendees     CalendarAttendee[]
-  reminders     CalendarReminder[]
-  workspace     Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  createdBy     User                  @relation(fields: [createdById], references: [id])
+  id             String             @id @default(cuid())
+  title          String
+  description    String?
+  startTime      DateTime
+  endTime        DateTime
+  allDay         Boolean            @default(false)
+  location       String?
+  color          String             @default("blue")
+  type           String             @default("EVENT")
+  status         String             @default("CONFIRMED")
+  priority       String             @default("MEDIUM")
+  isRecurring    Boolean            @default(false)
+  recurrenceRule String?
+  timezone       String             @default("UTC")
+  visibility     String             @default("DEFAULT")
+  workspaceId    String
+  createdById    String
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  attendees      CalendarAttendee[]
+  createdBy      User               @relation(fields: [createdById], references: [id])
+  workspace      Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  reminders      CalendarReminder[]
 
   @@map("calendar_events")
 }
 
 model CalendarAttendee {
-  id          String                   @id @default(cuid())
+  id          String        @id @default(cuid())
   eventId     String
   email       String
   name        String?
-  status      String                   @default("PENDING") // PENDING, ACCEPTED, DECLINED, MAYBE
-  response    String?                  // Optional response message
-  isOrganizer Boolean                  @default(false)
-  createdAt   DateTime                 @default(now())
-  updatedAt   DateTime                 @updatedAt
-  event       CalendarEvent            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  status      String        @default("PENDING")
+  response    String?
+  isOrganizer Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  event       CalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@unique([eventId, email])
   @@map("calendar_attendees")
 }
 
 model CalendarReminder {
-  id        String                   @id @default(cuid())
-  eventId   String
-  type      String                   @default("NOTIFICATION") // NOTIFICATION, EMAIL, SMS
-  timing    String                   @default("FIFTEEN_MINUTES") // FIVE_MINUTES, TEN_MINUTES, etc.
-  customMinutes Int?                 // For custom timing
-  createdAt DateTime                 @default(now())
-  event     CalendarEvent            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  id            String        @id @default(cuid())
+  eventId       String
+  type          String        @default("NOTIFICATION")
+  timing        String        @default("FIFTEEN_MINUTES")
+  customMinutes Int?
+  createdAt     DateTime      @default(now())
+  event         CalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@map("calendar_reminders")
 }
 
-// Calendar enums are implemented as string constraints in validation schemas
-// SQLite doesn't support native enums, so we use strings with validation
-
-// AI Assistant Models
 model AiConversation {
-  id            String       @id @default(cuid())
-  userId        String
-  workspaceId   String
-  title         String?      // Optional conversation title
-  context       String?      // Context or purpose of conversation
-  isActive      Boolean      @default(true)
-  totalTokens   Int          @default(0)
-  totalCost     Float        @default(0.0)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workspace     Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  messages      AiMessage[]
-  
+  id          String      @id @default(cuid())
+  userId      String
+  workspaceId String
+  title       String?
+  context     String?
+  isActive    Boolean     @default(true)
+  totalTokens Int         @default(0)
+  totalCost   Float       @default(0.0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    AiMessage[]
+
   @@map("ai_conversations")
 }
 
 model AiMessage {
-  id               String         @id @default(cuid())
-  conversationId   String
-  role             String         // "user" or "assistant"
-  content          String         // Message content
-  tokenCount       Int            @default(0)
-  cost             Float          @default(0.0)
-  model            String         @default("gemini-2.5-flash")
-  thinkingBudget   Int?           // Thinking tokens used
-  responseTime     Int?           // Response time in milliseconds
-  createdAt        DateTime       @default(now())
-  conversation     AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  
+  id             String         @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  tokenCount     Int            @default(0)
+  cost           Float          @default(0.0)
+  model          String         @default("gemini-2.5-flash")
+  thinkingBudget Int?
+  responseTime   Int?
+  createdAt      DateTime       @default(now())
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
   @@map("ai_messages")
 }
 
 model AiUsage {
-  id            String    @id @default(cuid())
-  userId        String
-  workspaceId   String
-  date          DateTime  @default(now())
-  model         String    @default("gemini-2.5-flash")
-  totalTokens   Int       @default(0)
-  totalCost     Float     @default(0.0)
-  requestCount  Int       @default(0)
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  
+  id           String    @id @default(cuid())
+  userId       String
+  workspaceId  String
+  date         DateTime  @default(now())
+  model        String    @default("gemini-2.5-flash")
+  totalTokens  Int       @default(0)
+  totalCost    Float     @default(0.0)
+  requestCount Int       @default(0)
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, workspaceId, date, model])
   @@map("ai_usage")
 }

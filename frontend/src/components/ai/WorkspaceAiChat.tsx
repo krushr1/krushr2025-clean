@@ -51,8 +51,6 @@ export default function WorkspaceAiChat({
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [snapZone, setSnapZone] = useState<'none' | 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'>('none')
   
   const messageInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -132,68 +130,42 @@ export default function WorkspaceAiChat({
     }
   }, [conversations, selectedConversation])
 
-  // Initialize floating position with smart default
+  // Initialize floating position
   useEffect(() => {
     if (isFloating) {
-      // Smart default position: center of viewport with slight offset to right
-      const centerX = (window.innerWidth - 400) / 2 + 100 // Center + 100px offset to right
-      const centerY = (window.innerHeight - 600) / 2 // Perfect center vertically
-      
-      const defaultPosition = {
-        x: Math.max(20, Math.min(centerX, window.innerWidth - 420)), // Ensure it's on screen
-        y: Math.max(20, Math.min(centerY, window.innerHeight - 620)) // Ensure it's on screen
-      }
-      
-      setPosition(defaultPosition)
-      setSnapZone('none') // Let the system determine the correct snap zone
-      setIsMinimized(false) // Reset minimized state
+      const centerX = (window.innerWidth - 400) / 2
+      const centerY = (window.innerHeight - 600) / 2
+      setPosition({
+        x: Math.max(20, Math.min(centerX, window.innerWidth - 420)),
+        y: Math.max(20, Math.min(centerY, window.innerHeight - 620))
+      })
+      setIsMinimized(false)
     } else {
-      // Reset position when not floating
       setPosition({ x: 0, y: 0 })
-      setSnapZone('none')
       setIsMinimized(false)
     }
   }, [isFloating])
-
-  // Debug: log position changes (remove after testing)
-  useEffect(() => {
-    if (isFloating) {
-      console.log('AI Chat floating position:', { position, isMinimized, snapZone, windowSize: { width: window.innerWidth, height: window.innerHeight } })
-    }
-  }, [position, isMinimized, snapZone, isFloating])
 
   // Keyboard shortcuts for floating mode
   useEffect(() => {
     if (!isFloating) return
     
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't interfere with input/textarea interactions
       const target = e.target as HTMLElement
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.closest('input') || target.closest('textarea')) {
-        return
-      }
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
       
-      // ESC to minimize/restore
       if (e.key === 'Escape') {
         e.stopPropagation()
         setIsMinimized(!isMinimized)
-        setIsAnimating(true)
-        setTimeout(() => setIsAnimating(false), 300)
       }
       
-      // Cmd/Ctrl + M to minimize/restore
       if ((e.metaKey || e.ctrlKey) && e.key === 'm') {
         e.preventDefault()
-        e.stopPropagation()
         setIsMinimized(!isMinimized)
-        setIsAnimating(true)
-        setTimeout(() => setIsAnimating(false), 300)
       }
       
-      // Cmd/Ctrl + D to dock back to panel
       if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
         e.preventDefault()
-        e.stopPropagation()
         onToggleFloating?.()
       }
     }
@@ -202,65 +174,12 @@ export default function WorkspaceAiChat({
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isFloating, isMinimized, onToggleFloating])
 
-  // Auto-hide when clicking outside (optional UX enhancement)
-  useEffect(() => {
-    if (!isFloating || isMinimized) return
-    
-    const handleClickOutside = (e: MouseEvent) => {
-      if (floatingRef.current && !floatingRef.current.contains(e.target as Node)) {
-        // Optional: Auto-minimize when clicking outside
-        // setIsMinimized(true)
-      }
-    }
-    
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isFloating, isMinimized])
 
-  // Smart snap zone detection
-  const getSnapZone = (x: number, y: number): typeof snapZone => {
-    const threshold = 100
-    const width = 400
-    const height = 600
-    
-    if (x < threshold && y < threshold) return 'top-left'
-    if (x > window.innerWidth - width - threshold && y < threshold) return 'top-right'
-    if (x < threshold && y > window.innerHeight - height - threshold) return 'bottom-left'
-    if (x > window.innerWidth - width - threshold && y > window.innerHeight - height - threshold) return 'bottom-right'
-    
-    return 'none'
-  }
-
-
-
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleDragStart = (e: React.MouseEvent) => {
     if (!isFloating) return
     
-    // Prevent drag on interactive elements
-    const target = e.target as HTMLElement
-    if (
-      target.tagName === 'INPUT' || 
-      target.tagName === 'TEXTAREA' || 
-      target.tagName === 'BUTTON' ||
-      target.closest('input') || 
-      target.closest('textarea') || 
-      target.closest('button') ||
-      target.closest('[role="button"]') ||
-      target.closest('[data-interactive]')
-    ) {
-      return
-    }
-    
-    // Allow drag from header area or specific drag handle
-    const isInHeader = target.closest('.chat-header') || target.closest('.drag-handle')
-    if (!isInHeader) {
-      return
-    }
-    
     e.preventDefault()
-    e.stopPropagation()
     setIsDragging(true)
-    setIsAnimating(false)
     const rect = floatingRef.current?.getBoundingClientRect()
     if (rect) {
       setDragOffset({
@@ -277,66 +196,29 @@ export default function WorkspaceAiChat({
       const newX = e.clientX - dragOffset.x
       const newY = e.clientY - dragOffset.y
       
-      // Keep within viewport bounds with smart constraints
       const width = isMinimized ? 320 : 400
       const height = isMinimized ? 60 : 600
       const maxX = window.innerWidth - width
       const maxY = window.innerHeight - height
       
-      const constrainedX = Math.max(0, Math.min(newX, maxX))
-      const constrainedY = Math.max(0, Math.min(newY, maxY))
-      
-      setPosition({ x: constrainedX, y: constrainedY })
-      
-      // Update snap zone preview during drag
-      const currentSnapZone = getSnapZone(constrainedX, constrainedY)
-      setSnapZone(currentSnapZone)
+      setPosition({ 
+        x: Math.max(0, Math.min(newX, maxX)), 
+        y: Math.max(0, Math.min(newY, maxY)) 
+      })
     }
 
     const handleMouseUp = () => {
       setIsDragging(false)
-      setIsAnimating(true)
-      
-      // Snap to intelligent positions
-      const currentSnapZone = getSnapZone(position.x, position.y)
-      if (currentSnapZone !== 'none') {
-        const width = isMinimized ? 320 : 400
-        const height = isMinimized ? 60 : 600
-        const padding = 20
-        
-        let snapPosition = { ...position }
-        
-        switch (currentSnapZone) {
-          case 'top-left':
-            snapPosition = { x: padding, y: padding }
-            break
-          case 'top-right':
-            snapPosition = { x: window.innerWidth - width - padding, y: padding }
-            break
-          case 'bottom-left':
-            snapPosition = { x: padding, y: window.innerHeight - height - padding }
-            break
-          case 'bottom-right':
-            snapPosition = { x: window.innerWidth - width - padding, y: window.innerHeight - height - padding }
-            break
-        }
-        
-        setPosition(snapPosition)
-        setSnapZone(currentSnapZone)
-      }
-      
-      // Stop animation after transition
-      setTimeout(() => setIsAnimating(false), 300)
     }
 
-    document.addEventListener('mousemove', handleMouseMove, { capture: true })
-    document.addEventListener('mouseup', handleMouseUp, { capture: true })
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove, { capture: true })
-      document.removeEventListener('mouseup', handleMouseUp, { capture: true })
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isDragging, dragOffset, isFloating, position, isMinimized, getSnapZone])
+  }, [isDragging, dragOffset, isFloating, isMinimized])
 
   const handleSendMessage = async () => {
     if (!message.trim()) return
@@ -470,16 +352,6 @@ export default function WorkspaceAiChat({
   const FloatingWrapper = ({ children }: { children: React.ReactNode }) => {
     if (!isFloating) return <>{children}</>
     
-    const getSnapZoneStyle = () => {
-      if (isDragging && snapZone !== 'none') {
-        return {
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.5)',
-          borderColor: 'rgba(59, 130, 246, 0.5)'
-        }
-      }
-      return {}
-    }
-    
     // Ensure position is within viewport bounds
     const constrainedPosition = {
       x: Math.max(0, Math.min(position.x, window.innerWidth - (isMinimized ? 320 : 400))),
@@ -490,7 +362,6 @@ export default function WorkspaceAiChat({
       <div 
         ref={floatingRef}
         className={`fixed bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] 
-          ${isAnimating ? 'transition-all duration-300 ease-out' : ''} 
           ${isDragging ? 'scale-105 shadow-3xl' : 'shadow-2xl'}
           ${isMinimized ? 'backdrop-blur-sm' : ''}
           overflow-hidden`}
@@ -500,15 +371,9 @@ export default function WorkspaceAiChat({
           width: isMinimized ? '320px' : '400px',
           height: isMinimized ? '60px' : '600px',
           maxHeight: '80vh',
-          cursor: isDragging ? 'grabbing' : 'default',
-          transform: `scale(${isDragging ? 1.02 : 1})`,
-          ...getSnapZoneStyle()
+          cursor: isDragging ? 'grabbing' : 'default'
         }}
       >
-        {/* Snap zone indicator */}
-        {isDragging && snapZone !== 'none' && (
-          <div className="absolute inset-0 bg-blue-500/10 border-2 border-blue-500/30 rounded-xl pointer-events-none" />
-        )}
         
         {children}
       </div>
@@ -530,58 +395,51 @@ export default function WorkspaceAiChat({
         isFloating ? 'h-full rounded-lg' : 'h-full',
         className
       )}>
-        {/* Header with floating controls */}
+        {/* Header with floating controls - Optimized for space: Grouped elements, responsive hiding, added tooltips */}
         <div className={cn(
-          "relative flex items-center justify-between p-3 border-b border-gray-200 rounded-t-xl chat-header",
-          isFloating ? "bg-gradient-to-r from-krushr-primary/5 to-transparent" : "bg-white"
+          "relative flex items-center justify-between px-3 py-2 border-b border-gray-200 rounded-t-xl chat-header bg-white",
+          // Reduced padding (py-2 from py-3) for ~15% height savings without losing usability
         )}>
-          {/* Modern drag handle for floating mode */}
-          {isFloating && (
-            <div 
-              className={cn(
-                "absolute left-1/2 top-1 w-12 h-1 bg-gray-300 rounded-full cursor-grab transform -translate-x-1/2 hover:bg-gray-400 transition-colors drag-handle",
-                isDragging && "cursor-grabbing bg-krushr-primary"
-              )}
-              onMouseDown={handleMouseDown}
-              title="Drag to move"
-            />
-          )}
-        <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-2">
-            <div className="relative">
-              <Bot className="w-5 h-5 text-krushr-primary" />
-              <Sparkles className="w-3 h-3 text-yellow-500 absolute -top-1 -right-1" />
+          {/* Left section: Branding + Stats (condensed into badges for efficiency) */}
+          <div className="flex items-center space-x-2 min-w-0 flex-1">
+            <div className="flex items-center space-x-2">
+              <div className="relative flex-shrink-0">
+                <Bot className="w-5 h-5 text-krushr-primary" />
+                <Sparkles className="w-3 h-3 text-yellow-500 absolute -top-1 -right-1" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-semibold text-sm text-gray-900 truncate">AI Assistant</h3>
+                <p className="text-xs text-gray-500 truncate">Gemini 2.5 Flash</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-sm text-gray-900">AI Assistant</h3>
-              <p className="text-xs text-gray-500">Gemini 2.5 Flash</p>
-            </div>
+            {usageStats && (
+              <div className="hidden md:flex items-center space-x-2 text-xs text-gray-500 ml-2">
+                {/* Condensed stats into tooltipped badges for space savings */}
+                <div 
+                  className="flex items-center px-2 py-1 bg-gray-100 rounded-full cursor-help" 
+                  title="Total tokens used (30 days)"
+                >
+                  <Zap className="w-3 h-3 mr-1" />
+                  <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
+                </div>
+                <div 
+                  className="flex items-center px-2 py-1 bg-gray-100 rounded-full cursor-help" 
+                  title="Total cost (30 days)"
+                >
+                  <span>{formatCost(usageStats.totalStats.totalCost)}</span>
+                </div>
+              </div>
+            )}
           </div>
-          {usageStats && (
-            <div className="hidden md:flex items-center space-x-3 text-xs text-gray-500">
-              <div className="flex items-center space-x-1">
-                <Zap className="w-3 h-3" />
-                <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <span>{formatCost(usageStats.totalStats.totalCost)}</span>
-              </div>
-            </div>
-          )}
-        </div>
-        
-        <div className="flex items-center space-x-1">
-          {/* Thinking budget controls - compact header version */}
-          {!isMinimized && (
-            <div className="flex items-center space-x-1 mr-2">
-              <Brain className="w-3 h-3 text-gray-400" />
+          
+          {/* Right section: Controls (stacked vertically on small screens for better mobile UX) */}
+          <div className="flex items-center space-x-1 md:space-x-2">
+            {/* Thinking budget: Made toggle more compact, hide slider on mobile */}
+            <div className="hidden md:flex items-center space-x-1 mr-1">
+              <Brain className="w-3 h-3 text-gray-400 flex-shrink-0" />
               <button
                 onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
-                className={`px-1.5 py-0.5 text-xs rounded ${
-                  autoThinkingBudget
-                    ? 'bg-krushr-primary text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
+                className={`px-1.5 py-0.5 text-xs rounded ${autoThinkingBudget ? 'bg-krushr-primary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
                 title={autoThinkingBudget ? 'Auto thinking budget' : 'Manual thinking budget'}
               >
                 {autoThinkingBudget ? 'Auto' : 'Manual'}
@@ -597,90 +455,25 @@ export default function WorkspaceAiChat({
                     className="w-16 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                     title={`Thinking budget: ${thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}`}
                   />
-                  <span className="text-xs text-gray-500 w-8 text-right">
+                  <span className="text-xs text-gray-500 w-8 text-right hidden lg:block">
                     {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
                   </span>
                 </>
               )}
             </div>
-          )}
-          
-          {/* Modern floating window controls */}
-          {isFloating && (
-            <div className="flex items-center space-x-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setIsMinimized(!isMinimized)
-                  setIsAnimating(true)
-                  setTimeout(() => setIsAnimating(false), 300)
-                }}
-                className="h-6 w-6 p-0 hover:bg-gray-100 rounded-full transition-colors"
-                title={isMinimized ? 'Restore' : 'Minimize'}
-              >
-                {isMinimized ? <Maximize2 className="w-3 h-3" /> : <Minimize2 className="w-3 h-3" />}
-              </Button>
-              {onToggleFloating && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onToggleFloating}
-                  className="h-6 w-6 p-0 hover:bg-blue-50 hover:text-blue-600 rounded-full transition-colors"
-                  title="Dock to panel"
-                >
-                  <Move className="w-3 h-3" />
-                </Button>
-              )}
-              {onClose && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onClose}
-                  className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600 rounded-full transition-colors"
-                  title="Close"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              )}
-            </div>
-          )}
-          
-          {/* Standard panel controls */}
-          {!isFloating && (
-            <>
-              {conversations && conversations.length > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowConversations(!showConversations)}
-                  className="h-7 px-2 text-xs"
-                >
-                  <MessageSquare className="w-3 h-3 mr-1" />
-                  {conversations.length}
-                </Button>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => createConversation.mutate({ workspaceId })}
-                className="h-7 px-2"
-              >
-                <Plus className="w-3 h-3" />
-              </Button>
-              {onToggleFloating && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onToggleFloating}
-                  className="h-7 px-2"
-                  title="Pop out to floating window"
-                >
-                  <Maximize2 className="w-3 h-3" />
-                </Button>
-              )}
-            </>
-          )}
+            
+            {/* Other buttons: Reduced size, added titles for UX */}
+            <Button variant="ghost" size="sm" onClick={() => setShowConversations(!showConversations)} className="h-7 px-2 text-xs" title="View conversations">
+              <MessageSquare className="w-3 h-3 mr-1" />
+              {conversations?.length ?? 0}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => createConversation.mutate({ workspaceId })} className="h-7 px-2" title="Start new conversation">
+              <Plus className="w-3 h-3" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onToggleFloating} className="h-7 px-2" title="Pop out to floating window">
+              <Maximize2 className="w-3 h-3" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -727,10 +520,10 @@ export default function WorkspaceAiChat({
           {/* Draggable handle for minimized state */}
           <div 
             className={cn(
-              "flex items-center space-x-2 flex-1 min-w-0 cursor-grab hover:cursor-grab drag-handle",
+              "flex items-center space-x-2 flex-1 min-w-0 cursor-grab hover:cursor-grab",
               isDragging && "cursor-grabbing"
             )}
-            onMouseDown={handleMouseDown}
+            onMouseDown={handleDragStart}
             title="Drag to move"
           >
             <div className="w-2 h-2 bg-krushr-primary rounded-full animate-pulse" />
@@ -748,11 +541,7 @@ export default function WorkspaceAiChat({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => {
-                setIsMinimized(false)
-                setIsAnimating(true)
-                setTimeout(() => setIsAnimating(false), 300)
-              }}
+              onClick={() => setIsMinimized(false)}
               className="h-6 w-6 p-0 hover:bg-gray-100 rounded-full"
               title="Restore"
             >
@@ -930,7 +719,7 @@ export default function WorkspaceAiChat({
         <div className="p-3 border-t border-gray-200 bg-gray-50/50">
           {/* Simple message input */}
           <div className="flex items-center space-x-2" data-interactive>
-            <Input
+            <input
               ref={messageInputRef}
               type="text"
               placeholder="Ask AI anything..."
@@ -938,10 +727,9 @@ export default function WorkspaceAiChat({
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               disabled={isLoading}
-              className="h-10 flex-1"
+              className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-10 flex-1"
               onClick={(e) => {
                 e.stopPropagation()
-                // Ensure focus on the input
                 messageInputRef.current?.focus()
               }}
               onFocus={(e) => {

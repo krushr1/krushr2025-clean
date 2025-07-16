@@ -81,7 +81,7 @@ export default function WorkspaceAiChat({
       setSelectedConversation(conversation.id)
       refetchConversations()
       setShowConversations(false)
-      setTimeout(() => messageInputRef.current?.focus(), 100)
+      // Don't auto-focus to avoid conflicts with user input
     }
   })
   
@@ -92,7 +92,7 @@ export default function WorkspaceAiChat({
       setOptimisticMessage(null)
       refetchConversation()
       refetchUsageStats()
-      setTimeout(() => messageInputRef.current?.focus(), 50)
+      // Don't auto-focus to avoid conflicts with user input
     },
     onError: () => {
       setIsLoading(false)
@@ -107,7 +107,7 @@ export default function WorkspaceAiChat({
       setOptimisticMessage(null)
       refetchConversation()
       refetchUsageStats()
-      setTimeout(() => messageInputRef.current?.focus(), 50)
+      // Don't auto-focus to avoid conflicts with user input
     },
     onError: () => {
       setIsLoading(false)
@@ -148,35 +148,21 @@ export default function WorkspaceAiChat({
     }
   }, [isFloating])
 
-  // Keyboard shortcuts for floating mode
+  // Minimal keyboard shortcuts - only for specific keys that don't interfere with input
   useEffect(() => {
     if (!isFloating) return
     
     const handleKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.closest('input') || target.closest('textarea')) {
-        return
-      }
-      
-      if (e.key === 'Escape') {
-        e.stopPropagation()
-        setIsMinimized(!isMinimized)
-        setIsAnimating(true)
-        setTimeout(() => setIsAnimating(false), 300)
-      }
-      
-      if ((e.metaKey || e.ctrlKey) && e.key === 'm') {
-        e.preventDefault()
-        e.stopPropagation()
-        setIsMinimized(!isMinimized)
-        setIsAnimating(true)
-        setTimeout(() => setIsAnimating(false), 300)
-      }
-      
-      if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
-        e.preventDefault()
-        e.stopPropagation()
-        onToggleFloating?.()
+      // Only handle specific shortcuts when not focused on input
+      if (e.target !== messageInputRef.current) {
+        if (e.key === 'Escape') {
+          setIsMinimized(!isMinimized)
+        }
+        
+        if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
+          e.preventDefault()
+          onToggleFloating?.()
+        }
       }
     }
     
@@ -184,19 +170,7 @@ export default function WorkspaceAiChat({
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isFloating, isMinimized, onToggleFloating])
 
-  // Auto-hide when clicking outside
-  useEffect(() => {
-    if (!isFloating || isMinimized) return
-    
-    const handleClickOutside = (e: MouseEvent) => {
-      if (floatingRef.current && !floatingRef.current.contains(e.target as Node)) {
-        // Optional: Auto-minimize when clicking outside
-      }
-    }
-    
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isFloating, isMinimized])
+  // Removed click outside handler to prevent interference with input
 
   // Smart snap zone detection
   const getSnapZone = (x: number, y: number): typeof snapZone => {
@@ -872,30 +846,23 @@ export default function WorkspaceAiChat({
         {/* Input area */}
         {!isMinimized && (
           <div className="p-3 border-t border-gray-200 bg-gray-50/50">
-            <div className="flex items-center space-x-2" data-interactive>
+            <div 
+              className="flex items-center space-x-2" 
+              data-interactive
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+            >
               <input
                 ref={messageInputRef}
                 type="text"
                 placeholder="Ask AI anything..."
                 value={message}
-                onChange={(e) => {
-                  console.log('🔵 Input change:', e.target.value)
-                  setMessage(e.target.value)
-                }}
+                onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={isLoading}
-                onClick={(e) => {
-                  console.log('🔵 Input clicked', e)
-                  e.stopPropagation()
-                }}
-                onFocus={(e) => {
-                  console.log('🔵 Input focused', e)
-                  e.stopPropagation()
-                }}
-                onMouseDown={(e) => {
-                  console.log('🔵 Input mousedown', e)
-                  e.stopPropagation()
-                }}
+                onClick={(e) => e.stopPropagation()}
+                onFocus={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
                 className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-10 flex-1"
                 data-interactive
               />

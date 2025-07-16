@@ -212,8 +212,22 @@ export default function WorkspaceAiChat({
     return 'none'
   }
 
-  // Restore the missing functions but keep drag simple
-  
+  const handleDragStart = (e: React.MouseEvent) => {
+    if (!isFloating) return
+    
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(true)
+    setIsAnimating(false)
+    const rect = floatingRef.current?.getBoundingClientRect()
+    if (rect) {
+      setDragOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      })
+    }
+  }
+
   useEffect(() => {
     if (!isDragging || !isFloating) return
 
@@ -230,11 +244,42 @@ export default function WorkspaceAiChat({
       const constrainedY = Math.max(0, Math.min(newY, maxY))
       
       setPosition({ x: constrainedX, y: constrainedY })
+      
+      const currentSnapZone = getSnapZone(constrainedX, constrainedY)
+      setSnapZone(currentSnapZone)
     }
 
     const handleMouseUp = () => {
       setIsDragging(false)
       setIsAnimating(true)
+      
+      const currentSnapZone = getSnapZone(position.x, position.y)
+      if (currentSnapZone !== 'none') {
+        const width = isMinimized ? 320 : 400
+        const height = isMinimized ? 60 : 600
+        const padding = 20
+        
+        let snapPosition = { ...position }
+        
+        switch (currentSnapZone) {
+          case 'top-left':
+            snapPosition = { x: padding, y: padding }
+            break
+          case 'top-right':
+            snapPosition = { x: window.innerWidth - width - padding, y: padding }
+            break
+          case 'bottom-left':
+            snapPosition = { x: padding, y: window.innerHeight - height - padding }
+            break
+          case 'bottom-right':
+            snapPosition = { x: window.innerWidth - width - padding, y: window.innerHeight - height - padding }
+            break
+        }
+        
+        setPosition(snapPosition)
+        setSnapZone(currentSnapZone)
+      }
+      
       setTimeout(() => setIsAnimating(false), 300)
     }
 
@@ -304,8 +349,8 @@ export default function WorkspaceAiChat({
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey && message.trim()) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSendMessage()
     }
@@ -395,7 +440,7 @@ export default function WorkspaceAiChat({
           width: isMinimized ? '320px' : '400px',
           height: isMinimized ? '60px' : '600px',
           maxHeight: '80vh',
-          cursor: isDragging ? 'grabbing' : 'default',
+          cursor: 'auto', // Changed to auto to allow proper cursors
           transform: `scale(${isDragging ? 1.02 : 1})`,
           ...getSnapZoneStyle()
         }}
@@ -428,29 +473,20 @@ export default function WorkspaceAiChat({
           "relative flex items-center justify-between px-3 py-2 border-b border-gray-200 rounded-t-xl chat-header",
           isFloating ? "bg-gradient-to-r from-krushr-primary/5 to-transparent" : "bg-white"
         )}>
-          {/* Simple drag handle that ONLY responds to its own clicks */}
+          {/* Modern drag handle for floating mode */}
           {isFloating && (
             <div 
-              className="absolute left-1/2 top-1 w-12 h-1 bg-gray-300 rounded-full cursor-grab transform -translate-x-1/2 hover:bg-gray-400 transition-colors drag-handle"
-              onMouseDown={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                setIsDragging(true)
-                setIsAnimating(false)
-                const rect = floatingRef.current?.getBoundingClientRect()
-                if (rect) {
-                  setDragOffset({
-                    x: e.clientX - rect.left,
-                    y: e.clientY - rect.top
-                  })
-                }
-              }}
+              className={cn(
+                "absolute left-1/2 top-1 w-12 h-1 bg-gray-300 rounded-full cursor-grab transform -translate-x-1/2 hover:bg-gray-400 transition-colors drag-handle",
+                isDragging && "cursor-grabbing bg-krushr-primary"
+              )}
+              onMouseDown={handleDragStart}
               title="Drag to move"
             />
           )}
           
           {/* Left section: Branding + Stats (condensed) */}
-          <div className="flex items-center space-x-2 min-w-0 flex-1 header-title">
+          <div className="flex items-center space-x-2 min-w-0 flex-1">
             <div className="flex items-center space-x-2">
               <div className="relative flex-shrink-0">
                 <Bot className="w-5 h-5 text-krushr-primary" />
@@ -481,7 +517,7 @@ export default function WorkspaceAiChat({
           </div>
           
           {/* Right section: Controls */}
-          <div className="flex items-center space-x-1 md:space-x-2 header-controls">
+          <div className="flex items-center space-x-1 md:space-x-2">
             {/* Thinking budget controls */}
             {!isMinimized && (
               <div className="hidden md:flex items-center space-x-1 mr-1">
@@ -638,17 +674,7 @@ export default function WorkspaceAiChat({
                 "flex items-center space-x-2 flex-1 min-w-0 cursor-grab hover:cursor-grab drag-handle",
                 isDragging && "cursor-grabbing"
               )}
-              onMouseDown={() => {
-                setIsDragging(true)
-                setIsAnimating(false)
-                const rect = floatingRef.current?.getBoundingClientRect()
-                if (rect) {
-                  setDragOffset({
-                    x: window.innerWidth - rect.right, // Calculate drag offset from right edge
-                    y: window.innerHeight - rect.bottom // Calculate drag offset from bottom edge
-                  })
-                }
-              }}
+              onMouseDown={handleDragStart}
               title="Drag to move"
             >
               <div className="w-2 h-2 bg-krushr-primary rounded-full animate-pulse" />
@@ -846,43 +872,24 @@ export default function WorkspaceAiChat({
         {/* Input area */}
         {!isMinimized && (
           <div className="p-3 border-t border-gray-200 bg-gray-50/50">
-            {/* DEBUG: Test input */}
-            <div className="mb-2 p-2 bg-red-100 border border-red-300 rounded">
-              <div className="text-xs text-red-700 mb-1">DEBUG: Test Input (message state: "{message}")</div>
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => {
-                  console.log('DEBUG INPUT change:', e.target.value)
-                  setMessage(e.target.value)
-                }}
-                className="w-full p-1 border border-red-400 rounded text-sm"
-                placeholder="Debug test input"
-              />
-            </div>
-            
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2" data-interactive>
               <input
                 ref={messageInputRef}
                 type="text"
                 placeholder="Ask AI anything..."
                 value={message}
-                onChange={(e) => {
-                  console.log('Input change:', e.target.value)
-                  setMessage(e.target.value)
-                }}
+                onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={isLoading}
                 className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-10 flex-1"
-                onFocus={() => console.log('Input focused')}
-                onBlur={() => console.log('Input blurred')}
-                onClick={() => console.log('Input clicked')}
+                data-interactive
               />
               <Button
                 onClick={handleSendMessage}
                 disabled={!message.trim() || isLoading}
                 size="sm"
                 className="h-10 w-10 p-0"
+                data-interactive
               >
                 <Send className="w-3 h-3" />
               </Button>

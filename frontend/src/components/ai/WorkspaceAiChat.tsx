@@ -878,9 +878,24 @@ export default function WorkspaceAiChat({
                 type="text"
                 placeholder="Ask AI anything..."
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {
+                  console.log('🔵 Input change:', e.target.value)
+                  setMessage(e.target.value)
+                }}
                 onKeyDown={handleKeyDown}
                 disabled={isLoading}
+                onClick={(e) => {
+                  console.log('🔵 Input clicked', e)
+                  e.stopPropagation()
+                }}
+                onFocus={(e) => {
+                  console.log('🔵 Input focused', e)
+                  e.stopPropagation()
+                }}
+                onMouseDown={(e) => {
+                  console.log('🔵 Input mousedown', e)
+                  e.stopPropagation()
+                }}
                 className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-10 flex-1"
                 data-interactive
               />

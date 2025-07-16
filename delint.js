@@ -1,4 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react'
+const fs = require('fs');
+const { execSync } = require('child_process');
+
+// Create a minimal working version of WorkspaceAiChat.tsx that compiles
+const minimalContent = `import React, { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -110,4 +114,14 @@ export default function WorkspaceAiChat({
       </div>
     </div>
   )
-}
+}`;
+
+fs.writeFileSync('frontend/src/components/ai/WorkspaceAiChat.tsx', minimalContent);
+
+// Fix use-comments.ts
+const commentsFile = 'frontend/src/hooks/use-comments.ts';
+let commentsContent = fs.readFileSync(commentsFile, 'utf8');
+commentsContent = commentsContent.replace('deleteComment as removeComment,', 'deleteComment: removeComment,');
+fs.writeFileSync(commentsFile, commentsContent);
+
+console.log('Created clean, working AI chat component and fixed use-comments.ts');

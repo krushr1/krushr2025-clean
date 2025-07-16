@@ -11,7 +11,7 @@ export function useComments(taskId: string) {
     setComments,
     addComment,
     updateComment,
-    deleteComment as removeComment,
+    deleteComment: removeComment,
     setLoading,
     getCommentsByTask,
     markAsUpdated

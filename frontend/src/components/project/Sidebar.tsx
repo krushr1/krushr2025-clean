@@ -4,6 +4,7 @@ import { useAuthStore } from '../../stores/auth-store'
 import { trpc } from '../../lib/trpc'
 import KrushrLogo from '../common/KrushrLogo'
 import { useNavigate } from 'react-router'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 interface SidebarProps {
   currentPage: string
@@ -234,9 +235,12 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
         <div className="p-4 border-t border-sidebar-border">
           {!isCollapsed ? (
             <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-sidebar-accent transition-colors">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-red-500 flex items-center justify-center text-white text-xs font-medium">
-                {getInitials(user.name || 'U')}
-              </div>
+              <Avatar className="w-8 h-8">
+                <AvatarImage src={user.avatar} />
+                <AvatarFallback className="bg-gradient-to-br from-pink-400 to-red-500 text-white text-xs font-medium">
+                  {getInitials(user.name || 'U')}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-sidebar-foreground truncate">{user.name}</p>
                 <p className="text-xs text-sidebar-foreground/60 truncate">{user.email}</p>
@@ -260,9 +264,12 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
             </div>
           ) : (
             <div className="flex flex-col items-center space-y-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-red-500 flex items-center justify-center text-white text-xs font-medium" title={user.name}>
-                {getInitials(user.name || 'U')}
-              </div>
+              <Avatar className="w-8 h-8" title={user.name}>
+                <AvatarImage src={user.avatar} />
+                <AvatarFallback className="bg-gradient-to-br from-pink-400 to-red-500 text-white text-xs font-medium">
+                  {getInitials(user.name || 'U')}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex flex-col space-y-1">
                 <button
                   onClick={() => navigate('/settings')}

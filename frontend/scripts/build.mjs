@@ -93,7 +93,7 @@ const esbuildOpts = {
   entryPoints: ['src/main.tsx', 'index.html'],
   assetNames: '[name]',
   publicPath: '/',
-  outdir: 'public',
+  outdir: 'dist',
   entryNames: '[name]',
   write: true,
   bundle: true,

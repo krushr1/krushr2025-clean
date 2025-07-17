@@ -32,11 +32,10 @@
   
   <!-- Route handling for React app -->
   <script>
-    // If we're at root with no hash, redirect to landing page
-    // If we have a hash route, let React handle it
+    // If we're at root with no hash, redirect to React app landing page
     if (window.location.pathname === '/' && !window.location.hash) {
-      // Root path with no hash - redirect to landing page
-      window.location.href = '/home.html';
+      // Root path with no hash - redirect to React landing page
+      window.location.hash = '#/';
     }
   </script>
 </head>

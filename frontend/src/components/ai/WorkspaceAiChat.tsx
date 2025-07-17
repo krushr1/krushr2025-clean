@@ -501,141 +501,142 @@ export default function WorkspaceAiChat({
                 title="Drag to move"
               />
             )}
-          
-          {/* Left section: Branding + Stats (condensed) */}
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <div className="text-krushr-primary">
-              <Bot className="w-4 h-4" />
+            
+            {/* Left section: Branding + Stats (condensed) */}
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <div className="text-krushr-primary">
+                <Bot className="w-4 h-4" />
+              </div>
+              <h3 className="font-brand font-medium text-sm truncate cursor-pointer hover:text-krushr-primary transition-colors" title="Click to edit title">AI Assistant</h3>
+              {usageStats && (
+                <div className="hidden md:flex items-center gap-2 text-xs text-krushr-gray ml-2">
+                  <div 
+                    className="flex items-center px-2 py-1 bg-krushr-panel-bg rounded-lg cursor-help border border-krushr-panel-border" 
+                    title="Total tokens used (30 days)"
+                  >
+                    <Zap className="w-3 h-3 mr-1" />
+                    <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
+                  </div>
+                  <div 
+                    className="flex items-center px-2 py-1 bg-krushr-panel-bg rounded-lg cursor-help border border-krushr-panel-border" 
+                    title="Total cost (30 days)"
+                  >
+                    <span>{formatCost(usageStats.totalStats.totalCost)}</span>
+                  </div>
+                </div>
+              )}
             </div>
-            <h3 className="font-brand font-medium text-sm truncate cursor-pointer hover:text-krushr-primary transition-colors" title="Click to edit title">AI Assistant</h3>
-            {usageStats && (
-              <div className="hidden md:flex items-center gap-2 text-xs text-krushr-gray ml-2">
-                <div 
-                  className="flex items-center px-2 py-1 bg-krushr-panel-bg rounded-lg cursor-help border border-krushr-panel-border" 
-                  title="Total tokens used (30 days)"
-                >
-                  <Zap className="w-3 h-3 mr-1" />
-                  <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
-                </div>
-                <div 
-                  className="flex items-center px-2 py-1 bg-krushr-panel-bg rounded-lg cursor-help border border-krushr-panel-border" 
-                  title="Total cost (30 days)"
-                >
-                  <span>{formatCost(usageStats.totalStats.totalCost)}</span>
-                </div>
-              </div>
-            )}
-          </div>
-          
-          {/* Right section: Controls */}
-          <div className="flex items-center gap-2">
-            {/* Thinking budget controls */}
-            {!isMinimized && (
-              <div className="hidden md:flex items-center gap-2 mr-1">
-                <Brain className="w-4 h-4 text-krushr-gray flex-shrink-0" />
-                <button
-                  onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
-                  className={`px-2 py-1 text-xs rounded-lg font-medium transition-colors ${autoThinkingBudget ? 'bg-krushr-primary text-white' : 'bg-krushr-panel-bg text-krushr-gray-dark hover:bg-krushr-toolbar-bg'}`}
-                  title={autoThinkingBudget ? 'Auto thinking budget' : 'Manual thinking budget'}
-                >
-                  {autoThinkingBudget ? 'Auto' : 'Manual'}
-                </button>
-                {!autoThinkingBudget && (
-                  <>
-                    <input
-                      type="range"
-                      min="0"
-                      max="24576"
-                      value={thinkingBudget}
-                      onChange={(e) => setThinkingBudget(Number(e.target.value))}
-                      className="w-16 h-1 bg-krushr-panel-bg rounded-lg appearance-none cursor-pointer"
-                      title={`Thinking budget: ${thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}`}
-                    />
-                    <span className="text-xs text-krushr-gray w-8 text-right hidden lg:block">
-                      {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
-                    </span>
-                  </>
-                )}
-              </div>
-            )}
             
-            {/* Modern floating window controls */}
-            {isFloating && (
-              <div className="flex items-center gap-0.5">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setIsMinimized(!isMinimized)
-                    setIsAnimating(true)
-                    setTimeout(() => setIsAnimating(false), 300)
-                  }}
-                  className="w-5 h-5 p-0 hover:bg-gray-100"
-                  title={isMinimized ? 'Restore' : 'Minimize'}
-                >
-                  {isMinimized ? <Maximize2 className="w-2.5 h-2.5" /> : <Minimize2 className="w-2.5 h-2.5" />}
-                </Button>
-                {onToggleFloating && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onToggleFloating}
-                    className="w-5 h-5 p-0 hover:bg-blue-100 hover:text-blue-600"
-                    title="Dock to panel"
+            {/* Right section: Controls */}
+            <div className="flex items-center gap-2">
+              {/* Thinking budget controls */}
+              {!isMinimized && (
+                <div className="hidden md:flex items-center gap-2 mr-1">
+                  <Brain className="w-4 h-4 text-krushr-gray flex-shrink-0" />
+                  <button
+                    onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
+                    className={`px-2 py-1 text-xs rounded-lg font-medium transition-colors ${autoThinkingBudget ? 'bg-krushr-primary text-white' : 'bg-krushr-panel-bg text-krushr-gray-dark hover:bg-krushr-toolbar-bg'}`}
+                    title={autoThinkingBudget ? 'Auto thinking budget' : 'Manual thinking budget'}
                   >
-                    <Move className="w-2.5 h-2.5" />
-                  </Button>
-                )}
-                {onClose && (
+                    {autoThinkingBudget ? 'Auto' : 'Manual'}
+                  </button>
+                  {!autoThinkingBudget && (
+                    <>
+                      <input
+                        type="range"
+                        min="0"
+                        max="24576"
+                        value={thinkingBudget}
+                        onChange={(e) => setThinkingBudget(Number(e.target.value))}
+                        className="w-16 h-1 bg-krushr-panel-bg rounded-lg appearance-none cursor-pointer"
+                        title={`Thinking budget: ${thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}`}
+                      />
+                      <span className="text-xs text-krushr-gray w-8 text-right hidden lg:block">
+                        {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
+                      </span>
+                    </>
+                  )}
+                </div>
+              )}
+              
+              {/* Modern floating window controls */}
+              {isFloating && (
+                <div className="flex items-center gap-0.5">
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={onClose}
-                    className="w-5 h-5 p-0 hover:bg-red-100 hover:text-red-600"
-                    title="Close"
-                  >
-                    <X className="w-2.5 h-2.5" />
-                  </Button>
-                )}
-              </div>
-            )}
-            
-            {/* Standard panel controls */}
-            {!isFloating && (
-              <>
-                {conversations && conversations.length > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowConversations(!showConversations)}
+                    onClick={() => {
+                      setIsMinimized(!isMinimized)
+                      setIsAnimating(true)
+                      setTimeout(() => setIsAnimating(false), 300)
+                    }}
                     className="w-5 h-5 p-0 hover:bg-gray-100"
-                    title="View conversations"
+                    title={isMinimized ? 'Restore' : 'Minimize'}
                   >
-                    <MessageSquare className="w-2.5 h-2.5" />
+                    {isMinimized ? <Maximize2 className="w-2.5 h-2.5" /> : <Minimize2 className="w-2.5 h-2.5" />}
                   </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => createConversation.mutate({ workspaceId })}
-                  className="w-5 h-5 p-0 hover:bg-gray-100"
-                  title="Start new conversation"
-                >
-                  <Plus className="w-2.5 h-2.5" />
-                </Button>
-                {onToggleFloating && (
+                  {onToggleFloating && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onToggleFloating}
+                      className="w-5 h-5 p-0 hover:bg-blue-100 hover:text-blue-600"
+                      title="Dock to panel"
+                    >
+                      <Move className="w-2.5 h-2.5" />
+                    </Button>
+                  )}
+                  {onClose && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onClose}
+                      className="w-5 h-5 p-0 hover:bg-red-100 hover:text-red-600"
+                      title="Close"
+                    >
+                      <X className="w-2.5 h-2.5" />
+                    </Button>
+                  )}
+                </div>
+              )}
+              
+              {/* Standard panel controls */}
+              {!isFloating && (
+                <>
+                  {conversations && conversations.length > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowConversations(!showConversations)}
+                      className="w-5 h-5 p-0 hover:bg-gray-100"
+                      title="View conversations"
+                    >
+                      <MessageSquare className="w-2.5 h-2.5" />
+                    </Button>
+                  )}
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={onToggleFloating}
-                    className="w-5 h-5 p-0 hover:bg-blue-100 hover:text-blue-600"
-                    title="Pop out to floating window"
+                    onClick={() => createConversation.mutate({ workspaceId })}
+                    className="w-5 h-5 p-0 hover:bg-gray-100"
+                    title="Start new conversation"
                   >
-                    <Expand className="w-2.5 h-2.5" />
+                    <Plus className="w-2.5 h-2.5" />
                   </Button>
-                )}
-              </>
-            )}
+                  {onToggleFloating && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onToggleFloating}
+                      className="w-5 h-5 p-0 hover:bg-blue-100 hover:text-blue-600"
+                      title="Pop out to floating window"
+                    >
+                      <Expand className="w-2.5 h-2.5" />
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         )}
 

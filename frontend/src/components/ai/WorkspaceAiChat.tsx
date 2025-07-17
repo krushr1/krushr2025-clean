@@ -908,7 +908,7 @@ export default function WorkspaceAiChat({
               </Button>
             </div>
           </div>
-        )}
+        {')'}
       </div>
     </FloatingWrapper>
   )

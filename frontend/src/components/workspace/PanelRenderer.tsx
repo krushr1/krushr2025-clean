@@ -328,7 +328,13 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
       case 'NOTES':
         return (
           <Suspense fallback={<PanelLoadingSpinner />}>
-            <NotesPanel workspaceId={workspaceId} className="h-full" />
+            <NotesPanel 
+              workspaceId={workspaceId} 
+              className="h-full" 
+              isFloating={isFloating}
+              onToggleFloating={handleToggleFloating}
+              onClose={handleCloseFloating}
+            />
           </Suspense>
         )
 
@@ -580,6 +586,11 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
                     <DropdownMenuItem className="text-xs">
                       <Search className="w-3 h-3 mr-2" />
                       Search Notes
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-xs" onClick={handleToggleFloating}>
+                      <StickyNote className="w-3 h-3 mr-2" />
+                      {isFloating ? 'Dock to Panel' : 'Pop Out to Float'}
                     </DropdownMenuItem>
                   </>
                 )}

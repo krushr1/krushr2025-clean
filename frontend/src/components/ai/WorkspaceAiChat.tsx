@@ -482,17 +482,17 @@ export default function WorkspaceAiChat({
             "relative flex items-center justify-between px-3 py-2 border-b border-krushr-panel-border rounded-t-panel chat-header",
             "bg-gradient-to-r from-krushr-primary/5 to-transparent"
           )}>
-          {/* Modern drag handle for floating mode */}
-          {isFloating && (
-            <div 
-              className={cn(
-                "absolute left-1/2 top-1 w-12 h-1 bg-gray-300 rounded-full cursor-grab transform -translate-x-1/2 hover:bg-gray-400 transition-colors drag-handle",
-                isDragging && "cursor-grabbing bg-krushr-primary"
-              )}
-              onMouseDown={handleDragStart}
-              title="Drag to move"
-            />
-          )}
+            {/* Modern drag handle for floating mode */}
+            {isFloating && (
+              <div 
+                className={cn(
+                  "absolute left-1/2 top-1 w-12 h-1 bg-gray-300 rounded-full cursor-grab transform -translate-x-1/2 hover:bg-gray-400 transition-colors drag-handle",
+                  isDragging && "cursor-grabbing bg-krushr-primary"
+                )}
+                onMouseDown={handleDragStart}
+                title="Drag to move"
+              />
+            )}
           
           {/* Left section: Branding + Stats (condensed) */}
           <div className="flex items-center gap-2 min-w-0 flex-1">

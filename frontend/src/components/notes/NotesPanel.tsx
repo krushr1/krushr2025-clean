@@ -9,6 +9,9 @@ import { useIsMobile } from '../../hooks/use-mobile'
 interface NotesPanelProps {
   workspaceId: string
   className?: string
+  isFloating?: boolean
+  onToggleFloating?: () => void
+  onClose?: () => void
 }
 
 interface Note {
@@ -290,7 +293,7 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
 }
 
 const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
-  ({ workspaceId, className }, ref) => {
+  ({ workspaceId, className, isFloating, onToggleFloating, onClose }, ref) => {
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [noteTitle, setNoteTitle] = useState('')
@@ -505,13 +508,15 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
           ? (showEditor ? "hidden" : "w-full")
           : "w-80 border-r border-krushr-gray-200"
       )}>
-        {/* Search Bar */}
-        <SearchBar
-          value={searchQuery}
-          onChange={setSearchQuery}
-          onCreateNote={handleCreateNote}
-          isCreating={createNote.isPending}
-        />
+        {/* Search Bar - Only show for floating mode */}
+        {isFloating && (
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onCreateNote={handleCreateNote}
+            isCreating={createNote.isPending}
+          />
+        )}
 
         {/* Notes List */}
         <div className="flex-1 overflow-y-auto">
@@ -557,21 +562,23 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
         {activeNoteId ? (
           <>
             
-            {/* Editor Header */}
-            <EditorHeader
-              title={noteTitle}
-              onTitleChange={setNoteTitle}
-              onDelete={handleDeleteNote}
-              isSaving={updateNote.isPending}
-              isDeleting={deleteNote.isPending}
-              note={filteredNotes.find(n => n.id === activeNoteId)}
-              onPin={handleTogglePin}
-              onColorChange={handleColorChange}
-              onArchive={handleToggleArchive}
-              onExport={handleExportNotes}
-              isSingleColumn={isSingleColumn}
-              onBack={handleBackToList}
-            />
+            {/* Editor Header - Only show for floating mode */}
+            {isFloating && (
+              <EditorHeader
+                title={noteTitle}
+                onTitleChange={setNoteTitle}
+                onDelete={handleDeleteNote}
+                isSaving={updateNote.isPending}
+                isDeleting={deleteNote.isPending}
+                note={filteredNotes.find(n => n.id === activeNoteId)}
+                onPin={handleTogglePin}
+                onColorChange={handleColorChange}
+                onArchive={handleToggleArchive}
+                onExport={handleExportNotes}
+                isSingleColumn={isSingleColumn}
+                onBack={handleBackToList}
+              />
+            )}
 
             {/* Editor Content */}
             <div className="flex-1" style={{ backgroundColor: activeNoteId ? getNoteColor(filteredNotes.find(n => n.id === activeNoteId) || {} as Note).bgValue : '#ffffff' }}>

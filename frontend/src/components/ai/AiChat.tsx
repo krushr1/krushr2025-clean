@@ -124,15 +124,15 @@ export default function AiChat({ workspaceId, className }: AiChatProps) {
   }
 
   return (
-    <div className={cn('h-full flex bg-white', className)}>
+    <div className={cn('h-full flex bg-krushr-panel-bg', className)}>
       {/* Sidebar - Conversations */}
-      <div className="w-80 border-r border-gray-200 flex flex-col">
+      <div className="w-80 border-r border-krushr-panel-border flex flex-col">
         {/* Sidebar Header */}
-        <div className="p-4 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-krushr-panel-border">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <Bot className="w-5 h-5 text-krushr-primary" />
-              <h2 className="font-semibold text-gray-900">AI Assistant</h2>
+              <h2 className="font-brand font-semibold text-krushr-gray-dark">AI Assistant</h2>
             </div>
             <Button 
               variant="ghost" 
@@ -146,20 +146,20 @@ export default function AiChat({ workspaceId, className }: AiChatProps) {
           
           {/* Usage Stats */}
           {usageStats && (
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <div className="text-xs text-gray-500 mb-2">Monthly Usage</div>
+            <div className="bg-krushr-sidebar-bg p-3 rounded-card">
+              <div className="text-xs text-krushr-gray mb-2">Monthly Usage</div>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div>
-                  <div className="text-gray-900 font-medium">
+                  <div className="text-krushr-gray-dark font-medium">
                     {formatTokens(usageStats.totalStats.totalTokens)}
                   </div>
-                  <div className="text-gray-500">tokens</div>
+                  <div className="text-krushr-gray">tokens</div>
                 </div>
                 <div>
-                  <div className="text-gray-900 font-medium">
+                  <div className="text-krushr-gray-dark font-medium">
                     {formatCost(usageStats.totalStats.totalCost)}
                   </div>
-                  <div className="text-gray-500">cost</div>
+                  <div className="text-krushr-gray">cost</div>
                 </div>
               </div>
             </div>

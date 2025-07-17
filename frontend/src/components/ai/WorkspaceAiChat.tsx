@@ -471,14 +471,14 @@ export default function WorkspaceAiChat({
   return (
     <FloatingWrapper>
       <div className={cn(
-        'flex flex-col bg-white',
-        isFloating ? 'h-full rounded-lg' : 'h-full',
+        'flex flex-col bg-krushr-panel-bg',
+        isFloating ? 'h-full rounded-panel' : 'h-full',
         className
       )}>
         {/* Header with optimized layout */}
         <div className={cn(
-          "relative flex items-center justify-between px-3 py-2 border-b border-gray-200 rounded-t-xl chat-header",
-          isFloating ? "bg-gradient-to-r from-krushr-primary/5 to-transparent" : "bg-white"
+          "relative flex items-center justify-between px-3 py-2 border-b border-krushr-panel-border rounded-t-panel chat-header",
+          isFloating ? "bg-gradient-to-r from-krushr-primary/5 to-transparent" : "bg-krushr-panel-bg"
         )}>
           {/* Modern drag handle for floating mode */}
           {isFloating && (
@@ -493,28 +493,28 @@ export default function WorkspaceAiChat({
           )}
           
           {/* Left section: Branding + Stats (condensed) */}
-          <div className="flex items-center space-x-2 min-w-0 flex-1">
-            <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="flex items-center gap-2">
               <div className="relative flex-shrink-0">
                 <Bot className="w-5 h-5 text-krushr-primary" />
                 <Sparkles className="w-3 h-3 text-yellow-500 absolute -top-1 -right-1" />
               </div>
               <div className="min-w-0">
-                <h3 className="font-semibold text-sm text-gray-900 truncate">AI Assistant</h3>
-                <p className="text-xs text-gray-500 truncate">Gemini 2.5 Flash</p>
+                <h3 className="font-brand font-semibold text-sm text-krushr-gray-dark truncate">AI Assistant</h3>
+                <p className="text-xs text-krushr-gray truncate">Gemini 2.5 Flash</p>
               </div>
             </div>
             {usageStats && (
-              <div className="hidden md:flex items-center space-x-2 text-xs text-gray-500 ml-2">
+              <div className="hidden md:flex items-center gap-2 text-xs text-krushr-gray ml-2">
                 <div 
-                  className="flex items-center px-2 py-1 bg-gray-100 rounded-full cursor-help" 
+                  className="flex items-center px-2 py-1 bg-krushr-sidebar-bg rounded-button cursor-help" 
                   title="Total tokens used (30 days)"
                 >
                   <Zap className="w-3 h-3 mr-1" />
                   <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
                 </div>
                 <div 
-                  className="flex items-center px-2 py-1 bg-gray-100 rounded-full cursor-help" 
+                  className="flex items-center px-2 py-1 bg-krushr-sidebar-bg rounded-button cursor-help" 
                   title="Total cost (30 days)"
                 >
                   <span>{formatCost(usageStats.totalStats.totalCost)}</span>

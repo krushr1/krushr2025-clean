@@ -3,57 +3,54 @@ import { router, protectedProcedure } from '../base'
 import { aiService } from '../../lib/ai'
 import { prisma } from '../../lib/prisma'
 import { TRPCError } from '@trpc/server'
+import { redis } from '../../lib/redis'
 
 export const aiRouter = router({
   // Get user's AI conversations
   getConversations: protectedProcedure
-    .input(z.object({
-      workspaceId: z.string()
-    }))
-    .query(async ({ input, ctx }) => {
-      const conversations = await prisma.aiConversation.findMany({
-        where: {
-          userId: ctx.user.id,
-          workspaceId: input.workspaceId
-        },
-        include: {
-          messages: {
-            orderBy: { createdAt: 'desc' },
-            take: 1 // Get last message for preview
-          }
-        },
-        orderBy: { updatedAt: 'desc' }
+    .input(
+      z.object({
+        workspaceId: z.string(),
+        limit: z.number().min(1).max(100).optional().default(50),
+        offset: z.number().min(0).optional().default(0),
       })
-
-      return conversations
+    )
+    .query(async ({ ctx, input }) => {
+      // Add Redis caching
+      const cacheKey = `conversations:${input.workspaceId}:${input.limit}:${input.offset}`;
+      const cached = await redis.get(cacheKey);
+      if (cached) return JSON.parse(cached);
+      
+      const conversations = await ctx.prisma.aiConversation.findMany({
+        where: { workspaceId: input.workspaceId },
+        orderBy: { updatedAt: 'desc' },
+        take: input.limit,
+        skip: input.offset,
+        include: { messages: { take: 1, orderBy: { createdAt: 'desc' } } }, // Eager load to reduce N+1
+      });
+      
+      await redis.set(cacheKey, JSON.stringify(conversations), 'EX', 300); // Cache for 5 min
+      return conversations;
     }),
 
   // Get specific conversation with messages
   getConversation: protectedProcedure
-    .input(z.object({
-      conversationId: z.string()
-    }))
-    .query(async ({ input, ctx }) => {
-      const conversation = await prisma.aiConversation.findFirst({
-        where: {
-          id: input.conversationId,
-          userId: ctx.user.id
-        },
-        include: {
-          messages: {
-            orderBy: { createdAt: 'asc' }
-          }
-        }
-      })
-
-      if (!conversation) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Conversation not found'
-        })
-      }
-
-      return conversation
+    .input(z.object({ conversationId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      // Add caching
+      const cacheKey = `conversation:${input.conversationId}`;
+      const cached = await redis.get(cacheKey);
+      if (cached) return JSON.parse(cached);
+      
+      const conversation = await ctx.prisma.aiConversation.findUnique({
+        where: { id: input.conversationId },
+        include: { messages: { orderBy: { createdAt: 'asc' } } }, // Eager load messages
+      });
+      
+      if (!conversation) throw new TRPCError({ code: 'NOT_FOUND' });
+      
+      await redis.set(cacheKey, JSON.stringify(conversation), 'EX', 300);
+      return conversation;
     }),
 
   // Create new conversation

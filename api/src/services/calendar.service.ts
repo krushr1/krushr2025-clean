@@ -24,14 +24,17 @@ export class CalendarService {
     userId: string
   ): Promise<CalendarEventResponse> {
     // Verify workspace access
-    const workspaceMember = await this.prisma.workspaceMember.findFirst({
+    const workspace = await this.prisma.workspace.findFirst({
       where: {
-        workspaceId: input.workspaceId,
-        userId: userId
+        id: input.workspaceId,
+        OR: [
+          { ownerId: userId },
+          { members: { some: { userId } } }
+        ]
       }
     })
 
-    if (!workspaceMember) {
+    if (!workspace) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'You do not have access to this workspace'
@@ -117,7 +120,7 @@ export class CalendarService {
   ): Promise<CalendarEventResponse> {
     const existingEvent = await this.prisma.calendarEvent.findUnique({
       where: { id: input.id },
-      include: { workspace: { include: { members: true } } }
+      include: { workspace: true }
     })
 
     if (!existingEvent) {
@@ -127,13 +130,18 @@ export class CalendarService {
       })
     }
 
-    // Check permissions - only creator or workspace admin can edit
+    // Check permissions - only creator or workspace owner/member can edit
     const isCreator = existingEvent.createdById === userId
-    const isMember = existingEvent.workspace.members.some(
-      member => member.userId === userId
-    )
+    const workspace = existingEvent.workspace
+    const isOwner = workspace.ownerId === userId
+    const isMember = await this.prisma.workspaceMember.findFirst({
+      where: {
+        workspaceId: workspace.id,
+        userId
+      }
+    }) !== null
 
-    if (!isCreator && !isMember) {
+    if (!isCreator && !isOwner && !isMember) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'You do not have permission to update this event'
@@ -189,14 +197,17 @@ export class CalendarService {
     userId: string
   ): Promise<CalendarEventResponse[]> {
     // Verify workspace access
-    const workspaceMember = await this.prisma.workspaceMember.findFirst({
+    const workspace = await this.prisma.workspace.findFirst({
       where: {
-        workspaceId: input.workspaceId,
-        userId: userId
+        id: input.workspaceId,
+        OR: [
+          { ownerId: userId },
+          { members: { some: { userId } } }
+        ]
       }
     })
 
-    if (!workspaceMember) {
+    if (!workspace) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'You do not have access to this workspace'
@@ -255,7 +266,7 @@ export class CalendarService {
       include: {
         attendees: true,
         reminders: true,
-        workspace: { include: { members: true } }
+        workspace: true
       }
     })
 
@@ -267,11 +278,16 @@ export class CalendarService {
     }
 
     // Check access permissions
-    const hasAccess = event.workspace.members.some(
-      member => member.userId === userId
-    )
+    const workspace = event.workspace
+    const isOwner = workspace.ownerId === userId
+    const isMember = await this.prisma.workspaceMember.findFirst({
+      where: {
+        workspaceId: workspace.id,
+        userId
+      }
+    }) !== null
 
-    if (!hasAccess) {
+    if (!isOwner && !isMember) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'You do not have access to this event'
@@ -287,7 +303,7 @@ export class CalendarService {
   async deleteEvent(eventId: string, userId: string): Promise<void> {
     const event = await this.prisma.calendarEvent.findUnique({
       where: { id: eventId },
-      include: { workspace: { include: { members: true } } }
+      include: { workspace: true }
     })
 
     if (!event) {
@@ -297,13 +313,18 @@ export class CalendarService {
       })
     }
 
-    // Check permissions - only creator or workspace admin can delete
+    // Check permissions - only creator or workspace owner/member can delete
     const isCreator = event.createdById === userId
-    const isMember = event.workspace.members.some(
-      member => member.userId === userId
-    )
+    const workspace = event.workspace
+    const isOwner = workspace.ownerId === userId
+    const isMember = await this.prisma.workspaceMember.findFirst({
+      where: {
+        workspaceId: workspace.id,
+        userId
+      }
+    }) !== null
 
-    if (!isCreator && !isMember) {
+    if (!isCreator && !isOwner && !isMember) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'You do not have permission to delete this event'

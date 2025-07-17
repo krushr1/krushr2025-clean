@@ -5,7 +5,7 @@
 
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { router, publicProcedure } from '../trpc'
+import { router, publicProcedure, protectedProcedure } from '../trpc'
 import { isAuthenticated } from '../middleware'
 
 export const kanbanRouter = router({
@@ -67,8 +67,7 @@ export const kanbanRouter = router({
   /**
    * Get kanban by ID
    */
-  get: publicProcedure
-    .use(isAuthenticated)
+  get: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
       const kanban = await ctx.prisma.kanban.findFirst({

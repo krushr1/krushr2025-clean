@@ -318,6 +318,17 @@ async function main() {
     ]
   })
 
+  // Create development session for Alice
+  await prisma.session.create({
+    data: {
+      userId: alice.id,
+      token: 'dev-token-123',
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    }
+  });
+
+  console.log('✅ Development token created for Alice');
+
   console.log('✅ Database seeding completed!')
   console.log(`📊 Created:`)
   console.log(`   - 3 users (alice@krushr.dev, bob@krushr.dev, charlie@krushr.dev)`)

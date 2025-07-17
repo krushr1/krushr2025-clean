@@ -41,16 +41,20 @@ export const getCalendarDays = (currentDate: Date): CalendarDay[] => {
   
   const days: CalendarDay[] = []
   
-  for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-    const date = new Date(year, month, 0 - i)
+  // Add previous month days in correct order
+  const paddingDays = firstDayOfWeek
+  for (let i = paddingDays; i > 0; i--) {
+    const date = new Date(year, month, 1 - i)
     days.push({ date, isCurrentMonth: false })
   }
   
+  // Add current month days
   for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
     const date = new Date(year, month, day)
     days.push({ date, isCurrentMonth: true })
   }
   
+  // Add next month days to fill 6 weeks
   const remainingDays = 42 - days.length // 6 weeks × 7 days
   for (let day = 1; day <= remainingDays; day++) {
     const date = new Date(year, month + 1, day)

@@ -403,7 +403,7 @@ export default function WorkspaceAiChat({
     const floatingContent = (
       <div 
         ref={floatingRef}
-        className={`fixed bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] 
+        className={`fixed bg-white border border-gray-200 rounded-xl shadow-2xl z-[99999] 
           ${isAnimating ? 'transition-all duration-300 ease-out' : ''} 
           ${isDragging ? 'scale-105 shadow-3xl' : 'shadow-2xl'}
           ${isMinimized ? 'backdrop-blur-sm' : ''}
@@ -434,6 +434,39 @@ export default function WorkspaceAiChat({
   useEffect(() => {
     onPopoutStateChange?.(isFloating)
   }, [isFloating, onPopoutStateChange])
+
+  useEffect(() => {
+    const handleInputFocus = () => {
+      if (floatingRef.current) {
+        const dragHandle = floatingRef.current.querySelector('.drag-handle');
+        if (dragHandle) {
+          (dragHandle as HTMLElement).style.pointerEvents = 'none';
+        }
+      }
+    };
+
+    const handleInputBlur = () => {
+      if (floatingRef.current) {
+        const dragHandle = floatingRef.current.querySelector('.drag-handle');
+        if (dragHandle) {
+          (dragHandle as HTMLElement).style.pointerEvents = 'auto';
+        }
+      }
+    };
+
+    const input = messageInputRef.current;
+    if (input) {
+      input.addEventListener('focus', handleInputFocus);
+      input.addEventListener('blur', handleInputBlur);
+    }
+
+    return () => {
+      if (input) {
+        input.removeEventListener('focus', handleInputFocus);
+        input.removeEventListener('blur', handleInputBlur);
+      }
+    };
+  }, [isFloating]);
 
   return (
     <FloatingWrapper>
@@ -607,7 +640,7 @@ export default function WorkspaceAiChat({
         {!isMinimized && showConversations && conversations && conversations.length > 0 && (
           <div className="border-b border-gray-200 bg-gray-50 max-h-32 overflow-y-auto">
             <div className="p-2 space-y-1">
-              {conversations.map((conversation) => (
+              {conversations?.map((conversation: { id: string; title?: string; messages: { content: string }[]; totalCost: number }) => (
                 <Button
                   key={conversation.id}
                   variant={selectedConversation === conversation.id ? 'secondary' : 'ghost'}
@@ -686,7 +719,7 @@ export default function WorkspaceAiChat({
             <div className="space-y-4">
               {selectedConversation && currentConversation ? (
                 <>
-                  {currentConversation.messages.map((msg) => (
+                  {currentConversation.messages.map((msg: { id: string; role: 'user' | 'assistant'; content: string; createdAt: Date; tokenCount: number; thinkingBudget?: number; responseTime?: number }) => (
                     <div key={msg.id} className="flex items-start space-x-3">
                       <Avatar className="w-7 h-7 flex-shrink-0">
                         <AvatarFallback className="text-xs">
@@ -845,11 +878,14 @@ export default function WorkspaceAiChat({
 
         {/* Input area */}
         {!isMinimized && (
-          <div className="p-3 border-t border-gray-200 bg-gray-50/50">
+          <div className="p-3 border-t border-gray-200 bg-gray-50/50 z-[99999]">
             <div 
               className="flex items-center space-x-2" 
               data-interactive
               onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
               onClick={(e) => e.stopPropagation()}
             >
               <input
@@ -863,7 +899,10 @@ export default function WorkspaceAiChat({
                 onClick={(e) => e.stopPropagation()}
                 onFocus={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
-                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-10 flex-1"
+                onMouseUp={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => e.stopPropagation()}
+                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-10 flex-1 z-[99999]"
                 data-interactive
               />
               <Button

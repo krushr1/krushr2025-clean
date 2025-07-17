@@ -25,12 +25,15 @@ import { Badge } from '../ui/badge'
 import { FloatingInput } from '../ui/floating-input'
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO } from 'date-fns'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO, startOfWeek, endOfWeek } from 'date-fns'
+import Holidays from 'date-holidays'
 import AgendaView from './AgendaView'
 
 interface NewCalendarPanelProps {
   workspaceId: string
   className?: string
+  showHolidays?: boolean
+  holidayCountry?: string
 }
 
 interface CalendarEvent {
@@ -71,7 +74,12 @@ const PRIORITY_COLORS = {
   CRITICAL: 'bg-krushr-priority-critical'
 }
 
-export default function NewCalendarPanel({ workspaceId, className }: NewCalendarPanelProps) {
+export default function NewCalendarPanel({ 
+  workspaceId, 
+  className,
+  showHolidays = true,
+  holidayCountry = 'US'
+}: NewCalendarPanelProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [view, setView] = useState<'month' | 'agenda'>('month')
@@ -82,15 +90,22 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
   const [showSearch, setShowSearch] = useState(false)
   const [panelSize, setPanelSize] = useState({ width: 0, height: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
+  
+  // Initialize holidays based on configuration
+  const holidays = useMemo(() => showHolidays ? new Holidays(holidayCountry) : null, [showHolidays, holidayCountry])
 
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(currentDate)
-  const calendarDays = eachDayOfInterval({ start: monthStart, end: monthEnd })
+  
+  // Create proper calendar grid with 6 weeks (42 days)
+  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 }) // Sunday = 0
+  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 })
+  const calendarDays = eachDayOfInterval({ start: calendarStart, end: calendarEnd })
 
   const { data: eventsData, isLoading } = trpc.calendar.list.useQuery({
     workspaceId,
-    startDate: monthStart,
-    endDate: monthEnd
+    startDate: calendarStart,
+    endDate: calendarEnd
   }, {
     retry: false,
     refetchOnWindowFocus: false
@@ -110,6 +125,12 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
       isSameDay(new Date(event.startTime), date) ||
       (event.allDay && isSameDay(new Date(event.startTime), date))
     )
+  }
+
+  const getHolidayForDate = (date: Date) => {
+    if (!holidays) return null
+    const holiday = holidays.isHoliday(date)
+    return holiday ? (Array.isArray(holiday) ? holiday[0] : holiday) : null
   }
 
   useEffect(() => {
@@ -229,7 +250,13 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
   }
 
   const handleDateClick = (date: Date) => {
-    setSelectedDate(isSameDay(date, selectedDate || new Date()) ? null : date)
+    // If clicking on a date from previous/next month, navigate to that month
+    if (!isSameMonth(date, currentDate)) {
+      setCurrentDate(date)
+      setSelectedDate(date)
+    } else {
+      setSelectedDate(isSameDay(date, selectedDate || new Date()) ? null : date)
+    }
   }
 
   const handleEventClick = (event: CalendarEvent) => {
@@ -383,6 +410,7 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
                 const dayEvents = getEventsForDay(date)
                 const isCurrentMonth = isSameMonth(date, currentDate)
                 const isCurrentDay = isToday(date)
+                const holiday = getHolidayForDate(date)
                 
                 return (
                   <div
@@ -390,16 +418,24 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
                     onClick={() => handleDateClick(date)}
                     className={cn(
                       "bg-white cursor-pointer border-r border-b border-gray-100 hover:bg-gray-50 transition-colors min-h-[20px] p-0.5 text-center",
-                      !isCurrentMonth && "bg-gray-50 text-gray-400",
-                      isCurrentDay && "bg-krushr-primary/10 text-krushr-primary font-semibold"
+                      !isCurrentMonth && "bg-gray-50/50 text-gray-400 hover:bg-gray-100",
+                      isCurrentDay && "bg-krushr-primary/10 text-krushr-primary font-semibold",
+                      holiday && "bg-red-50 border-red-200"
                     )}
+                    title={holiday ? holiday.name : undefined}
                   >
                     <div className="flex items-center justify-center h-full">
-                      <span className="text-xs">
+                      <span className={cn(
+                        "text-xs",
+                        holiday && "text-red-600 font-medium"
+                      )}>
                         {format(date, 'd')}
                       </span>
-                      {dayEvents.length > 0 && (
-                        <div className="w-1 h-1 bg-krushr-primary rounded-full ml-0.5" />
+                      {(dayEvents.length > 0 || holiday) && (
+                        <div className={cn(
+                          "w-1 h-1 rounded-full ml-0.5",
+                          holiday ? "bg-red-500" : "bg-krushr-primary"
+                        )} />
                       )}
                     </div>
                   </div>
@@ -640,6 +676,7 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
               const isSelected = selectedDate && isSameDay(date, selectedDate)
               const isCurrentMonth = isSameMonth(date, currentDate)
               const isCurrentDay = isToday(date)
+              const holiday = getHolidayForDate(date)
               
               const maxEvents = layoutConfig.maxEventsPerDay
               
@@ -651,17 +688,20 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
                     "bg-white cursor-pointer border-r border-b border-gray-100 hover:bg-gray-50 transition-colors",
                     layoutConfig.dayHeight,
                     layoutConfig.size === 'micro' ? 'p-1' : 'p-2',
-                    !isCurrentMonth && "bg-gray-50 text-gray-400",
+                    !isCurrentMonth && "bg-gray-50/50 text-gray-400 hover:bg-gray-100",
                     isSelected && "bg-krushr-primary/5 border-krushr-primary",
-                    isCurrentDay && "bg-krushr-primary/10"
+                    isCurrentDay && "bg-krushr-primary/10",
+                    holiday && "bg-red-50/50 border-red-200/50"
                   )}
+                  title={holiday ? holiday.name : undefined}
                 >
                   <div className={cn("flex items-center justify-between", layoutConfig.size !== 'micro' && "mb-1")}>
                     <span className={cn(
                       "font-manrope",
                       layoutConfig.fontSize,
                       isCurrentDay && "font-semibold text-krushr-primary",
-                      !isCurrentMonth && "text-gray-400"
+                      !isCurrentMonth && "text-gray-400 opacity-75",
+                      holiday && isCurrentMonth && "text-red-600 font-medium"
                     )}>
                       {format(date, 'd')}
                     </span>
@@ -670,8 +710,14 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
                         {dayEvents.length}
                       </Badge>
                     )}
-                    {dayEvents.length > 0 && layoutConfig.size === 'micro' && (
-                      <div className="w-1.5 h-1.5 bg-krushr-primary rounded-full" />
+                    {holiday && layoutConfig.size !== 'micro' && dayEvents.length === 0 && (
+                      <div className="w-1.5 h-1.5 bg-red-500 rounded-full" />
+                    )}
+                    {(dayEvents.length > 0 || holiday) && layoutConfig.size === 'micro' && (
+                      <div className={cn(
+                        "w-1.5 h-1.5 rounded-full",
+                        holiday ? "bg-red-500" : "bg-krushr-primary"
+                      )} />
                     )}
                   </div>
                   
@@ -694,7 +740,8 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
                               colorConfig.bg,
                               colorConfig.border,
                               colorConfig.text,
-                              layoutConfig.size === 'small' ? 'p-0.5' : 'p-1'
+                              layoutConfig.size === 'small' ? 'p-0.5' : 'p-1',
+                              !isCurrentMonth && "opacity-60"
                             )}
                           >
                             <div className="flex items-center gap-1">
@@ -733,6 +780,26 @@ export default function NewCalendarPanel({ workspaceId, className }: NewCalendar
                 ? format(selectedDate, 'MMM d')
                 : format(selectedDate, 'EEEE, MMMM d')}
             </h3>
+            
+            {/* Show holiday information if present */}
+            {(() => {
+              const holiday = getHolidayForDate(selectedDate)
+              return holiday ? (
+                <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-red-500 rounded-full" />
+                    <span className={cn("text-red-700 font-medium font-manrope", layoutConfig.fontSize)}>
+                      {holiday.name}
+                    </span>
+                  </div>
+                  {holiday.type && (
+                    <p className={cn("text-red-600 mt-1 font-manrope", layoutConfig.fontSize === 'text-sm' ? 'text-xs' : 'text-xs')}>
+                      {holiday.type}
+                    </p>
+                  )}
+                </div>
+              ) : null
+            })()}
             
             {getEventsForDay(selectedDate).length === 0 ? (
               <div className="text-center py-8">

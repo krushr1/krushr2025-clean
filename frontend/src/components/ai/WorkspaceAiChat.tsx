@@ -524,14 +524,14 @@ export default function WorkspaceAiChat({
           </div>
           
           {/* Right section: Controls */}
-          <div className="flex items-center space-x-1 md:space-x-2">
+          <div className="flex items-center gap-1 md:gap-2">
             {/* Thinking budget controls */}
             {!isMinimized && (
-              <div className="hidden md:flex items-center space-x-1 mr-1">
-                <Brain className="w-3 h-3 text-gray-400 flex-shrink-0" />
+              <div className="hidden md:flex items-center gap-1 mr-1">
+                <Brain className="w-3 h-3 text-krushr-gray flex-shrink-0" />
                 <button
                   onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
-                  className={`px-1.5 py-0.5 text-xs rounded ${autoThinkingBudget ? 'bg-krushr-primary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                  className={`px-1.5 py-0.5 text-xs rounded ${autoThinkingBudget ? 'bg-krushr-primary text-white' : 'bg-krushr-sidebar-bg text-krushr-gray-dark hover:bg-krushr-sidebar-bg'}`}
                   title={autoThinkingBudget ? 'Auto thinking budget' : 'Manual thinking budget'}
                 >
                   {autoThinkingBudget ? 'Auto' : 'Manual'}
@@ -544,10 +544,10 @@ export default function WorkspaceAiChat({
                       max="24576"
                       value={thinkingBudget}
                       onChange={(e) => setThinkingBudget(Number(e.target.value))}
-                      className="w-16 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      className="w-16 h-1 bg-krushr-sidebar-bg rounded-lg appearance-none cursor-pointer"
                       title={`Thinking budget: ${thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}`}
                     />
-                    <span className="text-xs text-gray-500 w-8 text-right hidden lg:block">
+                    <span className="text-xs text-krushr-gray w-8 text-right hidden lg:block">
                       {thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}
                     </span>
                   </>
@@ -557,7 +557,7 @@ export default function WorkspaceAiChat({
             
             {/* Modern floating window controls */}
             {isFloating && (
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center gap-1">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -732,18 +732,18 @@ export default function WorkspaceAiChat({
                       </Avatar>
                       
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="font-medium text-xs text-gray-900">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-brand font-medium text-xs text-krushr-gray-dark">
                             {msg.role === 'user' ? user?.name || 'You' : 'AI'}
                           </span>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-krushr-gray">
                             {new Date(msg.createdAt).toLocaleTimeString([], { 
                               hour: '2-digit', 
                               minute: '2-digit' 
                             })}
                           </span>
                           {msg.role === 'assistant' && (
-                            <div className="flex items-center space-x-1 text-xs text-gray-400">
+                            <div className="flex items-center gap-1 text-xs text-krushr-gray">
                               <Zap className="w-3 h-3" />
                               <span>{formatTokens(msg.tokenCount)}</span>
                               {msg.thinkingBudget && msg.thinkingBudget > 0 && (
@@ -790,11 +790,11 @@ export default function WorkspaceAiChat({
                       </Avatar>
                       
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="font-medium text-xs text-gray-900">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-brand font-medium text-xs text-krushr-gray-dark">
                             {user?.name || 'You'}
                           </span>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-krushr-gray">
                             {new Date().toLocaleTimeString([], { 
                               hour: '2-digit', 
                               minute: '2-digit' 
@@ -818,9 +818,9 @@ export default function WorkspaceAiChat({
                       </Avatar>
                       
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="font-medium text-xs text-gray-900">AI</span>
-                          <span className="text-xs text-gray-500">thinking...</span>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-brand font-medium text-xs text-krushr-gray-dark">AI</span>
+                          <span className="text-xs text-krushr-gray">thinking...</span>
                         </div>
                         <div className="text-sm text-gray-500 animate-pulse">
                           <div className="flex space-x-1">
@@ -836,16 +836,16 @@ export default function WorkspaceAiChat({
               ) : (
                 <div className="text-center py-8">
                   <Bot className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <h4 className="text-sm font-medium text-gray-900 mb-1">
+                  <h4 className="text-sm font-brand font-medium text-krushr-gray-dark mb-1">
                     Welcome to AI Assistant
                   </h4>
-                  <p className="text-xs text-gray-500 mb-4">
+                  <p className="text-xs text-krushr-gray mb-4">
                     Ask me anything about your workspace or get help with tasks
                   </p>
                   <Button
                     onClick={() => createConversation.mutate({ workspaceId })}
                     size="sm"
-                    className="bg-krushr-primary hover:bg-krushr-primary/90"
+                    className="btn-primary"
                   >
                     <Plus className="w-3 h-3 mr-1" />
                     Start Conversation
@@ -878,9 +878,9 @@ export default function WorkspaceAiChat({
 
         {/* Input area */}
         {!isMinimized && (
-          <div className="p-3 border-t border-gray-200 bg-gray-50/50 z-[99999]">
+          <div className="p-3 border-t border-krushr-panel-border bg-krushr-toolbar-bg z-[99999]">
             <div 
-              className="flex items-center space-x-2" 
+              className="flex items-center gap-2" 
               data-interactive
               onMouseDown={(e) => e.stopPropagation()}
               onMouseUp={(e) => e.stopPropagation()}

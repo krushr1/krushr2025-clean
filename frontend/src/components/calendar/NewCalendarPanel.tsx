@@ -453,7 +453,30 @@ export default function NewCalendarPanel({
                       isCurrentDay && "bg-krushr-primary/10 text-krushr-primary font-semibold",
                       holiday && "bg-red-50 border-red-200"
                     )}
-                    title={holiday ? holiday.name : undefined}
+                    title={(() => {
+                      const tooltipParts = []
+                      
+                      if (holiday) {
+                        tooltipParts.push(`🎉 ${holiday.name}`)
+                        if (holiday.type) {
+                          tooltipParts.push(`(${holiday.type})`)
+                        }
+                      }
+                      
+                      if (dayEvents.length > 0) {
+                        if (tooltipParts.length > 0) tooltipParts.push('\n---\n')
+                        tooltipParts.push(`📅 ${dayEvents.length} event${dayEvents.length > 1 ? 's' : ''}:`)
+                        dayEvents.slice(0, 3).forEach(event => {
+                          const timeStr = event.allDay ? 'All day' : format(new Date(event.startTime), 'h:mm a')
+                          tooltipParts.push(`• ${timeStr}: ${event.title}`)
+                        })
+                        if (dayEvents.length > 3) {
+                          tooltipParts.push(`• +${dayEvents.length - 3} more events`)
+                        }
+                      }
+                      
+                      return tooltipParts.length > 0 ? tooltipParts.join('\n') : undefined
+                    })()}
                   >
                     <div className="flex items-center justify-center h-full">
                       <span className={cn(
@@ -724,7 +747,30 @@ export default function NewCalendarPanel({
                     isCurrentDay && "bg-krushr-primary/10",
                     holiday && "bg-red-50/50 border-red-200/50"
                   )}
-                  title={holiday ? holiday.name : undefined}
+                  title={(() => {
+                    const tooltipParts = []
+                    
+                    if (holiday) {
+                      tooltipParts.push(`🎉 ${holiday.name}`)
+                      if (holiday.type) {
+                        tooltipParts.push(`(${holiday.type})`)
+                      }
+                    }
+                    
+                    if (dayEvents.length > 0) {
+                      if (tooltipParts.length > 0) tooltipParts.push('\n---\n')
+                      tooltipParts.push(`📅 ${dayEvents.length} event${dayEvents.length > 1 ? 's' : ''}:`)
+                      dayEvents.slice(0, 3).forEach(event => {
+                        const timeStr = event.allDay ? 'All day' : format(new Date(event.startTime), 'h:mm a')
+                        tooltipParts.push(`• ${timeStr}: ${event.title}`)
+                      })
+                      if (dayEvents.length > 3) {
+                        tooltipParts.push(`• +${dayEvents.length - 3} more events`)
+                      }
+                    }
+                    
+                    return tooltipParts.length > 0 ? tooltipParts.join('\n') : undefined
+                  })()}
                 >
                   <div className={cn("flex items-center justify-between", layoutConfig.size !== 'micro' && "mb-1")}>
                     <span className={cn(

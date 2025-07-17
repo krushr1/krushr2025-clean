@@ -5,19 +5,20 @@ import { Input } from '../ui/input'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { ScrollArea } from '../ui/scroll-area'
 import { 
-  Send, 
-  Bot, 
-  User,
+  Bot,
+  Send,
+  Loader2,
   Zap,
-  Clock,
-  Plus,
-  MessageSquare,
-  Sparkles,
   Brain,
-  Maximize2,
+  MessageSquare,
+  Plus,
   Minimize2,
+  Maximize2,
   X,
-  Move
+  Move,
+  Expand,
+  User,
+  Clock
 } from 'lucide-react'
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
@@ -475,11 +476,12 @@ export default function WorkspaceAiChat({
         isFloating ? 'h-full rounded-panel' : 'h-full',
         className
       )}>
-        {/* Header with optimized layout */}
-        <div className={cn(
-          "relative flex items-center justify-between px-3 py-2 border-b border-krushr-panel-border rounded-t-panel chat-header",
-          isFloating ? "bg-gradient-to-r from-krushr-primary/5 to-transparent" : "bg-krushr-panel-bg"
-        )}>
+        {/* Header with optimized layout - only for floating mode */}
+        {isFloating && (
+          <div className={cn(
+            "relative flex items-center justify-between px-3 py-2 border-b border-krushr-panel-border rounded-t-panel chat-header",
+            "bg-gradient-to-r from-krushr-primary/5 to-transparent"
+          )}>
           {/* Modern drag handle for floating mode */}
           {isFloating && (
             <div 
@@ -494,27 +496,21 @@ export default function WorkspaceAiChat({
           
           {/* Left section: Branding + Stats (condensed) */}
           <div className="flex items-center gap-2 min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <div className="relative flex-shrink-0">
-                <Bot className="w-5 h-5 text-krushr-primary" />
-                <Sparkles className="w-3 h-3 text-yellow-500 absolute -top-1 -right-1" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="font-brand font-semibold text-sm text-krushr-gray-dark truncate">AI Assistant</h3>
-                <p className="text-xs text-krushr-gray truncate">Gemini 2.5 Flash</p>
-              </div>
+            <div className="text-krushr-primary">
+              <Bot className="w-4 h-4" />
             </div>
+            <h3 className="font-brand font-medium text-sm truncate cursor-pointer hover:text-krushr-primary transition-colors" title="Click to edit title">AI Assistant</h3>
             {usageStats && (
               <div className="hidden md:flex items-center gap-2 text-xs text-krushr-gray ml-2">
                 <div 
-                  className="flex items-center px-2 py-1 bg-krushr-sidebar-bg rounded-button cursor-help" 
+                  className="flex items-center px-2 py-1 bg-krushr-panel-bg rounded-lg cursor-help border border-krushr-panel-border" 
                   title="Total tokens used (30 days)"
                 >
                   <Zap className="w-3 h-3 mr-1" />
                   <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
                 </div>
                 <div 
-                  className="flex items-center px-2 py-1 bg-krushr-sidebar-bg rounded-button cursor-help" 
+                  className="flex items-center px-2 py-1 bg-krushr-panel-bg rounded-lg cursor-help border border-krushr-panel-border" 
                   title="Total cost (30 days)"
                 >
                   <span>{formatCost(usageStats.totalStats.totalCost)}</span>
@@ -524,14 +520,14 @@ export default function WorkspaceAiChat({
           </div>
           
           {/* Right section: Controls */}
-          <div className="flex items-center gap-1 md:gap-2">
+          <div className="flex items-center gap-2">
             {/* Thinking budget controls */}
             {!isMinimized && (
-              <div className="hidden md:flex items-center gap-1 mr-1">
-                <Brain className="w-3 h-3 text-krushr-gray flex-shrink-0" />
+              <div className="hidden md:flex items-center gap-2 mr-1">
+                <Brain className="w-4 h-4 text-krushr-gray flex-shrink-0" />
                 <button
                   onClick={() => setAutoThinkingBudget(!autoThinkingBudget)}
-                  className={`px-1.5 py-0.5 text-xs rounded ${autoThinkingBudget ? 'bg-krushr-primary text-white' : 'bg-krushr-sidebar-bg text-krushr-gray-dark hover:bg-krushr-sidebar-bg'}`}
+                  className={`px-2 py-1 text-xs rounded-lg font-medium transition-colors ${autoThinkingBudget ? 'bg-krushr-primary text-white' : 'bg-krushr-panel-bg text-krushr-gray-dark hover:bg-krushr-toolbar-bg'}`}
                   title={autoThinkingBudget ? 'Auto thinking budget' : 'Manual thinking budget'}
                 >
                   {autoThinkingBudget ? 'Auto' : 'Manual'}
@@ -544,7 +540,7 @@ export default function WorkspaceAiChat({
                       max="24576"
                       value={thinkingBudget}
                       onChange={(e) => setThinkingBudget(Number(e.target.value))}
-                      className="w-16 h-1 bg-krushr-sidebar-bg rounded-lg appearance-none cursor-pointer"
+                      className="w-16 h-1 bg-krushr-panel-bg rounded-lg appearance-none cursor-pointer"
                       title={`Thinking budget: ${thinkingBudget === 0 ? 'Fast' : formatTokens(thinkingBudget)}`}
                     />
                     <span className="text-xs text-krushr-gray w-8 text-right hidden lg:block">
@@ -557,7 +553,7 @@ export default function WorkspaceAiChat({
             
             {/* Modern floating window controls */}
             {isFloating && (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -566,20 +562,20 @@ export default function WorkspaceAiChat({
                     setIsAnimating(true)
                     setTimeout(() => setIsAnimating(false), 300)
                   }}
-                  className="h-6 w-6 p-0 hover:bg-gray-100 rounded-full transition-colors"
+                  className="w-5 h-5 p-0 hover:bg-gray-100"
                   title={isMinimized ? 'Restore' : 'Minimize'}
                 >
-                  {isMinimized ? <Maximize2 className="w-3 h-3" /> : <Minimize2 className="w-3 h-3" />}
+                  {isMinimized ? <Maximize2 className="w-2.5 h-2.5" /> : <Minimize2 className="w-2.5 h-2.5" />}
                 </Button>
                 {onToggleFloating && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={onToggleFloating}
-                    className="h-6 w-6 p-0 hover:bg-blue-50 hover:text-blue-600 rounded-full transition-colors"
+                    className="w-5 h-5 p-0 hover:bg-blue-100 hover:text-blue-600"
                     title="Dock to panel"
                   >
-                    <Move className="w-3 h-3" />
+                    <Move className="w-2.5 h-2.5" />
                   </Button>
                 )}
                 {onClose && (
@@ -587,10 +583,10 @@ export default function WorkspaceAiChat({
                     variant="ghost"
                     size="sm"
                     onClick={onClose}
-                    className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600 rounded-full transition-colors"
+                    className="w-5 h-5 p-0 hover:bg-red-100 hover:text-red-600"
                     title="Close"
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-2.5 h-2.5" />
                   </Button>
                 )}
               </div>
@@ -604,41 +600,40 @@ export default function WorkspaceAiChat({
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowConversations(!showConversations)}
-                    className="h-7 px-2 text-xs"
+                    className="w-5 h-5 p-0 hover:bg-gray-100"
                     title="View conversations"
                   >
-                    <MessageSquare className="w-3 h-3 mr-1" />
-                    {conversations.length}
+                    <MessageSquare className="w-2.5 h-2.5" />
                   </Button>
                 )}
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => createConversation.mutate({ workspaceId })}
-                  className="h-7 px-2"
+                  className="w-5 h-5 p-0 hover:bg-gray-100"
                   title="Start new conversation"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-2.5 h-2.5" />
                 </Button>
                 {onToggleFloating && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={onToggleFloating}
-                    className="h-7 px-2"
+                    className="w-5 h-5 p-0 hover:bg-blue-100 hover:text-blue-600"
                     title="Pop out to floating window"
                   >
-                    <Maximize2 className="w-3 h-3" />
+                    <Expand className="w-2.5 h-2.5" />
                   </Button>
                 )}
               </>
             )}
           </div>
-        </div>
+        )}
 
-        {/* Conversation selector */}
-        {!isMinimized && showConversations && conversations && conversations.length > 0 && (
-          <div className="border-b border-gray-200 bg-gray-50 max-h-32 overflow-y-auto">
+        {/* Conversation selector - only for non-floating mode */}
+        {!isFloating && !isMinimized && showConversations && conversations && conversations.length > 0 && (
+          <div className="border-b border-krushr-panel-border bg-krushr-sidebar-bg max-h-32 overflow-y-auto">
             <div className="p-2 space-y-1">
               {conversations?.map((conversation: { id: string; title?: string; messages: { content: string }[]; totalCost: number }) => (
                 <Button
@@ -652,17 +647,17 @@ export default function WorkspaceAiChat({
                   }}
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-xs truncate">
+                    <div className="font-brand font-medium text-xs truncate">
                       {conversation.title || 'New Conversation'}
                     </div>
-                    <div className="text-xs text-gray-500 truncate">
+                    <div className="text-xs text-krushr-gray truncate">
                       {conversation.messages[0]?.content || 'No messages yet'}
                     </div>
                     <div className="flex items-center justify-between mt-1">
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-krushr-gray">
                         {conversation.messages.length} messages
                       </span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-krushr-gray">
                         {formatCost(conversation.totalCost)}
                       </span>
                     </div>
@@ -672,6 +667,7 @@ export default function WorkspaceAiChat({
             </div>
           </div>
         )}
+
 
         {/* Minimized state */}
         {isMinimized && isFloating && (
@@ -685,29 +681,25 @@ export default function WorkspaceAiChat({
               title="Drag to move"
             >
               <div className="w-2 h-2 bg-krushr-primary rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-gray-700 truncate">
+              <span className="text-sm font-brand font-medium text-krushr-gray-dark truncate">
                 {isLoading ? 'AI is thinking...' : 'AI Assistant'}
               </span>
               {usageStats && (
-                <div className="flex items-center space-x-1 text-xs text-gray-500">
+                <div className="flex items-center gap-1 text-xs text-krushr-gray">
                   <Zap className="w-3 h-3" />
                   <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
                 </div>
               )}
             </div>
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => {
-                  setIsMinimized(false)
-                  setIsAnimating(true)
-                  setTimeout(() => setIsAnimating(false), 300)
-                }}
-                className="h-6 w-6 p-0 hover:bg-gray-100 rounded-full"
+                onClick={() => setIsMinimized(false)}
+                className="w-5 h-5 p-0 hover:bg-krushr-sidebar-bg"
                 title="Restore"
               >
-                <Maximize2 className="w-3 h-3" />
+                <Maximize2 className="w-2.5 h-2.5" />
               </Button>
             </div>
           </div>
@@ -716,11 +708,11 @@ export default function WorkspaceAiChat({
         {/* Messages area */}
         {!isMinimized && (
           <ScrollArea className="flex-1 p-3">
-            <div className="space-y-4">
+            <div className="space-y-6">
               {selectedConversation && currentConversation ? (
                 <>
                   {currentConversation.messages.map((msg: { id: string; role: 'user' | 'assistant'; content: string; createdAt: Date; tokenCount: number; thinkingBudget?: number; responseTime?: number }) => (
-                    <div key={msg.id} className="flex items-start space-x-3">
+                    <div key={msg.id} className="flex items-start gap-3">
                       <Avatar className="w-7 h-7 flex-shrink-0">
                         <AvatarFallback className="text-xs">
                           {msg.role === 'user' ? (
@@ -782,7 +774,7 @@ export default function WorkspaceAiChat({
                   
                   {/* Optimistic user message */}
                   {optimisticMessage && (
-                    <div className="flex items-start space-x-3 opacity-70">
+                    <div className="flex items-start gap-3 opacity-70">
                       <Avatar className="w-7 h-7 flex-shrink-0">
                         <AvatarFallback className="text-xs">
                           <User className="w-4 h-4" />
@@ -810,7 +802,7 @@ export default function WorkspaceAiChat({
                   
                   {/* Loading AI response */}
                   {isLoading && optimisticMessage && (
-                    <div className="flex items-start space-x-3 opacity-70">
+                    <div className="flex items-start gap-3 opacity-70">
                       <Avatar className="w-7 h-7 flex-shrink-0">
                         <AvatarFallback className="text-xs">
                           <Bot className="w-4 h-4" />
@@ -854,7 +846,7 @@ export default function WorkspaceAiChat({
               )}
               
               {isLoading && (
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start gap-3">
                   <Avatar className="w-7 h-7">
                     <AvatarFallback className="text-xs">
                       <Bot className="w-4 h-4" />
@@ -902,17 +894,17 @@ export default function WorkspaceAiChat({
                 onMouseUp={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
                 onTouchEnd={(e) => e.stopPropagation()}
-                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-10 flex-1 z-[99999]"
+                className="flex w-full rounded-lg border border-krushr-panel-border bg-white px-3 py-2 text-sm font-brand placeholder:text-krushr-gray focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-krushr-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-10 flex-1 z-[99999] transition-colors"
                 data-interactive
               />
               <Button
                 onClick={handleSendMessage}
                 disabled={!message.trim() || isLoading}
                 size="sm"
-                className="h-10 w-10 p-0"
+                className="h-10 w-10 p-0 bg-krushr-primary hover:bg-krushr-primary/90 text-white disabled:opacity-50"
                 data-interactive
               >
-                <Send className="w-3 h-3" />
+                <Send className="w-4 h-4" />
               </Button>
             </div>
           </div>

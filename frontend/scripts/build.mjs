@@ -51,10 +51,10 @@ async function copyPublicAssets(changedFile = null) {
   try {
     if (changedFile) {
       const relativePath = relative('public', changedFile)
-      const destPath = `dist/${relativePath}`
+      const destPath = `public/${relativePath}`
       await smartCopyFile(changedFile, destPath)
     } else {
-      await cp('public', 'dist', { 
+      await cp('public', 'public', { 
         recursive: true,
         filter: async (src, dest) => {
           if (src.endsWith('.html') || src.endsWith('.css') || src.endsWith('.js')) {
@@ -71,7 +71,7 @@ async function copyPublicAssets(changedFile = null) {
       const { copyFile } = await import('fs/promises')
       try {
         // Copy react app as main index
-        await copyFile('index.html', 'dist/index.html')
+        await copyFile('index.html', 'public/index.html')
         console.log('React app set as main index.html')
       } catch (copyError) {
         console.log('React index copy failed:', copyError.message)
@@ -93,7 +93,7 @@ const esbuildOpts = {
   entryPoints: ['src/main.tsx', 'index.html'],
   assetNames: '[name]',
   publicPath: '/',
-  outdir: 'dist',
+  outdir: 'public',
   entryNames: '[name]',
   write: true,
   bundle: true,

@@ -26,7 +26,6 @@ import { FloatingInput } from '../ui/floating-input'
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO, startOfWeek, endOfWeek } from 'date-fns'
-import Holidays from 'date-holidays'
 import AgendaView from './AgendaView'
 
 interface NewCalendarPanelProps {
@@ -78,7 +77,7 @@ export default function NewCalendarPanel({
   workspaceId, 
   className,
   showHolidays = true,
-  holidayCountry = 'US'
+  holidayCountry = 'US' // Currently only US holidays supported
 }: NewCalendarPanelProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
@@ -91,8 +90,40 @@ export default function NewCalendarPanel({
   const [panelSize, setPanelSize] = useState({ width: 0, height: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
   
-  // Initialize holidays based on configuration
-  const holidays = useMemo(() => showHolidays ? new Holidays(holidayCountry) : null, [showHolidays, holidayCountry])
+  // US Federal Holidays for 2024-2025 (can be expanded)
+  const usHolidays = useMemo(() => {
+    if (!showHolidays) return []
+    
+    const holidays = [
+      // 2024 Holidays
+      { date: '2024-01-01', name: 'New Year\'s Day', type: 'Federal Holiday' },
+      { date: '2024-01-15', name: 'Martin Luther King Jr. Day', type: 'Federal Holiday' },
+      { date: '2024-02-19', name: 'Presidents Day', type: 'Federal Holiday' },
+      { date: '2024-05-27', name: 'Memorial Day', type: 'Federal Holiday' },
+      { date: '2024-06-19', name: 'Juneteenth', type: 'Federal Holiday' },
+      { date: '2024-07-04', name: 'Independence Day', type: 'Federal Holiday' },
+      { date: '2024-09-02', name: 'Labor Day', type: 'Federal Holiday' },
+      { date: '2024-10-14', name: 'Columbus Day', type: 'Federal Holiday' },
+      { date: '2024-11-11', name: 'Veterans Day', type: 'Federal Holiday' },
+      { date: '2024-11-28', name: 'Thanksgiving Day', type: 'Federal Holiday' },
+      { date: '2024-12-25', name: 'Christmas Day', type: 'Federal Holiday' },
+      
+      // 2025 Holidays
+      { date: '2025-01-01', name: 'New Year\'s Day', type: 'Federal Holiday' },
+      { date: '2025-01-20', name: 'Martin Luther King Jr. Day', type: 'Federal Holiday' },
+      { date: '2025-02-17', name: 'Presidents Day', type: 'Federal Holiday' },
+      { date: '2025-05-26', name: 'Memorial Day', type: 'Federal Holiday' },
+      { date: '2025-06-19', name: 'Juneteenth', type: 'Federal Holiday' },
+      { date: '2025-07-04', name: 'Independence Day', type: 'Federal Holiday' },
+      { date: '2025-09-01', name: 'Labor Day', type: 'Federal Holiday' },
+      { date: '2025-10-13', name: 'Columbus Day', type: 'Federal Holiday' },
+      { date: '2025-11-11', name: 'Veterans Day', type: 'Federal Holiday' },
+      { date: '2025-11-27', name: 'Thanksgiving Day', type: 'Federal Holiday' },
+      { date: '2025-12-25', name: 'Christmas Day', type: 'Federal Holiday' },
+    ]
+    
+    return holidays
+  }, [showHolidays])
 
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(currentDate)
@@ -128,9 +159,9 @@ export default function NewCalendarPanel({
   }
 
   const getHolidayForDate = (date: Date) => {
-    if (!holidays) return null
-    const holiday = holidays.isHoliday(date)
-    return holiday ? (Array.isArray(holiday) ? holiday[0] : holiday) : null
+    if (!showHolidays) return null
+    const dateString = format(date, 'yyyy-MM-dd')
+    return usHolidays.find(holiday => holiday.date === dateString) || null
   }
 
   useEffect(() => {

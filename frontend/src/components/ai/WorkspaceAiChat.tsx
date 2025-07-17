@@ -293,7 +293,15 @@ export default function WorkspaceAiChat({
       }
     }
     
-    const shouldParseActions = /(?:need to|have to|must|should|todo|task|create|build|fix|update|review|test|deploy|note|remember|jot down|write down|document|project|initiative|campaign|feature|milestone|meeting|call|appointment|schedule|book)/i.test(currentMessage)
+    const actionKeywords = [
+      'need to', 'have to', 'must', 'should', 'todo', 'task', 'create', 'build', 'fix', 
+      'update', 'review', 'test', 'deploy', 'note', 'remember', 'jot down', 'write down', 
+      'document', 'project', 'initiative', 'campaign', 'feature', 'milestone', 'meeting', 
+      'call', 'appointment', 'schedule', 'book'
+    ]
+    const shouldParseActions = actionKeywords.some(keyword => 
+      currentMessage.toLowerCase().includes(keyword.toLowerCase())
+    )
     
     if (shouldParseActions) {
       try {

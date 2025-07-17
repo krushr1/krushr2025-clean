@@ -629,7 +629,7 @@ export default function WorkspaceAiChat({
               </>
             )}
           </div>
-        {')'}
+        )}
 
         {/* Conversation selector - only for non-floating mode */}
         {!isFloating && !isMinimized && showConversations && conversations && conversations.length > 0 && (
@@ -913,3 +913,4 @@ export default function WorkspaceAiChat({
     </FloatingWrapper>
   )
 }
+

@@ -13,7 +13,7 @@ const isProd = args[0] === '--production'
 // Set NODE_ENV environment variable
 process.env.NODE_ENV = isProd ? 'production' : 'development'
 
-const outDir = 'dist'
+const outDir = '../public'
 console.log(`Build output directory: ${outDir}`)
 
 await rimraf(outDir)
@@ -85,8 +85,8 @@ async function copyPublicAssets(changedFile = null, targetDir = outDir) {
   }
 }
 
-// Initial copy
-await copyPublicAssets(null, outDir)
+// Initial copy of static assets
+await cp('public', outDir, { recursive: true })
 
 /**
  * @type {esbuild.BuildOptions}

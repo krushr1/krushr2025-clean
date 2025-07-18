@@ -16,7 +16,7 @@ import Profile from './pages/Profile'
 import Settings from './pages/Settings'
 import Pricing from './pages/Pricing'
 import Workspace from './pages/Workspace'
-import Landing from './pages/Landing'
+import SimpleLanding from './pages/SimpleLanding'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuthStore()
@@ -46,7 +46,8 @@ export default function App() {
     <TRPCProvider>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<SimpleLanding />} />
+          <Route path="/landing" element={<SimpleLanding />} />
           <Route path="/test" element={<Test />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

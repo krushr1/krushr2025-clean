@@ -260,14 +260,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
               </div>
             ))
           ) : (
-            <div className="text-center py-8">
-              <Bot className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <h4 className="text-sm font-medium text-gray-900 mb-1">
-                Welcome to AI Assistant
-              </h4>
-              <p className="text-xs text-gray-500 mb-4">
-                Ask me anything about your workspace or get help with tasks
-              </p>
+            <div className="flex-1 flex items-center justify-center">
               <Button
                 onClick={() => createConversation.mutate({ workspaceId })}
                 size="sm"

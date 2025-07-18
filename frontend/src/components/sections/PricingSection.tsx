@@ -1,4 +1,5 @@
 import React from 'react'
+import { Check } from 'lucide-react'
 import { PRICING_CONTENT } from '../content/pricingContent'
 
 export const PricingSection: React.FC = () => {
@@ -30,7 +31,9 @@ export const PricingSection: React.FC = () => {
             if (feature === '') {
               return (
                 <div key={index} className="flex align-top">
-                  <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" className="mg-right-16px-2" />
+                  <div className="mg-right-16px-2 flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
+                    <Check className="w-4 h-4 text-green-600" />
+                  </div>
                 </div>
               )
             }
@@ -40,7 +43,9 @@ export const PricingSection: React.FC = () => {
 
             return (
               <div key={index} className="flex align-top">
-                <img src="images/LightRedCircleDarkCheck.svg" loading="eager" alt="" className="mg-right-16px-2" />
+                <div className="mg-right-16px-2 flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
+                  <Check className="w-4 h-4 text-green-600" />
+                </div>
                 <div>
                   <div className={`text-200 ${isBoldFeature ? 'bold' : 'medium'} font-manrope`}>
                     {isSpecialFeature ? (

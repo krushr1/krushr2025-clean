@@ -326,11 +326,8 @@ export default function WorkspaceHeaderConsolidated({
         "h-16 bg-white border-b border-gray-200 px-4 flex items-center justify-between shadow-sm",
         className
       )}>
-        {/* Left Section - Logo + Workspace + Layout Manager */}
+        {/* Left Section - Workspace + Layout Manager */}
         <div className="flex items-center space-x-4">
-          {/* Krushr Logo */}
-          <img src="/krushr.svg" alt="Krushr" className="object-contain h-8" />
-          
           {/* Workspace Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

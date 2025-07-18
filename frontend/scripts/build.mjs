@@ -13,7 +13,9 @@ const isProd = args[0] === '--production'
 // Set NODE_ENV environment variable
 process.env.NODE_ENV = isProd ? 'production' : 'development'
 
-await rimraf('dist')
+const outDir = 'public'
+
+await rimraf(outDir)
 
 const fileStats = new Map()
 
@@ -47,14 +49,14 @@ async function smartCopyFile(src, dest) {
   }
 }
 
-async function copyPublicAssets(changedFile = null) {
+async function copyPublicAssets(changedFile = null, targetDir = outDir) {
   try {
     if (changedFile) {
       const relativePath = relative('public', changedFile)
-      const destPath = `public/${relativePath}`
+      const destPath = `${targetDir}/${relativePath}`
       await smartCopyFile(changedFile, destPath)
     } else {
-      await cp('public', 'public', { 
+      await cp('public', targetDir, { 
         recursive: true,
         filter: async (src, dest) => {
           if (src.endsWith('.html') || src.endsWith('.css') || src.endsWith('.js')) {
@@ -71,7 +73,7 @@ async function copyPublicAssets(changedFile = null) {
       const { copyFile } = await import('fs/promises')
       try {
         // Copy react app as main index
-        await copyFile('index.html', 'public/index.html')
+        await copyFile('index.html', `${targetDir}/index.html`)
         console.log('React app set as main index.html')
       } catch (copyError) {
         console.log('React index copy failed:', copyError.message)
@@ -83,7 +85,7 @@ async function copyPublicAssets(changedFile = null) {
 }
 
 // Initial copy
-await copyPublicAssets()
+await copyPublicAssets(null, outDir)
 
 /**
  * @type {esbuild.BuildOptions}
@@ -93,7 +95,7 @@ const esbuildOpts = {
   entryPoints: ['src/main.tsx', 'index.html'],
   assetNames: '[name]',
   publicPath: '/',
-  outdir: 'dist',
+  outdir: outDir,
   entryNames: '[name]',
   write: true,
   bundle: true,
@@ -137,13 +139,13 @@ if (isProd) {
   
   publicWatcher.on('change', async (path) => {
     console.log(`Public file changed: ${path}`)
-    await copyPublicAssets(path)
+    await copyPublicAssets(path, outDir)
   })
   
   const { hosts, port } = await ctx.serve({
     port: parseInt(process.env.PORT) || 8001,
     host: '127.0.0.1',
-    servedir: 'dist'
+    servedir: outDir
   })
   console.log(`Running on:`)
   hosts.forEach((host) => {

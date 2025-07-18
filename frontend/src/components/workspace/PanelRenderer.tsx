@@ -114,6 +114,7 @@ interface PanelRendererProps {
 export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscreen, onFocus }: PanelRendererProps) {
   const { toast } = useToast()
   const utils = trpc.useUtils()
+  const [floatingPanels, setFloatingPanels] = useState<Set<string>>(() => new Set())
   
   const [showCreatePanel, setShowCreatePanel] = useState(false)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -155,6 +156,28 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     }
   })
 
+  // Handle floating mode toggle
+  const handleToggleFloating = () => {
+    setFloatingPanels(prev => {
+      const newFloatingPanels = new Set(prev)
+      if (newFloatingPanels.has(panel.id)) {
+        newFloatingPanels.delete(panel.id)
+      } else {
+        newFloatingPanels.add(panel.id)
+      }
+      return newFloatingPanels
+    })
+  }
+
+  const handleCloseFloating = () => {
+    setFloatingPanels(prev => {
+      const newFloatingPanels = new Set(prev)
+      newFloatingPanels.delete(panel.id)
+      return newFloatingPanels
+    })
+  }
+
+  const isFloating = useMemo(() => floatingPanels.has(panel.id), [floatingPanels, panel.id])
   const toggleFullscreen = trpc.panel.toggleFullscreen.useMutation({
     onSuccess: (updatedPanel) => {
       try {
@@ -302,7 +325,10 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
       case 'NOTES':
         return (
           <Suspense fallback={<PanelLoadingSpinner />}>
-            <NotesPanel workspaceId={workspaceId} className="h-full" />
+            <NotesPanel 
+              workspaceId={workspaceId} 
+              className="h-full" 
+            />
           </Suspense>
         )
 
@@ -361,6 +387,9 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   }
 
   const handleFocus = (e: React.MouseEvent) => {
+    // Don't trigger focus handling for floating panels
+    if (isFloating) return
+    
     // Don't interfere with input/textarea focus
     const target = e.target as HTMLElement
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.closest('input') || target.closest('textarea')) {

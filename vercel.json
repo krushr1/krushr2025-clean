@@ -4,5 +4,6 @@
   "outputDirectory": "frontend/public",
   "installCommand": "cd frontend && npm install",
   "devCommand": "cd frontend && npm run dev",
-  "framework": null
+  "framework": null,
+  "_comment": "Force rebuild 2025-01-17 20:55"
 } 

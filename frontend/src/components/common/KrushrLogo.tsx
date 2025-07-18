@@ -39,7 +39,7 @@ export default function KrushrLogo({
       />
       {showText && (
         <span className={cn("font-bold text-krushr-primary", textSizeClasses[size])}>
-          Krushr
+          
         </span>
       )}
     </div>

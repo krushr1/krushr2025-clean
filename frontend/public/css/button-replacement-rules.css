@@ -1,0 +1,520 @@
+/* =============================================================================
+   BUTTON REPLACEMENT RULES FOR TASKPANELS.WEBFLOW.CSS
+   
+   Replace all existing button classes with these standardized versions
+   ============================================================================= */
+
+/* =============================================================================
+   PRIMARY BUTTON REPLACEMENTS
+   ============================================================================= */
+
+/* Replace .btn-primary and all its variants */
+.btn-primary {
+  border: 2px solid var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  text-align: center;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  justify-content: center;
+  padding: 15px 24px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
+  min-height: 44px;
+}
+
+.btn-primary:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(235, 88, 87, 0.25);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 49, 151, 0.1);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Small Primary Button */
+.btn-primary.small {
+  border: 2px solid var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
+  border-radius: 12px;
+  margin-left: 10px;
+  padding: 10px 20px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  min-height: 36px;
+}
+
+.btn-primary.small:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(235, 88, 87, 0.25);
+}
+
+/* Large Primary Button */
+.btn-primary.large {
+  padding: 20px 32px;
+  font-size: 18px;
+  line-height: 1.3;
+  border-radius: 16px;
+  min-height: 52px;
+}
+
+/* White Primary Button */
+.btn-primary.white {
+  border-color: #e5e7eb;
+  background-color: white;
+  color: var(--krushr-primary, #143197);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary.white:hover {
+  border-color: var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+}
+
+/* Button Row Variant */
+.btn-primary.button-row {
+  border: 2px solid var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
+  color: white;
+  border-radius: 12px;
+  margin-right: 16px;
+  padding: 15px 24px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.btn-primary.button-row:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  box-shadow: 0 4px 16px rgba(235, 88, 87, 0.25);
+}
+
+/* =============================================================================
+   SECONDARY BUTTON REPLACEMENTS
+   ============================================================================= */
+
+.btn-secondary {
+  border: 2px solid var(--krushr-primary, #143197);
+  background-color: transparent;
+  color: var(--krushr-primary, #143197);
+  text-align: center;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  padding: 15px 24px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.btn-secondary:hover {
+  border-color: var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(20, 49, 151, 0.25);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 49, 151, 0.1);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Small Secondary Button */
+.btn-secondary.small {
+  padding: 10px 20px;
+  font-size: 14px;
+  line-height: 1.4;
+  border-radius: 12px;
+  min-height: 36px;
+}
+
+/* Large Secondary Button */
+.btn-secondary.large {
+  padding: 20px 32px;
+  font-size: 18px;
+  line-height: 1.3;
+  border-radius: 16px;
+  min-height: 52px;
+}
+
+/* White Secondary Button */
+.btn-secondary.white {
+  color: white;
+  background-color: transparent;
+  border-color: white;
+}
+
+.btn-secondary.white:hover {
+  border-color: white;
+  background-color: white;
+  color: var(--krushr-primary, #143197);
+}
+
+/* =============================================================================
+   SPECIALIZED BUTTON REPLACEMENTS
+   ============================================================================= */
+
+/* CTA Box Button */
+.btn-primary-cta-box {
+  border: 2px solid var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  text-align: center;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  justify-content: center;
+  padding: 20px 32px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
+  min-height: 52px;
+}
+
+.btn-primary-cta-box:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(235, 88, 87, 0.25);
+}
+
+.btn-primary-cta-box.white {
+  border-color: white;
+  background-color: white;
+  color: var(--krushr-primary, #143197);
+}
+
+.btn-primary-cta-box.white:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  color: white;
+}
+
+/* Banner Button */
+.btn-primary-banner {
+  border: 2px solid var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  text-align: center;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  justify-content: center;
+  padding: 20px 32px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
+  min-height: 52px;
+}
+
+.btn-primary-banner:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(235, 88, 87, 0.25);
+}
+
+.btn-primary-banner.small {
+  border-color: var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  padding: 10px 20px;
+  font-size: 14px;
+  line-height: 1.4;
+  border-radius: 12px;
+  min-height: 36px;
+}
+
+.btn-primary-banner.white {
+  border-color: white;
+  background-color: white;
+  color: var(--krushr-primary, #143197);
+}
+
+.btn-primary-banner.white:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  color: white;
+}
+
+/* Login Button */
+.btn-primary-login {
+  border: 2px solid var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  text-align: center;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  justify-content: center;
+  padding: 20px 32px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
+  min-height: 52px;
+}
+
+.btn-primary-login:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(235, 88, 87, 0.25);
+}
+
+.btn-primary-login.small {
+  border: 2px solid #e5e7eb;
+  background-color: white;
+  color: var(--krushr-primary, #143197);
+  border-radius: 12px;
+  margin-left: 10px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  min-height: 36px;
+}
+
+.btn-primary-login.small:hover {
+  border-color: var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+}
+
+/* Copy Button */
+.btn-primary-copy {
+  border: 2px solid var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  text-align: center;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  justify-content: center;
+  padding: 20px 32px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
+  min-height: 52px;
+}
+
+.btn-primary-copy:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(235, 88, 87, 0.25);
+}
+
+/* Plan Buttons */
+.btn-secondary-free-plan,
+.btn-secondary-essentials-plan,
+.btn-secondary-fully-loaded-plan {
+  border: 2px solid var(--krushr-primary, #143197);
+  background-color: transparent;
+  color: var(--krushr-primary, #143197);
+  text-align: center;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  padding: 20px 32px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+}
+
+.btn-secondary-free-plan:hover,
+.btn-secondary-essentials-plan:hover,
+.btn-secondary-fully-loaded-plan:hover {
+  border-color: var(--krushr-primary, #143197);
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(20, 49, 151, 0.25);
+}
+
+/* Fully Loaded Plan gets primary styling */
+.btn-secondary-fully-loaded-plan {
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
+}
+
+.btn-secondary-fully-loaded-plan:hover {
+  border-color: var(--krushr-secondary, #EB5857);
+  background-color: var(--krushr-secondary, #EB5857);
+  color: white;
+}
+
+/* =============================================================================
+   BADGE REPLACEMENTS
+   ============================================================================= */
+
+.badge-primary {
+  background-color: var(--krushr-primary, #143197);
+  color: white;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+}
+
+/* =============================================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  .btn-primary,
+  .btn-secondary,
+  .btn-primary-cta-box,
+  .btn-primary-banner,
+  .btn-primary-login,
+  .btn-primary-copy,
+  .btn-secondary-free-plan,
+  .btn-secondary-essentials-plan,
+  .btn-secondary-fully-loaded-plan {
+    width: 100%;
+    padding: 15px 20px;
+  }
+  
+  .btn-primary.small,
+  .btn-secondary.small,
+  .btn-primary-banner.small,
+  .btn-primary-login.small {
+    padding: 12px 16px;
+  }
+  
+  .btn-primary.large,
+  .btn-secondary.large {
+    padding: 18px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-primary,
+  .btn-secondary,
+  .btn-primary-cta-box,
+  .btn-primary-banner,
+  .btn-primary-login,
+  .btn-primary-copy,
+  .btn-secondary-free-plan,
+  .btn-secondary-essentials-plan,
+  .btn-secondary-fully-loaded-plan {
+    font-size: 16px;
+    padding: 14px 18px;
+  }
+}
+
+/* =============================================================================
+   BUTTON GROUPS
+   ============================================================================= */
+
+.buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.buttons-row.center {
+  justify-content: center;
+}
+
+.buttons-row._3-small-buttons-row {
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .buttons-row {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .buttons-row .btn-primary,
+  .buttons-row .btn-secondary {
+    width: 100%;
+    margin: 4px 0;
+  }
+}

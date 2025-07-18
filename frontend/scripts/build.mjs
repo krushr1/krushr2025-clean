@@ -14,6 +14,7 @@ const isProd = args[0] === '--production'
 process.env.NODE_ENV = isProd ? 'production' : 'development'
 
 const outDir = 'public'
+console.log(`Build output directory: ${outDir}`)
 
 await rimraf(outDir)
 

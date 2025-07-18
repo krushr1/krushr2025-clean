@@ -60,7 +60,7 @@
   background-color: var(--krushr-primary, #143197);
   color: white;
   box-shadow: 0 2px 8px rgba(20, 49, 151, 0.15);
-  border-radius: 8px;
+  border-radius: 12px;
   margin-left: 10px;
   padding: 10px 20px;
   font-family: 'Manrope', sans-serif;
@@ -173,7 +173,7 @@
   padding: 10px 20px;
   font-size: 14px;
   line-height: 1.4;
-  border-radius: 8px;
+  border-radius: 12px;
   min-height: 36px;
 }
 
@@ -210,7 +210,7 @@
   color: white;
   text-align: center;
   transform-style: preserve-3d;
-  border-radius: 40px;
+  border-radius: 12px;
   justify-content: center;
   padding: 20px 32px;
   font-family: 'Manrope', sans-serif;
@@ -252,7 +252,7 @@
   color: white;
   text-align: center;
   transform-style: preserve-3d;
-  border-radius: 40px;
+  border-radius: 12px;
   justify-content: center;
   padding: 20px 32px;
   font-family: 'Manrope', sans-serif;
@@ -281,7 +281,7 @@
   padding: 10px 20px;
   font-size: 14px;
   line-height: 1.4;
-  border-radius: 8px;
+  border-radius: 12px;
   min-height: 36px;
 }
 
@@ -304,7 +304,7 @@
   color: white;
   text-align: center;
   transform-style: preserve-3d;
-  border-radius: 40px;
+  border-radius: 12px;
   justify-content: center;
   padding: 20px 32px;
   font-family: 'Manrope', sans-serif;
@@ -331,7 +331,7 @@
   border: 2px solid #e5e7eb;
   background-color: white;
   color: var(--krushr-primary, #143197);
-  border-radius: 8px;
+  border-radius: 12px;
   margin-left: 10px;
   padding: 10px 20px;
   font-size: 14px;
@@ -429,7 +429,7 @@
 .badge-primary {
   background-color: var(--krushr-primary, #143197);
   color: white;
-  border-radius: 40px;
+  border-radius: 12px;
   padding: 12px 20px;
   font-family: 'Manrope', sans-serif;
   font-size: 14px;

@@ -5,5 +5,5 @@
   "installCommand": "cd frontend && npm install",
   "devCommand": "cd frontend && npm run dev",
   "framework": null,
-  "_comment": "Force rebuild 2025-01-17 20:55"
+  "_comment": "FRESH DEPLOYMENT TEST 2025-01-17 21:25"
 } 

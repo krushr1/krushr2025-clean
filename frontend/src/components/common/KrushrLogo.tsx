@@ -23,6 +23,13 @@ export default function KrushrLogo({
     xl: 'h-16'
   }
 
+  const textSizeClasses = {
+    sm: 'text-sm',
+    md: 'text-lg',
+    lg: 'text-xl',
+    xl: 'text-2xl'
+  }
+
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <img 
@@ -30,6 +37,11 @@ export default function KrushrLogo({
         alt="Krushr"
         className={cn("object-contain", sizeClasses[size])}
       />
+      {showText && (
+        <span className={cn("font-bold text-krushr-primary", textSizeClasses[size])}>
+          Krushr
+        </span>
+      )}
     </div>
   )
 }

@@ -96,7 +96,11 @@ export const PricingSection: React.FC = () => {
           </div>
         </div>
         <div className="grid-1-column gap-row-32px mg-bottom-80px">
-          {PRICING_CONTENT.plans.map((plan, index) => renderPricingCard(plan, index))}
+          {PRICING_CONTENT.plans.map((plan, index) => (
+            <div key={plan.name || index}>
+              {renderPricingCard(plan, index)}
+            </div>
+          ))}
         </div>
         <div className="testimonials-section---logo-list-wrapper">
           <div className="text-center mg-bottom-40px">

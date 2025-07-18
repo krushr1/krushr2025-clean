@@ -85,8 +85,10 @@ async function copyPublicAssets(changedFile = null, targetDir = outDir) {
   }
 }
 
-// Initial copy
-await copyPublicAssets(null, outDir)
+// Initial copy - only copy if outDir is not 'public' to avoid copying to itself
+if (outDir !== 'public') {
+  await copyPublicAssets(null, outDir)
+}
 
 /**
  * @type {esbuild.BuildOptions}

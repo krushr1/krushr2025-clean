@@ -61,10 +61,18 @@ export default function AiChat({ workspaceId, className }: AiChatProps) {
     }
   })
   
+  const utils = trpc.useUtils()
+  
   const sendMessage = trpc.ai.sendMessage.useMutation({
     onSuccess: () => {
       setMessage('')
       setIsLoading(false)
+      // Invalidate current conversation to show new messages immediately
+      if (selectedConversation) {
+        utils.ai.getConversation.invalidate({ conversationId: selectedConversation })
+      }
+      // Also refresh conversations list to update last message preview
+      utils.ai.getConversations.invalidate({ workspaceId })
     },
     onError: () => {
       setIsLoading(false)

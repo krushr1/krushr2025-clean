@@ -358,14 +358,14 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
           transition-property: left, top, width, height, transform, box-shadow, border;
           background: white;
           border: 1px solid #e5e7eb;
-          border-radius: 16px;
-          box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+          border-radius: 12px;
+          box-shadow: 0 2px 8px 0 rgb(0 0 0 / 0.04), 0 1px 4px -1px rgb(0 0 0 / 0.03);
           will-change: transform, box-shadow;
           cursor: grab;
         }
         
         .react-grid-item:hover {
-          box-shadow: 0 4px 12px 0 rgb(0 0 0 / 0.12), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+          box-shadow: 0 4px 16px 0 rgb(0 0 0 / 0.08), 0 2px 8px -2px rgb(0 0 0 / 0.05);
           transform: translateY(-0.5px);
           border-color: rgba(59, 130, 246, 0.3);
           cursor: grab;
@@ -378,7 +378,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
         .react-grid-item.react-grid-placeholder {
           background: rgba(34, 197, 94, 0.1);
           border: 2px dashed rgba(34, 197, 94, 0.4);
-          border-radius: 16px;
+          border-radius: 12px;
           transition: all 150ms cubic-bezier(0.23, 1, 0.32, 1);
           z-index: 2;
           user-select: none;

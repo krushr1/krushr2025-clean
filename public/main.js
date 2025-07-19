@@ -13144,7 +13144,7 @@ function KrushrLogo({
         className: cn("object-contain", sizeClasses[size])
       }
     ),
-    showText && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: cn("font-bold text-krushr-primary", textSizeClasses[size]), children: "Krushr" })
+    showText && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: cn("font-bold text-krushr-primary", textSizeClasses[size]) })
   ] });
 }
 

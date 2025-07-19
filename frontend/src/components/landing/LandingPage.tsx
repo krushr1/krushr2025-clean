@@ -1,4 +1,5 @@
 import React from 'react'
+import { PricingCards } from '../pricing/PricingCards'
 
 export function LandingPage() {
   return (

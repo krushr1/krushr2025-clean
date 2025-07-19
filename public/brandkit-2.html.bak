@@ -28,7 +28,7 @@
         }
     </style>
     <!-- CS-Interface Icon Library -->
-    <link rel="stylesheet" href="./fonts/CS-Interface/style.css">
+    <link rel="stylesheet" href="./CS-Interface/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {

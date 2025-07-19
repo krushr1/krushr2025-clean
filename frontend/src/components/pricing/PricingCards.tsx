@@ -111,15 +111,25 @@ export const PricingCards: React.FC<PricingCardsProps> = ({
               }}
               className={`mg-top-60px mg-top-0-tablet ${tier.isPopular ? 'middle' : ''}`}
             >
-              <div className="card testimonial-slider-card-small krushr-pricing-card">
+              <div className="card testimonial-slider-card-small krushr-pricing-card relative">
+                {tier.isPopular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+                    <span className="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg border-2 border-white flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      Most Popular
+                    </span>
+                  </div>
+                )}
                 <img 
                   src={tier.backgroundImage} 
                   loading="eager" 
                   alt="" 
                   className="testimonials-slider-card---bg-banner" 
                 />
-                <h2 className="pricing-card-heading">{tier.name}</h2>
-                <div className="text-200 medium">{tier.description}</div>
+                <h2 className="pricing-card-heading text-xl md:text-2xl font-bold tracking-tight">{tier.name}</h2>
+                <div className="text-200 medium text-base md:text-lg leading-relaxed color-neutral-600 mg-bottom-24px">{tier.description}</div>
                 <div className="divider _24px bg-neutral-300"></div>
                 <div className="grid-1-column-3 gap-row-16px mg-bottom-40px">
                   {tier.features.map((feature, featureIndex) => (
@@ -136,19 +146,27 @@ export const PricingCards: React.FC<PricingCardsProps> = ({
                     </div>
                   ))}
                 </div>
-                <div className="display-5 mg-bottom-16px">
-                  <span className={tier.originalPrice ? 'text-span-23' : ''}>{tier.price}</span>
-                  {tier.originalPrice && (
-                    <>
-                      {' '}
-                      <span className="text-span-14">{tier.originalPrice}</span>
-                      <span className="text-span-22"> <strong className="bold-text-11">{tier.savings}</strong></span>
-                    </>
+                <div className="mg-bottom-24px">
+                  <div className="flex items-baseline flex-wrap gap-2 mg-bottom-8px">
+                    <span className="display-5 text-3xl md:text-4xl font-bold tracking-tight color-neutral-900">{tier.price}</span>
+                    {tier.originalPrice && (
+                      <span className="text-span-14 text-lg line-through color-neutral-500 opacity-60">{tier.originalPrice}</span>
+                    )}
+                  </div>
+                  {tier.savings && (
+                    <div className="mg-top-8px">
+                      <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold border border-green-200 inline-flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        {tier.savings}
+                      </span>
+                    </div>
                   )}
                 </div>
-                <a href="#" className={`${tier.buttonClass} w-button`}>
+                <a href="#" className={`${tier.buttonClass} w-button py-4 px-6 text-base md:text-lg font-bold rounded-xl transition-all duration-200 hover:shadow-lg transform hover:scale-105 flex items-center justify-center`}>
                   {tier.buttonText}
-                  <span className="line-rounded-icon link-icon-right"></span>
+                  <span className="line-rounded-icon link-icon-right ml-2"></span>
                 </a>
               </div>
             </div>

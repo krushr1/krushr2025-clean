@@ -252,7 +252,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
       case 'CHAT':
         return <MessageCircle className="w-4 h-4 text-krushr-coral-red" />
       case 'AI_CHAT':
-        return <Bot className="w-4 h-4 text-krushr-primary" />
+        return <Bot className="w-4 h-4 text-krushr-coral-red" />
       case 'CALENDAR':
         return <Calendar className="w-4 h-4 text-krushr-coral-red" />
       case 'NOTES':

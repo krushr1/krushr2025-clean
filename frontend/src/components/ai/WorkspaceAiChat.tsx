@@ -286,21 +286,25 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     }
   }
 
+  const handleAddToFavorites = (messageContent: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    
+    // Get first line or truncate for title
+    const title = messageContent.split('\n')[0].substring(0, 50)
+    const prompt = messageContent.length > 200 ? messageContent.substring(0, 200) + '...' : messageContent
+    
+    // For now, just show confirmation - in a real app you'd save to backend
+    if (confirm(`Add "${title}" to favorites?`)) {
+      // TODO: Implement actual saving to favorites
+      alert('Favorite saved! (Note: This is a demo - real implementation would save to database)')
+    }
+  }
+
   return (
     <div className={cn('h-full flex flex-col bg-white', className)}>
       {/* Header similar to chat panel */}
-      <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gradient-to-r from-krushr-primary/5 to-transparent">
+      <div className="flex items-center justify-between p-2 border-b border-gray-200 bg-gradient-to-r from-krushr-primary/5 to-transparent">
         <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-2">
-            <div className="relative">
-              <Bot className="w-5 h-5 text-krushr-primary" />
-              <Sparkles className="w-3 h-3 text-yellow-500 absolute -top-1 -right-1" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-sm text-gray-900">AI Assistant</h3>
-              <p className="text-xs text-gray-500">Gemini 2.5 Flash</p>
-            </div>
-          </div>
           {usageStats && (
             <div className="hidden md:flex items-center space-x-3 text-xs text-gray-500">
               <div className="flex items-center space-x-1">
@@ -499,7 +503,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
                     {msg.role === 'user' ? (
                       <User className="w-4 h-4" />
                     ) : (
-                      <Bot className="w-4 h-4" />
+                      <Bot className="w-4 h-4 text-krushr-coral-red" />
                     )}
                   </AvatarFallback>
                 </Avatar>
@@ -545,6 +549,18 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
                           <Copy className="w-3 h-3" />
                         )}
                       </Button>
+                      
+                      {msg.role === 'user' && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => handleAddToFavorites(msg.content, e)}
+                          className="h-6 w-6 p-0 hover:bg-yellow-100 hover:text-yellow-600"
+                          title="Add to favorites"
+                        >
+                          <Star className="w-3 h-3" />
+                        </Button>
+                      )}
                       
                       {msg.role === 'assistant' && (
                         <Button
@@ -604,7 +620,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
             <div className="flex items-start space-x-3">
               <Avatar className="w-7 h-7">
                 <AvatarFallback className="text-xs">
-                  <Bot className="w-4 h-4" />
+                  <Bot className="w-4 h-4 text-krushr-coral-red" />
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
@@ -640,7 +656,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               disabled={isLoading}
-              className="h-8 max-h-24 text-sm pr-8 resize-none overflow-hidden leading-tight py-1.5 px-3"
+              className="h-8 min-h-8 max-h-24 text-sm pr-8 resize-none overflow-hidden leading-tight py-1.5 px-3"
               rows={1}
             />
             <Button

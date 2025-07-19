@@ -131,7 +131,7 @@ export default function AiChat({ workspaceId, className }: AiChatProps) {
         <div className="px-6 py-4 border-b border-krushr-panel-border">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Bot className="w-5 h-5 text-krushr-primary" />
+              <Bot className="w-5 h-5 text-krushr-coral-red" />
               <h2 className="font-brand font-semibold text-krushr-gray-dark">AI Assistant</h2>
             </div>
             <Button 
@@ -209,7 +209,7 @@ export default function AiChat({ workspaceId, className }: AiChatProps) {
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <Bot className="w-5 h-5 text-krushr-primary" />
+                  <Bot className="w-5 h-5 text-krushr-coral-red" />
                   <div>
                     <h3 className="font-semibold text-gray-900">
                       {currentConversation?.title || 'AI Assistant'}

@@ -23158,105 +23158,46 @@ function Workspace() {
   ] }) });
 }
 
-// src/pages/SimpleLanding.tsx
-var import_jsx_runtime75 = __toESM(require_jsx_runtime(), 1);
-function SimpleLanding() {
-  return /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "min-h-screen bg-gradient-to-b from-white to-gray-50", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("header", { className: "px-6 py-4 border-b", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "max-w-6xl mx-auto flex items-center justify-between", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(KrushrLogo, { size: "lg" }),
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "flex items-center gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Link2, { to: "/login", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Button, { variant: "ghost", children: "Sign In" }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Link2, { to: "/register", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Button, { children: "Get Started" }) })
-      ] })
-    ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("section", { className: "px-6 py-20", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "max-w-4xl mx-auto text-center", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("h1", { className: "text-5xl font-bold text-gray-900 mb-6", children: [
-        "Project Management",
-        /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("span", { className: "text-krushr-primary", children: " Made Simple" })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("p", { className: "text-xl text-gray-600 mb-8 max-w-2xl mx-auto", children: "Organize tasks, collaborate with teams, and ship projects faster with Krushr's intuitive workspace platform." }),
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "flex items-center justify-center gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Link2, { to: "/register", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)(Button, { size: "lg", className: "bg-krushr-primary hover:bg-krushr-primary/90", children: [
-          "Start Free Trial",
-          /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ArrowRight, { className: "w-4 h-4 ml-2" })
-        ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Link2, { to: "/workspace", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Button, { size: "lg", variant: "outline", children: "View Demo" }) })
-      ] })
-    ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("section", { className: "px-6 py-16 bg-white", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "max-w-6xl mx-auto", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("div", { className: "text-center mb-12", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("h2", { className: "text-3xl font-bold text-gray-900 mb-4", children: "Everything you need to stay organized" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("div", { className: "grid md:grid-cols-3 gap-8", children: [
-        {
-          title: "Kanban Boards",
-          description: "Visual task management with drag-and-drop simplicity"
-        },
-        {
-          title: "Real-time Collaboration",
-          description: "Work together seamlessly with live updates and chat"
-        },
-        {
-          title: "AI Assistant",
-          description: "Get smart suggestions and automate routine tasks"
-        }
-      ].map((feature, index) => /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "text-center p-6", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("div", { className: "w-12 h-12 bg-krushr-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(CircleCheckBig, { className: "w-6 h-6 text-krushr-primary" }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("h3", { className: "text-xl font-semibold text-gray-900 mb-2", children: feature.title }),
-        /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("p", { className: "text-gray-600", children: feature.description })
-      ] }, index)) })
-    ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("section", { className: "px-6 py-20 bg-krushr-primary", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "max-w-4xl mx-auto text-center", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("h2", { className: "text-3xl font-bold text-white mb-4", children: "Ready to get organized?" }),
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("p", { className: "text-krushr-primary/80 mb-8", children: "Join thousands of teams already using Krushr to ship better projects." }),
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Link2, { to: "/register", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Button, { size: "lg", variant: "secondary", children: "Start Your Free Trial" }) })
-    ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("footer", { className: "px-6 py-8 bg-gray-900 text-white", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "max-w-6xl mx-auto text-center", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(KrushrLogo, { size: "md", className: "mb-4 justify-center" }),
-      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("p", { className: "text-gray-400", children: "\xA9 2025 Krushr. Built for teams that ship." })
-    ] }) })
-  ] });
-}
-
 // src/App.tsx
-var import_jsx_runtime76 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime75 = __toESM(require_jsx_runtime(), 1);
 function ProtectedRoute({ children }) {
   const { isAuthenticated, isLoading } = useAuthStore();
   if (isLoading) {
-    return /* @__PURE__ */ (0, import_jsx_runtime76.jsx)("div", { className: "flex items-center justify-center min-h-screen", children: /* @__PURE__ */ (0, import_jsx_runtime76.jsxs)("div", { className: "text-center", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime76.jsx)("div", { className: "animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2" }),
-      /* @__PURE__ */ (0, import_jsx_runtime76.jsx)("p", { children: "Loading..." })
+    return /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("div", { className: "flex items-center justify-center min-h-screen", children: /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)("div", { className: "text-center", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("div", { className: "animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2" }),
+      /* @__PURE__ */ (0, import_jsx_runtime75.jsx)("p", { children: "Loading..." })
     ] }) });
   }
-  return isAuthenticated ? /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(import_jsx_runtime76.Fragment, { children }) : /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Navigate, { to: "/login", replace: true });
+  return isAuthenticated ? /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(import_jsx_runtime75.Fragment, { children }) : /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Navigate, { to: "/login", replace: true });
 }
 function App() {
   const { hydrate } = useAuthStore();
   (0, import_react36.useEffect)(() => {
     hydrate().catch(console.error);
   }, [hydrate]);
-  return /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(TRPCProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(HashRouter, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsxs)(Routes, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(SimpleLanding, {}) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/landing", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(SimpleLanding, {}) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/test", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Test, {}) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/login", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Login, {}) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/register", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Register, {}) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/pricing", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Pricing_default, {}) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/home", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Home, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/board", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Board, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/calendar", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Calendar3, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/notes", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Notes, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/chat", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Chat, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/teams", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Teams, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/projects", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Projects, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/workspace", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Workspace, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/workspace/:workspaceId", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Workspace, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/workspaces/new", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Workspace, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/profile", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Profile, {}) }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Route, { path: "/settings", element: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Settings4, {}) }) })
+  return /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(TRPCProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(HashRouter, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsxs)(Routes, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Navigate, { to: "/workspace", replace: true }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/test", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Test, {}) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/login", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Login, {}) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/register", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Register, {}) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/pricing", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Pricing_default, {}) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/home", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Home, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/board", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Board, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/calendar", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Calendar3, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/notes", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Notes, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/chat", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Chat, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/teams", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Teams, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/projects", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Projects, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/workspace", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Workspace, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/workspace/:workspaceId", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Workspace, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/workspaces/new", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Workspace, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/profile", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Profile, {}) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Route, { path: "/settings", element: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(ProtectedRoute, { children: /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(Settings4, {}) }) })
   ] }) }) });
 }
 
 // src/main.tsx
-var import_jsx_runtime77 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime76 = __toESM(require_jsx_runtime(), 1);
 function preventDuplicateCustomElements() {
   if (typeof window !== "undefined" && window.customElements) {
     const originalDefine = window.customElements.define.bind(window.customElements);
@@ -23383,9 +23324,9 @@ async function initServiceWorker() {
 window.addEventListener("load", initServiceWorker);
 var root = (0, import_client.createRoot)(document.getElementById("app"));
 root.render(
-  /* @__PURE__ */ (0, import_jsx_runtime77.jsxs)(CriticalErrorBoundary, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime77.jsx)(App, {}),
-    /* @__PURE__ */ (0, import_jsx_runtime77.jsx)(Toaster, { position: "top-right", richColors: true })
+  /* @__PURE__ */ (0, import_jsx_runtime76.jsxs)(CriticalErrorBoundary, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(App, {}),
+    /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(Toaster, { position: "top-right", richColors: true })
   ] })
 );
 /*! Bundled license information:

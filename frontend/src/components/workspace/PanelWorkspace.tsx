@@ -358,7 +358,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
           transition-property: left, top, width, height, transform, box-shadow, border;
           background: white;
           border: 1px solid #e5e7eb;
-          border-radius: 12px;
+          border-radius: 16px;
           box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
           will-change: transform, box-shadow;
           cursor: grab;
@@ -378,7 +378,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
         .react-grid-item.react-grid-placeholder {
           background: rgba(34, 197, 94, 0.1);
           border: 2px dashed rgba(34, 197, 94, 0.4);
-          border-radius: 12px;
+          border-radius: 16px;
           transition: all 150ms cubic-bezier(0.23, 1, 0.32, 1);
           z-index: 2;
           user-select: none;

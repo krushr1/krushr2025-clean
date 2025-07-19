@@ -3,7 +3,7 @@ import {
   endOfWeek,
   formatDateShort,
   isSameMonth
-} from "/chunks/chunk-UK6VMFDI.js";
+} from "/chunks/chunk-3IJY37R3.js";
 import {
   Badge,
   Card,
@@ -16,17 +16,17 @@ import {
   startOfMonth,
   startOfWeek,
   subMonths
-} from "/chunks/chunk-4RPBKZE7.js";
+} from "/chunks/chunk-ZE3R3EPT.js";
 import {
   FloatingInput
-} from "/chunks/chunk-7WCGT42X.js";
+} from "/chunks/chunk-GSTVSDCS.js";
 import {
   Button
-} from "/chunks/chunk-XWDUADFP.js";
+} from "/chunks/chunk-QDZSOFSU.js";
 import {
   trpc
-} from "/chunks/chunk-7WMTHTGL.js";
-import "/chunks/chunk-ROKVQQM7.js";
+} from "/chunks/chunk-2QROIOE7.js";
+import "/chunks/chunk-QPFHVNKH.js";
 import {
   Calendar,
   ChevronDown,
@@ -51,7 +51,7 @@ import {
   cn,
   require_jsx_runtime,
   require_react
-} from "/chunks/chunk-K44F2ZF7.js";
+} from "/chunks/chunk-DLEFKBC4.js";
 
 // src/components/calendar/NewCalendarPanel.tsx
 var import_react2 = __toESM(require_react(), 1);
@@ -1149,4 +1149,4 @@ function NewCalendarPanel({
 export {
   NewCalendarPanel as default
 };
-//# sourceMappingURL=/chunks/NewCalendarPanel-QH62JM7L.js.map
+//# sourceMappingURL=/chunks/NewCalendarPanel-G37EUYOI.js.map

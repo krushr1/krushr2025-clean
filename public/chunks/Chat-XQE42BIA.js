@@ -1,6 +1,6 @@
 import {
   trpc
-} from "/chunks/chunk-7WMTHTGL.js";
+} from "/chunks/chunk-2QROIOE7.js";
 import {
   Reply,
   Send,
@@ -10,7 +10,7 @@ import {
   cn,
   require_jsx_runtime,
   require_react
-} from "/chunks/chunk-K44F2ZF7.js";
+} from "/chunks/chunk-DLEFKBC4.js";
 
 // src/components/chat/MessageBubble.tsx
 var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
@@ -444,4 +444,4 @@ function Chat({ threadId, className }) {
 export {
   Chat as default
 };
-//# sourceMappingURL=/chunks/Chat-HKNZRSJT.js.map
+//# sourceMappingURL=/chunks/Chat-XQE42BIA.js.map

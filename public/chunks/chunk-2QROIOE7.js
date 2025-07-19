@@ -2,7 +2,7 @@ import {
   __toESM,
   require_jsx_runtime,
   require_react
-} from "/chunks/chunk-K44F2ZF7.js";
+} from "/chunks/chunk-DLEFKBC4.js";
 
 // ../node_modules/@tanstack/query-core/build/modern/subscribable.js
 var Subscribable = class {
@@ -5281,4 +5281,4 @@ export {
 @trpc/react-query/dist/shared-JtnEvJvB.mjs:
   (* istanbul ignore next -- @preserve *)
 */
-//# sourceMappingURL=/chunks/chunk-7WMTHTGL.js.map
+//# sourceMappingURL=/chunks/chunk-2QROIOE7.js.map

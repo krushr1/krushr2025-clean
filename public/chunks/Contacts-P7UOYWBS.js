@@ -1,12 +1,12 @@
 import {
   ScrollArea
-} from "/chunks/chunk-YFNRHNVG.js";
+} from "/chunks/chunk-Y7TPO6IU.js";
 import {
   Avatar,
   AvatarFallback
-} from "/chunks/chunk-6PP5BWQ7.js";
-import "/chunks/chunk-CPPR7KMG.js";
-import "/chunks/chunk-ROKVQQM7.js";
+} from "/chunks/chunk-24SZUPW3.js";
+import "/chunks/chunk-J7YHTLQG.js";
+import "/chunks/chunk-QPFHVNKH.js";
 import {
   Building,
   GripVertical,
@@ -22,7 +22,7 @@ import {
   cn,
   require_jsx_runtime,
   require_react
-} from "/chunks/chunk-K44F2ZF7.js";
+} from "/chunks/chunk-DLEFKBC4.js";
 
 // src/components/contacts/Contacts.tsx
 var import_react = __toESM(require_react(), 1);
@@ -296,4 +296,4 @@ function Contacts({ workspaceId, className }) {
 export {
   Contacts as default
 };
-//# sourceMappingURL=/chunks/Contacts-VCXT5MU5.js.map
+//# sourceMappingURL=/chunks/Contacts-P7UOYWBS.js.map

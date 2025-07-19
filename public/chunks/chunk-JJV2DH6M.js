@@ -1,12 +1,12 @@
 import {
   toast
-} from "/chunks/chunk-X2X7HDLN.js";
+} from "/chunks/chunk-HQA66DFL.js";
 import {
   FloatingInput
-} from "/chunks/chunk-7WCGT42X.js";
+} from "/chunks/chunk-GSTVSDCS.js";
 import {
   trpc
-} from "/chunks/chunk-7WMTHTGL.js";
+} from "/chunks/chunk-2QROIOE7.js";
 import {
   Archive,
   ArrowLeft,
@@ -20,7 +20,7 @@ import {
   cn,
   require_jsx_runtime,
   require_react
-} from "/chunks/chunk-K44F2ZF7.js";
+} from "/chunks/chunk-DLEFKBC4.js";
 
 // src/components/notes/NotesPanel.tsx
 var import_react = __toESM(require_react(), 1);
@@ -501,4 +501,4 @@ var NotesPanel_default = NotesPanel;
 export {
   NotesPanel_default
 };
-//# sourceMappingURL=/chunks/chunk-GP6KKW6C.js.map
+//# sourceMappingURL=/chunks/chunk-JJV2DH6M.js.map

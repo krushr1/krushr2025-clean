@@ -3,7 +3,7 @@ import { router, protectedProcedure } from '../base'
 import { aiService } from '../../lib/ai'
 import { prisma } from '../../lib/prisma'
 import { TRPCError } from '@trpc/server'
-import { redis } from '../../lib/redis'
+import { safeRedis } from '../../lib/redis'
 
 export const aiRouter = router({
   // Get user's AI conversations
@@ -18,7 +18,7 @@ export const aiRouter = router({
     .query(async ({ ctx, input }) => {
       // Add Redis caching
       const cacheKey = `conversations:${input.workspaceId}:${input.limit}:${input.offset}`;
-      const cached = await redis.get(cacheKey);
+      const cached = await safeRedis.get(cacheKey);
       if (cached) return JSON.parse(cached);
       
       const conversations = await ctx.prisma.aiConversation.findMany({
@@ -29,7 +29,7 @@ export const aiRouter = router({
         include: { messages: { take: 1, orderBy: { createdAt: 'desc' } } }, // Eager load to reduce N+1
       });
       
-      await redis.set(cacheKey, JSON.stringify(conversations), 'EX', 300); // Cache for 5 min
+      await safeRedis.set(cacheKey, JSON.stringify(conversations), 'EX', 300); // Cache for 5 min
       return conversations;
     }),
 
@@ -39,7 +39,7 @@ export const aiRouter = router({
     .query(async ({ ctx, input }) => {
       // Add caching
       const cacheKey = `conversation:${input.conversationId}`;
-      const cached = await redis.get(cacheKey);
+      const cached = await safeRedis.get(cacheKey);
       if (cached) return JSON.parse(cached);
       
       const conversation = await ctx.prisma.aiConversation.findUnique({
@@ -49,7 +49,7 @@ export const aiRouter = router({
       
       if (!conversation) throw new TRPCError({ code: 'NOT_FOUND' });
       
-      await redis.set(cacheKey, JSON.stringify(conversation), 'EX', 300);
+      await safeRedis.set(cacheKey, JSON.stringify(conversation), 'EX', 300);
       return conversation;
     }),
 

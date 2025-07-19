@@ -7,16 +7,16 @@ import {
   useCallbackRef,
   useDirection,
   useLayoutEffect2
-} from "/chunks/chunk-6PP5BWQ7.js";
+} from "/chunks/chunk-24SZUPW3.js";
 import {
   useComposedRefs
-} from "/chunks/chunk-ROKVQQM7.js";
+} from "/chunks/chunk-QPFHVNKH.js";
 import {
   __toESM,
   cn,
   require_jsx_runtime,
   require_react
-} from "/chunks/chunk-K44F2ZF7.js";
+} from "/chunks/chunk-DLEFKBC4.js";
 
 // src/components/ui/scroll-area.tsx
 var React3 = __toESM(require_react(), 1);
@@ -766,4 +766,4 @@ ScrollBar.displayName = ScrollAreaScrollbar.displayName;
 export {
   ScrollArea2 as ScrollArea
 };
-//# sourceMappingURL=/chunks/chunk-YFNRHNVG.js.map
+//# sourceMappingURL=/chunks/chunk-Y7TPO6IU.js.map

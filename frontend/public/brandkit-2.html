@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- CS-Interface Icon Library -->
     <link rel="stylesheet" href="./fonts/CS-Interface/style.css">
-    <script src="./saved_resource"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -1530,24 +1530,24 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                     <h3 class="text-lg font-medium text-krushr-gray-dark mb-4">Text Inputs &amp; Fields</h3>
                     <div class="grid-demo grid-2">
                         <div class="component-demo">
-                            <h4 class="text-sm font-medium text-krushr-gray-dark mb-3">Perfect Floating Labels</h4>
+                            <h4 class="text-sm font-medium mb-4">Text Inputs</h4>
                             <div class="space-y-4">
                                 <div>
                                     <div class="relative">
-                                        <input type="text" id="floating_default" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-                                        <label for="floating_default" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Enter your text</label>
+                                        <input type="text" id="floating_default" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
+                                        <label for="floating_default" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Enter your text</label>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="relative">
-                                        <input type="email" id="floating_email_perfect" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-                                        <label for="floating_email_perfect" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Email address</label>
+                                        <input type="text" id="floating_large" class="block px-2.5 pb-2.5 pt-5 w-full text-lg text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
+                                        <label for="floating_large" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Larger text field</label>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="relative">
-                                        <input type="text" id="floating_large" class="block px-2.5 pb-2.5 pt-5 w-full text-lg text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-                                        <label for="floating_large" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Larger text field</label>
+                                        <input type="text" id="floating_small" class="block px-2 pb-2 pt-3 w-full text-xs text-krushr-gray-900 bg-transparent rounded border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
+                                        <label for="floating_small" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Compact field</label>
                                     </div>
                                 </div>
                                 <div>

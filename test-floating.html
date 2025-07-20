@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Floating Labels</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        krushr: {
+                            primary: "#143197",
+                            "gray-900": "#111827",
+                            "gray-500": "#6b7280",
+                            "gray-300": "#d1d5db"
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="p-8">
+    <h1 class="text-2xl mb-4">Floating Label Test</h1>
+    <div class="relative">
+        <input type="text" id="test_input" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
+        <label for="test_input" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Test floating label</label>
+    </div>
+</body>
+</html>

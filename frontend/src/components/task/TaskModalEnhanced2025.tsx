@@ -1543,7 +1543,7 @@ This task involves implementing a comprehensive user authentication system with 
                       <Input
                         value={aiPrompt}
                         onChange={(e) => setAiPrompt(e.target.value)}
-                        placeholder="Ask AI anything about this task..."
+                        placeholder="How can I help?"
                         className="flex-1"
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') {

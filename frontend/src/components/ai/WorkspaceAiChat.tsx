@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-import { Textarea } from '../ui/textarea'
+import { FloatingTextarea } from '../ui/floating-textarea'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { ScrollArea } from '../ui/scroll-area'
 import { 
@@ -649,9 +649,9 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
           className="flex items-end space-x-2"
         >
           <div className="flex-1 relative">
-            <Textarea
+            <FloatingTextarea
               ref={messageInputRef}
-              placeholder="Ask AI anything... (Shift+Enter for new line)"
+              label="Ask AI anything... (Shift+Enter for new line)"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}

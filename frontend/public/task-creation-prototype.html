@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Creation UX Evaluation - Current vs. Proposed</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- CS-Interface Icon Library -->
+    <link rel="stylesheet" href="./fonts/CS-Interface/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Manrope', 'sans-serif'],
+                        'manrope': ['Manrope', 'sans-serif'],
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'hero': ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        krushr: {
+                            'primary': '#143197',
+                            'secondary': '#EB5857',
+                            'success': '#1FBB65',
+                            'warning': '#D97706',
+                            'info': '#57C7EB',
+                            'purple': '#6941C6',
+                            'orange': '#FF9772',
+                            'black': '#2D3748',
+                            'gray-dark': '#2D3748',
+                            'gray-medium': '#454343',
+                            'gray': '#5F5F5F',
+                            'gray-light': '#ADADAD',
+                            'gray-lighter': '#C9C9C9',
+                            'gray-border': '#E9E9E9',
+                            'gray-bg': '#F1F1F1',
+                            'gray-bg-light': '#F6F6F6',
+                            'white': '#FFFFFF',
+                            'priority-low': '#10b981',
+                            'priority-medium': '#f59e0b',
+                            'priority-high': '#ef4444',
+                            'priority-critical': '#dc2626',
+                        }
+                    },
+                    boxShadow: {
+                        'krushr-card': '0px 2px 5px 3px rgba(215, 215, 215, 0.1)',
+                        'krushr-modal': '0px 15px 40px 5px rgba(136, 136, 136, 0.42)',
+                        'krushr-button-red': '1px 2px 10px #DDA1A1',
+                        'krushr-button-dark': '1px 2px 10px #5F5F5F',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --krushr-primary: #143197;
+            --krushr-secondary: #EB5857;
+            --krushr-gray-border: #E9E9E9;
+            --krushr-gray-dark: #2D3748;
+            --krushr-gray: #5F5F5F;
+            --priority-low: #10b981;
+            --priority-medium: #f59e0b;
+            --priority-high: #ef4444;
+            --priority-critical: #dc2626;
+        }
+        
+        body { 
+            font-family: 'Manrope', sans-serif; 
+            scroll-behavior: smooth;
+        }
+        
+        /* Force Manrope font everywhere EXCEPT CS-Interface icons */
+        body, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, select {
+            font-family: 'Manrope', sans-serif;
+        }
+        
+        /* Exact Component Demo Styling from Brandkit */
+        .component-demo {
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            background: white;
+            transition: all 0.2s ease;
+        }
+        
+        .component-demo:hover {
+            border-color: var(--krushr-primary);
+            box-shadow: 0 4px 12px rgba(20, 49, 151, 0.1);
+        }
+        
+        /* Exact Grid System from Brandkit */
+        .grid-demo {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        
+        /* Exact Floating Label from Brandkit-2 */
+        .floating-input-container {
+            position: relative;
+        }
+        
+        .floating-input {
+            display: block;
+            padding: 1rem 0.625rem 0.625rem 0.625rem;
+            width: 100%;
+            font-size: 0.875rem;
+            color: var(--krushr-gray-dark);
+            background: transparent;
+            border-radius: 0.5rem;
+            border: 1px solid var(--krushr-gray-border);
+            appearance: none;
+            outline: none;
+            transition: all 200ms;
+            font-family: 'Manrope', sans-serif;
+        }
+        
+        .floating-input:focus {
+            border-color: var(--krushr-primary);
+            box-shadow: 0 0 0 2px rgba(20, 49, 151, 0.2);
+        }
+        
+        .floating-label {
+            position: absolute;
+            font-size: 0.875rem;
+            color: var(--krushr-gray);
+            duration: 300ms;
+            transform: translateY(-1rem) scale(0.75);
+            top: 0.5rem;
+            z-index: 10;
+            transform-origin: left;
+            background: white;
+            padding: 0 0.5rem;
+            transition: all 300ms;
+            font-family: 'Manrope', sans-serif;
+            left: 0.25rem;
+        }
+        
+        .floating-input::placeholder {
+            color: transparent;
+        }
+        
+        .floating-input:placeholder-shown + .floating-label {
+            transform: translateY(0.5rem) scale(1);
+            top: 0.5rem;
+        }
+        
+        .floating-input:focus + .floating-label {
+            color: var(--krushr-primary);
+            transform: translateY(-1rem) scale(0.75);
+            top: 0.5rem;
+        }
+        
+        /* Priority Badge System from Brandkit */
+        .priority-badge {
+            padding: 0.5rem 1rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            border: 1px solid;
+            transition: all 200ms;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        .priority-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .priority-low {
+            background: var(--priority-low);
+            color: white;
+            border-color: var(--priority-low);
+        }
+        
+        .priority-medium {
+            background: var(--priority-medium);
+            color: white;
+            border-color: var(--priority-medium);
+        }
+        
+        .priority-high {
+            background: var(--priority-high);
+            color: white;
+            border-color: var(--priority-high);
+        }
+        
+        .priority-critical {
+            background: var(--priority-critical);
+            color: white;
+            border-color: var(--priority-critical);
+        }
+        
+        .priority-badge.outline {
+            background: white;
+            color: var(--krushr-gray-dark);
+            border-color: var(--krushr-gray-border);
+        }
+        
+        .priority-badge.outline:hover {
+            border-color: var(--krushr-primary);
+            color: var(--krushr-primary);
+        }
+        
+        /* Kanban Column Styling */
+        .kanban-column {
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            min-height: 400px;
+            border: 1px solid var(--krushr-gray-border);
+        }
+        
+        .kanban-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--krushr-gray-border);
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--krushr-gray-border);
+            box-shadow: var(--krushr-card);
+            transition: all 200ms;
+        }
+        
+        .task-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+        
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: var(--krushr-modal);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        /* Expandable Section */
+        .expandable-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 300ms ease-in-out;
+        }
+        
+        .expandable-section.expanded {
+            max-height: 500px;
+        }
+        
+        /* Evaluation Metrics */
+        .metrics-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'Manrope', sans-serif;
+        }
+        
+        .metrics-good {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--priority-low);
+        }
+        
+        .metrics-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--priority-medium);
+        }
+        
+        .metrics-poor {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--priority-high);
+        }
+        
+        /* Highlight Animation */
+        .highlight-action {
+            animation: highlight 1s ease-in-out;
+        }
+        
+        @keyframes highlight {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(20, 49, 151, 0.1); }
+        }
+    </style>
+</head>
+<body class="bg-krushr-gray-bg-light">
+    <!-- Header -->
+    <header class="bg-white border-b border-krushr-gray-border sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-semibold text-krushr-gray-dark font-manrope">Task Creation UX Evaluation</h1>
+                    <p class="text-krushr-gray font-manrope">Current Modal vs. Proposed Inline Approach</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="startDemo()" class="bg-krushr-primary text-white px-4 py-2 rounded-lg font-manrope text-sm hover:bg-opacity-90 transition-colors">
+                        <i class="cs-play mr-2"></i>Start Demo
+                    </button>
+                    <button onclick="resetDemo()" class="border border-krushr-gray-border text-krushr-gray-dark px-4 py-2 rounded-lg font-manrope text-sm hover:bg-krushr-gray-bg transition-colors">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Evaluation Metrics -->
+        <div class="bg-white rounded-xl p-6 mb-8 shadow-krushr-card">
+            <h2 class="text-xl font-semibold text-krushr-gray-dark mb-4 font-manrope">UX Metrics Comparison</h2>
+            <div class="grid grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-krushr-gray-dark font-manrope mb-1" id="current-time">~45s</div>
+                    <div class="text-sm text-krushr-gray font-manrope mb-2">Current: Task Creation Time</div>
+                    <span class="metrics-badge metrics-poor">Slow</span>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-krushr-primary font-manrope mb-1" id="proposed-time">~12s</div>
+                    <div class="text-sm text-krushr-gray font-manrope mb-2">Proposed: Task Creation Time</div>
+                    <span class="metrics-badge metrics-good">Fast</span>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-krushr-gray-dark font-manrope mb-1" id="current-clicks">8-12</div>
+                    <div class="text-sm text-krushr-gray font-manrope mb-2">Current: Clicks Required</div>
+                    <span class="metrics-badge metrics-warning">Medium</span>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-krushr-primary font-manrope mb-1" id="proposed-clicks">2-3</div>
+                    <div class="text-sm text-krushr-gray font-manrope mb-2">Proposed: Clicks Required</div>
+                    <span class="metrics-badge metrics-good">Optimal</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side by Side Comparison -->
+        <div class="grid grid-cols-2 gap-8">
+            <!-- CURRENT APPROACH (LEFT) -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl p-6 shadow-krushr-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-semibold text-krushr-gray-dark font-manrope">Current: Modal Approach</h2>
+                        <span class="metrics-badge metrics-warning">Context Switch</span>
+                    </div>
+                    
+                    <!-- Kanban Column Mock -->
+                    <div class="kanban-column">
+                        <div class="kanban-header">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 bg-krushr-warning rounded-full"></div>
+                                <h3 class="font-medium text-krushr-gray-dark font-manrope">In Progress</h3>
+                                <span class="bg-krushr-gray-lighter text-krushr-gray text-xs px-2 py-1 rounded-full font-manrope">3</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Existing Tasks -->
+                        <div class="task-card">
+                            <h4 class="font-medium text-krushr-gray-dark font-manrope mb-2">Update user authentication</h4>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="priority-badge priority-high text-xs">High</span>
+                                <span class="text-xs text-krushr-gray font-manrope">Due: Tomorrow</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium">JD</div>
+                                <span class="text-xs text-krushr-gray font-manrope">John Doe</span>
+                            </div>
+                        </div>
+                        
+                        <div class="task-card">
+                            <h4 class="font-medium text-krushr-gray-dark font-manrope mb-2">Fix responsive layout</h4>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="priority-badge priority-medium text-xs">Medium</span>
+                                <span class="text-xs text-krushr-gray font-manrope">Due: Next week</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center text-white text-xs font-medium">SM</div>
+                                <span class="text-xs text-krushr-gray font-manrope">Sarah Miller</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Add Task Button -->
+                        <button onclick="openCurrentModal()" id="current-add-btn" class="w-full border-2 border-dashed border-krushr-gray-border rounded-lg p-4 text-krushr-gray hover:border-krushr-primary hover:text-krushr-primary transition-colors font-manrope text-sm">
+                            <i class="cs-add text-lg mb-2 block"></i>
+                            Add a task
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROPOSED APPROACH (RIGHT) -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl p-6 shadow-krushr-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-semibold text-krushr-primary font-manrope">Proposed: Inline Approach</h2>
+                        <span class="metrics-badge metrics-good">No Context Switch</span>
+                    </div>
+                    
+                    <!-- Kanban Column Mock -->
+                    <div class="kanban-column">
+                        <div class="kanban-header">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 bg-krushr-warning rounded-full"></div>
+                                <h3 class="font-medium text-krushr-gray-dark font-manrope">In Progress</h3>
+                                <span class="bg-krushr-gray-lighter text-krushr-gray text-xs px-2 py-1 rounded-full font-manrope">3</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Existing Tasks (Same as left) -->
+                        <div class="task-card">
+                            <h4 class="font-medium text-krushr-gray-dark font-manrope mb-2">Update user authentication</h4>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="priority-badge priority-high text-xs">High</span>
+                                <span class="text-xs text-krushr-gray font-manrope">Due: Tomorrow</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium">JD</div>
+                                <span class="text-xs text-krushr-gray font-manrope">John Doe</span>
+                            </div>
+                        </div>
+                        
+                        <div class="task-card">
+                            <h4 class="font-medium text-krushr-gray-dark font-manrope mb-2">Fix responsive layout</h4>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="priority-badge priority-medium text-xs">Medium</span>
+                                <span class="text-xs text-krushr-gray font-manrope">Due: Next week</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center text-white text-xs font-medium">SM</div>
+                                <span class="text-xs text-krushr-gray font-manrope">Sarah Miller</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Inline Task Creator -->
+                        <div id="inline-creator" class="bg-white border border-krushr-gray-border rounded-lg p-4">
+                            <!-- Stage 1: Title Input (Always Visible) -->
+                            <div class="floating-input-container mb-4">
+                                <input type="text" id="inline-title" class="floating-input" placeholder=" " onInput="handleInlineInput(this)">
+                                <label for="inline-title" class="floating-label">What needs to be done?</label>
+                            </div>
+                            
+                            <!-- Stage 2: Expandable Options -->
+                            <div id="expandable-options" class="expandable-section">
+                                <div class="space-y-4">
+                                    <!-- Priority Selection (Visual Badges) -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">Priority</label>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <button onclick="selectPriority('high')" class="priority-badge priority-high text-xs">
+                                                High
+                                            </button>
+                                            <button onclick="selectPriority('medium')" class="priority-badge priority-medium text-xs">
+                                                Medium
+                                            </button>
+                                            <button onclick="selectPriority('low')" class="priority-badge priority-low text-xs">
+                                                Low
+                                            </button>
+                                            <button onclick="selectPriority('critical')" class="priority-badge priority-critical text-xs">
+                                                Critical
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Assignee Selection -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">Assign to</label>
+                                        <div class="flex gap-2">
+                                            <button onclick="selectAssignee('jd')" class="flex items-center gap-2 px-3 py-2 border border-krushr-gray-border rounded-lg hover:border-krushr-primary transition-colors font-manrope text-sm">
+                                                <div class="w-5 h-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium">JD</div>
+                                                John
+                                            </button>
+                                            <button onclick="selectAssignee('sm')" class="flex items-center gap-2 px-3 py-2 border border-krushr-gray-border rounded-lg hover:border-krushr-primary transition-colors font-manrope text-sm">
+                                                <div class="w-5 h-5 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center text-white text-xs font-medium">SM</div>
+                                                Sarah
+                                            </button>
+                                            <button onclick="selectAssignee('me')" class="flex items-center gap-2 px-3 py-2 border border-krushr-gray-border rounded-lg hover:border-krushr-primary transition-colors font-manrope text-sm">
+                                                <div class="w-5 h-5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium">ME</div>
+                                                Me
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Due Date -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">Due Date</label>
+                                        <div class="flex gap-2">
+                                            <button onclick="setDueDate('today')" class="px-3 py-2 border border-krushr-gray-border rounded-lg hover:border-krushr-primary transition-colors font-manrope text-sm">
+                                                Today
+                                            </button>
+                                            <button onclick="setDueDate('tomorrow')" class="px-3 py-2 border border-krushr-gray-border rounded-lg hover:border-krushr-primary transition-colors font-manrope text-sm">
+                                                Tomorrow
+                                            </button>
+                                            <button onclick="setDueDate('week')" class="px-3 py-2 border border-krushr-gray-border rounded-lg hover:border-krushr-primary transition-colors font-manrope text-sm">
+                                                Next Week
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Stage 3: Advanced Options -->
+                            <div id="advanced-options" class="expandable-section">
+                                <div class="space-y-4 pt-4 border-t border-krushr-gray-border">
+                                    <!-- Description -->
+                                    <div class="floating-input-container">
+                                        <textarea id="inline-description" class="floating-input resize-none" rows="3" placeholder=" "></textarea>
+                                        <label for="inline-description" class="floating-label">Description (optional)</label>
+                                    </div>
+                                    
+                                    <!-- File Upload -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">Attachments</label>
+                                        <div class="border-2 border-dashed border-krushr-gray-border rounded-lg p-4 text-center hover:border-krushr-primary transition-colors">
+                                            <i class="cs-file-text text-2xl mx-auto text-krushr-gray mb-2 block"></i>
+                                            <p class="text-sm text-krushr-gray font-manrope">
+                                                <span class="font-medium text-krushr-primary">Click to upload</span> or drag and drop
+                                            </p>
+                                            <input type="file" class="hidden" multiple>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-krushr-gray-border">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="toggleExpanded()" id="expand-btn" class="flex items-center gap-2 text-sm text-krushr-primary hover:text-krushr-primary/80 font-manrope">
+                                        <i class="cs-chevron-right text-xs transition-transform" id="expand-icon"></i>
+                                        <span>More Options</span>
+                                    </button>
+                                    <button onclick="toggleAdvanced()" id="advanced-btn" class="flex items-center gap-2 text-sm text-krushr-gray hover:text-krushr-primary font-manrope" style="display: none;">
+                                        <i class="cs-settings text-xs"></i>
+                                        <span>Advanced</span>
+                                    </button>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="cancelInlineTask()" class="px-4 py-2 text-krushr-gray-dark border border-krushr-gray-border rounded-md hover:bg-krushr-gray-bg transition-colors font-manrope text-sm">
+                                        Cancel
+                                    </button>
+                                    <button onclick="createInlineTask()" class="px-4 py-2 bg-krushr-primary text-white rounded-md hover:bg-krushr-primary/90 transition-colors font-manrope text-sm flex items-center gap-2">
+                                        <i class="cs-add text-sm"></i>
+                                        Create
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Live Preview -->
+                            <div id="live-preview" class="mt-4 p-3 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg" style="display: none;">
+                                <div class="text-xs text-krushr-gray mb-2 font-manrope">Preview:</div>
+                                <div class="task-card" style="margin-bottom: 0;">
+                                    <h4 id="preview-title" class="font-medium text-krushr-gray-dark font-manrope mb-2">New task...</h4>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span id="preview-priority" class="priority-badge priority-medium text-xs">Medium</span>
+                                        <span id="preview-due" class="text-xs text-krushr-gray font-manrope">No due date</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div id="preview-avatar" class="w-5 h-5 bg-gradient-to-r from-gray-500 to-gray-600 rounded-full flex items-center justify-center text-white text-xs font-medium">?</div>
+                                        <span id="preview-assignee" class="text-xs text-krushr-gray font-manrope">Unassigned</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Modal (Hidden by default) -->
+    <div id="current-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="p-6 border-b border-krushr-gray-border">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-krushr-gray-dark font-manrope">Create New Task</h3>
+                    <button onclick="closeCurrentModal()" class="text-krushr-gray hover:text-krushr-gray-dark p-2">
+                        <i class="cs-close text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="space-y-6">
+                    <!-- Title -->
+                    <div class="floating-input-container">
+                        <input type="text" id="modal-title" class="floating-input" placeholder=" ">
+                        <label for="modal-title" class="floating-label">Task Title</label>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="floating-input-container">
+                        <textarea id="modal-description" class="floating-input resize-none" rows="4" placeholder=" "></textarea>
+                        <label for="modal-description" class="floating-label">Description</label>
+                    </div>
+                    
+                    <!-- Priority -->
+                    <div>
+                        <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">Priority</label>
+                        <select class="w-full px-3 py-2 border border-krushr-gray-border rounded-lg focus:ring-2 focus:ring-krushr-primary font-manrope text-sm appearance-none bg-white">
+                            <option>Medium Priority</option>
+                            <option>High Priority</option>
+                            <option>Low Priority</option>
+                            <option>Critical</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Assignee -->
+                    <div>
+                        <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">Assign to</label>
+                        <select class="w-full px-3 py-2 border border-krushr-gray-border rounded-lg focus:ring-2 focus:ring-krushr-primary font-manrope text-sm appearance-none bg-white">
+                            <option>Select team member</option>
+                            <option>John Doe</option>
+                            <option>Sarah Miller</option>
+                            <option>Me</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Due Date -->
+                    <div>
+                        <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">Due Date</label>
+                        <input type="date" class="w-full px-3 py-2 border border-krushr-gray-border rounded-lg focus:ring-2 focus:ring-krushr-primary font-manrope text-sm">
+                    </div>
+                    
+                    <!-- File Upload -->
+                    <div>
+                        <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">Attachments</label>
+                        <div class="border-2 border-dashed border-krushr-gray-border rounded-lg p-6 text-center hover:border-krushr-primary transition-colors">
+                            <i class="cs-file-text text-3xl mx-auto text-krushr-gray mb-2 block"></i>
+                            <p class="mt-2 text-sm text-krushr-gray font-manrope">
+                                <span class="font-medium text-krushr-primary">Click to upload</span> or drag and drop
+                            </p>
+                            <p class="text-xs text-krushr-gray-light font-manrope">PNG, JPG, PDF up to 10MB</p>
+                            <input type="file" class="hidden" multiple>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-krushr-gray-border">
+                    <button onclick="closeCurrentModal()" class="px-4 py-2 text-krushr-gray-dark border border-krushr-gray-border rounded-md hover:bg-krushr-gray-bg transition-colors font-manrope text-sm">
+                        Cancel
+                    </button>
+                    <button onclick="createModalTask()" class="px-6 py-2 bg-krushr-primary text-white rounded-md hover:bg-krushr-primary/90 transition-colors font-manrope text-sm">
+                        Create Task
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let inlineState = {
+            priority: 'medium',
+            assignee: null,
+            dueDate: null,
+            expanded: false,
+            advanced: false
+        };
+
+        // Demo state
+        let demoRunning = false;
+        let demoStep = 0;
+
+        // Handle inline input changes
+        function handleInlineInput(input) {
+            const preview = document.getElementById('live-preview');
+            const title = document.getElementById('preview-title');
+            
+            if (input.value.trim()) {
+                preview.style.display = 'block';
+                title.textContent = input.value;
+            } else {
+                preview.style.display = 'none';
+                title.textContent = 'New task...';
+            }
+        }
+
+        // Priority selection
+        function selectPriority(priority) {
+            inlineState.priority = priority;
+            
+            // Update UI
+            document.querySelectorAll('.priority-badge').forEach(btn => {
+                btn.classList.remove('outline');
+            });
+            event.target.classList.add('outline');
+            
+            // Update preview
+            const previewPriority = document.getElementById('preview-priority');
+            previewPriority.className = `priority-badge priority-${priority} text-xs`;
+            previewPriority.textContent = priority.charAt(0).toUpperCase() + priority.slice(1);
+            
+            // Highlight action
+            event.target.classList.add('highlight-action');
+            setTimeout(() => event.target.classList.remove('highlight-action'), 1000);
+        }
+
+        // Assignee selection
+        function selectAssignee(assignee) {
+            inlineState.assignee = assignee;
+            
+            // Update preview
+            const previewAvatar = document.getElementById('preview-avatar');
+            const previewAssignee = document.getElementById('preview-assignee');
+            
+            switch(assignee) {
+                case 'jd':
+                    previewAvatar.className = 'w-5 h-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium';
+                    previewAvatar.textContent = 'JD';
+                    previewAssignee.textContent = 'John Doe';
+                    break;
+                case 'sm':
+                    previewAvatar.className = 'w-5 h-5 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center text-white text-xs font-medium';
+                    previewAvatar.textContent = 'SM';
+                    previewAssignee.textContent = 'Sarah Miller';
+                    break;
+                case 'me':
+                    previewAvatar.className = 'w-5 h-5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium';
+                    previewAvatar.textContent = 'ME';
+                    previewAssignee.textContent = 'Me';
+                    break;
+            }
+            
+            // Highlight action
+            event.target.classList.add('highlight-action');
+            setTimeout(() => event.target.classList.remove('highlight-action'), 1000);
+        }
+
+        // Due date selection
+        function setDueDate(period) {
+            inlineState.dueDate = period;
+            
+            // Update preview
+            const previewDue = document.getElementById('preview-due');
+            switch(period) {
+                case 'today':
+                    previewDue.textContent = 'Due: Today';
+                    break;
+                case 'tomorrow':
+                    previewDue.textContent = 'Due: Tomorrow';
+                    break;
+                case 'week':
+                    previewDue.textContent = 'Due: Next Week';
+                    break;
+            }
+            
+            // Highlight action
+            event.target.classList.add('highlight-action');
+            setTimeout(() => event.target.classList.remove('highlight-action'), 1000);
+        }
+
+        // Toggle expandable sections
+        function toggleExpanded() {
+            const section = document.getElementById('expandable-options');
+            const icon = document.getElementById('expand-icon');
+            const advancedBtn = document.getElementById('advanced-btn');
+            
+            inlineState.expanded = !inlineState.expanded;
+            
+            if (inlineState.expanded) {
+                section.classList.add('expanded');
+                icon.style.transform = 'rotate(90deg)';
+                advancedBtn.style.display = 'flex';
+            } else {
+                section.classList.remove('expanded');
+                icon.style.transform = 'rotate(0deg)';
+                advancedBtn.style.display = 'none';
+                
+                // Also close advanced if expanded was closed
+                if (inlineState.advanced) {
+                    toggleAdvanced();
+                }
+            }
+        }
+
+        function toggleAdvanced() {
+            const section = document.getElementById('advanced-options');
+            
+            inlineState.advanced = !inlineState.advanced;
+            
+            if (inlineState.advanced) {
+                section.classList.add('expanded');
+            } else {
+                section.classList.remove('expanded');
+            }
+        }
+
+        // Task creation
+        function createInlineTask() {
+            const title = document.getElementById('inline-title').value;
+            if (!title.trim()) return;
+            
+            // Simulate task creation
+            alert(`✅ Task Created!\n\nTitle: ${title}\nPriority: ${inlineState.priority}\nAssignee: ${inlineState.assignee || 'Unassigned'}\nDue: ${inlineState.dueDate || 'No due date'}`);
+            
+            // Reset form
+            resetInlineForm();
+        }
+
+        function cancelInlineTask() {
+            resetInlineForm();
+        }
+
+        function resetInlineForm() {
+            document.getElementById('inline-title').value = '';
+            document.getElementById('inline-description').value = '';
+            document.getElementById('live-preview').style.display = 'none';
+            
+            // Reset state
+            inlineState = {
+                priority: 'medium',
+                assignee: null,
+                dueDate: null,
+                expanded: false,
+                advanced: false
+            };
+            
+            // Reset UI
+            document.getElementById('expandable-options').classList.remove('expanded');
+            document.getElementById('advanced-options').classList.remove('expanded');
+            document.getElementById('expand-icon').style.transform = 'rotate(0deg)';
+            document.getElementById('advanced-btn').style.display = 'none';
+        }
+
+        // Modal functions
+        function openCurrentModal() {
+            document.getElementById('current-modal').style.display = 'flex';
+        }
+
+        function closeCurrentModal() {
+            document.getElementById('current-modal').style.display = 'none';
+        }
+
+        function createModalTask() {
+            const title = document.getElementById('modal-title').value;
+            if (!title.trim()) return;
+            
+            alert(`✅ Task Created via Modal!\n\nTitle: ${title}`);
+            
+            document.getElementById('modal-title').value = '';
+            document.getElementById('modal-description').value = '';
+            closeCurrentModal();
+        }
+
+        // Demo functions
+        function startDemo() {
+            if (demoRunning) return;
+            
+            demoRunning = true;
+            demoStep = 0;
+            
+            // Reset everything first
+            resetDemo();
+            
+            setTimeout(() => {
+                // Step 1: Highlight the difference
+                alert('🎯 Demo: Watch the difference!\n\nLeft side (Current): Modal approach with context switching\nRight side (Proposed): Inline approach with progressive disclosure');
+                
+                setTimeout(() => {
+                    // Step 2: Show inline interaction
+                    const inlineTitle = document.getElementById('inline-title');
+                    inlineTitle.focus();
+                    inlineTitle.value = 'Implement dark mode toggle';
+                    handleInlineInput(inlineTitle);
+                    
+                    setTimeout(() => {
+                        // Step 3: Show expansion
+                        toggleExpanded();
+                        
+                        setTimeout(() => {
+                            // Step 4: Show priority selection
+                            const highPriorityBtn = document.querySelector('.priority-high');
+                            highPriorityBtn.click();
+                            
+                            setTimeout(() => {
+                                demoRunning = false;
+                                alert('✨ Demo Complete!\n\nNotice how the inline approach:\n• Never left the kanban board\n• Provided live preview\n• Used visual selection instead of dropdowns\n• Required fewer clicks');
+                            }, 1500);
+                        }, 1000);
+                    }, 1000);
+                }, 500);
+            }, 500);
+        }
+
+        function resetDemo() {
+            demoRunning = false;
+            demoStep = 0;
+            resetInlineForm();
+            closeCurrentModal();
+        }
+
+        // Close modal on outside click
+        document.getElementById('current-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCurrentModal();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus on inline input for immediate use
+            document.getElementById('inline-title').focus();
+        });
+    </script>
+</body>
+</html>

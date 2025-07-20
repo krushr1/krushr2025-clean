@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Card, CardContent, CardHeader } from '../ui/card'
 import { Button } from '../ui/button'
-import { Input } from '../ui/input'
+import { FloatingInput } from '../ui/floating-input'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { Badge } from '../ui/badge'
 import { ScrollArea } from '../ui/scroll-area'
@@ -334,9 +334,9 @@ export default function AiChat({ workspaceId, className }: AiChatProps) {
               </div>
               
               <div className="flex items-center space-x-2">
-                <Input
+                <FloatingInput
                   ref={messageInputRef}
-                  placeholder="Ask AI anything..."
+                  label="Ask AI anything..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}

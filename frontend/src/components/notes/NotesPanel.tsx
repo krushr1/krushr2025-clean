@@ -254,7 +254,13 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
                       onClick={() => setShowColorPicker(false)}
                     />
                     <div className="absolute top-full right-0 mt-1 bg-white border border-krushr-gray-200 rounded-lg shadow-xl p-2 z-50">
-                      <div className="grid grid-cols-4 gap-1">
+                      <div 
+                        style={{ 
+                          display: 'grid', 
+                          gridTemplateColumns: 'repeat(4, 1fr)',
+                          gap: '4px'
+                        }}
+                      >
                         {NOTE_COLORS.map((color) => (
                           <button
                             key={color.value}

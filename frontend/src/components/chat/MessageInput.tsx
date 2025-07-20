@@ -1,5 +1,6 @@
 import React from 'react'
 import { Send } from 'lucide-react'
+import { FloatingInput } from '../ui/floating-input'
 
 interface MessageInputProps {
   message: string
@@ -18,23 +19,15 @@ export const MessageInput: React.FC<MessageInputProps> = ({
 }) => {
   return (
     <div className="flex-shrink-0 flex items-center space-x-3 p-4 pt-3 border-t border-krushr-gray-200">
-      <div className="relative flex-1">
-        <input 
+      <div className="flex-1">
+        <FloatingInput
           ref={inputRef}
-          type="text" 
-          id="floating_chat" 
-          className="block px-4 pb-2 pt-3 w-full text-sm text-krushr-gray-900 bg-white rounded-lg border border-krushr-gray-200 appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-transparent peer font-manrope transition-all duration-200" 
-          placeholder=" "
+          label="Type a message..."
           value={message}
           onChange={(e) => onChange(e.target.value)}
           onKeyPress={onKeyPress}
+          className="font-manrope"
         />
-        <label 
-          htmlFor="floating_chat" 
-          className="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-5 font-manrope"
-        >
-          Type a message...
-        </label>
       </div>
       <button 
         onClick={onSend}

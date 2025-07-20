@@ -42,6 +42,7 @@ export default function CompactTaskModal({
   const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null)
   const [pendingFiles, setPendingFiles] = useState<File[]>([])
   const [uploadingFiles, setUploadingFiles] = useState(false)
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   const { data: workspaceUsers } = trpc.user.getWorkspaceUsers.useQuery({ workspaceId })
   
@@ -235,15 +236,15 @@ export default function CompactTaskModal({
   if (!open) return null
 
   return createPortal(
-    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center">
       {/* Modal Overlay - Brandkit Pattern */}
       <div 
         className="absolute inset-0 bg-black bg-opacity-50"
         onClick={onClose}
       />
       
-      {/* Modal Container - 40% Wider with All Corners Rounded */}
-      <div className="relative w-full max-w-2xl bg-white rounded-xl border border-krushr-gray-border shadow-krushr-modal">
+      {/* Modal Container - Smart Responsive */}
+      <div className="relative w-full max-w-5xl mx-4 h-[90vh] bg-white rounded-xl border border-krushr-gray-border shadow-krushr-modal overflow-hidden flex flex-col">
         {/* Header - Brandkit Panel Header Pattern */}
         <div className="flex items-center justify-between p-4 border-b border-krushr-gray-border bg-krushr-gray-bg-light rounded-t-xl">
           <h3 className="text-xl font-semibold text-krushr-gray-dark font-manrope">
@@ -257,9 +258,10 @@ export default function CompactTaskModal({
           </button>
         </div>
         
-        {/* Content - Compact Smart Layout */}
-        <div className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Content - Full Height Utilization */}
+        <div className="flex-1 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="h-full flex flex-col">
+            <div className="flex-1 p-6 space-y-4">
             {/* Title Field - Brandkit Floating Label */}
             <div className="relative">
               <input 
@@ -289,27 +291,29 @@ export default function CompactTaskModal({
                 content={description}
                 onChange={setDescription}
                 placeholder="Add task description with rich formatting..."
-                className="min-h-[80px] max-h-[200px] overflow-y-auto"
-                minimal={false}
+                className="min-h-[60px] max-h-[120px] overflow-y-auto"
+                minimal={!description}
                 editable={true}
               />
             </div>
             
-            {/* Left Panel: Priority, Column, Assignment + Right Calendar */}
-            <div className="flex gap-6">
-              {/* Left Panel: Priority, Column, Assignment */}
-              <div className="flex-1 space-y-4">
+            {/* Responsive Layout with Visual Grouping */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 h-full">
+              {/* Priority & Status Section */}
+              <div className="bg-krushr-gray-bg-light p-4 rounded-lg space-y-4 border border-krushr-gray-border"
+                   role="group" aria-labelledby="priority-status-section">
+                <h3 id="priority-status-section" className="sr-only">Priority and Status</h3>
                 {/* Priority Badges */}
                 <div>
                   <label className="block text-base font-medium text-krushr-gray-dark mb-2 font-manrope">
                     Priority
                   </label>
-                  <div className="grid grid-cols-2 gap-1 mb-1">
+                  <div className="grid grid-cols-2 gap-2 mb-2 max-w-xs">
                     <button
                       type="button"
                       onClick={() => setPriority(Priority.URGENT)}
                       className={`
-                        px-2 py-1 text-sm font-medium rounded border transition-all duration-200 font-manrope
+                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
                         ${priority === Priority.URGENT
                           ? 'bg-red-600 text-white border-red-600'
                           : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-red-50'
@@ -322,7 +326,7 @@ export default function CompactTaskModal({
                       type="button"
                       onClick={() => setPriority(Priority.HIGH)}
                       className={`
-                        px-2 py-1 text-sm font-medium rounded border transition-all duration-200 font-manrope
+                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
                         ${priority === Priority.HIGH
                           ? 'bg-krushr-secondary text-white border-krushr-secondary'
                           : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-secondary/10'
@@ -332,12 +336,12 @@ export default function CompactTaskModal({
                       High
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-1">
+                  <div className="grid grid-cols-2 gap-2 max-w-xs">
                     <button
                       type="button"
                       onClick={() => setPriority(Priority.MEDIUM)}
                       className={`
-                        px-2 py-1 text-sm font-medium rounded border transition-all duration-200 font-manrope
+                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
                         ${priority === Priority.MEDIUM
                           ? 'bg-krushr-warning text-white border-krushr-warning'
                           : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-warning/10'
@@ -350,7 +354,7 @@ export default function CompactTaskModal({
                       type="button"
                       onClick={() => setPriority(Priority.LOW)}
                       className={`
-                        px-2 py-1 text-sm font-medium rounded border transition-all duration-200 font-manrope
+                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
                         ${priority === Priority.LOW
                           ? 'bg-krushr-success text-white border-krushr-success'
                           : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-success/10'
@@ -367,7 +371,7 @@ export default function CompactTaskModal({
                   <label className="block text-base font-medium text-krushr-gray-dark mb-2 font-manrope">
                     Status
                   </label>
-                  <div className="grid grid-cols-3 gap-1 mb-2">
+                  <div className="grid grid-cols-3 gap-2 mb-2 max-w-sm">
                     <button
                       type="button"
                       onClick={() => {
@@ -375,7 +379,7 @@ export default function CompactTaskModal({
                         setSelectedColumnId('todo')
                       }}
                       className={`
-                        px-2 py-1 text-sm font-medium rounded border transition-all duration-200 font-manrope
+                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
                         ${status === TaskStatus.TODO
                           ? 'bg-krushr-gray text-white border-krushr-gray'
                           : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-gray/10'
@@ -391,7 +395,7 @@ export default function CompactTaskModal({
                         setSelectedColumnId('progress')
                       }}
                       className={`
-                        px-2 py-1 text-sm font-medium rounded border transition-all duration-200 font-manrope
+                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
                         ${status === TaskStatus.IN_PROGRESS
                           ? 'bg-krushr-primary text-white border-krushr-primary'
                           : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-primary/10'
@@ -407,7 +411,7 @@ export default function CompactTaskModal({
                         setSelectedColumnId('review')
                       }}
                       className={`
-                        px-2 py-1 text-sm font-medium rounded border transition-all duration-200 font-manrope
+                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
                         ${status === TaskStatus.IN_REVIEW
                           ? 'bg-krushr-warning text-white border-krushr-warning'
                           : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-warning/10'
@@ -417,7 +421,7 @@ export default function CompactTaskModal({
                       Review
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-1">
+                  <div className="grid grid-cols-2 gap-2 max-w-xs">
                     <button
                       type="button"
                       onClick={() => {
@@ -425,7 +429,7 @@ export default function CompactTaskModal({
                         setSelectedColumnId('done')
                       }}
                       className={`
-                        px-2 py-1 text-sm font-medium rounded border transition-all duration-200 font-manrope
+                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
                         ${status === TaskStatus.DONE
                           ? 'bg-krushr-success text-white border-krushr-success'
                           : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-success/10'
@@ -441,7 +445,7 @@ export default function CompactTaskModal({
                         setSelectedColumnId('cancelled')
                       }}
                       className={`
-                        px-2 py-1 text-sm font-medium rounded border transition-all duration-200 font-manrope
+                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
                         ${status === TaskStatus.CANCELLED
                           ? 'bg-krushr-secondary text-white border-krushr-secondary'
                           : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-secondary/10'
@@ -459,7 +463,7 @@ export default function CompactTaskModal({
                     <User className="w-4 h-4 inline mr-1" />
                     Assign To
                   </label>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap max-w-md">
                     <button
                       type="button"
                       onClick={() => setAssigneeId('')}
@@ -504,124 +508,18 @@ export default function CompactTaskModal({
                     })}
                   </div>
                 </div>
-                
-                {/* Tags - Moved under Assign To */}
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    id="floating_tags"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                    className="block px-2.5 pb-2.5 pt-4 w-full text-base text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary/20 focus:border-krushr-primary transition-all duration-200 peer font-manrope"
-                    placeholder=" "
-                  />
-                  <label 
-                    htmlFor="floating_tags" 
-                    className="absolute text-sm text-krushr-gray duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
-                  >
-                    Tags (comma separated)
-                  </label>
-                  <Tag className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-krushr-gray pointer-events-none" />
-                </div>
-                
-                {/* File Attachments - Brandkit Pattern */}
-                <div>
-                  <label className="block text-base font-medium text-krushr-gray-dark mb-1 font-manrope flex items-center gap-2">
-                    <Paperclip className="w-4 h-4" />
-                    Attachments
-                  </label>
-                  
-                  {task?.id ? (
-                    <AttachmentUpload
-                      type="task"
-                      targetId={task.id}
-                      onUploadComplete={(attachments) => {
-                        console.log('Files uploaded:', attachments)
-                      }}
-                      className="w-full"
-                    />
-                  ) : (
-                    <>
-                      {/* File Drop Zone - Brandkit Pattern */}
-                      <div 
-                        className="border-2 border-dashed border-krushr-gray-border rounded-lg p-4 text-center hover:border-krushr-primary transition-colors cursor-pointer"
-                        onClick={() => document.getElementById('file-input')?.click()}
-                        onDragOver={(e) => {
-                          e.preventDefault()
-                          e.currentTarget.classList.add('border-krushr-primary', 'bg-krushr-primary-50')
-                        }}
-                        onDragLeave={(e) => {
-                          e.preventDefault()
-                          e.currentTarget.classList.remove('border-krushr-primary', 'bg-krushr-primary-50')
-                        }}
-                        onDrop={(e) => {
-                          e.preventDefault()
-                          e.currentTarget.classList.remove('border-krushr-primary', 'bg-krushr-primary-50')
-                          const files = Array.from(e.dataTransfer.files)
-                          handleFileSelect(files)
-                        }}
-                      >
-                        <Upload className="w-6 h-6 mx-auto text-krushr-gray mb-2 block" />
-                        <p className="text-base text-krushr-gray font-manrope">
-                          Drop files here or <button type="button" className="text-krushr-primary hover:underline">browse</button>
-                        </p>
-                        <p className="text-sm text-krushr-gray mt-1">Maximum file size: 15MB</p>
-                        <input
-                          id="file-input"
-                          type="file"
-                          multiple
-                          className="hidden"
-                          onChange={(e) => {
-                            if (e.target.files) {
-                              const files = Array.from(e.target.files)
-                              handleFileSelect(files)
-                            }
-                          }}
-                        />
-                      </div>
-                      
-                      {/* Pending Files List - Brandkit Pattern */}
-                      {pendingFiles.length > 0 && (
-                        <div className="mt-3 space-y-2">
-                          {pendingFiles.map((file, index) => {
-                            const fileExt = file.name.split('.').pop()?.toLowerCase()
-                            const isImage = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExt || '')
-                            const isDoc = ['pdf', 'doc', 'docx', 'txt', 'md'].includes(fileExt || '')
-                            
-                            const iconColor = isImage ? 'text-krushr-success' : isDoc ? 'text-krushr-info' : 'text-krushr-gray'
-                            
-                            return (
-                              <div key={index} className="flex items-center justify-between p-2 bg-krushr-gray-bg rounded-md">
-                                <div className="flex items-center gap-2">
-                                  <FileText className={`w-4 h-4 ${iconColor}`} />
-                                  <span className="text-base text-krushr-gray-dark font-manrope">{file.name}</span>
-                                  <span className="text-sm text-krushr-gray">({formatFileSize(file.size)})</span>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => removePendingFile(index)}
-                                  className="text-krushr-secondary hover:text-red-600 p-1 transition-colors"
-                                >
-                                  <X className="w-3 h-3" />
-                                </button>
-                              </div>
-                            )
-                          })}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
               </div>
               
-              {/* Right Panel: Calendar Widget */}
-              <div className="flex-shrink-0">
+              {/* Due Date Section */}
+              <div className="bg-krushr-gray-bg-light p-4 rounded-lg border border-krushr-gray-border"
+                   role="group" aria-labelledby="due-date-section">
+                <h3 id="due-date-section" className="sr-only">Due Date</h3>
                 <label className="block text-base font-medium text-krushr-gray-dark mb-2 font-manrope">
                   Due Date
                 </label>
                 
-                {/* Compact Mini Calendar Widget */}
-                <div className="bg-white border border-krushr-gray-200 rounded-lg p-2 shadow-sm w-48">
+                {/* Constrained Calendar Widget */}
+                <div className="bg-white border border-krushr-gray-200 rounded-lg p-3 shadow-sm w-full max-w-xs">
                   {/* Calendar Header */}
                   <div className="flex items-center justify-between mb-2 pb-1 border-b border-krushr-gray-100">
                     <button 
@@ -677,7 +575,7 @@ export default function CompactTaskModal({
                           <button
                             type="button"
                             onClick={() => handleDateSelect(day)}
-                            className={`w-full h-5 rounded font-medium transition-all duration-200 font-manrope ${
+                            className={`w-full h-8 rounded font-medium transition-all duration-200 font-manrope ${
                               isSameDay(day, dueDate || new Date('1900-01-01')) 
                                 ? 'bg-krushr-primary text-white shadow-sm ring-1 ring-krushr-primary ring-offset-1'
                                 : isToday(day)
@@ -688,7 +586,7 @@ export default function CompactTaskModal({
                             {format(day, 'd')}
                           </button>
                         ) : (
-                          <div className="w-full h-5"></div>
+                          <div className="w-full h-8"></div>
                         )}
                       </div>
                     ))}
@@ -737,44 +635,198 @@ export default function CompactTaskModal({
                   </div>
                 </div>
               </div>
-            </div>
-            
-            {/* Footer - Following Brandkit Button Patterns */}
-            <div className="flex justify-between items-center pt-6 border-t border-krushr-gray-border">
-              {isEditMode && (
+              
+              {/* Show/Hide Advanced Options */}
+              <div className="lg:col-span-2 xl:col-span-2">
                 <button
                   type="button"
-                  onClick={handleDelete}
-                  disabled={isLoading}
-                  className="px-4 py-2 text-base text-krushr-danger border border-krushr-danger rounded-lg hover:bg-krushr-danger-50 disabled:opacity-50 transition-all duration-200 font-manrope"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="flex items-center gap-2 text-sm text-krushr-primary hover:text-krushr-primary/80 font-manrope mb-4"
                 >
-                  Delete
+                  <svg 
+                    className={`w-4 h-4 transition-transform ${showAdvanced ? 'rotate-90' : ''}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  <span>Advanced Options</span>
                 </button>
-              )}
-              <div className="flex gap-3 ml-auto">
-                <button 
-                  type="button"
-                  onClick={onClose}
-                  className="px-6 py-2 text-base text-krushr-gray-700 border border-krushr-gray-border rounded-lg hover:bg-krushr-gray-100 transition-all duration-200 font-manrope"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit"
-                  disabled={isLoading || uploadingFiles || !title.trim()}
-                  className="inline-flex items-center space-x-2 px-6 py-2 bg-krushr-primary text-white text-base rounded-lg hover:bg-krushr-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-krushr-button-dark font-manrope"
-                >
-                  {isLoading || uploadingFiles ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>
-                        {uploadingFiles ? 'Uploading files...' : 'Saving...'}
-                      </span>
-                    </>
+                
+                {showAdvanced && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 space-y-0">
+                {/* Tags - Moved here for better space usage */}
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    id="floating_tags"
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
+                    className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary/20 focus:border-krushr-primary transition-all duration-200 peer font-manrope"
+                    placeholder=" "
+                  />
+                  <label 
+                    htmlFor="floating_tags" 
+                    className="absolute text-sm text-krushr-gray duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
+                  >
+                    Tags
+                  </label>
+                  <Tag className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-krushr-gray pointer-events-none" />
+                </div>
+                
+                {/* Estimated Hours */}
+                <div className="relative">
+                  <input 
+                    type="number" 
+                    id="floating_hours"
+                    value={estimatedHours}
+                    onChange={(e) => setEstimatedHours(e.target.value)}
+                    className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary/20 focus:border-krushr-primary transition-all duration-200 peer font-manrope"
+                    placeholder=" "
+                    min="0"
+                    step="0.5"
+                  />
+                  <label 
+                    htmlFor="floating_hours" 
+                    className="absolute text-sm text-krushr-gray duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
+                  >
+                    Estimated Hours
+                  </label>
+                </div>
+              </div>
+              
+              {/* Attachments Column */}
+              <div className="xl:col-span-1 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope flex items-center gap-2">
+                    <Paperclip className="w-4 h-4" />
+                    Attachments
+                  </label>
+                  
+                  {task?.id ? (
+                    <AttachmentUpload
+                      type="task"
+                      targetId={task.id}
+                      onUploadComplete={(attachments) => {
+                        console.log('Files uploaded:', attachments)
+                      }}
+                      className="w-full"
+                    />
                   ) : (
-                    <span>{isEditMode ? 'Update Task' : 'Create Task'}</span>
+                    <>
+                      {/* Compact File Drop Zone */}
+                      <div 
+                        className="border-2 border-dashed border-krushr-gray-border rounded-lg p-3 text-center hover:border-krushr-primary transition-colors cursor-pointer"
+                        onClick={() => document.getElementById('file-input')?.click()}
+                        onDragOver={(e) => {
+                          e.preventDefault()
+                          e.currentTarget.classList.add('border-krushr-primary', 'bg-krushr-primary-50')
+                        }}
+                        onDragLeave={(e) => {
+                          e.preventDefault()
+                          e.currentTarget.classList.remove('border-krushr-primary', 'bg-krushr-primary-50')
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault()
+                          e.currentTarget.classList.remove('border-krushr-primary', 'bg-krushr-primary-50')
+                          const files = Array.from(e.dataTransfer.files)
+                          handleFileSelect(files)
+                        }}
+                      >
+                        <Upload className="w-5 h-5 mx-auto text-krushr-gray mb-1 block" />
+                        <p className="text-sm text-krushr-gray font-manrope">
+                          <span className="font-medium text-krushr-primary">Upload</span> or drag files
+                        </p>
+                        <p className="text-xs text-krushr-gray mt-1">Max: 15MB</p>
+                        <input
+                          id="file-input"
+                          type="file"
+                          multiple
+                          className="hidden"
+                          onChange={(e) => {
+                            if (e.target.files) {
+                              const files = Array.from(e.target.files)
+                              handleFileSelect(files)
+                            }
+                          }}
+                        />
+                      </div>
+                      
+                      {/* Compact Pending Files List */}
+                      {pendingFiles.length > 0 && (
+                        <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
+                          {pendingFiles.map((file, index) => {
+                            const fileExt = file.name.split('.').pop()?.toLowerCase()
+                            const isImage = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExt || '')
+                            const isDoc = ['pdf', 'doc', 'docx', 'txt', 'md'].includes(fileExt || '')
+                            
+                            const iconColor = isImage ? 'text-krushr-success' : isDoc ? 'text-krushr-info' : 'text-krushr-gray'
+                            
+                            return (
+                              <div key={index} className="flex items-center justify-between p-2 bg-krushr-gray-bg rounded text-xs">
+                                <div className="flex items-center gap-1 min-w-0">
+                                  <FileText className={`w-3 h-3 ${iconColor} flex-shrink-0`} />
+                                  <span className="text-krushr-gray-dark font-manrope truncate">{file.name}</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => removePendingFile(index)}
+                                  className="text-krushr-secondary hover:text-red-600 p-0.5 transition-colors flex-shrink-0"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </>
                   )}
-                </button>
+                </div>
+                    </div>
+                  )}
+                )}
+              </div>
+            </div>
+            </div>
+            
+            {/* Footer - Sticky at Bottom */}
+            <div className="flex-shrink-0 border-t border-krushr-gray-border bg-krushr-gray-bg-light p-4">
+              <div className="flex justify-between items-center">
+                {isEditMode && (
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={isLoading}
+                    className="px-4 py-2 text-sm text-krushr-secondary border border-krushr-secondary rounded-lg hover:bg-krushr-secondary-50 disabled:opacity-50 transition-all duration-200 font-manrope"
+                  >
+                    Delete
+                  </button>
+                )}
+                <div className="flex gap-3 ml-auto">
+                  <button 
+                    type="button"
+                    onClick={onClose}
+                    className="px-6 py-2 text-sm text-krushr-gray-700 border border-krushr-gray-border rounded-lg hover:bg-krushr-gray-100 transition-all duration-200 font-manrope"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    disabled={isLoading || uploadingFiles || !title.trim()}
+                    className="inline-flex items-center space-x-2 px-6 py-2 bg-krushr-primary text-white text-sm rounded-lg hover:bg-krushr-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-krushr-button-dark font-manrope"
+                  >
+                    {isLoading || uploadingFiles ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>{uploadingFiles ? 'Uploading...' : 'Saving...'}</span>
+                      </>
+                    ) : (
+                      <span>{isEditMode ? 'Update Task' : 'Create Task'}</span>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </form>

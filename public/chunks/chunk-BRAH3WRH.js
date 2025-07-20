@@ -95,7 +95,7 @@ function NoteCard({ note, isActive, onClick, isFirst, isLast, onArchiveToggle })
       children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-start justify-between gap-2 mb-3", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", { className: cn(
-            "text-sm font-medium line-clamp-2 flex-1 font-brand",
+            "font-medium line-clamp-2 flex-1 font-brand",
             isActive ? "text-krushr-primary" : "text-gray-900"
           ), children: note.title || "Untitled" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-1 flex-shrink-0", children: [
@@ -236,7 +236,7 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
   ] }) });
 }
 var NotesPanel = import_react.default.forwardRef(
-  ({ workspaceId, className, isFloating, onToggleFloating, onClose }, ref) => {
+  ({ workspaceId, className }, ref) => {
     const [activeNoteId, setActiveNoteId] = (0, import_react.useState)(null);
     const [searchQuery, setSearchQuery] = (0, import_react.useState)("");
     const [noteTitle, setNoteTitle] = (0, import_react.useState)("");
@@ -414,7 +414,7 @@ var NotesPanel = import_react.default.forwardRef(
         "bg-white flex flex-col shadow-sm transition-all duration-300",
         isSingleColumn ? showEditor ? "hidden" : "w-full" : "w-80 border-r border-krushr-gray-200"
       ), children: [
-        isFloating && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           SearchBar,
           {
             value: searchQuery,
@@ -444,7 +444,7 @@ var NotesPanel = import_react.default.forwardRef(
         "flex flex-col transition-all duration-300",
         isSingleColumn ? showEditor ? "w-full" : "hidden" : "flex-1"
       ), children: activeNoteId ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-        isFloating && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           EditorHeader,
           {
             title: noteTitle,
@@ -461,14 +461,16 @@ var NotesPanel = import_react.default.forwardRef(
             onBack: handleBackToList
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex-1", style: { backgroundColor: activeNoteId ? getNoteColor(filteredNotes.find((n) => n.id === activeNoteId) || {}).bgValue : "#ffffff" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex-1 p-3", style: { backgroundColor: activeNoteId ? getNoteColor(filteredNotes.find((n) => n.id === activeNoteId) || {}).bgValue : "#ffffff" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "textarea",
           {
             value: noteContent,
             onChange: (e) => setNoteContent(e.target.value),
             placeholder: "Start writing your note...",
-            className: "w-full h-full resize-none border-0 outline-none text-gray-700 leading-relaxed p-3 text-sm font-manrope placeholder:font-manrope bg-transparent",
-            autoFocus: true
+            className: cn(
+              "w-full h-full min-h-[400px] border-0 outline-none resize-none bg-transparent",
+              "font-manrope text-sm text-gray-700 placeholder:text-gray-400"
+            )
           }
         ) })
       ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex-1 flex items-center justify-center", style: { backgroundColor: "#ffffff" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "text-center max-w-md mx-auto p-6", children: [
@@ -501,4 +503,4 @@ var NotesPanel_default = NotesPanel;
 export {
   NotesPanel_default
 };
-//# sourceMappingURL=/chunks/chunk-CMSERCMI.js.map
+//# sourceMappingURL=/chunks/chunk-BRAH3WRH.js.map

@@ -363,6 +363,14 @@
             color: #ffffff !important;
         }
         
+        /* Gradient backgrounds with dark colors require white text */
+        .bg-gradient-to-r.from-krushr-primary, .bg-gradient-to-r.from-krushr-primary *,
+        .bg-gradient-to-br.from-krushr-primary, .bg-gradient-to-br.from-krushr-primary *,
+        .bg-gradient-to-r.from-blue-600, .bg-gradient-to-r.from-blue-600 *,
+        .bg-gradient-to-br.from-blue-600, .bg-gradient-to-br.from-blue-600 * {
+            color: #ffffff !important;
+        }
+        
         /* Krushr-Themed Form Controls */
         
         /* FIXED: Unified Checkbox and Radio Button Styling */
@@ -2807,10 +2815,10 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                                     </ul>
                                                     <p><strong>Acceptance Criteria:</strong></p>
                                                     <div class="bg-blue-50 border border-blue-200 rounded p-2 text-sm">
-                                                        <p>✓ Users can register with email verification</p>
-                                                        <p>✓ Login returns valid JWT tokens</p>
-                                                        <p>✓ OAuth2 providers work correctly</p>
-                                                        <p>✓ Password reset emails are sent</p>
+                                                        <p>PASS Users can register with email verification</p>
+                                                        <p>PASS Login returns valid JWT tokens</p>
+                                                        <p>PASS OAuth2 providers work correctly</p>
+                                                        <p>PASS Password reset emails are sent</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -3461,7 +3469,7 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                     <!-- Inline Title with Smart Parsing -->
                                     <div class="relative">
                                         <input type="text" 
-                                               placeholder="✨ Type your task... (try: 'Fix login bug @john !high due:friday #frontend')" 
+                                               placeholder="Type your task... (try: 'Fix login bug @john !high due:friday #frontend')" 
                                                class="w-full px-4 py-3 text-lg border-2 border-krushr-gray-border rounded-lg focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary font-manrope"
                                                value="Fix authentication timeout bug @john !high due:friday #frontend">
                                         <div class="absolute right-3 top-3 flex items-center gap-2">
@@ -3501,8 +3509,8 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                         <div class="relative">
                                             <select class="w-full px-3 py-2 border border-krushr-gray-border rounded-md focus:ring-2 focus:ring-krushr-primary font-manrope text-sm appearance-none bg-white">
                                                 <option>To Do</option>
-                                                <option>🔄 In Progress</option>
-                                                <option>👀 Review</option>
+                                                <option>In Progress</option>
+                                                <option>Review</option>
                                                 <option>Done</option>
                                             </select>
                                             <i class="cs-chevron-bottom absolute right-3 top-2.5 text-sm text-krushr-gray pointer-events-none"></i>
@@ -3523,8 +3531,8 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                         <div class="relative">
                                             <select class="w-full px-3 py-2 border border-krushr-gray-border rounded-md focus:ring-2 focus:ring-krushr-primary font-manrope text-sm appearance-none bg-white">
                                                 <option>Custom</option>
-                                                <option>🐛 Bug Report</option>
-                                                <option>✨ Feature Request</option>
+                                                <option>Bug Report</option>
+                                                <option>Feature Request</option>
                                                 <option>Design Task</option>
                                             </select>
                                             <i class="cs-chevron-bottom absolute right-3 top-2.5 text-sm text-krushr-gray pointer-events-none"></i>
@@ -3676,11 +3684,11 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                                    class="flex-1 text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-0 text-krushr-gray-dark font-manrope resize-none">
                                             <div class="flex items-center gap-2">
                                                 <select class="px-3 py-1 border border-krushr-gray-border rounded-md text-sm font-manrope appearance-none bg-white">
-                                                    <option>🔄 In Progress</option>
+                                                    <option>In Progress</option>
                                                     <option>To Do</option>
-                                                    <option>👀 Review</option>
+                                                    <option>Review</option>
                                                     <option>Done</option>
-                                                    <option>🚫 Blocked</option>
+                                                    <option>Blocked</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -3870,7 +3878,7 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                             <div>
                                                 <label class="block text-xs text-krushr-gray mb-1 font-manrope">Epic</label>
                                                 <select class="w-full px-2 py-1 text-xs border border-krushr-gray-border rounded bg-white font-manrope">
-                                                    <option>🔐 Security Enhancement</option>
+                                                    <option>Security Enhancement</option>
                                                     <option>Performance</option>
                                                     <option>UI/UX</option>
                                                 </select>
@@ -3898,12 +3906,12 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                             <div class="flex items-center gap-2 p-2 bg-white border border-krushr-gray-border rounded text-xs">
                                                 <i class="cs-arrow-right text-krushr-gray"></i>
                                                 <span class="flex-1 font-manrope">Database Migration #1234</span>
-                                                <span class="text-green-600">✓</span>
+                                                <span class="text-green-600">PASS</span>
                                             </div>
                                             <div class="flex items-center gap-2 p-2 bg-white border border-orange-200 rounded text-xs">
                                                 <i class="cs-arrow-right text-krushr-warning"></i>
                                                 <span class="flex-1 font-manrope">API Security Review #1235</span>
-                                                <span class="text-krushr-warning">⚠</span>
+                                                <span class="text-krushr-warning">WARN</span>
                                             </div>
                                         </div>
                                         <button class="text-xs text-krushr-primary hover:text-krushr-primary/80 font-manrope">
@@ -5059,32 +5067,32 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                         <tr class="border-b border-krushr-gray-border">
                             <td class="py-2 px-4 text-krushr-gray">Smart Text Parsing</td>
                             <td class="text-center py-2 px-4">Yes</td>
-                            <td class="text-center py-2 px-4">⚪</td>
-                            <td class="text-center py-2 px-4">❌</td>
+                            <td class="text-center py-2 px-4">PARTIAL</td>
+                            <td class="text-center py-2 px-4">NO</td>
                         </tr>
                         <tr class="border-b border-krushr-gray-border">
                             <td class="py-2 px-4 text-krushr-gray">Keyboard Shortcuts</td>
                             <td class="text-center py-2 px-4">Yes</td>
-                            <td class="text-center py-2 px-4">⚪</td>
-                            <td class="text-center py-2 px-4">❌</td>
+                            <td class="text-center py-2 px-4">PARTIAL</td>
+                            <td class="text-center py-2 px-4">NO</td>
                         </tr>
                         <tr class="border-b border-krushr-gray-border">
                             <td class="py-2 px-4 text-krushr-gray">Dependencies Management</td>
-                            <td class="text-center py-2 px-4">❌</td>
+                            <td class="text-center py-2 px-4">NO</td>
                             <td class="text-center py-2 px-4">Yes</td>
-                            <td class="text-center py-2 px-4">❌</td>
+                            <td class="text-center py-2 px-4">NO</td>
                         </tr>
                         <tr class="border-b border-krushr-gray-border">
                             <td class="py-2 px-4 text-krushr-gray">Budget Tracking</td>
-                            <td class="text-center py-2 px-4">❌</td>
+                            <td class="text-center py-2 px-4">NO</td>
                             <td class="text-center py-2 px-4">Yes</td>
-                            <td class="text-center py-2 px-4">❌</td>
+                            <td class="text-center py-2 px-4">NO</td>
                         </tr>
                         <tr class="border-b border-krushr-gray-border">
                             <td class="py-2 px-4 text-krushr-gray">Risk Assessment</td>
-                            <td class="text-center py-2 px-4">❌</td>
+                            <td class="text-center py-2 px-4">NO</td>
                             <td class="text-center py-2 px-4">Yes</td>
-                            <td class="text-center py-2 px-4">❌</td>
+                            <td class="text-center py-2 px-4">NO</td>
                         </tr>
                         <tr class="border-b border-krushr-gray-border">
                             <td class="py-2 px-4 text-krushr-gray">Learning Curve</td>
@@ -5377,12 +5385,12 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                         <div class="flex items-center gap-2 p-2 bg-white border border-krushr-gray-border rounded text-xs">
                                             <i class="cs-arrow-right text-krushr-gray"></i>
                                             <span class="flex-1 font-manrope">Database Schema Design #1234</span>
-                                            <span class="text-green-600">✓</span>
+                                            <span class="text-green-600">DONE</span>
                                         </div>
                                         <div class="flex items-center gap-2 p-2 bg-white border border-orange-200 rounded text-xs">
                                             <i class="cs-arrow-right text-krushr-warning"></i>
                                             <span class="flex-1 font-manrope">API Authentication System #1235</span>
-                                            <span class="text-krushr-warning">⚠</span>
+                                            <span class="text-krushr-warning">WARN</span>
                                         </div>
                                         <button class="w-full text-xs text-krushr-primary hover:text-krushr-primary/80 font-manrope p-2 border border-dashed border-krushr-gray-border rounded">
                                             + Add Dependency
@@ -5918,7 +5926,7 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
         <!-- Design Inconsistencies -->
         <section id="inconsistencies" class="mb-12">
             <div class="bg-krushr-warning bg-opacity-10 border border-krushr-warning p-8 rounded-lg">
-                <h2 class="text-2xl font-semibold text-krushr-gray-dark mb-6">⚠️ Current Design Inconsistencies</h2>
+                <h2 class="text-2xl font-semibold text-krushr-gray-dark mb-6">WARNING: Current Design Inconsistencies</h2>
                 <p class="text-krushr-gray mb-8">Issues found in the current implementation that deviate from the core themekit:</p>
                 
                 <div class="space-y-6">
@@ -5943,7 +5951,7 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                     </div>
                     
                     <div class="bg-white p-6 rounded-lg border border-krushr-secondary border-opacity-30">
-                        <h3 class="text-lg font-medium text-krushr-secondary mb-3">🔲 Component Deviations</h3>
+                        <h3 class="text-lg font-medium text-krushr-secondary mb-3">Component Deviations</h3>
                         <ul class="space-y-2 text-sm text-krushr-gray-dark">
                             <li>• Button variants not consistently following Figma specifications</li>
                             <li>• Card shadows using custom values instead of design system shadows</li>

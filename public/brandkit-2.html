@@ -41,13 +41,6 @@
                             'gray-bg': '#F1F1F1',
                             'gray-bg-light': '#F6F6F6',
                             'white': '#FFFFFF',
-                            /* Missing floating label color tokens */
-                            'gray-900': '#1F2937', /* Dark text for input content */
-                            'gray-500': '#6B7280', /* Medium gray for labels */
-                            'gray-300': '#D1D5DB', /* Light gray for borders */
-                            'gray-200': '#E5E7EB', /* Very light gray for disabled borders */
-                            'gray-50': '#F9FAFB',  /* Very light background for disabled fields */
-                            'gray-400': '#9CA3AF', /* For disabled text */
                         }
                     },
                     boxShadow: {
@@ -368,136 +361,6 @@
         /* Force white text in code blocks */
         .bg-krushr-gray-dark, .bg-krushr-gray-dark * {
             color: #ffffff !important;
-        }
-
-        /* Enhanced Floating Label CSS Support */
-        
-        /* Ensure proper peer selector functionality for floating labels */
-        .floating-label-container {
-            position: relative;
-        }
-        
-        /* Input field base styling for floating labels */
-        .floating-input {
-            display: block;
-            padding: 1rem 0.625rem 0.625rem 0.625rem; /* pt-4 pb-2.5 px-2.5 */
-            width: 100%;
-            font-size: 0.875rem; /* text-sm */
-            background-color: transparent;
-            border-radius: 0.5rem; /* rounded-lg */
-            border-width: 1px;
-            appearance: none;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-        
-        /* Focus states for floating inputs */
-        .floating-input:focus {
-            outline: none;
-            box-shadow: none;
-            border-color: var(--krushr-primary);
-        }
-        
-        /* Label positioning and animations */
-        .floating-label {
-            position: absolute;
-            font-size: 0.875rem; /* text-sm */
-            color: #6B7280; /* krushr-gray-500 */
-            transition: all 0.3s ease;
-            transform-origin: left top;
-            background-color: white;
-            padding: 0 0.5rem;
-            left: 0.25rem; /* left-1 */
-            z-index: 10;
-            pointer-events: none;
-        }
-        
-        /* Default state - label floated up */
-        .floating-label {
-            top: 0.5rem; /* top-2 */
-            transform: translateY(-1rem) scale(0.75); /* -translate-y-4 scale-75 */
-        }
-        
-        /* When input is empty and not focused - label centers */
-        .floating-input:placeholder-shown ~ .floating-label {
-            top: 50%;
-            transform: translateY(-50%) scale(1); /* -translate-y-1/2 scale-100 */
-        }
-        
-        /* Focus state - label floats up and changes color */
-        .floating-input:focus ~ .floating-label {
-            top: 0.5rem; /* top-2 */
-            transform: translateY(-1rem) scale(0.75); /* -translate-y-4 scale-75 */
-            color: var(--krushr-primary);
-        }
-        
-        /* Success state styling */
-        .floating-input.success {
-            border-color: var(--krushr-success);
-        }
-        
-        .floating-input.success ~ .floating-label {
-            color: var(--krushr-success);
-        }
-        
-        /* Error state styling */  
-        .floating-input.error {
-            border-color: var(--krushr-secondary);
-        }
-        
-        .floating-input.error ~ .floating-label {
-            color: var(--krushr-secondary);
-        }
-        
-        /* Disabled state styling */
-        .floating-input:disabled {
-            background-color: #F9FAFB; /* krushr-gray-50 */
-            color: #9CA3AF; /* krushr-gray-400 */
-            cursor: not-allowed;
-            border-color: #E5E7EB; /* krushr-gray-200 */
-        }
-        
-        .floating-input:disabled ~ .floating-label {
-            color: #9CA3AF; /* krushr-gray-400 */
-        }
-        
-        /* Responsive adjustments for mobile */
-        @media (max-width: 640px) {
-            .floating-input {
-                padding: 0.875rem 0.5rem 0.5rem 0.5rem; /* Slightly smaller on mobile */
-                font-size: 1rem; /* Prevent zoom on iOS */
-            }
-            
-            .floating-label {
-                font-size: 0.875rem;
-                left: 0.125rem; /* Adjust for smaller padding */
-            }
-        }
-        
-        /* High contrast mode support */
-        @media (prefers-contrast: high) {
-            .floating-input {
-                border-width: 2px;
-            }
-            
-            .floating-input:focus {
-                border-width: 3px;
-            }
-            
-            .floating-label {
-                font-weight: 600;
-            }
-        }
-        
-        /* Reduced motion support */
-        @media (prefers-reduced-motion: reduce) {
-            .floating-label {
-                transition: none;
-            }
-            
-            .floating-input {
-                transition: none;
-            }
         }
         
         /* Krushr-Themed Form Controls */
@@ -1671,26 +1534,26 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                             <div class="space-y-4">
                                 <div>
                                     <div class="relative">
-                                        <input type="text" id="floating_default" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer font-manrope" placeholder=" " />
-                                        <label for="floating_default" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Enter your text</label>
+                                        <input type="text" id="floating_default" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                                        <label for="floating_default" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Enter your text</label>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="relative">
-                                        <input type="email" id="floating_email_perfect" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer font-manrope" placeholder=" " />
-                                        <label for="floating_email_perfect" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Email address</label>
+                                        <input type="email" id="floating_email_perfect" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                                        <label for="floating_email_perfect" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Email address</label>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="relative">
-                                        <input type="text" id="floating_large" class="block px-2.5 pb-2.5 pt-5 w-full text-lg text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer font-manrope" placeholder=" " />
-                                        <label for="floating_large" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Larger text field</label>
+                                        <input type="text" id="floating_large" class="block px-2.5 pb-2.5 pt-5 w-full text-lg text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                                        <label for="floating_large" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Larger text field</label>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="relative">
-                                        <input type="text" id="floating_small" class="block px-2 pb-2 pt-3 w-full text-xs text-krushr-gray-900 bg-transparent rounded border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer font-manrope" placeholder=" " />
-                                        <label for="floating_small" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Compact field</label>
+                                        <input type="text" id="floating_small" class="block px-2 pb-2 pt-3 w-full text-xs text-gray-900 bg-transparent rounded border-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                                        <label for="floating_small" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Compact field</label>
                                     </div>
                                 </div>
                             </div>
@@ -1731,7 +1594,7 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                 </div>
                                 <div>
                                     <div class="relative">
-                                        <input type="text" id="floating_disabled" value="Disabled input" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-400 bg-krushr-gray-50 rounded-lg border border-krushr-gray-200 appearance-none focus:outline-none cursor-not-allowed peer font-manrope" placeholder=" " disabled />
+                                        <input type="text" id="floating_disabled" value="Disabled input" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-400 bg-krushr-gray-50 rounded-lg border border-krushr-gray-200 appearance-none focus:outline-none cursor-not-allowed peer" placeholder=" " disabled />
                                         <label for="floating_disabled" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Disabled field</label>
                                     </div>
                                     <p class="text-xs text-krushr-gray mt-1">Field is read-only</p>
@@ -1933,10 +1796,7 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-krushr-gray-dark mb-2">Email Input</label>
-                                    <div class="relative">
-                                        <input type="email" id="floating_email_input" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
-                                        <label for="floating_email_input" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">user@krushr.com</label>
-                                    </div>
+                                    <input type="email" placeholder="user@krushr.com" class="krushr-input">
                                 </div>
                                 
                                 <div>
@@ -2443,10 +2303,10 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                             <input type="date" class="krushr-select">
                                         </div>
                                         <div>
+                                            <label class="block text-sm font-medium text-krushr-gray-dark mb-1">Budget</label>
                                             <div class="relative">
-                                                <span class="absolute left-3 top-4 text-krushr-gray z-20">$</span>
-                                                <input type="number" id="floating_budget" class="block px-2.5 pb-2.5 pt-4 pl-8 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
-                                                <label for="floating_budget" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Budget</label>
+                                                <span class="absolute left-3 top-2 text-krushr-gray">$</span>
+                                                <input type="number" placeholder="50000" class="krushr-input pl-8">
                                             </div>
                                         </div>
                                     </div>
@@ -2539,9 +2399,9 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                     </div>
                                     
                                     <!-- Description Field -->
-                                    <div class="relative">
-                                        <textarea id="floating_description" rows="3" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer resize-vertical" placeholder=" "></textarea>
-                                        <label for="floating_description" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Add a detailed description</label>
+                                    <div>
+                                        <label class="block text-sm font-medium text-krushr-gray-dark mb-1 font-manrope">Description</label>
+                                        <textarea rows="3" placeholder="Add a detailed description..." class="w-full px-3 py-2 border border-krushr-gray-border rounded-md focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary resize-vertical font-manrope text-sm"></textarea>
                                     </div>
                                     
                                     <!-- Two Column Layout -->
@@ -2601,9 +2461,9 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                     </div>
                                     
                                     <!-- Estimated Hours -->
-                                    <div class="w-32 relative">
-                                        <input type="number" id="floating_estimated_hours" step="0.5" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
-                                        <label for="floating_estimated_hours" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Hours</label>
+                                    <div class="w-32">
+                                        <label class="block text-sm font-medium text-krushr-gray-dark mb-1 font-manrope">Estimated Hours</label>
+                                        <input type="number" step="0.5" placeholder="0" class="krushr-input">
                                     </div>
                                     
                                     <!-- Tags -->
@@ -2889,9 +2749,9 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                     <!-- Enhanced Title with AI -->
                                     <div>
                                         <div class="flex gap-2">
-                                            <div class="flex-1 relative">
-                                                <input type="text" id="floating_ai_task_title" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " value="Implement user authentication system with OAuth2 integration" />
-                                                <label for="floating_ai_task_title" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Enter task title or let AI suggest</label>
+                                            <div class="relative flex-1">
+                                                <input type="text" id="floating_ai_task_title" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer font-manrope" placeholder=" " value="Implement user authentication system with OAuth2 integration" />
+                                                <label for="floating_ai_task_title" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope">Title *</label>
                                             </div>
                                             <button class="px-3 py-2 border border-blue-200 bg-gradient-to-r from-blue-50 to-krushr-secondary/10 text-blue-700 rounded-md hover:from-blue-100 hover:to-krushr-secondary/20 hover:border-blue-300 transition-all duration-200">
                                                 <svg class="krushr-checkbox" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3033,24 +2893,24 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                     
                                     <!-- Advanced Time Estimation -->
                                     <div class="grid grid-cols-4 gap-4">
-                                        <div class="relative">
-                                            <input type="number" id="floating_story_points" value="8" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
-                                            <label for="floating_story_points" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Story Points</label>
+                                        <div>
+                                            <label class="block text-sm font-medium text-krushr-gray-dark mb-1 font-manrope">Story Points</label>
+                                            <input type="number" placeholder="8" value="8" class="krushr-input">
                                         </div>
                                         
-                                        <div class="relative">
-                                            <input type="number" id="floating_estimated" step="0.5" value="16" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
-                                            <label for="floating_estimated" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Estimated (h)</label>
+                                        <div>
+                                            <label class="block text-sm font-medium text-krushr-gray-dark mb-1 font-manrope">Estimated</label>
+                                            <input type="number" step="0.5" placeholder="16h" value="16" class="krushr-input">
                                         </div>
 
-                                        <div class="relative">
-                                            <input type="number" id="floating_actual" step="0.5" value="6.5" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
-                                            <label for="floating_actual" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Actual (h)</label>
+                                        <div>
+                                            <label class="block text-sm font-medium text-krushr-gray-dark mb-1 font-manrope">Actual</label>
+                                            <input type="number" step="0.5" placeholder="0h" value="6.5" class="krushr-input">
                                         </div>
 
-                                        <div class="relative">
-                                            <input type="number" id="floating_remaining" step="0.5" value="9.5" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
-                                            <label for="floating_remaining" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Remaining (h)</label>
+                                        <div>
+                                            <label class="block text-sm font-medium text-krushr-gray-dark mb-1 font-manrope">Remaining</label>
+                                            <input type="number" step="0.5" placeholder="0h" value="9.5" class="krushr-input">
                                         </div>
                                     </div>
                                     
@@ -3293,9 +3153,9 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                                         </svg>
                                                     </div>
                                                 </div>
-                                                <div class="relative">
-                                                    <input type="text" id="floating_component" value="Auth Service" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer" placeholder=" " />
-                                                    <label for="floating_component" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Component</label>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-krushr-gray-dark mb-1 font-manrope">Component</label>
+                                                    <input type="text" placeholder="Authentication" value="Auth Service" class="krushr-input">
                                                 </div>
                                             </div>
                                             <div class="mt-3">
@@ -4273,17 +4133,17 @@ class="bg-krushr-primary text-krushr-secondary border-krushr-success"</pre>
                                         
                                         <div class="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">Start Date</label>
                                                 <div class="relative">
-                                                    <input type="text" value="Feb 17, 2025" readonly class="w-full px-3 py-2 border border-krushr-gray-border rounded-lg bg-white font-manrope text-sm cursor-pointer">
-                                                    <i class="cs-calendar absolute right-3 top-2.5 text-sm text-krushr-gray"></i>
+                                                    <input type="text" id="floating_calendar_start_date" value="Feb 17, 2025" readonly class="block px-2.5 pb-2.5 pt-4 pr-8 w-full text-sm text-krushr-gray-900 bg-white rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer font-manrope cursor-pointer" placeholder=" " />
+                                                    <label for="floating_calendar_start_date" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope">Start Date</label>
+                                                    <i class="cs-calendar absolute right-3 top-4 text-sm text-krushr-gray pointer-events-none"></i>
                                                 </div>
                                             </div>
                                             <div>
-                                                <label class="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope">End Date</label>
                                                 <div class="relative">
-                                                    <input type="text" value="Feb 24, 2025" readonly class="w-full px-3 py-2 border border-krushr-gray-border rounded-lg bg-white font-manrope text-sm cursor-pointer">
-                                                    <i class="cs-calendar absolute right-3 top-2.5 text-sm text-krushr-gray"></i>
+                                                    <input type="text" id="floating_calendar_end_date" value="Feb 24, 2025" readonly class="block px-2.5 pb-2.5 pt-4 pr-8 w-full text-sm text-krushr-gray-900 bg-white rounded-lg border border-krushr-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer font-manrope cursor-pointer" placeholder=" " />
+                                                    <label for="floating_calendar_end_date" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope">End Date</label>
+                                                    <i class="cs-calendar absolute right-3 top-4 text-sm text-krushr-gray pointer-events-none"></i>
                                                 </div>
                                             </div>
                                         </div>

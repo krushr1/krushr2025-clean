@@ -28,7 +28,7 @@
         }
     </style>
     <!-- CS-Interface Icon Library -->
-    <link rel="stylesheet" href="./CS-Interface/style.css">
+    <link rel="stylesheet" href="./fonts/CS-Interface/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -1295,14 +1295,14 @@
                                         <input type="text" id="floating_success" value="Valid input" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-success appearance-none focus:outline-none focus:ring-0 focus:border-krushr-success peer" placeholder=" " />
                                         <label for="floating_success" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Valid field</label>
                                     </div>
-                                    <p class="text-xs text-krushr-success mt-1">✓ Input is valid</p>
+                                    <p class="text-xs text-krushr-success mt-1">[Check Flag] Input is valid</p>
                                 </div>
                                 <div>
                                     <div class="relative">
                                         <input type="text" id="floating_error" value="Invalid input" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-900 bg-transparent rounded-lg border border-krushr-secondary appearance-none focus:outline-none focus:ring-0 focus:border-krushr-secondary peer" placeholder=" " />
                                         <label for="floating_error" class="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Error field</label>
                                     </div>
-                                    <p class="text-xs text-krushr-secondary mt-1">✗ This field is required</p>
+                                    <p class="text-xs text-krushr-secondary mt-1">This field is required</p>
                                 </div>
                                 <div>
                                     <div class="relative">
@@ -1651,7 +1651,7 @@
                 <div class="bg-krushr-primary-50 border border-krushr-primary-200 rounded-lg p-6 mb-8">
                     <div class="flex items-start gap-4">
                         <div class="flex-shrink-0 w-12 h-12 bg-krushr-primary rounded-lg flex items-center justify-center">
-                            <i class="cs-info text-xl text-white"></i>
+                            <i class="cs-info-hexagon text-xl text-white"></i>
                         </div>
                         <div>
                             <h3 class="text-lg font-semibold text-krushr-primary-700 mb-2">Icon Implementation Guide</h3>
@@ -1659,7 +1659,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                 <div>
                                     <strong class="text-krushr-primary-700">Basic Usage:</strong>
-                                    <code class="block bg-white p-2 rounded mt-1 text-krushr-gray-dark font-mono text-xs">&lt;i class="cs-home text-xl text-krushr-primary"&gt;&lt;/i&gt;</code>
+                                    <code class="block bg-white p-2 rounded mt-1 text-krushr-gray-dark font-mono text-xs">&lt;i class="cs-menu text-xl text-krushr-primary"&gt;&lt;/i&gt;</code>
                                 </div>
                                 <div>
                                     <strong class="text-krushr-primary-700">With Color & Size:</strong>
@@ -1677,23 +1677,23 @@
                     <div class="component-demo">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-8 h-8 bg-krushr-primary rounded-lg flex items-center justify-center">
-                                <i class="cs-layers text-sm text-white"></i>
+                                <i class="cs-duplicate text-sm text-white"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-krushr-gray-dark">Core Interface</h3>
                             <span class="px-2.5 py-0.5 bg-krushr-primary-50 text-krushr-primary-700 text-xs font-medium rounded-full">Essential</span>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-primary-50 hover:border-krushr-primary-200 transition-all duration-200 group">
-                                <i class="cs-home text-2xl text-krushr-gray-dark group-hover:text-krushr-primary transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-home</span>
+                                <i class="cs-menu text-2xl text-krushr-gray-dark group-hover:text-krushr-primary transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-menu</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-primary-50 hover:border-krushr-primary-200 transition-all duration-200 group">
                                 <i class="cs-user text-2xl text-krushr-gray-dark group-hover:text-krushr-primary transition-colors mb-3"></i>
                                 <span class="text-xs text-krushr-gray font-manrope text-center">cs-user</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-primary-50 hover:border-krushr-primary-200 transition-all duration-200 group">
-                                <i class="cs-settings text-2xl text-krushr-gray-dark group-hover:text-krushr-primary transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-settings</span>
+                                <i class="cs-gear text-2xl text-krushr-gray-dark group-hover:text-krushr-primary transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-gear</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-info-50 hover:border-krushr-info-200 transition-all duration-200 group">
                                 <i class="cs-search text-2xl text-krushr-gray-dark group-hover:text-krushr-info transition-colors mb-3"></i>
@@ -1704,8 +1704,8 @@
                                 <span class="text-xs text-krushr-gray font-manrope text-center">cs-menu</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-warning-50 hover:border-krushr-warning-200 transition-all duration-200 group">
-                                <i class="cs-notification text-2xl text-krushr-gray-dark group-hover:text-krushr-warning transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-notification</span>
+                                <i class="cs-warning-hexagon text-2xl text-krushr-gray-dark group-hover:text-krushr-warning transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-warning-hexagon</span>
                             </div>
                         </div>
                     </div>
@@ -1714,7 +1714,7 @@
                     <div class="component-demo">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-8 h-8 bg-krushr-secondary rounded-lg flex items-center justify-center">
-                                <i class="cs-zap text-sm text-white"></i>
+                                <i class="cs-star text-sm text-white"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-krushr-gray-dark">User Actions</h3>
                             <span class="px-2.5 py-0.5 bg-krushr-secondary-50 text-krushr-secondary-700 text-xs font-medium rounded-full">Interactive</span>
@@ -1741,8 +1741,8 @@
                                 <span class="text-xs text-krushr-gray font-manrope text-center">cs-bin</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-success-50 hover:border-krushr-success-200 transition-all duration-200 group">
-                                <i class="cs-add-circle text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-add-circle</span>
+                                <i class="cs-circle text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-circle</span>
                             </div>
                         </div>
                     </div>
@@ -1751,7 +1751,7 @@
                     <div class="component-demo">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-8 h-8 bg-krushr-info rounded-lg flex items-center justify-center">
-                                <i class="cs-navigation text-sm text-white"></i>
+                                <i class="cs-arrow-double-right text-sm text-white"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-krushr-gray-dark">Navigation & Flow</h3>
                             <span class="px-2.5 py-0.5 bg-krushr-info-50 text-krushr-info-700 text-xs font-medium rounded-full">Directional</span>
@@ -1770,16 +1770,16 @@
                                 <span class="text-xs text-krushr-gray font-manrope text-center">cs-chevron-bottom</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-info-50 hover:border-krushr-info-200 transition-all duration-200 group">
-                                <i class="cs-chevron-up text-2xl text-krushr-gray-dark group-hover:text-krushr-info transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-chevron-up</span>
+                                <i class="cs-chevron-top text-2xl text-krushr-gray-dark group-hover:text-krushr-info transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-chevron-top</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-info-50 hover:border-krushr-info-200 transition-all duration-200 group">
-                                <i class="cs-arrow-left text-2xl text-krushr-gray-dark group-hover:text-krushr-info transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-arrow-left</span>
+                                <i class="cs-chevron-left text-2xl text-krushr-gray-dark group-hover:text-krushr-info transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-chevron-left</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-info-50 hover:border-krushr-info-200 transition-all duration-200 group">
-                                <i class="cs-arrow-right text-2xl text-krushr-gray-dark group-hover:text-krushr-info transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-arrow-right</span>
+                                <i class="cs-chevron-right text-2xl text-krushr-gray-dark group-hover:text-krushr-info transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-chevron-right</span>
                             </div>
                         </div>
                     </div>
@@ -1788,35 +1788,35 @@
                     <div class="component-demo">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-8 h-8 bg-krushr-success rounded-lg flex items-center justify-center">
-                                <i class="cs-message-circle text-sm text-white"></i>
+                                <i class="cs-circle text-sm text-white"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-krushr-gray-dark">Communication</h3>
                             <span class="px-2 py-0.5 bg-krushr-success-50 text-krushr-success-700 text-xs font-medium rounded-full">Social</span>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-success-50 hover:border-krushr-success-200 transition-all duration-200 group">
-                                <i class="cs-mail text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-mail</span>
+                                <i class="cs-send text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-send</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-success-50 hover:border-krushr-success-200 transition-all duration-200 group">
-                                <i class="cs-message-circle text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-message-circle</span>
+                                <i class="cs-circle text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-circle</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-success-50 hover:border-krushr-success-200 transition-all duration-200 group">
-                                <i class="cs-phone text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-phone</span>
+                                <i class="cs-circle text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-circle</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-success-50 hover:border-krushr-success-200 transition-all duration-200 group">
-                                <i class="cs-video text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-video</span>
+                                <i class="cs-circle text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-circle</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-success-50 hover:border-krushr-success-200 transition-all duration-200 group">
-                                <i class="cs-at-sign text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-at-sign</span>
+                                <i class="cs-circle text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-circle</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-success-50 hover:border-krushr-success-200 transition-all duration-200 group">
-                                <i class="cs-share text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-share</span>
+                                <i class="cs-send text-2xl text-krushr-gray-dark group-hover:text-krushr-success transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-send</span>
                             </div>
                         </div>
                     </div>
@@ -1825,31 +1825,31 @@
                     <div class="component-demo">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-8 h-8 bg-krushr-purple rounded-lg flex items-center justify-center">
-                                <i class="cs-folder text-sm text-white"></i>
+                                <i class="cs-archive text-sm text-white"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-krushr-gray-dark">Files & Data</h3>
                             <span class="px-2 py-0.5 bg-krushr-purple-50 text-krushr-purple-700 text-xs font-medium rounded-full">Content</span>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-purple-50 hover:border-krushr-purple-200 transition-all duration-200 group">
-                                <i class="cs-file text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-file</span>
+                                <i class="cs-file-text text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-file-text</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-purple-50 hover:border-krushr-purple-200 transition-all duration-200 group">
-                                <i class="cs-folder text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-folder</span>
+                                <i class="cs-archive text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-archive</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-purple-50 hover:border-krushr-purple-200 transition-all duration-200 group">
-                                <i class="cs-download text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-download</span>
+                                <i class="cs-arrow-double-left text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-arrow-double-left</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-purple-50 hover:border-krushr-purple-200 transition-all duration-200 group">
-                                <i class="cs-upload text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-upload</span>
+                                <i class="cs-arrow-double-right text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-arrow-double-right</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-purple-50 hover:border-krushr-purple-200 transition-all duration-200 group">
-                                <i class="cs-database text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
-                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-database</span>
+                                <i class="cs-archive text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
+                                <span class="text-xs text-krushr-gray font-manrope text-center">cs-archive</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-krushr-gray-bg-light border border-krushr-gray-border rounded-lg hover:bg-krushr-purple-50 hover:border-krushr-purple-200 transition-all duration-200 group">
                                 <i class="cs-archive text-2xl text-krushr-gray-dark group-hover:text-krushr-purple transition-colors mb-3"></i>
@@ -1875,7 +1875,7 @@
                             </ul>
                         </div>
                         <div>
-                            <h4 class="font-medium text-krushr-gray-dark mb-2">❌ Avoid</h4>
+                            <h4 class="font-medium text-krushr-gray-dark mb-2">Avoid</h4>
                             <ul class="space-y-1 text-krushr-gray">
                                 <li>• Mixing CS-Interface with other icon sets</li>
                                 <li>• Using decorative colors without meaning</li>
@@ -2456,15 +2456,15 @@
                             <h4 class="text-sm font-medium mb-4">Flag Icons</h4>
                             <div class="space-y-3">
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-red-500 text-lg">🚩</span>
+                                    <span class="text-red-500 text-lg">[Critical Flag]</span>
                                     <span class="text-sm font-bold text-red-600">Critical</span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-orange-500 text-base">⚠️</span>
+                                    <span class="text-orange-500 text-base">[Warning Flag]</span>
                                     <span class="text-xs font-semibold text-orange-600">Important</span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-green-500 text-sm">✓</span>
+                                    <span class="text-green-500 text-sm">[Check Flag]</span>
                                     <span class="text-xs font-medium text-green-600">Normal</span>
                                 </div>
                             </div>

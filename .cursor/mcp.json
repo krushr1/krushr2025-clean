@@ -6,6 +6,18 @@
       "env": {
         "PUPPETEER_CACHE_DIR": "/Users/justindoff/.cache/puppeteer"
       }
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "sqlite": {
+      "command": "npx",
+      "args": ["-y", "mcp-server-sqlite-npx", "./api/prisma/dev.db"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/justindoff/Cursor Projects/krushr-clean"]
     }
   }
 }

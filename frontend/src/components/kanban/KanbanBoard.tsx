@@ -186,9 +186,9 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
 
   const getPriorityColor = (priority: string) => {
     switch (priority?.toLowerCase()) {
-      case 'high': return 'bg-red-100 text-red-700 border-red-200'
-      case 'medium': return 'bg-orange-100 text-orange-700 border-orange-200'
-      case 'low': return 'bg-green-100 text-green-700 border-green-200'
+      case 'high': return 'bg-krushr-priority-high/10 text-krushr-priority-high border-krushr-priority-high/20'
+      case 'medium': return 'bg-krushr-priority-medium/10 text-krushr-priority-medium border-krushr-priority-medium/20'
+      case 'low': return 'bg-krushr-priority-low/10 text-krushr-priority-low border-krushr-priority-low/20'
       default: return 'bg-gray-100 text-gray-700 border-gray-200'
     }
   }

@@ -5243,7 +5243,7 @@ function TaskCard({
               Badge,
               {
                 variant: "outline",
-                className: cn("text-xs capitalize h-5 px-1.5 text-[10px] font-manrope", getPriorityBadgeColor()),
+                className: cn("capitalize font-manrope px-2 py-1 text-xs font-medium", getPriorityBadgeColor()),
                 role: "status",
                 "aria-label": `Priority: ${task.priority}`,
                 children: task.priority
@@ -5308,12 +5308,12 @@ function TaskCard({
                 Badge,
                 {
                   variant: "secondary",
-                  className: "text-[10px] h-4 px-1.5",
+                  className: "px-1.5 py-0.5 text-xs font-medium",
                   children: typeof tag === "string" ? tag : tag.name
                 },
                 typeof tag === "string" ? tag : tag.id
               )),
-              task.tags.length > 2 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Badge, { variant: "secondary", className: "text-[10px] h-4 px-1.5", children: [
+              task.tags.length > 2 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Badge, { variant: "secondary", className: "px-1.5 py-0.5 text-xs font-medium", children: [
                 "+",
                 task.tags.length - 2
               ] })
@@ -5338,12 +5338,12 @@ function TaskCard({
                 Badge,
                 {
                   variant: "secondary",
-                  className: "text-[10px] h-4 px-1.5",
+                  className: "px-1.5 py-0.5 text-xs font-medium",
                   children: typeof tag === "string" ? tag : tag.name
                 },
                 typeof tag === "string" ? tag : tag.id
               )),
-              task.tags.length > 2 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Badge, { variant: "secondary", className: "text-[10px] h-4 px-1.5", children: [
+              task.tags.length > 2 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Badge, { variant: "secondary", className: "px-1.5 py-0.5 text-xs font-medium", children: [
                 "+",
                 task.tags.length - 2
               ] })
@@ -36601,11 +36601,11 @@ function KanbanBoard({ kanban, className }) {
   const getPriorityColor = (priority) => {
     switch (priority?.toLowerCase()) {
       case "high":
-        return "bg-red-100 text-red-700 border-red-200";
+        return "bg-krushr-priority-high/10 text-krushr-priority-high border-krushr-priority-high/20";
       case "medium":
-        return "bg-orange-100 text-orange-700 border-orange-200";
+        return "bg-krushr-priority-medium/10 text-krushr-priority-medium border-krushr-priority-medium/20";
       case "low":
-        return "bg-green-100 text-green-700 border-green-200";
+        return "bg-krushr-priority-low/10 text-krushr-priority-low border-krushr-priority-low/20";
       default:
         return "bg-gray-100 text-gray-700 border-gray-200";
     }
@@ -37207,4 +37207,4 @@ object-assign/index.js:
    * LICENSE file in the root directory of this source tree.
    *)
 */
-//# sourceMappingURL=/chunks/chunk-JJHVHZJI.js.map
+//# sourceMappingURL=/chunks/chunk-IBMZEWWS.js.map

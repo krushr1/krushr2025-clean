@@ -189,7 +189,7 @@ export default function TaskCard({
             {/* Priority Badge - Smaller */}
             <Badge 
               variant="outline" 
-              className={cn('text-xs capitalize h-5 px-1.5 text-[10px] font-manrope', getPriorityBadgeColor())}
+              className={cn('capitalize font-manrope px-2 py-1 text-xs font-medium', getPriorityBadgeColor())}
               role="status"
               aria-label={`Priority: ${task.priority}`}
             >
@@ -281,13 +281,13 @@ export default function TaskCard({
                       <Badge 
                         key={typeof tag === 'string' ? tag : tag.id}
                         variant="secondary" 
-                        className="text-[10px] h-4 px-1.5"
+                        className="px-1.5 py-0.5 text-xs font-medium"
                       >
                         {typeof tag === 'string' ? tag : tag.name}
                       </Badge>
                     ))}
                     {task.tags.length > 2 && (
-                      <Badge variant="secondary" className="text-[10px] h-4 px-1.5">
+                      <Badge variant="secondary" className="px-1.5 py-0.5 text-xs font-medium">
                         +{task.tags.length - 2}
                       </Badge>
                     )}
@@ -319,13 +319,13 @@ export default function TaskCard({
                       <Badge 
                         key={typeof tag === 'string' ? tag : tag.id}
                         variant="secondary" 
-                        className="text-[10px] h-4 px-1.5"
+                        className="px-1.5 py-0.5 text-xs font-medium"
                       >
                         {typeof tag === 'string' ? tag : tag.name}
                       </Badge>
                     ))}
                     {task.tags.length > 2 && (
-                      <Badge variant="secondary" className="text-[10px] h-4 px-1.5">
+                      <Badge variant="secondary" className="px-1.5 py-0.5 text-xs font-medium">
                         +{task.tags.length - 2}
                       </Badge>
                     )}

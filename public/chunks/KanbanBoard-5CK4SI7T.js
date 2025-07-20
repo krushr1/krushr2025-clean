@@ -1,6 +1,6 @@
 import {
   KanbanBoard
-} from "/chunks/chunk-JJHVHZJI.js";
+} from "/chunks/chunk-IBMZEWWS.js";
 import "/chunks/chunk-XTC34SKS.js";
 import "/chunks/chunk-YCSJSQP5.js";
 import "/chunks/chunk-KI66MM42.js";
@@ -13,4 +13,4 @@ import "/chunks/chunk-CPGAIYPB.js";
 export {
   KanbanBoard as default
 };
-//# sourceMappingURL=/chunks/KanbanBoard-6Z6V5TLB.js.map
+//# sourceMappingURL=/chunks/KanbanBoard-5CK4SI7T.js.map

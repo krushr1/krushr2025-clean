@@ -44,7 +44,7 @@ import {
   useId,
   usePrevious,
   useSize
-} from "/chunks/chunk-JJHVHZJI.js";
+} from "/chunks/chunk-IBMZEWWS.js";
 import {
   NotesPanel_default
 } from "/chunks/chunk-CMSERCMI.js";
@@ -19817,7 +19817,7 @@ DropdownMenuShortcut.displayName = "DropdownMenuShortcut";
 
 // src/components/workspace/PanelRenderer.tsx
 var import_jsx_runtime62 = __toESM(require_jsx_runtime(), 1);
-var KanbanBoard2 = (0, import_react30.lazy)(() => import("/chunks/KanbanBoard-6Z6V5TLB.js"));
+var KanbanBoard2 = (0, import_react30.lazy)(() => import("/chunks/KanbanBoard-5CK4SI7T.js"));
 var Chat2 = (0, import_react30.lazy)(() => import("/chunks/Chat-4AJP26D4.js"));
 var NotesPanel = (0, import_react30.lazy)(() => import("/chunks/NotesPanel-CMGXSOL5.js"));
 var NewCalendarPanel = (0, import_react30.lazy)(() => import("/chunks/NewCalendarPanel-3GK4YCNH.js"));

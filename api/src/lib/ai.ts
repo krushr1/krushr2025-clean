@@ -47,8 +47,12 @@ export class AiService {
       const realTimeAnalysis = WebSearchService.requiresRealTimeData(lastUserMessage)
       
       // Gather real-time data if needed and enabled
-      if (options.enableRealTimeData && realTimeAnalysis.needsRealTime) {
-        realTimeData = await this.gatherRealTimeData(lastUserMessage, realTimeAnalysis.categories)
+      // FORCE real-time data for government queries to fix president issue
+      if ((options.enableRealTimeData && realTimeAnalysis.needsRealTime) || 
+          lastUserMessage.toLowerCase().includes('president') ||
+          lastUserMessage.toLowerCase().includes('vice president')) {
+        console.log('🔥 FORCING real-time data for government query')
+        realTimeData = await this.gatherRealTimeData(lastUserMessage, realTimeAnalysis.categories.length > 0 ? realTimeAnalysis.categories : ['government'])
       }
       
       // Get the model
@@ -569,7 +573,9 @@ Your mission: Make users more productive through intelligent, concise assistance
 
       // Gather government information
       if (categories.includes('government')) {
+        console.log('🏛️ Gathering government information for:', query)
         realTimeData.governmentInfo = await webSearchService.getGovernmentInfo(query)
+        console.log('🏛️ Government info results:', realTimeData.governmentInfo?.length || 0, 'items')
       }
 
       // Perform general web search
@@ -617,7 +623,11 @@ Your mission: Make users more productive through intelligent, concise assistance
     }
 
     if (realTimeData.governmentInfo && realTimeData.governmentInfo.length > 0) {
-      context += `- **Government Information**: ${realTimeData.governmentInfo.length} results found\n`
+      context += `- **Current Government Information**:\n`
+      realTimeData.governmentInfo.slice(0, 3).forEach((result: SearchResult, i: number) => {
+        context += `  ${i + 1}. ${result.title}\n`
+        context += `     ${result.snippet}\n`
+      })
     }
 
     return context

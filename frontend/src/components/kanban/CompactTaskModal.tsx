@@ -413,132 +413,88 @@ export default function CompactTaskModal({
         {/* Content */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white">
           <div className="p-6 lg:p-8">
-            <div className="grid grid-cols-1 xl:grid-cols-[1fr,360px] gap-8">
-              {/* Main Content */}
-              <div className="space-y-4">
-                {/* Description - Floating Label */}
-                <div className="relative">
-                  <textarea
-                    id="task-description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer resize-none"
-                    placeholder=" "
-                    rows={6}
-                  />
-                  <label 
-                    htmlFor="task-description"
-                    className="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-[20px] peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-                  >
-                    Description
-                  </label>
-                </div>
+            {/* Intelligent Two-Column Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-8">
+              
+              {/* PRIMARY CONTENT - Left Column */}
+              <div className="space-y-6">
                 
-                {/* Calendar-specific fields */}
-                {mode === 'calendar' && (
-                  <>
-                    {/* Start Time */}
-                    <FloatingInput
-                      type="datetime-local"
-                      label="Start time"
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
+                {/* Essential Details Section */}
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-krushr-primary rounded-full"></div>
+                    Essential Details
+                  </h3>
+                  
+                  {/* Description */}
+                  <div className="relative mb-6">
+                    <textarea
+                      id="task-description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer resize-none"
+                      placeholder=" "
+                      rows={4}
                     />
-                    
-                    {/* End Time */}
-                    <FloatingInput
-                      type="datetime-local"
-                      label="End time"
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                    />
-                    
-                    {/* All Day Toggle */}
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="all-day"
-                        checked={allDay}
-                        onChange={(e) => setAllDay(e.target.checked)}
-                        className="rounded border-krushr-gray-border focus:ring-krushr-primary"
+                    <label 
+                      htmlFor="task-description"
+                      className="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-[20px] peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+                    >
+                      Description
+                    </label>
+                  </div>
+
+                  {/* Mode-Specific Primary Fields */}
+                  {mode === 'calendar' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FloatingInput
+                        type="datetime-local"
+                        label="Start time"
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
                       />
-                      <label htmlFor="all-day" className="text-sm text-krushr-gray-700">
-                        All day event
-                      </label>
+                      <FloatingInput
+                        type="datetime-local"
+                        label="End time"
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                      />
+                      <FloatingInput
+                        type="text"
+                        label="Location (optional)"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                      />
+                      <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
+                        <input
+                          type="checkbox"
+                          id="all-day"
+                          checked={allDay}
+                          onChange={(e) => setAllDay(e.target.checked)}
+                          className="rounded border-krushr-gray-border focus:ring-krushr-primary"
+                        />
+                        <label htmlFor="all-day" className="text-sm text-krushr-gray-700 font-medium">
+                          All day event
+                        </label>
+                      </div>
                     </div>
-                    
-                    {/* Location */}
+                  ) : (
                     <FloatingInput
                       type="text"
-                      label="Location (optional)"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
+                      label="Tags (comma separated)"
+                      value={tags}
+                      onChange={(e) => setTags(e.target.value)}
                     />
-                    
-                    {/* Event Type */}
-                    <div>
-                      <label className="block text-sm font-medium text-krushr-gray-600 mb-2">
-                        Event Type
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {['MEETING', 'TASK', 'REMINDER', 'EVENT', 'DEADLINE', 'MILESTONE'].map((type) => (
-                          <button
-                            key={type}
-                            type="button"
-                            onClick={() => setEventType(type)}
-                            className={cn(
-                              "px-3 py-1.5 text-xs font-medium rounded-full transition-all",
-                              eventType === type
-                                ? "bg-krushr-primary text-white"
-                                : "bg-krushr-gray-100 text-krushr-gray-700 hover:bg-krushr-gray-200"
-                            )}
-                          >
-                            {type}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Event Color */}
-                    <div>
-                      <label className="block text-sm font-medium text-krushr-gray-600 mb-2">
-                        Color
-                      </label>
-                      <div className="flex gap-2">
-                        {['blue', 'green', 'purple', 'orange', 'red'].map((color) => (
-                          <button
-                            key={color}
-                            type="button"
-                            onClick={() => setEventColor(color)}
-                            className={cn(
-                              "w-8 h-8 rounded-full transition-all border-2",
-                              eventColor === color ? "border-krushr-gray-400" : "border-transparent",
-                              color === 'blue' && "bg-blue-500",
-                              color === 'green' && "bg-green-500",
-                              color === 'purple' && "bg-purple-500",
-                              color === 'orange' && "bg-orange-500",
-                              color === 'red' && "bg-red-500"
-                            )}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                )}
-                
-                {/* Tags - Floating Label */}
-                <FloatingInput
-                  type="text"
-                  label="Tags (comma separated)"
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                />
-                
-                {/* File Upload */}
-                <div>
-                  <label className="block text-sm font-medium text-krushr-gray-600 mb-2">
+                  )}
+                </div>
+
+                {/* Attachments Section */}
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Paperclip className="w-4 h-4 text-gray-600" />
                     Attachments
-                  </label>
+                  </h3>
+                  
                   {task?.id ? (
                     <AttachmentUpload
                       type="task"
@@ -549,7 +505,7 @@ export default function CompactTaskModal({
                   ) : (
                     <div>
                       <div 
-                        className="border-2 border-dashed border-krushr-gray-200 rounded-lg p-6 text-center hover:border-krushr-primary transition-colors cursor-pointer"
+                        className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-krushr-primary transition-colors cursor-pointer hover:bg-gray-50"
                         onClick={() => document.getElementById('file-input')?.click()}
                         onDragOver={(e) => {
                           e.preventDefault()
@@ -566,11 +522,11 @@ export default function CompactTaskModal({
                           handleFileSelect(files)
                         }}
                       >
-                        <Upload className="w-8 h-8 mx-auto text-krushr-gray-400 mb-2" />
-                        <p className="text-sm text-krushr-gray-600">
+                        <Upload className="w-8 h-8 mx-auto text-gray-400 mb-3" />
+                        <p className="text-sm text-gray-600">
                           <span className="font-medium text-krushr-primary">Upload files</span> or drag and drop
                         </p>
-                        <p className="text-xs text-krushr-gray-500 mt-1">Max 15MB per file</p>
+                        <p className="text-xs text-gray-500 mt-1">Max 15MB per file</p>
                         <input
                           id="file-input"
                           type="file"
@@ -585,17 +541,17 @@ export default function CompactTaskModal({
                       </div>
                       
                       {pendingFiles.length > 0 && (
-                        <div className="mt-3 space-y-2">
+                        <div className="mt-4 space-y-2">
                           {pendingFiles.map((file, index) => (
-                            <div key={index} className="flex items-center justify-between p-3 bg-krushr-gray-50 rounded-lg">
+                            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                               <div className="flex items-center gap-3 min-w-0">
-                                <FileText className="w-4 h-4 text-krushr-gray-500 flex-shrink-0" />
-                                <span className="text-sm text-krushr-gray-700 truncate">{file.name}</span>
+                                <FileText className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                                <span className="text-sm text-gray-700 truncate">{file.name}</span>
                               </div>
                               <button
                                 type="button"
                                 onClick={() => removePendingFile(index)}
-                                className="text-krushr-gray-400 hover:text-krushr-secondary transition-colors"
+                                className="text-gray-400 hover:text-red-500 transition-colors"
                               >
                                 <X className="w-4 h-4" />
                               </button>
@@ -608,223 +564,254 @@ export default function CompactTaskModal({
                 </div>
               </div>
               
-              {/* Right Column - Calendar, Priority, and Status */}
-              <div className="lg:border-l lg:border-krushr-gray-100 lg:pl-6 space-y-6">
-                {/* Calendar Section */}
-                <div className="bg-krushr-gray-50 rounded-lg p-4">
-                  <h3 className="text-sm font-medium text-krushr-gray-700 mb-4">Due Date</h3>
-                  
-                  {/* Selected Date Display */}
-                  {dueDate && (
-                    <div className="mb-4 p-3 bg-krushr-primary-100 border border-krushr-primary-200 rounded-lg">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-krushr-primary" />
-                          <span className="text-sm font-medium text-krushr-primary-700">
-                            {format(dueDate, 'MMMM d, yyyy')}
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setDueDate(null)}
-                          className="text-krushr-primary-600 hover:text-krushr-primary-700"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
+              {/* SECONDARY CONTENT - Right Sidebar */}
+              <div className="space-y-6">
+                
+                {/* Mode-Specific Configuration */}
+                {mode === 'calendar' ? (
+                  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <CalendarIcon className="w-4 h-4 text-blue-600" />
+                      Event Configuration
+                    </h3>
+                    
+                    {/* Event Type */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Event Type</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {['MEETING', 'TASK', 'REMINDER', 'EVENT', 'DEADLINE', 'MILESTONE'].map((type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            onClick={() => setEventType(type)}
+                            className={cn(
+                              "px-3 py-2 text-xs font-medium rounded-lg transition-all text-center",
+                              eventType === type
+                                ? "bg-krushr-primary text-white shadow-sm"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            )}
+                          >
+                            {type}
+                          </button>
+                        ))}
                       </div>
                     </div>
-                  )}
-                  
-                  {/* Calendar Widget */}
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
-                    {/* Calendar Header */}
-                    <div className="flex items-center justify-between mb-4">
-                      <button 
-                        type="button"
-                        onClick={() => setCalendarDate(subMonths(calendarDate, 1))}
-                        className="p-1 hover:bg-krushr-gray-100 rounded transition-colors"
-                      >
-                        <ChevronLeft className="w-4 h-4 text-krushr-gray-600" />
-                      </button>
-                      <h4 className="text-sm font-medium text-krushr-gray-700">
-                        {format(calendarDate, 'MMMM yyyy')}
-                      </h4>
-                      <button 
-                        type="button"
-                        onClick={() => setCalendarDate(addMonths(calendarDate, 1))}
-                        className="p-1 hover:bg-krushr-gray-100 rounded transition-colors"
-                      >
-                        <ChevronRight className="w-4 h-4 text-krushr-gray-600" />
-                      </button>
+                    
+                    {/* Event Color */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Color Theme</label>
+                      <div className="flex gap-3 justify-center">
+                        {['blue', 'green', 'purple', 'orange', 'red'].map((color) => (
+                          <button
+                            key={color}
+                            type="button"
+                            onClick={() => setEventColor(color)}
+                            className={cn(
+                              "w-10 h-10 rounded-xl transition-all border-2 relative",
+                              eventColor === color ? "border-gray-400 scale-110 shadow-lg" : "border-transparent hover:scale-105",
+                              color === 'blue' && "bg-blue-500",
+                              color === 'green' && "bg-green-500",
+                              color === 'purple' && "bg-purple-500",
+                              color === 'orange' && "bg-orange-500",
+                              color === 'red' && "bg-red-500"
+                            )}
+                          >
+                            {eventColor === color && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <Tag className="w-4 h-4 text-green-600" />
+                      Task Configuration
+                    </h3>
+                    
+                    {/* Priority */}
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Priority Level</label>
+                      <div className="flex items-center justify-between">
+                        <div className="flex gap-2">
+                          {[1, 2, 3].map((level) => {
+                            const isActive = (
+                              (priority === Priority.LOW && level <= 1) ||
+                              (priority === Priority.MEDIUM && level <= 2) ||
+                              (priority === Priority.HIGH && level <= 3)
+                            )
+                            const targetPriority = level === 1 ? Priority.LOW : level === 2 ? Priority.MEDIUM : Priority.HIGH
+                            
+                            return (
+                              <button
+                                key={level}
+                                type="button"
+                                onClick={() => setPriority(targetPriority)}
+                                className={cn(
+                                  "w-6 h-6 rounded-full transition-all border-2",
+                                  isActive 
+                                    ? "bg-krushr-secondary border-krushr-secondary shadow-md scale-110" 
+                                    : "bg-gray-200 border-gray-300 hover:bg-gray-300"
+                                )}
+                                title={`${level === 1 ? 'Low' : level === 2 ? 'Medium' : 'High'} Priority`}
+                              />
+                            )
+                          })}
+                        </div>
+                        <span className="text-sm text-gray-600 font-medium capitalize">
+                          {priority.toLowerCase()} priority
+                        </span>
+                      </div>
                     </div>
                     
-                    {/* Calendar Grid */}
-                    <div className="grid grid-cols-7 gap-1 mb-3">
-                      {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                        <div key={i} className="text-xs font-medium text-krushr-gray-500 text-center py-1">
-                          {day}
+                    {/* Status */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Status</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          { value: TaskStatus.TODO, label: 'Todo', color: 'bg-gray-500' },
+                          { value: TaskStatus.IN_PROGRESS, label: 'In Progress', color: 'bg-blue-500' },
+                          { value: TaskStatus.IN_REVIEW, label: 'Review', color: 'bg-yellow-500' },
+                          { value: TaskStatus.DONE, label: 'Done', color: 'bg-green-500' },
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => setStatus(option.value)}
+                            className={cn(
+                              "px-3 py-2 text-xs font-medium rounded-lg transition-all relative overflow-hidden",
+                              status === option.value
+                                ? `${option.color} text-white shadow-sm`
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            )}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Assignment & Scheduling */}
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <User className="w-4 h-4 text-purple-600" />
+                    {mode === 'calendar' ? 'Scheduling' : 'Assignment & Timing'}
+                  </h3>
+                  
+                  {mode === 'task' && (
+                    <>
+                      {/* Assignee */}
+                      <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-3">Assignee</label>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setAssigneeId('')}
+                            className={cn(
+                              "flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-all",
+                              assigneeId === ''
+                                ? "bg-krushr-primary text-white"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            )}
+                          >
+                            <div className="w-4 h-4 rounded-full bg-gray-300" />
+                            Unassigned
+                          </button>
+                          {workspaceUsers?.slice(0, 3).map((user) => {
+                            const initials = (user.name || user.email).slice(0, 2).toUpperCase()
+                            
+                            return (
+                              <button
+                                key={user.id}
+                                type="button"
+                                onClick={() => setAssigneeId(user.id)}
+                                className={cn(
+                                  "flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-all",
+                                  assigneeId === user.id
+                                    ? "bg-krushr-primary text-white"
+                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                )}
+                              >
+                                <div className="w-4 h-4 bg-gradient-to-br from-krushr-primary to-blue-600 rounded-full flex items-center justify-center text-white text-[9px] font-medium">
+                                  {initials}
+                                </div>
+                                {user.name || user.email.split('@')[0]}
+                              </button>
+                            )
+                          })}
                         </div>
-                      ))}
-                      {generateCalendarDays().map((day, i) => (
-                        <div key={i} className="aspect-square">
-                          {day ? (
+                      </div>
+                    </>
+                  )}
+
+                  {/* Due Date Widget - Compact for tasks */}
+                  {mode === 'task' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Due Date</label>
+                      {dueDate ? (
+                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <CalendarIcon className="w-4 h-4 text-blue-600" />
+                              <span className="text-sm font-medium text-blue-700">
+                                {format(dueDate, 'MMM d, yyyy')}
+                              </span>
+                            </div>
                             <button
                               type="button"
-                              onClick={() => handleDateSelect(day)}
-                              className={cn(
-                                "w-full h-full text-xs rounded transition-all",
-                                isSameDay(day, dueDate || new Date('1900-01-01')) 
-                                  ? "bg-krushr-primary text-white font-medium"
-                                  : isToday(day)
-                                  ? "bg-krushr-primary-100 text-krushr-primary-700 font-medium"
-                                  : "text-krushr-gray-700 hover:bg-krushr-gray-100"
-                              )}
+                              onClick={() => setDueDate(null)}
+                              className="text-blue-600 hover:text-blue-800 transition-colors"
                             >
-                              {format(day, 'd')}
+                              <X className="w-4 h-4" />
                             </button>
-                          ) : null}
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {/* Quick Actions */}
-                    <div className="flex gap-2 pt-3 border-t border-krushr-gray-100">
-                      <button
-                        type="button"
-                        onClick={() => setDueDate(new Date())}
-                        className="flex-1 px-3 py-1.5 text-xs bg-krushr-gray-100 text-krushr-gray-700 rounded hover:bg-krushr-gray-200 transition-colors font-medium"
-                      >
-                        Today
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const tomorrow = new Date()
-                          tomorrow.setDate(tomorrow.getDate() + 1)
-                          setDueDate(tomorrow)
-                        }}
-                        className="flex-1 px-3 py-1.5 text-xs bg-krushr-gray-100 text-krushr-gray-700 rounded hover:bg-krushr-gray-200 transition-colors font-medium"
-                      >
-                        Tomorrow
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const nextWeek = new Date()
-                          nextWeek.setDate(nextWeek.getDate() + 7)
-                          setDueDate(nextWeek)
-                        }}
-                        className="flex-1 px-3 py-1.5 text-xs bg-krushr-gray-100 text-krushr-gray-700 rounded hover:bg-krushr-gray-200 transition-colors font-medium"
-                      >
-                        Next Week
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Priority Section */}
-                <div>
-                  <h3 className="text-sm font-medium text-krushr-gray-700 mb-3">Priority</h3>
-                  <div className="flex items-center gap-3">
-                    <div className="flex gap-1.5">
-                      {[1, 2, 3].map((level) => {
-                        const isActive = (
-                          (priority === Priority.LOW && level <= 1) ||
-                          (priority === Priority.MEDIUM && level <= 2) ||
-                          (priority === Priority.HIGH && level <= 3)
-                        )
-                        const targetPriority = level === 1 ? Priority.LOW : level === 2 ? Priority.MEDIUM : Priority.HIGH
-                        
-                        return (
-                          <button
-                            key={level}
-                            type="button"
-                            onClick={() => setPriority(targetPriority)}
-                            className={cn(
-                              "w-4 h-4 rounded-full transition-all",
-                              isActive 
-                                ? "bg-krushr-secondary shadow-sm" 
-                                : "bg-krushr-gray-200 hover:bg-krushr-gray-300"
-                            )}
-                            title={`${level === 1 ? 'Low' : level === 2 ? 'Medium' : 'High'} Priority`}
-                          />
-                        )
-                      })}
-                    </div>
-                    <span className="text-sm text-krushr-gray-600 capitalize">
-                      {priority.toLowerCase()} priority
-                    </span>
-                  </div>
-                </div>
-                
-                {/* Status Section */}
-                <div>
-                  <h3 className="text-sm font-medium text-krushr-gray-700 mb-3">Status</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { value: TaskStatus.TODO, label: 'Todo', color: 'bg-krushr-gray-500' },
-                      { value: TaskStatus.IN_PROGRESS, label: 'In Progress', color: 'bg-krushr-primary' },
-                      { value: TaskStatus.IN_REVIEW, label: 'Review', color: 'bg-krushr-warning' },
-                      { value: TaskStatus.DONE, label: 'Done', color: 'bg-krushr-success' },
-                    ].map((option) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        onClick={() => setStatus(option.value)}
-                        className={cn(
-                          "px-3 py-1.5 text-xs font-medium rounded-full transition-all",
-                          status === option.value
-                            ? `${option.color} text-white`
-                            : "bg-krushr-gray-100 text-krushr-gray-700 hover:bg-krushr-gray-200"
-                        )}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Assignee Section */}
-                <div>
-                  <h3 className="text-sm font-medium text-krushr-gray-700 mb-3">Assignee</h3>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setAssigneeId('')}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-1.5 text-xs rounded-full transition-all",
-                        assigneeId === ''
-                          ? "bg-krushr-primary text-white"
-                          : "bg-krushr-gray-100 text-krushr-gray-700 hover:bg-krushr-gray-200"
-                      )}
-                    >
-                      <div className="w-4 h-4 rounded-full bg-krushr-gray-300" />
-                      Unassigned
-                    </button>
-                    {workspaceUsers?.map((user) => {
-                      const initials = (user.name || user.email).slice(0, 2).toUpperCase()
-                      
-                      return (
-                        <button
-                          key={user.id}
-                          type="button"
-                          onClick={() => setAssigneeId(user.id)}
-                          className={cn(
-                            "flex items-center gap-2 px-3 py-1.5 text-xs rounded-full transition-all",
-                            assigneeId === user.id
-                              ? "bg-krushr-primary text-white"
-                              : "bg-krushr-gray-100 text-krushr-gray-700 hover:bg-krushr-gray-200"
-                          )}
-                        >
-                          <div className="w-4 h-4 bg-gradient-to-br from-krushr-primary to-krushr-primary-600 rounded-full flex items-center justify-center text-white text-[10px] font-medium">
-                            {initials}
                           </div>
-                          {user.name || user.email.split('@')[0]}
-                        </button>
-                      )
-                    })}
-                  </div>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-3 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setDueDate(new Date())}
+                            className="px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                          >
+                            Today
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const tomorrow = new Date()
+                              tomorrow.setDate(tomorrow.getDate() + 1)
+                              setDueDate(tomorrow)
+                            }}
+                            className="px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                          >
+                            Tomorrow
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const nextWeek = new Date()
+                              nextWeek.setDate(nextWeek.getDate() + 7)
+                              setDueDate(nextWeek)
+                            }}
+                            className="px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                          >
+                            Next Week
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                 </div>
+              </div>
               </div>
             </div>
           </div>

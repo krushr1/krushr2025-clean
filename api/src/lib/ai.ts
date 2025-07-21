@@ -113,8 +113,10 @@ export class AiService {
       // Calculate cost (example pricing - adjust based on actual Gemini pricing)
       const cost = this.calculateCost(tokenCount, 'gemini-1.5-flash')
 
-      // Try to parse any actionable items from the response
-      const parsedActions = this.parseActionableItems(content)
+      // Try to parse any actionable items from the USER'S MESSAGE, not the AI response
+      console.log('[AI DEBUG] Parsing user message for actions:', lastUserMessage)
+      const parsedActions = this.parseActionableItems(lastUserMessage)
+      console.log('[AI DEBUG] Found actions:', parsedActions)
 
       return {
         content,
@@ -166,10 +168,11 @@ export class AiService {
 - **Projects**: Large-scope work → Project with clear scope/deliverables
 - **Events**: Scheduling requests → Event with time/participants
 
-When users ask me to create a note, I will:
-1. Extract the key information
-2. Create a well-structured note in the Notes panel
-3. Confirm creation with the note title
+When users ask me to create a note:
+- I should acknowledge their request clearly
+- I cannot directly create notes myself - I'm just an AI language model
+- The system will attempt to parse their request and create the note automatically
+- I should NOT claim I've created the note - only that I understand their request
 
 **Communication Style**:
 - Professional but conversational

@@ -10225,62 +10225,25 @@ function WorkspaceAiChat({ workspaceId, className }) {
   };
   return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: cn("h-full flex flex-col bg-white", className), children: [
     /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center justify-between p-2 border-b border-gray-200 bg-gradient-to-r from-krushr-primary/5 to-transparent", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex items-center space-x-2", children: usageStats && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "hidden md:flex items-center space-x-3 text-xs text-gray-500", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center space-x-1", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Zap, { className: "w-3 h-3" }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: formatTokens(usageStats.totalStats.totalTokens) })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex items-center space-x-1", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: formatCost(usageStats.totalStats.totalCost) }) })
-      ] }) }),
       /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center space-x-1", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center space-x-1 border-r border-gray-200 pr-2 mr-2", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
-            Button,
-            {
-              variant: "ghost",
-              size: "sm",
-              onClick: () => createConversation.mutate({ workspaceId }),
-              className: "h-8 px-3 text-xs bg-krushr-primary text-white hover:bg-krushr-primary/90",
-              title: "New conversation",
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Plus, { className: "w-3 h-3 mr-1" }),
-                "New"
-              ]
-            }
-          ),
-          conversations && conversations.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
-            Button,
-            {
-              variant: "ghost",
-              size: "sm",
-              onClick: () => setShowConversations(!showConversations),
-              className: cn(
-                "h-8 px-2 text-xs",
-                showConversations ? "bg-gray-100" : ""
-              ),
-              title: "Show conversations",
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(MessageSquare, { className: "w-3 h-3 mr-1" }),
-                conversations.length
-              ]
-            }
-          )
-        ] }),
+        conversations && conversations.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex items-center space-x-1 border-r border-gray-200 pr-2 mr-2", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+          Button,
+          {
+            variant: "ghost",
+            size: "sm",
+            onClick: () => setShowConversations(!showConversations),
+            className: cn(
+              "h-8 px-2 text-xs",
+              showConversations ? "bg-gray-100" : ""
+            ),
+            title: "Show conversations",
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(MessageSquare, { className: "w-3 h-3 mr-1" }),
+              conversations.length
+            ]
+          }
+        ) }),
         /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center space-x-1", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-            Button,
-            {
-              variant: "ghost",
-              size: "sm",
-              onClick: () => setShowThinkingControls(!showThinkingControls),
-              className: cn(
-                "h-8 px-2",
-                showThinkingControls ? "bg-gray-100" : ""
-              ),
-              title: "AI settings & real-time data",
-              children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Brain, { className: "w-3 h-3" })
-            }
-          ),
           /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
             Button,
             {
@@ -10294,11 +10257,45 @@ function WorkspaceAiChat({ workspaceId, className }) {
               title: "Favorite prompts",
               children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Star, { className: "w-3 h-3" })
             }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+            Button,
+            {
+              variant: "ghost",
+              size: "sm",
+              onClick: () => setShowThinkingControls(!showThinkingControls),
+              className: cn(
+                "h-8 px-2",
+                showThinkingControls ? "bg-gray-100" : ""
+              ),
+              title: "AI settings & real-time data",
+              children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Brain, { className: "w-3 h-3" })
+            }
           )
         ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center space-x-2", children: [
+        usageStats && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "hidden md:flex items-center space-x-3 text-xs text-gray-500", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center space-x-1", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Zap, { className: "w-3 h-3" }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: formatTokens(usageStats.totalStats.totalTokens) })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex items-center space-x-1", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: formatCost(usageStats.totalStats.totalCost) }) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+          Button,
+          {
+            variant: "ghost",
+            size: "sm",
+            onClick: () => createConversation.mutate({ workspaceId }),
+            className: "h-8 w-8 p-0 bg-krushr-primary text-white hover:bg-krushr-primary/90",
+            title: "New conversation",
+            children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Plus, { className: "w-4 h-4" })
+          }
+        )
       ] })
     ] }),
-    showConversations && conversations && conversations.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "border-b border-gray-200 bg-gray-50 max-h-32 overflow-y-auto", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "p-2 space-y-1", children: conversations.map((conversation) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+    showConversations && conversations && conversations.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "border-b border-gray-200 bg-gray-50 max-h-96 overflow-y-auto", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "p-2 space-y-1", children: conversations.map((conversation) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
       "div",
       {
         className: cn(
@@ -10336,7 +10333,7 @@ function WorkspaceAiChat({ workspaceId, className }) {
       },
       conversation.id
     )) }) }),
-    showFavorites && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "border-b border-gray-200 bg-gray-50 max-h-48 overflow-y-auto", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "p-3", children: [
+    showFavorites && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "border-b border-gray-200 bg-gray-50 max-h-96 overflow-y-auto", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "p-3", children: [
       /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center justify-between mb-2", children: [
         /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h3", { className: "text-xs font-medium text-gray-700", children: "Quick Prompts" }),
         /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
@@ -10593,4 +10590,4 @@ function WorkspaceAiChat({ workspaceId, className }) {
 export {
   WorkspaceAiChat as default
 };
-//# sourceMappingURL=/chunks/WorkspaceAiChat-EJH5G3WD.js.map
+//# sourceMappingURL=/chunks/WorkspaceAiChat-PBTIQQBY.js.map

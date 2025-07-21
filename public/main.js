@@ -19779,7 +19779,7 @@ var Chat2 = (0, import_react30.lazy)(() => import("/chunks/Chat-V5PQSFMQ.js"));
 var NotesPanel = (0, import_react30.lazy)(() => import("/chunks/NotesPanel-6A7DTOGB.js"));
 var NewCalendarPanel = (0, import_react30.lazy)(() => import("/chunks/NewCalendarPanel-Y5ZWY3K5.js"));
 var Contacts = (0, import_react30.lazy)(() => import("/chunks/Contacts-DEZDJRCN.js"));
-var WorkspaceAiChat = (0, import_react30.lazy)(() => import("/chunks/WorkspaceAiChat-EJH5G3WD.js"));
+var WorkspaceAiChat = (0, import_react30.lazy)(() => import("/chunks/WorkspaceAiChat-PBTIQQBY.js"));
 var PanelLoadingSpinner = () => /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { className: "flex items-center justify-center h-full", children: /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(LoaderCircle, { className: "w-6 h-6 animate-spin text-krushr-primary" }) });
 var PanelErrorBoundary = class extends import_react30.default.Component {
   constructor(props) {
@@ -20092,7 +20092,7 @@ function PanelRenderer({ panel, workspaceId, onRefresh, onFullscreen, onFocus })
           {
             className: cn(
               "panel-drag-handle flex-shrink-0 cursor-move",
-              "flex flex-row items-center justify-between space-y-0 p-0 px-3 py-1.5",
+              "flex flex-row items-center space-y-0 p-0 px-3 py-1.5",
               panel.is_locked && "cursor-not-allowed"
             ),
             children: [
@@ -20123,7 +20123,7 @@ function PanelRenderer({ panel, workspaceId, onRefresh, onFullscreen, onFocus })
                 ),
                 panel.is_locked && /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(Lock, { className: "w-3 h-3 text-amber-600 flex-shrink-0" })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "flex items-center flex-shrink-0 gap-1 min-w-max", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "flex items-center flex-shrink-0 gap-0.5 ml-auto", children: [
                 (panel.type === "KANBAN" || panel.type === "CHAT" || panel.type === "AI_CHAT" || panel.type === "NOTES") && /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)(DropdownMenu2, { children: [
                   /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(DropdownMenuTrigger2, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(
                     Button,

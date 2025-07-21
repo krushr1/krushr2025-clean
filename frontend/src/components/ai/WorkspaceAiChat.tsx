@@ -312,34 +312,10 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     <div className={cn('h-full flex flex-col bg-white', className)}>
       {/* Header similar to chat panel */}
       <div className="flex items-center justify-between p-2 border-b border-gray-200 bg-gradient-to-r from-krushr-primary/5 to-transparent">
-        <div className="flex items-center space-x-2">
-          {usageStats && (
-            <div className="hidden md:flex items-center space-x-3 text-xs text-gray-500">
-              <div className="flex items-center space-x-1">
-                <Zap className="w-3 h-3" />
-                <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <span>{formatCost(usageStats.totalStats.totalCost)}</span>
-              </div>
-            </div>
-          )}
-        </div>
-        
         <div className="flex items-center space-x-1">
-          {/* Primary actions group */}
-          <div className="flex items-center space-x-1 border-r border-gray-200 pr-2 mr-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => createConversation.mutate({ workspaceId })}
-              className="h-8 px-3 text-xs bg-krushr-primary text-white hover:bg-krushr-primary/90"
-              title="New conversation"
-            >
-              <Plus className="w-3 h-3 mr-1" />
-              New
-            </Button>
-            {conversations && conversations.length > 0 && (
+          {/* Conversations and quick access on the left */}
+          {conversations && conversations.length > 0 && (
+            <div className="flex items-center space-x-1 border-r border-gray-200 pr-2 mr-2">
               <Button
                 variant="ghost"
                 size="sm"
@@ -353,23 +329,11 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
                 <MessageSquare className="w-3 h-3 mr-1" />
                 {conversations.length}
               </Button>
-            )}
-          </div>
+            </div>
+          )}
           
-          {/* Settings group */}
+          {/* Quick access group - favorites and settings */}
           <div className="flex items-center space-x-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowThinkingControls(!showThinkingControls)}
-              className={cn(
-                "h-8 px-2",
-                showThinkingControls ? "bg-gray-100" : ""
-              )}
-              title="AI settings & real-time data"
-            >
-              <Brain className="w-3 h-3" />
-            </Button>
             <Button
               variant="ghost"
               size="sm"
@@ -382,13 +346,49 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
             >
               <Star className="w-3 h-3" />
             </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowThinkingControls(!showThinkingControls)}
+              className={cn(
+                "h-8 px-2",
+                showThinkingControls ? "bg-gray-100" : ""
+              )}
+              title="AI settings & real-time data"
+            >
+              <Brain className="w-3 h-3" />
+            </Button>
           </div>
+        </div>
+        
+        {/* Usage stats and new button on the right */}
+        <div className="flex items-center space-x-2">
+          {usageStats && (
+            <div className="hidden md:flex items-center space-x-3 text-xs text-gray-500">
+              <div className="flex items-center space-x-1">
+                <Zap className="w-3 h-3" />
+                <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <span>{formatCost(usageStats.totalStats.totalCost)}</span>
+              </div>
+            </div>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => createConversation.mutate({ workspaceId })}
+            className="h-8 w-8 p-0 bg-krushr-primary text-white hover:bg-krushr-primary/90"
+            title="New conversation"
+          >
+            <Plus className="w-4 h-4" />
+          </Button>
         </div>
       </div>
 
       {/* Conversation selector (collapsible) */}
       {showConversations && conversations && conversations.length > 0 && (
-        <div className="border-b border-gray-200 bg-gray-50 max-h-32 overflow-y-auto">
+        <div className="border-b border-gray-200 bg-gray-50 max-h-96 overflow-y-auto">
           <div className="p-2 space-y-1">
             {conversations.map((conversation) => (
               <div
@@ -437,7 +437,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
 
       {/* Favorites panel (collapsible) */}
       {showFavorites && (
-        <div className="border-b border-gray-200 bg-gray-50 max-h-48 overflow-y-auto">
+        <div className="border-b border-gray-200 bg-gray-50 max-h-96 overflow-y-auto">
           <div className="p-3">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-xs font-medium text-gray-700">Quick Prompts</h3>

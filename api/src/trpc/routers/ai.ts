@@ -253,13 +253,18 @@ export const aiRouter = router({
         }
 
         // Track any actionable items and auto-create if requested
+        console.log('[AI DEBUG] Parsed actions:', JSON.stringify(finalResponse.parsedActions, null, 2))
+        
         if (finalResponse.parsedActions && finalResponse.parsedActions.length > 0) {
           for (const action of finalResponse.parsedActions) {
+            console.log(`[AI DEBUG] Processing action: type=${action.type}, confidence=${action.confidence}`)
+            
             if (action.type === 'task' && action.confidence > 0.8) {
               // High-confidence tasks can be tracked for suggestion
               console.log(`[AI] High-confidence task suggestion: "${action.data.title}"`)
             } else if (action.type === 'note' && action.confidence > 0.8) {
               // Auto-create notes with high confidence
+              console.log('[AI DEBUG] Attempting to create note:', action.data)
               try {
                 const note = await prisma.note.create({
                   data: {

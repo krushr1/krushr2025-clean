@@ -505,7 +505,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
           
         </div>
         
-        <div className="inline-flex items-center flex-shrink-0 gap-[2px] ml-auto">
+        <div className="grid grid-flow-col auto-cols-max gap-0.5 items-center ml-auto">
           {/* Panel-specific actions dropdown */}
           {(panel.type === 'KANBAN' || panel.type === 'CHAT' || panel.type === 'AI_CHAT' || panel.type === 'NOTES') && (
             <DropdownMenu>

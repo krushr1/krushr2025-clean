@@ -1,0 +1,21 @@
+{
+  "contextAutoCompactThreshold": 0.99,
+  "autoCompactOnMemoryPressure": false,
+  "optimization": {
+    "autoCompactOnMemoryPressure": false,
+    "contextOptimization": false,
+    "smartCaching": true
+  },
+  "ui": {
+    "showContextWarnings": false,
+    "suppressPrompts": true,
+    "interactive": false
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "env": {
+    "CLAUDE_CODE_DISABLE_CONTEXT_WARNINGS": "1",
+    "DISABLE_COST_WARNINGS": "1"
+  }
+} 

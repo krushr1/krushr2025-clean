@@ -64,7 +64,7 @@ export const useAuthStore = create<AuthState>()(
         if (!token) return
 
         try {
-          const response = await fetch('http://localhost:3002/trpc/user.me', {
+          const response = await fetch('http://127.0.0.1:3002/trpc/user.me', {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'

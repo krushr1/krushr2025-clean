@@ -169,8 +169,11 @@ export const commentRouter = router({
         })
       }
 
-      // Check workspace access
-      if (!task.project?.workspace?.members.length) {
+      // Check workspace access (either owner OR member)
+      const isOwner = task.project?.workspace?.ownerId === ctx.user.id
+      const isMember = task.project?.workspace?.members.length > 0
+      
+      if (!isOwner && !isMember) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'No access to this task',

@@ -2624,7 +2624,7 @@ var useAuthStore = create()(
         const token = get().token;
         if (!token) return;
         try {
-          const response = await fetch("http://localhost:3002/trpc/user.me", {
+          const response = await fetch("http://127.0.0.1:3002/trpc/user.me", {
             headers: {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json"
@@ -9098,4 +9098,4 @@ object-assign/index.js:
   @license MIT
   *)
 */
-//# sourceMappingURL=/chunks/chunk-DKZL4X6O.js.map
+//# sourceMappingURL=/chunks/chunk-WPWKPIGS.js.map

@@ -640,7 +640,9 @@ export default function NewCalendarPanel({
                     )}
                     title="Search events"
                   >
-                    <Search className="w-4 h-4" />
+                    <Search className={cn(
+                      layoutConfig.size === 'micro' ? "w-3.5 h-3.5" : "w-4 h-4"
+                    )} />
                   </Button>
                 )}
 
@@ -657,7 +659,9 @@ export default function NewCalendarPanel({
                     )}
                     title="Filter events"
                   >
-                    <Filter className="w-4 h-4" />
+                    <Filter className={cn(
+                      layoutConfig.size === 'micro' ? "w-3.5 h-3.5" : "w-4 h-4"
+                    )} />
                   </Button>
                 )}
 
@@ -676,7 +680,9 @@ export default function NewCalendarPanel({
                     )}
                     title="Create new event"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className={cn(
+                      layoutConfig.size === 'micro' ? "w-3.5 h-3.5" : "w-4 h-4"
+                    )} />
                     {layoutConfig.size === 'large' && <span className="ml-1.5 text-xs font-medium">New Event</span>}
                   </Button>
                 )}
@@ -688,7 +694,10 @@ export default function NewCalendarPanel({
           {showSearch && layoutConfig.showSearch !== false && (
             <div className="px-4 pb-3 animate-in slide-in-from-top-2 duration-300">
               <div className="relative bg-white/95 backdrop-blur-sm rounded-xl border border-gray-200/60 shadow-lg">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className={cn(
+                  "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400",
+                  layoutConfig.size === 'micro' ? "w-3.5 h-3.5" : "w-4 h-4"
+                )} />
                 <FloatingInput
                   label="Search events, locations, or attendees..."
                   value={searchQuery}

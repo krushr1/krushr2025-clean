@@ -253,6 +253,10 @@ export const aiRouter = router({
         }
 
         // Track any actionable items and auto-create if requested
+        console.log('\n🔥🔥🔥 AI SENDMESSAGE ENDPOINT HIT! 🔥🔥🔥')
+        console.log('🔥 User message:', input.message)
+        console.log('🔥 User ID:', ctx.user.id)
+        console.log('🔥 Workspace ID:', conversation.workspaceId)
         console.log('[AI DEBUG] Parsed actions:', JSON.stringify(finalResponse.parsedActions, null, 2))
         
         if (finalResponse.parsedActions && finalResponse.parsedActions.length > 0) {

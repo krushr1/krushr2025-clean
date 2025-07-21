@@ -203,13 +203,15 @@ Your mission: Make users more productive through intelligent, concise assistance
       /(.+?)\s+(?:by|due|deadline|before)\s+(.+?)(?:\.|$)/gi
     ]
     
-    // Note patterns - expanded to catch more variations
+    // Note patterns - improved to capture full content
     const notePatterns = [
-      /(?:create a note|make a note|add a note)\s+(?:about|for|titled|called)?\s*(.+?)(?:\.|$)/gi,
-      /(?:note|remember|jot down|write down|document)\s+(.+?)(?:\.|$)/gi,
-      /(?:keep track of|record|log)\s+(.+?)(?:\.|$)/gi,
-      /(?:save|store)\s+(?:this|the following)\s+(?:as a note|in notes)\s*:?\s*(.+?)(?:\.|$)/gi,
-      /(?:please|can you|could you)\s+(?:create|make|add)\s+a note\s+(.+?)(?:\.|$)/gi
+      /(?:create a note|make a note|add a note)\s+(?:about|for|titled|called)?\s*(.+)$/gi,
+      /(?:create a note|make a note|add a note)\s+(?:about|for|titled|called)?\s*(.+?)(?:\s*\.\s*(?:create|make|add|also|and then|then|next)|$)/gi,
+      /(?:please|can you|could you)\s+(?:create|make|add)\s+a note\s+(.+)$/gi,
+      /(?:please|can you|could you)\s+(?:create|make|add)\s+a note\s+(.+?)(?:\s*\.\s*(?:create|make|add|also|and then|then|next)|$)/gi,
+      /^(?:note|remember|jot down|write down|document)\s+(.+)$/gi,
+      /(?:keep track of|record|log)\s+(.+)$/gi,
+      /(?:save|store)\s+(?:this|the following)\s+(?:as a note|in notes)\s*:?\s*(.+)$/gi
     ]
     
     // Project patterns
@@ -356,21 +358,48 @@ Your mission: Make users more productive through intelligent, concise assistance
   }
   
   private extractNoteData(noteText: string, fullContent: string): { title: string; content: string; tags: string[] } {
+    console.log('[AI DEBUG] Extracting note data from:', noteText)
+    console.log('[AI DEBUG] Full content context:', fullContent)
+    
     // Extract title if specified
     let title = ''
     let content = noteText
     
-    // Check for explicit title patterns
-    const titleMatch = noteText.match(/(?:titled?|called?)\s+"([^"]+)"/i) || 
-                       noteText.match(/(?:titled?|called?)\s+([^.]+?)(?:\.|$)/i)
-    
-    if (titleMatch) {
-      title = titleMatch[1].trim()
-      // Remove the title part from content
-      content = noteText.replace(titleMatch[0], '').trim()
+    // Check for explicit title patterns with quotes
+    const quotedTitleMatch = noteText.match(/(?:titled?|called?)\s+"([^"]+)"/i)
+    if (quotedTitleMatch) {
+      title = quotedTitleMatch[1].trim()
+      // Remove the title part and keep the rest as content
+      content = noteText.replace(quotedTitleMatch[0], '').trim()
+      console.log('[AI DEBUG] Found quoted title:', title)
     } else {
-      // Generate title from first few words
-      title = this.generateNoteTitle(noteText)
+      // Check for title without quotes - but be more careful about content extraction
+      const unquotedTitleMatch = noteText.match(/(?:titled?|called?)\s+([^,]+?)(?:\s+(?:with|about|that|containing|for)|$)/i)
+      if (unquotedTitleMatch) {
+        title = unquotedTitleMatch[1].trim()
+        // Keep everything after the title as content
+        const titleEndIndex = noteText.indexOf(unquotedTitleMatch[1]) + unquotedTitleMatch[1].length
+        content = noteText.substring(titleEndIndex).replace(/^\s*(?:with|about|that|containing|for)\s*/i, '').trim()
+        console.log('[AI DEBUG] Found unquoted title:', title)
+        console.log('[AI DEBUG] Extracted content after title:', content)
+      } else {
+        // No explicit title - use first few words as title, rest as content
+        const words = noteText.trim().split(/\s+/)
+        if (words.length > 5) {
+          title = words.slice(0, 5).join(' ') + '...'
+          content = words.slice(5).join(' ')
+        } else {
+          title = noteText.trim()
+          content = noteText.trim()
+        }
+        console.log('[AI DEBUG] Generated title from content:', title)
+      }
+    }
+    
+    // If content is still empty or too short, use the original noteText
+    if (!content || content.length < 3) {
+      content = noteText
+      console.log('[AI DEBUG] Using full noteText as content')
     }
     
     // Extract any hashtags or mentioned topics as tags
@@ -381,14 +410,17 @@ Your mission: Make users more productive through intelligent, concise assistance
     // Add default tag
     tags.push('ai-generated')
     
-    // Clean up content
-    content = content.replace(/^(?:about|for|with)\s+/i, '')
+    // Clean up content - remove leading prepositions but preserve the rest
+    content = content.replace(/^(?:about|for|with|that says|that)\s+/i, '')
     
-    return {
+    const result = {
       title: title || 'AI Note',
       content: content || noteText,
       tags: [...new Set(tags)] // Remove duplicates
     }
+    
+    console.log('[AI DEBUG] Final note data:', JSON.stringify(result, null, 2))
+    return result
   }
 
   private calculateOptimalThinkingBudget(

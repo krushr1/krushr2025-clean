@@ -812,7 +812,6 @@ export default function CompactTaskModal({
 
                 </div>
               </div>
-              </div>
             </div>
           </div>
           

@@ -9,11 +9,10 @@ import {
   constructFrom,
   createPopperScope,
   getDefaultOptions,
-  startOfDay,
   toDate,
   useControllableState,
   useId
-} from "/chunks/chunk-RA3CWE2O.js";
+} from "/chunks/chunk-DKZL4X6O.js";
 import {
   Presence,
   Primitive,
@@ -29,36 +28,6 @@ import {
   require_react
 } from "/chunks/chunk-CPGAIYPB.js";
 
-// ../node_modules/date-fns/addMonths.mjs
-function addMonths(date, amount) {
-  const _date = toDate(date);
-  if (isNaN(amount)) return constructFrom(date, NaN);
-  if (!amount) {
-    return _date;
-  }
-  const dayOfMonth = _date.getDate();
-  const endOfDesiredMonth = constructFrom(date, _date.getTime());
-  endOfDesiredMonth.setMonth(_date.getMonth() + amount + 1, 0);
-  const daysInMonth = endOfDesiredMonth.getDate();
-  if (dayOfMonth >= daysInMonth) {
-    return endOfDesiredMonth;
-  } else {
-    _date.setFullYear(
-      endOfDesiredMonth.getFullYear(),
-      endOfDesiredMonth.getMonth(),
-      dayOfMonth
-    );
-    return _date;
-  }
-}
-
-// ../node_modules/date-fns/isSameDay.mjs
-function isSameDay(dateLeft, dateRight) {
-  const dateLeftStartOfDay = startOfDay(dateLeft);
-  const dateRightStartOfDay = startOfDay(dateRight);
-  return +dateLeftStartOfDay === +dateRightStartOfDay;
-}
-
 // ../node_modules/date-fns/endOfWeek.mjs
 function endOfWeek(date, options) {
   const defaultOptions = getDefaultOptions();
@@ -69,13 +38,6 @@ function endOfWeek(date, options) {
   _date.setDate(_date.getDate() + diff);
   _date.setHours(23, 59, 59, 999);
   return _date;
-}
-
-// ../node_modules/date-fns/isSameMonth.mjs
-function isSameMonth(dateLeft, dateRight) {
-  const _dateLeft = toDate(dateLeft);
-  const _dateRight = toDate(dateRight);
-  return _dateLeft.getFullYear() === _dateRight.getFullYear() && _dateLeft.getMonth() === _dateRight.getMonth();
 }
 
 // src/components/ui/tooltip.tsx
@@ -610,10 +572,7 @@ var formatDateTime = (date) => {
 
 export {
   addDays,
-  addMonths,
-  isSameDay,
   endOfWeek,
-  isSameMonth,
   formatDateShort,
   formatDateTime,
   TooltipProvider2 as TooltipProvider,
@@ -621,4 +580,4 @@ export {
   TooltipTrigger2 as TooltipTrigger,
   TooltipContent2 as TooltipContent
 };
-//# sourceMappingURL=/chunks/chunk-PGNYWGDS.js.map
+//# sourceMappingURL=/chunks/chunk-BV36P6NP.js.map

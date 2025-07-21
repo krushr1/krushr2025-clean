@@ -4,23 +4,24 @@ import {
   TooltipProvider,
   TooltipTrigger,
   addDays,
-  addMonths,
   endOfWeek,
-  formatDateShort,
-  isSameDay,
-  isSameMonth
-} from "/chunks/chunk-PGNYWGDS.js";
+  formatDateShort
+} from "/chunks/chunk-BV36P6NP.js";
 import {
   Badge,
   Card,
   CompactTaskModal,
+  addMonths,
   constructNow,
   eachDayOfInterval,
   endOfMonth,
   format,
+  isSameDay,
+  isSameMonth,
   startOfMonth,
-  startOfWeek
-} from "/chunks/chunk-RA3CWE2O.js";
+  startOfWeek,
+  subMonths
+} from "/chunks/chunk-DKZL4X6O.js";
 import "/chunks/chunk-XTC34SKS.js";
 import {
   FloatingInput
@@ -65,11 +66,6 @@ var import_react2 = __toESM(require_react(), 1);
 // ../node_modules/date-fns/isToday.mjs
 function isToday(date) {
   return isSameDay(date, constructNow(date));
-}
-
-// ../node_modules/date-fns/subMonths.mjs
-function subMonths(date, amount) {
-  return addMonths(date, -amount);
 }
 
 // src/components/calendar/AgendaView.tsx
@@ -1262,4 +1258,4 @@ function NewCalendarPanel({
 export {
   NewCalendarPanel as default
 };
-//# sourceMappingURL=/chunks/NewCalendarPanel-VMNAVZXV.js.map
+//# sourceMappingURL=/chunks/NewCalendarPanel-ATQTXYO5.js.map

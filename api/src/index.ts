@@ -215,6 +215,42 @@ async function buildServer() {
       }
     })
 
+    // Debug endpoint to trace what happens to president queries
+    server.post('/debug-president', async (request, reply) => {
+      try {
+        const { query } = request.body as any
+        console.log(`🔴 DEBUG ENDPOINT: Received query: "${query}"`)
+        
+        const userQuery = query.toLowerCase()
+        const isPresidentQuery = userQuery.includes('president') || userQuery.includes('potus')
+        const isCurrentQuery = userQuery.includes('current') || userQuery.includes('who is') || userQuery.includes('who\'s') || userQuery.includes('what is')
+        
+        console.log(`🔴 DEBUG: Contains 'president': ${userQuery.includes('president')}`)
+        console.log(`🔴 DEBUG: Contains 'current': ${userQuery.includes('current')}`)
+        console.log(`🔴 DEBUG: Contains 'who is': ${userQuery.includes('who is')}`)
+        console.log(`🔴 DEBUG: Final condition: ${isPresidentQuery && isCurrentQuery}`)
+        
+        return {
+          success: true,
+          query,
+          originalQuery: query,
+          lowerQuery: userQuery,
+          conditions: {
+            isPresidentQuery,
+            isCurrentQuery,
+            finalCondition: isPresidentQuery && isCurrentQuery
+          },
+          response: isPresidentQuery && isCurrentQuery 
+            ? "DIRECT INTERVENTION: Donald Trump is the 47th and current President of the United States."
+            : "Would call normal AI service",
+          timestamp: new Date().toISOString()
+        }
+      } catch (error) {
+        console.error('Debug endpoint error:', error)
+        return reply.code(500).send({ error: 'Debug endpoint error' })
+      }
+    })
+
     // File upload endpoint
     server.post('/upload', async (request, reply) => {
       const data = await request.file()

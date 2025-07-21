@@ -26,18 +26,18 @@ import {
   require_react_dom
 } from "/chunks/chunk-WYEFURCV.js";
 import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
   CircleAlert,
   CircleCheck,
-  Clock,
   File,
   FileArchive,
   FileImage,
   FileText,
   FileVideo,
-  Paperclip,
   Tag,
   Upload,
-  User,
   X,
   __commonJS,
   __toESM,
@@ -115,7 +115,7 @@ var require_react_is_development = __commonJS({
         var ContextProvider = REACT_PROVIDER_TYPE;
         var Element2 = REACT_ELEMENT_TYPE;
         var ForwardRef = REACT_FORWARD_REF_TYPE;
-        var Fragment3 = REACT_FRAGMENT_TYPE;
+        var Fragment2 = REACT_FRAGMENT_TYPE;
         var Lazy = REACT_LAZY_TYPE;
         var Memo = REACT_MEMO_TYPE;
         var Portal2 = REACT_PORTAL_TYPE;
@@ -174,7 +174,7 @@ var require_react_is_development = __commonJS({
         exports.ContextProvider = ContextProvider;
         exports.Element = Element2;
         exports.ForwardRef = ForwardRef;
-        exports.Fragment = Fragment3;
+        exports.Fragment = Fragment2;
         exports.Lazy = Lazy;
         exports.Memo = Memo;
         exports.Portal = Portal2;
@@ -943,6 +943,38 @@ function toDate(argument) {
   }
 }
 
+// ../node_modules/date-fns/constructFrom.mjs
+function constructFrom(date, value) {
+  if (date instanceof Date) {
+    return new date.constructor(value);
+  } else {
+    return new Date(value);
+  }
+}
+
+// ../node_modules/date-fns/addMonths.mjs
+function addMonths(date, amount) {
+  const _date = toDate(date);
+  if (isNaN(amount)) return constructFrom(date, NaN);
+  if (!amount) {
+    return _date;
+  }
+  const dayOfMonth = _date.getDate();
+  const endOfDesiredMonth = constructFrom(date, _date.getTime());
+  endOfDesiredMonth.setMonth(_date.getMonth() + amount + 1, 0);
+  const daysInMonth = endOfDesiredMonth.getDate();
+  if (dayOfMonth >= daysInMonth) {
+    return endOfDesiredMonth;
+  } else {
+    _date.setFullYear(
+      endOfDesiredMonth.getFullYear(),
+      endOfDesiredMonth.getMonth(),
+      dayOfMonth
+    );
+    return _date;
+  }
+}
+
 // ../node_modules/date-fns/_lib/defaultOptions.mjs
 var defaultOptions = {};
 function getDefaultOptions() {
@@ -959,6 +991,20 @@ function startOfWeek(date, options) {
   _date.setDate(_date.getDate() - diff);
   _date.setHours(0, 0, 0, 0);
   return _date;
+}
+
+// ../node_modules/date-fns/startOfDay.mjs
+function startOfDay(date) {
+  const _date = toDate(date);
+  _date.setHours(0, 0, 0, 0);
+  return _date;
+}
+
+// ../node_modules/date-fns/isSameDay.mjs
+function isSameDay(dateLeft, dateRight) {
+  const dateLeftStartOfDay = startOfDay(dateLeft);
+  const dateRightStartOfDay = startOfDay(dateRight);
+  return +dateLeftStartOfDay === +dateRightStartOfDay;
 }
 
 // ../node_modules/date-fns/endOfMonth.mjs
@@ -1525,13 +1571,6 @@ var secondsInYear = secondsInDay * daysInYear;
 var secondsInMonth = secondsInYear / 12;
 var secondsInQuarter = secondsInMonth * 3;
 
-// ../node_modules/date-fns/startOfDay.mjs
-function startOfDay(date) {
-  const _date = toDate(date);
-  _date.setHours(0, 0, 0, 0);
-  return _date;
-}
-
 // ../node_modules/date-fns/_lib/getTimezoneOffsetInMilliseconds.mjs
 function getTimezoneOffsetInMilliseconds(date) {
   const _date = toDate(date);
@@ -1557,15 +1596,6 @@ function differenceInCalendarDays(dateLeft, dateRight) {
   const timestampLeft = +startOfDayLeft - getTimezoneOffsetInMilliseconds(startOfDayLeft);
   const timestampRight = +startOfDayRight - getTimezoneOffsetInMilliseconds(startOfDayRight);
   return Math.round((timestampLeft - timestampRight) / millisecondsInDay);
-}
-
-// ../node_modules/date-fns/constructFrom.mjs
-function constructFrom(date, value) {
-  if (date instanceof Date) {
-    return new date.constructor(value);
-  } else {
-    return new Date(value);
-  }
 }
 
 // ../node_modules/date-fns/startOfYear.mjs
@@ -2538,6 +2568,18 @@ function cleanEscapedString(input) {
     return input;
   }
   return matched[1].replace(doubleQuoteRegExp, "'");
+}
+
+// ../node_modules/date-fns/isSameMonth.mjs
+function isSameMonth(dateLeft, dateRight) {
+  const _dateLeft = toDate(dateLeft);
+  const _dateRight = toDate(dateRight);
+  return _dateLeft.getFullYear() === _dateRight.getFullYear() && _dateLeft.getMonth() === _dateRight.getMonth();
+}
+
+// ../node_modules/date-fns/subMonths.mjs
+function subMonths(date, amount) {
+  return addMonths(date, -amount);
 }
 
 // src/components/kanban/CompactTaskModal.tsx
@@ -5538,6 +5580,10 @@ function CompactTaskModal({
   const [isLoading, setIsLoading] = (0, import_react4.useState)(false);
   const [selectedColumnId, setSelectedColumnId] = (0, import_react4.useState)(kanbanColumnId || null);
   const [calendarDate, setCalendarDate] = (0, import_react4.useState)(/* @__PURE__ */ new Date());
+  const [currentMode, setCurrentMode] = (0, import_react4.useState)(mode);
+  const [showAdvanced, setShowAdvanced] = (0, import_react4.useState)(false);
+  const [smartSuggestions, setSmartSuggestions] = (0, import_react4.useState)([]);
+  const [autoDetectedMode, setAutoDetectedMode] = (0, import_react4.useState)(null);
   const [startTime, setStartTime] = (0, import_react4.useState)(
     task?.startTime ? format(new Date(task.startTime), "yyyy-MM-dd'T'HH:mm") : selectedDate ? format(selectedDate, "yyyy-MM-dd'T'09:00") : format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'09:00")
   );
@@ -5559,12 +5605,58 @@ function CompactTaskModal({
   const uploadMutation = trpc.uploadNew.uploadFiles.useMutation();
   const createCalendarEventMutation = trpc.calendar.create.useMutation();
   const updateCalendarEventMutation = trpc.calendar.update.useMutation();
+  const analyzeTitle = (title2) => {
+    const suggestions = [];
+    const lowerTitle = title2.toLowerCase();
+    if (lowerTitle.includes("meeting") || lowerTitle.includes("call") || lowerTitle.includes("interview")) {
+      if (currentMode !== "calendar") {
+        setAutoDetectedMode("calendar");
+        suggestions.push("\u{1F4A1} This sounds like a calendar event");
+      }
+      if (!startTime || startTime === format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'09:00")) {
+        const nextHour = /* @__PURE__ */ new Date();
+        nextHour.setHours(nextHour.getHours() + 1, 0, 0, 0);
+        setStartTime(format(nextHour, "yyyy-MM-dd'T'HH:mm"));
+        const endHour = new Date(nextHour);
+        endHour.setHours(endHour.getHours() + 1);
+        setEndTime(format(endHour, "yyyy-MM-dd'T'HH:mm"));
+      }
+    }
+    if (lowerTitle.includes("deadline") || lowerTitle.includes("due") || lowerTitle.includes("submit")) {
+      if (currentMode !== "calendar") {
+        suggestions.push("\u{1F4C5} Consider creating a calendar reminder for this deadline");
+      }
+      if (!dueDate) {
+        suggestions.push("\u23F0 This seems time-sensitive - set a due date");
+      }
+    }
+    if (lowerTitle.includes("urgent") || lowerTitle.includes("asap") || lowerTitle.includes("critical")) {
+      if (priority !== "high" /* HIGH */) {
+        setPriority("high" /* HIGH */);
+        suggestions.push("\u{1F534} Auto-detected high priority");
+      }
+    }
+    if (lowerTitle.includes("review") || lowerTitle.includes("feedback")) {
+      if (status !== "IN_REVIEW" /* IN_REVIEW */ && currentMode === "task") {
+        suggestions.push('\u{1F440} Consider setting status to "In Review"');
+      }
+    }
+    setSmartSuggestions(suggestions);
+  };
+  const intelligentDateSelect = (date) => {
+    setDueDate(date);
+    const isWeekday = date.getDay() >= 1 && date.getDay() <= 5;
+    const isBusinessHours = date.getHours() >= 9 && date.getHours() <= 17;
+    if (isWeekday && isBusinessHours && currentMode === "task") {
+      setSmartSuggestions((prev) => [...prev, "\u{1F4A1} Business day/time selected - create calendar event instead?"]);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !workspaceId) return;
     setIsLoading(true);
     try {
-      if (mode === "calendar") {
+      if (currentMode === "calendar") {
         const calendarEventData = {
           title: title.trim(),
           description: description.trim(),
@@ -5733,132 +5825,130 @@ function CompactTaskModal({
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative w-full max-w-4xl mx-4 max-h-[90vh] bg-white rounded-xl overflow-hidden flex flex-col shadow-2xl", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
-          "div",
-          {
-            className: "relative overflow-hidden",
-            style: {
-              background: "linear-gradient(135deg, #1e3a8a 0%, #143197 100%)",
-              backgroundSize: "100% 100%",
-              borderRadius: "30px 30px 0 0",
-              padding: "40px 40px 20px"
-            },
-            children: [
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between px-6 py-4 border-b border-gray-200", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2", children: [
+              currentMode === "calendar" ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Calendar, { className: "w-5 h-5 text-blue-600" }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Tag, { className: "w-5 h-5 text-green-600" }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("h2", { className: "text-lg font-semibold text-gray-900", children: [
+                isEditMode ? "Edit" : "Create",
+                " ",
+                currentMode === "calendar" ? "Event" : "Task"
+              ] })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center bg-gray-100 rounded-lg p-1", children: [
               /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                "div",
+                "button",
                 {
-                  className: "absolute inset-0 opacity-10",
-                  style: {
-                    backgroundImage: "url('/images/Pricing-Shapes.svg')",
-                    backgroundPosition: "70%",
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "900px"
-                  }
+                  type: "button",
+                  onClick: () => setCurrentMode("task"),
+                  className: cn(
+                    "px-3 py-1 text-sm rounded-md transition-all",
+                    currentMode === "task" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                  ),
+                  children: "Task"
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mb-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
-                  "div",
-                  {
-                    className: "inline-flex items-center px-4 py-2 rounded-full text-sm",
-                    style: {
-                      background: "rgba(255, 255, 255, 0.1)",
-                      color: "#ffffff",
-                      border: "1px solid rgba(255, 255, 255, 0.2)"
-                    },
-                    children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-white opacity-80 mr-2", children: mode === "calendar" ? "\u{1F4C5}" : "\u2728" }),
-                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-white font-medium", children: mode === "calendar" ? "Calendar Event" : "Task Management" }),
-                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { className: "text-white opacity-70 ml-1", children: [
-                        "- ",
-                        isEditMode ? "Edit" : "Create new"
-                      ] })
-                    ]
-                  }
-                ) }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex-1 mr-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                      "input",
-                      {
-                        type: "text",
-                        value: title,
-                        onChange: (e) => setTitle(e.target.value),
-                        autoFocus: true,
-                        placeholder: mode === "calendar" ? "Enter event title..." : "Enter task title...",
-                        className: "w-full text-2xl font-bold font-manrope bg-transparent border-none outline-none text-white placeholder-white/50 pb-2 border-b-2 border-white/20 focus:border-white/60 transition-all duration-300"
-                      }
-                    ),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "text-sm text-white/60 mt-1 font-medium", children: mode === "calendar" ? "Event title" : "Task title" })
-                  ] }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => setCurrentMode("calendar"),
+                  className: cn(
+                    "px-3 py-1 text-sm rounded-md transition-all",
+                    currentMode === "calendar" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                  ),
+                  children: "Event"
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+            "button",
+            {
+              onClick: onClose,
+              className: "text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg",
+              children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "w-5 h-5" })
+            }
+          )
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("form", { onSubmit: handleSubmit, className: "flex-1 overflow-y-auto", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "p-6", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-6", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-4", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-2", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                    "button",
+                    FloatingInput,
                     {
-                      onClick: onClose,
-                      className: "text-white/60 hover:text-white transition-all duration-200 p-3 hover:bg-white/10 rounded-xl backdrop-blur-sm",
-                      children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "w-6 h-6" })
+                      type: "text",
+                      label: currentMode === "calendar" ? "Event title" : "Task title",
+                      value: title,
+                      onChange: (e) => {
+                        setTitle(e.target.value);
+                        analyzeTitle(e.target.value);
+                      },
+                      autoFocus: true,
+                      className: "text-lg font-semibold"
                     }
-                  )
-                ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-6 flex flex-wrap items-center gap-4 text-white/80 text-sm", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(User, { className: "w-4 h-4" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium", children: "You" })
-                  ] }),
-                  mode === "calendar" && selectedDate && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(CalendarIcon, { className: "w-4 h-4" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium", children: format(selectedDate, "MMM d, yyyy") })
-                  ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Clock, { className: "w-4 h-4" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium", children: isEditMode ? "Editing" : "Creating" })
-                  ] }),
-                  mode === "calendar" && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 bg-green-500/20 text-green-200 rounded-full px-3 py-1.5 backdrop-blur-sm", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "w-2 h-2 bg-green-400 rounded-full animate-pulse" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium text-xs uppercase tracking-wide", children: "Calendar Event" })
+                  ),
+                  smartSuggestions.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "space-y-1", children: smartSuggestions.map((suggestion, index2) => /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-lg flex items-center gap-2", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: suggestion }),
+                    suggestion.includes("calendar event") && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: () => {
+                          setCurrentMode("calendar");
+                          setSmartSuggestions((prev) => prev.filter((_, i) => i !== index2));
+                        },
+                        className: "text-blue-700 hover:text-blue-900 underline",
+                        children: "Switch"
+                      }
+                    )
+                  ] }, index2)) }),
+                  autoDetectedMode && autoDetectedMode !== currentMode && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "text-sm bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-center justify-between", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { className: "text-yellow-800", children: [
+                      "\u{1F4A1} This looks like a ",
+                      autoDetectedMode === "calendar" ? "calendar event" : "task"
+                    ] }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: () => {
+                          setCurrentMode(autoDetectedMode);
+                          setAutoDetectedMode(null);
+                        },
+                        className: "text-yellow-700 hover:text-yellow-900 underline font-medium",
+                        children: [
+                          "Switch to ",
+                          autoDetectedMode
+                        ]
+                      }
+                    )
                   ] })
                 ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "absolute bottom-4 right-4 lg:bottom-6 lg:right-6", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-white/70 border border-white/20", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex gap-1", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 bg-white/20 rounded text-xs", children: "\u2318" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 bg-white/20 rounded text-xs", children: "\u21B5" })
-                  ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: "to save" })
-                ] }) }) })
-              ] })
-            ]
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("form", { onSubmit: handleSubmit, className: "flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "p-6 lg:p-8", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-8", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-6", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "bg-white rounded-xl border border-gray-200 p-6 shadow-sm", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("h3", { className: "text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-2 h-2 bg-krushr-primary rounded-full" }),
-                  "Essential Details"
-                ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative mb-6", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                     "textarea",
                     {
-                      id: "task-description",
+                      id: "description",
                       value: description,
                       onChange: (e) => setDescription(e.target.value),
-                      className: "block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer resize-none",
+                      className: "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer resize-none",
                       placeholder: " ",
-                      rows: 4
+                      rows: 3
                     }
                   ),
                   /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                     "label",
                     {
-                      htmlFor: "task-description",
-                      className: "absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-[20px] peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1",
+                      htmlFor: "description",
+                      className: "absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-[20px] peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1",
                       children: "Description"
                     }
                   )
                 ] }),
-                mode === "calendar" ? /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+                currentMode === "calendar" ? /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                     FloatingInput,
                     {
@@ -5894,128 +5984,108 @@ function CompactTaskModal({
                         id: "all-day",
                         checked: allDay,
                         onChange: (e) => setAllDay(e.target.checked),
-                        className: "rounded border-krushr-gray-border focus:ring-krushr-primary"
+                        className: "rounded border-gray-300 focus:ring-krushr-primary"
                       }
                     ),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { htmlFor: "all-day", className: "text-sm text-krushr-gray-700 font-medium", children: "All day event" })
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { htmlFor: "all-day", className: "text-sm text-gray-700 font-medium", children: "All day event" })
                   ] })
-                ] }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                  FloatingInput,
-                  {
-                    type: "text",
-                    label: "Tags (comma separated)",
-                    value: tags,
-                    onChange: (e) => setTags(e.target.value)
-                  }
-                )
-              ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "bg-white rounded-xl border border-gray-200 p-6 shadow-sm", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("h3", { className: "text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Paperclip, { className: "w-4 h-4 text-gray-600" }),
-                  "Attachments"
-                ] }),
-                task?.id ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                  AttachmentUpload,
-                  {
-                    type: "task",
-                    targetId: task.id,
-                    onUploadComplete: () => {
-                    },
-                    className: "w-full"
-                  }
-                ) : /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
-                    "div",
+                ] }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                    "input",
                     {
-                      className: "border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-krushr-primary transition-colors cursor-pointer hover:bg-gray-50",
-                      onClick: () => document.getElementById("file-input")?.click(),
-                      onDragOver: (e) => {
-                        e.preventDefault();
-                        e.currentTarget.classList.add("border-krushr-primary", "bg-krushr-primary-50");
-                      },
-                      onDragLeave: (e) => {
-                        e.preventDefault();
-                        e.currentTarget.classList.remove("border-krushr-primary", "bg-krushr-primary-50");
-                      },
-                      onDrop: (e) => {
-                        e.preventDefault();
-                        e.currentTarget.classList.remove("border-krushr-primary", "bg-krushr-primary-50");
-                        const files = Array.from(e.dataTransfer.files);
-                        handleFileSelect(files);
-                      },
-                      children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Upload, { className: "w-8 h-8 mx-auto text-gray-400 mb-3" }),
-                        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("p", { className: "text-sm text-gray-600", children: [
-                          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium text-krushr-primary", children: "Upload files" }),
-                          " or drag and drop"
-                        ] }),
-                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("p", { className: "text-xs text-gray-500 mt-1", children: "Max 15MB per file" }),
-                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                          "input",
-                          {
-                            id: "file-input",
-                            type: "file",
-                            multiple: true,
-                            className: "hidden",
-                            onChange: (e) => {
-                              if (e.target.files) {
-                                handleFileSelect(Array.from(e.target.files));
-                              }
-                            }
-                          }
-                        )
-                      ]
+                      type: "date",
+                      value: dueDate ? format(dueDate, "yyyy-MM-dd") : "",
+                      onChange: (e) => setDueDate(e.target.value ? new Date(e.target.value) : null),
+                      className: "border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-krushr-primary focus:ring-0",
+                      placeholder: "Due date"
                     }
                   ),
-                  pendingFiles.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mt-4 space-y-2", children: pendingFiles.map((file, index2) => /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between p-3 bg-gray-50 rounded-lg", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-3 min-w-0", children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(FileText, { className: "w-4 h-4 text-gray-500 flex-shrink-0" }),
-                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-sm text-gray-700 truncate", children: file.name })
-                    ] }),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                    FloatingInput,
+                    {
+                      type: "text",
+                      label: "Tags (comma separated)",
+                      value: tags,
+                      onChange: (e) => setTags(e.target.value)
+                    }
+                  )
+                ] })
+              ] }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-4", children: [
+                mode === "task" && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: "Priority" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex gap-2", children: ["low" /* LOW */, "medium" /* MEDIUM */, "high" /* HIGH */].map((p) => {
+                    const colors = {
+                      ["low" /* LOW */]: "bg-gray-400",
+                      ["medium" /* MEDIUM */]: "bg-krushr-warning",
+                      ["high" /* HIGH */]: "bg-krushr-secondary"
+                    };
+                    const count2 = {
+                      ["low" /* LOW */]: 1,
+                      ["medium" /* MEDIUM */]: 2,
+                      ["high" /* HIGH */]: 3
+                    };
+                    return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
                       "button",
                       {
                         type: "button",
-                        onClick: () => removePendingFile(index2),
-                        className: "text-gray-400 hover:text-red-500 transition-colors",
-                        children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "w-4 h-4" })
-                      }
-                    )
-                  ] }, index2)) })
-                ] })
-              ] })
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-6", children: [
-              mode === "calendar" ? /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "bg-white rounded-xl border border-gray-200 p-6 shadow-sm", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("h3", { className: "text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(CalendarIcon, { className: "w-4 h-4 text-blue-600" }),
-                  "Event Configuration"
+                        onClick: () => setPriority(p),
+                        className: cn(
+                          "flex gap-1 items-center px-3 py-2 rounded-lg transition-all hover:bg-gray-50",
+                          priority === p ? "bg-gray-100" : "hover:bg-gray-50"
+                        ),
+                        title: `${p} Priority`,
+                        children: [
+                          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex gap-1", children: Array.from({ length: count2[p] }).map((_, i) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: cn("w-2 h-2 rounded-full", priority === p ? colors[p] : "bg-gray-300") }, i)) }),
+                          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-xs text-gray-600 ml-1", children: p })
+                        ]
+                      },
+                      p
+                    );
+                  }) }) })
                 ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mb-4", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Event Type" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "grid grid-cols-2 gap-2", children: ["MEETING", "TASK", "REMINDER", "EVENT", "DEADLINE", "MILESTONE"].map((type) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: currentMode === "calendar" ? "Event Type" : "Status" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "grid grid-cols-2 gap-2", children: currentMode === "calendar" ? ["MEETING", "TASK", "EVENT", "REMINDER"].map((type) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                     "button",
                     {
                       type: "button",
                       onClick: () => setEventType(type),
                       className: cn(
-                        "px-3 py-2 text-xs font-medium rounded-lg transition-all text-center",
-                        eventType === type ? "bg-krushr-primary text-white shadow-sm" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        "px-3 py-2 text-xs rounded-lg transition-all",
+                        eventType === type ? "bg-krushr-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       ),
                       children: type
                     },
                     type
+                  )) : [
+                    { value: "TODO" /* TODO */, label: "Todo" },
+                    { value: "IN_PROGRESS" /* IN_PROGRESS */, label: "In Progress" },
+                    { value: "IN_REVIEW" /* IN_REVIEW */, label: "Review" },
+                    { value: "DONE" /* DONE */, label: "Done" }
+                  ].map((option) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => setStatus(option.value),
+                      className: cn(
+                        "px-3 py-2 text-xs rounded-lg transition-all",
+                        status === option.value ? "bg-krushr-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      ),
+                      children: option.label
+                    },
+                    option.value
                   )) })
                 ] }),
                 /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Color Theme" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex gap-3 justify-center", children: ["blue", "green", "purple", "orange", "red"].map((color) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: currentMode === "calendar" ? "Color Theme" : "Priority" }),
+                  currentMode === "calendar" ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex gap-2 justify-center", children: ["blue", "green", "purple", "orange", "red"].map((color) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                     "button",
                     {
                       type: "button",
                       onClick: () => setEventColor(color),
                       className: cn(
-                        "w-10 h-10 rounded-xl transition-all border-2 relative",
+                        "w-8 h-8 rounded-lg transition-all border-2 relative",
                         eventColor === color ? "border-gray-400 scale-110 shadow-lg" : "border-transparent hover:scale-105",
                         color === "blue" && "bg-blue-500",
                         color === "green" && "bg-green-500",
@@ -6023,113 +6093,153 @@ function CompactTaskModal({
                         color === "orange" && "bg-orange-500",
                         color === "red" && "bg-red-500"
                       ),
-                      children: eventColor === color && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "absolute inset-0 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("svg", { className: "w-4 h-4 text-white", fill: "currentColor", viewBox: "0 0 20 20", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("path", { fillRule: "evenodd", d: "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z", clipRule: "evenodd" }) }) })
+                      children: eventColor === color && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "absolute inset-0 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-2 h-2 bg-white rounded-full" }) })
                     },
                     color
-                  )) })
-                ] })
-              ] }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "bg-white rounded-xl border border-gray-200 p-6 shadow-sm", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("h3", { className: "text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Tag, { className: "w-4 h-4 text-green-600" }),
-                  "Task Configuration"
-                ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mb-6", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Priority Level" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex gap-2", children: [1, 2, 3].map((level) => {
-                      const isActive = priority === "low" /* LOW */ && level <= 1 || priority === "medium" /* MEDIUM */ && level <= 2 || priority === "high" /* HIGH */ && level <= 3;
-                      const targetPriority = level === 1 ? "low" /* LOW */ : level === 2 ? "medium" /* MEDIUM */ : "high" /* HIGH */;
-                      return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => setPriority(targetPriority),
-                          className: cn(
-                            "w-6 h-6 rounded-full transition-all border-2",
-                            isActive ? "bg-krushr-secondary border-krushr-secondary shadow-md scale-110" : "bg-gray-200 border-gray-300 hover:bg-gray-300"
-                          ),
-                          title: `${level === 1 ? "Low" : level === 2 ? "Medium" : "High"} Priority`
-                        },
-                        level
-                      );
-                    }) }),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { className: "text-sm text-gray-600 font-medium capitalize", children: [
-                      priority.toLowerCase(),
-                      " priority"
-                    ] })
-                  ] })
-                ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Status" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "grid grid-cols-2 gap-2", children: [
-                    { value: "TODO" /* TODO */, label: "Todo", color: "bg-gray-500" },
-                    { value: "IN_PROGRESS" /* IN_PROGRESS */, label: "In Progress", color: "bg-blue-500" },
-                    { value: "IN_REVIEW" /* IN_REVIEW */, label: "Review", color: "bg-yellow-500" },
-                    { value: "DONE" /* DONE */, label: "Done", color: "bg-green-500" }
-                  ].map((option) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => setStatus(option.value),
-                      className: cn(
-                        "px-3 py-2 text-xs font-medium rounded-lg transition-all relative overflow-hidden",
-                        status === option.value ? `${option.color} text-white shadow-sm` : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      ),
-                      children: option.label
-                    },
-                    option.value
-                  )) })
-                ] })
-              ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "bg-white rounded-xl border border-gray-200 p-6 shadow-sm", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("h3", { className: "text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(User, { className: "w-4 h-4 text-purple-600" }),
-                  mode === "calendar" ? "Scheduling" : "Assignment & Timing"
-                ] }),
-                mode === "task" && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_jsx_runtime7.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mb-6", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Assignee" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex flex-wrap gap-2", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                  )) }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex gap-2", children: ["low" /* LOW */, "medium" /* MEDIUM */, "high" /* HIGH */].map((p) => {
+                    const colors = {
+                      ["low" /* LOW */]: "bg-gray-400",
+                      ["medium" /* MEDIUM */]: "bg-krushr-warning",
+                      ["high" /* HIGH */]: "bg-krushr-secondary"
+                    };
+                    const count2 = {
+                      ["low" /* LOW */]: 1,
+                      ["medium" /* MEDIUM */]: 2,
+                      ["high" /* HIGH */]: 3
+                    };
+                    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                       "button",
                       {
                         type: "button",
-                        onClick: () => setAssigneeId(""),
+                        onClick: () => setPriority(p),
                         className: cn(
-                          "flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-all",
-                          assigneeId === "" ? "bg-krushr-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          "flex gap-1 items-center px-3 py-2 rounded-lg transition-all hover:bg-gray-50",
+                          priority === p ? "bg-gray-100" : "hover:bg-gray-50"
                         ),
-                        children: [
-                          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-4 h-4 rounded-full bg-gray-300" }),
-                          "Unassigned"
-                        ]
-                      }
-                    ),
-                    workspaceUsers?.slice(0, 3).map((user) => {
-                      const initials = (user.name || user.email).slice(0, 2).toUpperCase();
-                      return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => setAssigneeId(user.id),
-                          className: cn(
-                            "flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-all",
-                            assigneeId === user.id ? "bg-krushr-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                          ),
-                          children: [
-                            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-4 h-4 bg-gradient-to-br from-krushr-primary to-blue-600 rounded-full flex items-center justify-center text-white text-[9px] font-medium", children: initials }),
-                            user.name || user.email.split("@")[0]
-                          ]
-                        },
-                        user.id
-                      );
-                    })
+                        title: `${p} Priority`,
+                        children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex gap-1", children: Array.from({ length: count2[p] }).map((_, i) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: cn("w-2 h-2 rounded-full", priority === p ? colors[p] : "bg-gray-300") }, i)) })
+                      },
+                      p
+                    );
+                  }) })
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "border-t border-gray-200 pt-4", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => setShowAdvanced(!showAdvanced),
+                      className: "flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors w-full",
+                      children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(ChevronRight, { className: cn("w-4 h-4 transition-transform", showAdvanced && "rotate-90") }),
+                        "Advanced Options"
+                      ]
+                    }
+                  ),
+                  showAdvanced && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-4 space-y-4", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: currentMode === "calendar" ? "Organizer" : "Assignee" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex flex-wrap gap-2", children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                          "button",
+                          {
+                            type: "button",
+                            onClick: () => setAssigneeId(""),
+                            className: cn(
+                              "flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-all",
+                              assigneeId === "" ? "bg-krushr-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            ),
+                            children: [
+                              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-4 h-4 rounded-full bg-gray-300" }),
+                              currentMode === "calendar" ? "No organizer" : "Unassigned"
+                            ]
+                          }
+                        ),
+                        workspaceUsers?.slice(0, 3).map((user) => {
+                          const initials = (user.name || user.email).slice(0, 2).toUpperCase();
+                          return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: () => setAssigneeId(user.id),
+                              className: cn(
+                                "flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-all",
+                                assigneeId === user.id ? "bg-krushr-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                              ),
+                              children: [
+                                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-4 h-4 bg-gradient-to-br from-krushr-primary to-blue-600 rounded-full flex items-center justify-center text-white text-[9px] font-medium", children: initials }),
+                                user.name || user.email.split("@")[0]
+                              ]
+                            },
+                            user.id
+                          );
+                        })
+                      ] })
+                    ] }),
+                    currentMode === "calendar" ? /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-4", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: "Reminders" }),
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex gap-2", children: ["5 min", "15 min", "30 min", "1 hour"].map((reminder) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                          "button",
+                          {
+                            type: "button",
+                            className: "px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors",
+                            children: reminder
+                          },
+                          reminder
+                        )) })
+                      ] }),
+                      assigneeId && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "text-xs bg-green-50 border border-green-200 rounded-lg p-2", children: [
+                        "\u{1F4A1} ",
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("strong", { children: "Smart tip:" }),
+                        " Create follow-up tasks for attendees?",
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("button", { className: "ml-2 text-green-700 underline", children: "Create tasks" })
+                      ] })
+                    ] }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-4", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: "Dependencies" }),
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                          FloatingInput,
+                          {
+                            type: "text",
+                            label: "Blocked by (optional)",
+                            value: "",
+                            onChange: () => {
+                            },
+                            className: "text-sm"
+                          }
+                        )
+                      ] }),
+                      dueDate && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "text-xs bg-blue-50 border border-blue-200 rounded-lg p-2", children: [
+                        "\u{1F4C5} ",
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("strong", { children: "Smart tip:" }),
+                        " Add calendar reminder for this deadline?",
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                          "button",
+                          {
+                            className: "ml-2 text-blue-700 underline",
+                            onClick: () => {
+                              setCurrentMode("calendar");
+                              setStartTime(format(dueDate, "yyyy-MM-dd'T'HH:mm"));
+                              setEndTime(format(dueDate, "yyyy-MM-dd'T'HH:mm"));
+                            },
+                            children: "Create reminder"
+                          }
+                        )
+                      ] }),
+                      priority === "high" /* HIGH */ && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "text-xs bg-red-50 border border-red-200 rounded-lg p-2", children: [
+                        "\u{1F6A8} ",
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("strong", { children: "High priority task:" }),
+                        " Consider setting earlier due date or notifying team"
+                      ] })
+                    ] })
                   ] })
-                ] }) }),
+                ] }),
                 mode === "task" && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Due Date" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: "Due Date" }),
                   dueDate ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "p-3 bg-blue-50 border border-blue-200 rounded-lg", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between", children: [
                     /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2", children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(CalendarIcon, { className: "w-4 h-4 text-blue-600" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Calendar, { className: "w-4 h-4 text-blue-600" }),
                       /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-sm font-medium text-blue-700", children: format(dueDate, "MMM d, yyyy") })
                     ] }),
                     /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
@@ -6141,106 +6251,210 @@ function CompactTaskModal({
                         children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "w-4 h-4" })
                       }
                     )
-                  ] }) }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-3 gap-2", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                      "button",
-                      {
-                        type: "button",
-                        onClick: () => setDueDate(/* @__PURE__ */ new Date()),
-                        className: "px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium",
-                        children: "Today"
-                      }
-                    ),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                      "button",
-                      {
-                        type: "button",
-                        onClick: () => {
-                          const tomorrow = /* @__PURE__ */ new Date();
-                          tomorrow.setDate(tomorrow.getDate() + 1);
-                          setDueDate(tomorrow);
-                        },
-                        className: "px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium",
-                        children: "Tomorrow"
-                      }
-                    ),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                      "button",
-                      {
-                        type: "button",
-                        onClick: () => {
-                          const nextWeek = /* @__PURE__ */ new Date();
-                          nextWeek.setDate(nextWeek.getDate() + 7);
-                          setDueDate(nextWeek);
-                        },
-                        className: "px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium",
-                        children: "Next Week"
-                      }
-                    )
+                  ] }) }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-3 gap-2 mb-3", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => setDueDate(/* @__PURE__ */ new Date()),
+                          className: "px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium",
+                          children: "Today"
+                        }
+                      ),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => {
+                            const tomorrow = /* @__PURE__ */ new Date();
+                            tomorrow.setDate(tomorrow.getDate() + 1);
+                            setDueDate(tomorrow);
+                          },
+                          className: "px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium",
+                          children: "Tomorrow"
+                        }
+                      ),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => {
+                            const nextWeek = /* @__PURE__ */ new Date();
+                            nextWeek.setDate(nextWeek.getDate() + 7);
+                            setDueDate(nextWeek);
+                          },
+                          className: "px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium",
+                          children: "Next Week"
+                        }
+                      )
+                    ] }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "bg-white border border-gray-200 rounded-lg p-3", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between mb-2", children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                          "button",
+                          {
+                            type: "button",
+                            onClick: () => setCalendarDate(subMonths(calendarDate, 1)),
+                            className: "p-1 hover:bg-gray-100 rounded",
+                            children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(ChevronLeft, { className: "w-4 h-4" })
+                          }
+                        ),
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-sm font-medium", children: format(calendarDate, "MMMM yyyy") }),
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                          "button",
+                          {
+                            type: "button",
+                            onClick: () => setCalendarDate(addMonths(calendarDate, 1)),
+                            className: "p-1 hover:bg-gray-100 rounded",
+                            children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(ChevronRight, { className: "w-4 h-4" })
+                          }
+                        )
+                      ] }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-7 gap-1 text-xs", children: [
+                        ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "text-center text-gray-500 p-1 font-medium", children: day }, day)),
+                        generateCalendarDays().map((date, index2) => {
+                          if (!date) {
+                            return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "p-1" }, index2);
+                          }
+                          const isToday2 = isSameDay(date, /* @__PURE__ */ new Date());
+                          const isCurrentMonth = isSameMonth(date, calendarDate);
+                          const isSelected = dueDate && isSameDay(date, dueDate);
+                          return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: () => intelligentDateSelect(date),
+                              className: cn(
+                                "p-1 text-center rounded transition-colors",
+                                isCurrentMonth ? "text-gray-900" : "text-gray-400",
+                                isToday2 && "bg-krushr-primary text-white font-medium",
+                                isSelected && "bg-blue-500 text-white",
+                                !isToday2 && !isSelected && "hover:bg-gray-100"
+                              ),
+                              children: format(date, "d")
+                            },
+                            date.toISOString()
+                          );
+                        })
+                      ] })
+                    ] })
                   ] })
                 ] })
               ] })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "border-t border-gray-200 pt-4 mt-6", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Attachments" }),
+              task?.id ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                AttachmentUpload,
+                {
+                  type: "task",
+                  targetId: task.id,
+                  onUploadComplete: () => {
+                  },
+                  className: "w-full"
+                }
+              ) : /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                  "div",
+                  {
+                    className: "border-2 border-dashed border-gray-200 rounded-lg p-4 text-center hover:border-krushr-primary transition-colors cursor-pointer hover:bg-gray-50",
+                    onClick: () => document.getElementById("file-input")?.click(),
+                    onDragOver: (e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.add("border-krushr-primary", "bg-krushr-primary-50");
+                    },
+                    onDragLeave: (e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove("border-krushr-primary", "bg-krushr-primary-50");
+                    },
+                    onDrop: (e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove("border-krushr-primary", "bg-krushr-primary-50");
+                      const files = Array.from(e.dataTransfer.files);
+                      handleFileSelect(files);
+                    },
+                    children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Upload, { className: "w-6 h-6 mx-auto text-gray-400 mb-2" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("p", { className: "text-sm text-gray-600", children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium text-krushr-primary", children: "Upload files" }),
+                        " or drag and drop"
+                      ] }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("p", { className: "text-xs text-gray-500 mt-1", children: "Max 15MB per file" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                        "input",
+                        {
+                          id: "file-input",
+                          type: "file",
+                          multiple: true,
+                          className: "hidden",
+                          onChange: (e) => {
+                            if (e.target.files) {
+                              handleFileSelect(Array.from(e.target.files));
+                            }
+                          }
+                        }
+                      )
+                    ]
+                  }
+                ),
+                pendingFiles.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mt-3 space-y-2", children: pendingFiles.map((file, index2) => /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between p-2 bg-gray-50 rounded-lg", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 min-w-0", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(FileText, { className: "w-4 h-4 text-gray-500 flex-shrink-0" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-sm text-gray-700 truncate", children: file.name })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => removePendingFile(index2),
+                      className: "text-gray-400 hover:text-red-500 transition-colors",
+                      children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "w-4 h-4" })
+                    }
+                  )
+                ] }, index2)) })
+              ] })
             ] })
-          ] }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 px-6 lg:px-8 py-6", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex flex-col sm:flex-row justify-between items-center gap-4", children: [
-              isEditMode && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "border-t border-gray-200 px-6 py-4 bg-gray-50", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex justify-between items-center", children: [
+            isEditMode && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+              "button",
+              {
+                type: "button",
+                onClick: handleDelete,
+                disabled: isLoading,
+                className: "text-red-600 hover:text-red-800 transition-colors disabled:opacity-50",
+                children: [
+                  "Delete ",
+                  currentMode === "calendar" ? "Event" : "Task"
+                ]
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex gap-3 ml-auto", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                 "button",
                 {
                   type: "button",
-                  onClick: handleDelete,
-                  disabled: isLoading,
-                  className: "group px-5 py-2.5 text-sm text-red-600 font-medium hover:bg-red-50 rounded-xl transition-all duration-200 disabled:opacity-50 border border-red-200 hover:border-red-300 flex items-center gap-2",
-                  children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("svg", { className: "w-4 h-4 group-hover:scale-110 transition-transform", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }) }),
-                    mode === "calendar" ? "Delete Event" : "Delete Task"
-                  ]
+                  onClick: onClose,
+                  className: "px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors",
+                  children: "Cancel"
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex gap-3 ml-auto", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: onClose,
-                    className: "px-6 py-3 text-sm text-gray-700 font-medium border border-gray-300 rounded-xl hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 backdrop-blur-sm",
-                    children: "Cancel"
-                  }
-                ),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
-                  "button",
-                  {
-                    type: "submit",
-                    disabled: isLoading || uploadingFiles || !title.trim(),
-                    className: "group px-8 py-3 text-sm text-white font-semibold bg-gradient-to-r from-krushr-primary to-blue-600 rounded-xl hover:from-krushr-primary-700 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]",
-                    children: [
-                      (isLoading || uploadingFiles) && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" }),
-                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: uploadingFiles ? "Uploading..." : isLoading ? "Saving..." : isEditMode ? mode === "calendar" ? "Update Event" : "Update Task" : mode === "calendar" ? "Create Event" : "Create Task" }),
-                      !isLoading && !uploadingFiles && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("svg", { className: "w-4 h-4 group-hover:translate-x-0.5 transition-transform", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }) })
-                    ]
-                  }
-                )
-              ] })
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-4 pt-4 border-t border-gray-200", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between text-xs text-gray-500", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: "Form completion" }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { children: [
-                  Math.round((title.trim() ? 40 : 0) + (description.trim() ? 30 : 0) + (mode === "calendar" ? startTime && endTime ? 30 : 0 : dueDate ? 30 : 0)),
-                  "%"
-                ] })
-              ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-full bg-gray-200 rounded-full h-1.5 mt-2", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                "div",
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                "button",
                 {
-                  className: "bg-gradient-to-r from-krushr-primary to-blue-500 h-1.5 rounded-full transition-all duration-300",
-                  style: {
-                    width: `${Math.round((title.trim() ? 40 : 0) + (description.trim() ? 30 : 0) + (mode === "calendar" ? startTime && endTime ? 30 : 0 : dueDate ? 30 : 0))}%`
-                  }
+                  type: "submit",
+                  disabled: isLoading || uploadingFiles || !title.trim(),
+                  className: "px-4 py-2 text-sm bg-krushr-primary text-white rounded-lg hover:bg-krushr-primary-700 transition-colors disabled:opacity-50",
+                  children: [
+                    isLoading || uploadingFiles ? "Saving..." : isEditMode ? "Update" : "Create",
+                    " ",
+                    currentMode === "calendar" ? "Event" : "Task"
+                  ]
                 }
-              ) })
+              )
             ] })
-          ] })
+          ] }) })
         ] })
       ] })
     ] }),
@@ -8834,6 +9048,7 @@ export {
   Root3 as Root,
   toDate,
   constructFrom,
+  addMonths,
   millisecondsInWeek,
   minutesInMonth,
   minutesInDay,
@@ -8844,6 +9059,7 @@ export {
   getTimezoneOffsetInMilliseconds,
   differenceInCalendarDays,
   constructNow,
+  isSameDay,
   isDate,
   endOfMonth,
   eachDayOfInterval,
@@ -8853,6 +9069,8 @@ export {
   getISOWeek,
   getWeek,
   format,
+  isSameMonth,
+  subMonths,
   Priority,
   TaskStatus,
   require_prop_types,
@@ -8880,4 +9098,4 @@ object-assign/index.js:
   @license MIT
   *)
 */
-//# sourceMappingURL=/chunks/chunk-RA3CWE2O.js.map
+//# sourceMappingURL=/chunks/chunk-DKZL4X6O.js.map

@@ -1,0 +1,3 @@
+#!/bin/bash
+# Claude YOLO Mode - Complete auto-approval
+./claude-auto-wrapper.sh yolo -- "$@" 

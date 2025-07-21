@@ -1,0 +1,3 @@
+#!/bin/bash
+# Claude Auto Mode - Bypass permissions
+./claude-auto-wrapper.sh bypass -- "$@" 

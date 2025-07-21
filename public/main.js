@@ -27,7 +27,7 @@ import {
   hideOthers,
   useFocusGuards,
   usePrevious
-} from "/chunks/chunk-O7FIO7CD.js";
+} from "/chunks/chunk-WBXRONH6.js";
 import {
   NotesPanel_default
 } from "/chunks/chunk-4TQQ7EHU.js";
@@ -37,13 +37,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
   addDays,
-  addMonths,
   endOfWeek,
   formatDateShort,
-  formatDateTime,
-  isSameDay,
-  isSameMonth
-} from "/chunks/chunk-PGNYWGDS.js";
+  formatDateTime
+} from "/chunks/chunk-BV36P6NP.js";
 import {
   Anchor,
   Arrow,
@@ -62,6 +59,7 @@ import {
   Progress,
   Root2,
   TaskStatus,
+  addMonths,
   constructFrom,
   createPopperScope,
   differenceInCalendarDays,
@@ -72,6 +70,8 @@ import {
   getTimezoneOffsetInMilliseconds,
   getWeek,
   isDate,
+  isSameDay,
+  isSameMonth,
   millisecondsInWeek,
   require_prop_types,
   startOfDay,
@@ -84,7 +84,7 @@ import {
   useControllableState,
   useId,
   useSize
-} from "/chunks/chunk-RA3CWE2O.js";
+} from "/chunks/chunk-DKZL4X6O.js";
 import {
   Toaster,
   toast
@@ -19774,10 +19774,10 @@ DropdownMenuShortcut.displayName = "DropdownMenuShortcut";
 
 // src/components/workspace/PanelRenderer.tsx
 var import_jsx_runtime63 = __toESM(require_jsx_runtime(), 1);
-var KanbanBoard2 = (0, import_react30.lazy)(() => import("/chunks/KanbanBoard-FP72KS2R.js"));
+var KanbanBoard2 = (0, import_react30.lazy)(() => import("/chunks/KanbanBoard-JFHXHWSO.js"));
 var Chat2 = (0, import_react30.lazy)(() => import("/chunks/Chat-V5PQSFMQ.js"));
 var NotesPanel = (0, import_react30.lazy)(() => import("/chunks/NotesPanel-6A7DTOGB.js"));
-var NewCalendarPanel = (0, import_react30.lazy)(() => import("/chunks/NewCalendarPanel-VMNAVZXV.js"));
+var NewCalendarPanel = (0, import_react30.lazy)(() => import("/chunks/NewCalendarPanel-ATQTXYO5.js"));
 var Contacts = (0, import_react30.lazy)(() => import("/chunks/Contacts-DEZDJRCN.js"));
 var WorkspaceAiChat = (0, import_react30.lazy)(() => import("/chunks/WorkspaceAiChat-EJH5G3WD.js"));
 var PanelLoadingSpinner = () => /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { className: "flex items-center justify-center h-full", children: /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(LoaderCircle, { className: "w-6 h-6 animate-spin text-krushr-primary" }) });

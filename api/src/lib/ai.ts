@@ -41,9 +41,13 @@ export class AiService {
     const startTime = Date.now()
     let realTimeData: any = {}
     
+    // CRITICAL DEBUGGING: Log when AI service is called
+    const lastUserMessage = messages[messages.length - 1]?.content || ''
+    console.log(`🤖 AI SERVICE CALLED with message: "${lastUserMessage}"`)
+    console.log(`🤖 AI SERVICE enableRealTimeData: ${options.enableRealTimeData}`)
+    
     try {
       // Check if the query needs real-time data
-      const lastUserMessage = messages[messages.length - 1]?.content || ''
       const realTimeAnalysis = WebSearchService.requiresRealTimeData(lastUserMessage)
       
       // Gather real-time data if needed and enabled

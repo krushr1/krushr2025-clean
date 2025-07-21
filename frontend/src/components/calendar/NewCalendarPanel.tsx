@@ -23,6 +23,7 @@ import { Card, CardContent, CardHeader } from '../ui/card'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { FloatingInput } from '../ui/floating-input'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO, startOfWeek, endOfWeek } from 'date-fns'
@@ -503,8 +504,9 @@ export default function NewCalendarPanel({
   }
 
   return (
-    <div ref={containerRef} className={cn("flex h-full bg-white", className)}>
-      {/* Main Calendar Area */}
+    <TooltipProvider>
+      <div ref={containerRef} className={cn("flex h-full bg-white", className)}>
+        {/* Main Calendar Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="border-b border-gray-200/80 bg-gradient-to-r from-white to-gray-50/30">
@@ -806,30 +808,71 @@ export default function NewCalendarPanel({
                         const IconComponent = EVENT_TYPE_ICONS[event.type]
                         
                         return (
-                          <div
-                            key={event.id}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleEventClick(event)
-                            }}
-                            className={cn(
-                              "rounded truncate cursor-pointer transition-colors hover:opacity-80 border",
-                              colorConfig.bg,
-                              colorConfig.border,
-                              colorConfig.text,
-                              layoutConfig.size === 'small' ? 'p-0.5' : 'p-1',
-                              !isCurrentMonth && "opacity-60"
-                            )}
-                          >
-                            <div className="flex items-center gap-1">
-                              {layoutConfig.size !== 'small' && <IconComponent className={cn("flex-shrink-0", layoutConfig.iconSize)} />}
-                              <span className={cn("truncate font-manrope", layoutConfig.fontSize)}>{event.title}</span>
-                              {event.priority !== 'LOW' && layoutConfig.size !== 'small' && (
-                                <div className={cn("rounded-full flex-shrink-0", PRIORITY_COLORS[event.priority], 
-                                  layoutConfig.size === 'medium' ? 'w-1 h-1' : 'w-1.5 h-1.5')} />
-                              )}
-                            </div>
-                          </div>
+                          <Tooltip key={event.id}>
+                            <TooltipTrigger asChild>
+                              <div
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleEventClick(event)
+                                }}
+                                className={cn(
+                                  "rounded truncate cursor-pointer transition-colors hover:opacity-80 border",
+                                  colorConfig.bg,
+                                  colorConfig.border,
+                                  colorConfig.text,
+                                  layoutConfig.size === 'small' ? 'p-0.5' : 'p-1',
+                                  !isCurrentMonth && "opacity-60"
+                                )}
+                              >
+                                <div className="flex items-center gap-1">
+                                  {layoutConfig.size !== 'small' && <IconComponent className={cn("flex-shrink-0", layoutConfig.iconSize)} />}
+                                  <span className={cn("truncate font-manrope", layoutConfig.fontSize)}>{event.title}</span>
+                                  {event.priority !== 'LOW' && layoutConfig.size !== 'small' && (
+                                    <div className={cn("rounded-full flex-shrink-0", PRIORITY_COLORS[event.priority], 
+                                      layoutConfig.size === 'medium' ? 'w-1 h-1' : 'w-1.5 h-1.5')} />
+                                  )}
+                                </div>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent side="right" className="max-w-xs">
+                              <div className="space-y-2">
+                                <div className="font-semibold text-sm">{event.title}</div>
+                                <div className="text-xs space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium">Type:</span>
+                                    <Badge variant="secondary" className="text-xs">{event.type}</Badge>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Clock className="w-3 h-3" />
+                                    <span>
+                                      {event.allDay ? 'All day' : `${format(event.startTime, 'h:mm a')} - ${format(event.endTime, 'h:mm a')}`}
+                                    </span>
+                                  </div>
+                                  {event.location && (
+                                    <div className="flex items-center gap-2">
+                                      <MapPin className="w-3 h-3" />
+                                      <span>{event.location}</span>
+                                    </div>
+                                  )}
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium">Priority:</span>
+                                    <Badge 
+                                      variant={event.priority === 'HIGH' ? 'destructive' : 
+                                              event.priority === 'MEDIUM' ? 'default' : 'secondary'}
+                                      className="text-xs"
+                                    >
+                                      {event.priority}
+                                    </Badge>
+                                  </div>
+                                  {event.description && (
+                                    <div className="mt-2 pt-2 border-t border-gray-100">
+                                      <span className="text-gray-700">{event.description}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
                         )
                       })}
                       {dayEvents.length > maxEvents && (
@@ -938,6 +981,7 @@ export default function NewCalendarPanel({
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </TooltipProvider>
   )
 }

@@ -255,19 +255,30 @@ export default function CompactTaskModal({
     }
   }, [open, isEditMode, task, kanbanColumnId, mode, selectedDate])
 
-  // Handle ESC key to close modal
+  // Handle keyboard shortcuts
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && open) {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (!open) return
+      
+      // ESC to close
+      if (e.key === 'Escape') {
         onClose()
+      }
+      
+      // CMD/Ctrl + Enter to save
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault()
+        if (title.trim() && !isLoading && !uploadingFiles) {
+          handleSubmit(e as any)
+        }
       }
     }
     
     if (open) {
-      document.addEventListener('keydown', handleEsc)
-      return () => document.removeEventListener('keydown', handleEsc)
+      document.addEventListener('keydown', handleKeydown)
+      return () => document.removeEventListener('keydown', handleKeydown)
     }
-  }, [open, onClose])
+  }, [open, onClose, title, isLoading, uploadingFiles, handleSubmit])
 
   // Map column IDs to task status
   useEffect(() => {
@@ -293,19 +304,26 @@ export default function CompactTaskModal({
       
       {/* Modal Container - Brandkit Compliant */}
       <div className="relative w-full max-w-4xl mx-4 max-h-[90vh] bg-white rounded-xl overflow-hidden flex flex-col shadow-2xl">
-        {/* Dark Gradient Hero Header - Pricing Template Style */}
+        {/* Dark Gradient Hero Header - Enterprise Pricing Template Style */}
         <div 
-          className="relative"
+          className="relative overflow-hidden"
           style={{
-            background: '#0f0229',
-            backgroundImage: "url('/images/Pricing-Shapes.svg')",
-            backgroundPosition: '70%',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '900px',
+            background: 'linear-gradient(135deg, #1e3a8a 0%, #143197 100%)',
+            backgroundSize: '100% 100%',
             borderRadius: '30px 30px 0 0',
             padding: '40px 40px 20px'
           }}
         >
+          {/* Background Pattern Overlay */}
+          <div 
+            className="absolute inset-0 opacity-10"
+            style={{
+              backgroundImage: "url('/images/Pricing-Shapes.svg')",
+              backgroundPosition: '70%',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: '900px'
+            }}
+          />
           <div className="relative">
             {/* Notice Badge */}
             <div className="mb-4">
@@ -332,48 +350,70 @@ export default function CompactTaskModal({
             {/* Main Title Input */}
             <div className="flex items-center justify-between">
               <div className="flex-1 mr-4">
-                <FloatingInput
-                  type="text"
-                  label={mode === 'calendar' ? 'Event title' : 'Task title'}
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  autoFocus
-                  className="text-2xl font-bold font-manrope border-none bg-transparent focus:ring-0 focus:border-transparent p-0 h-auto text-white placeholder-white/50"
-                  style={{ color: '#ffffff' }}
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    autoFocus
+                    placeholder={mode === 'calendar' ? 'Enter event title...' : 'Enter task title...'}
+                    className="w-full text-2xl font-bold font-manrope bg-transparent border-none outline-none text-white placeholder-white/50 pb-2 border-b-2 border-white/20 focus:border-white/60 transition-all duration-300"
+                  />
+                  <div className="text-sm text-white/60 mt-1 font-medium">
+                    {mode === 'calendar' ? 'Event title' : 'Task title'}
+                  </div>
+                </div>
               </div>
               <button 
                 onClick={onClose}
-                className="text-white/60 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+                className="text-white/60 hover:text-white transition-all duration-200 p-3 hover:bg-white/10 rounded-xl backdrop-blur-sm"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
 
-            {/* Quick Info Row */}
-            <div className="mt-4 flex items-center gap-4 text-white/70 text-sm">
-              <div className="flex items-center gap-1">
+            {/* Quick Info Row with Enhanced Styling */}
+            <div className="mt-6 flex flex-wrap items-center gap-4 text-white/80 text-sm">
+              <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm">
                 <User className="w-4 h-4" />
-                <span>You</span>
+                <span className="font-medium">You</span>
               </div>
               {mode === 'calendar' && selectedDate && (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm">
                   <CalendarIcon className="w-4 h-4" />
-                  <span>{format(selectedDate, 'MMM d, yyyy')}</span>
+                  <span className="font-medium">{format(selectedDate, 'MMM d, yyyy')}</span>
                 </div>
               )}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm">
                 <Clock className="w-4 h-4" />
-                <span>{isEditMode ? 'Editing' : 'Creating'}</span>
+                <span className="font-medium">{isEditMode ? 'Editing' : 'Creating'}</span>
+              </div>
+              {mode === 'calendar' && (
+                <div className="flex items-center gap-2 bg-green-500/20 text-green-200 rounded-full px-3 py-1.5 backdrop-blur-sm">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                  <span className="font-medium text-xs uppercase tracking-wide">Calendar Event</span>
+                </div>
+              )}
+            </div>
+            {/* Floating Action Hint */}
+            <div className="absolute bottom-4 right-4 lg:bottom-6 lg:right-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-white/70 border border-white/20">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <kbd className="px-1.5 py-0.5 bg-white/20 rounded text-xs">⌘</kbd>
+                    <kbd className="px-1.5 py-0.5 bg-white/20 rounded text-xs">↵</kbd>
+                  </div>
+                  <span>to save</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
         
         {/* Content */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
-          <div className="p-6">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-6">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white">
+          <div className="p-6 lg:p-8">
+            <div className="grid grid-cols-1 xl:grid-cols-[1fr,360px] gap-8">
               {/* Main Content */}
               <div className="space-y-4">
                 {/* Description - Floating Label */}
@@ -789,16 +829,19 @@ export default function CompactTaskModal({
             </div>
           </div>
           
-          {/* Footer */}
-          <div className="border-t border-krushr-gray-200 bg-krushr-gray-50 px-6 py-4">
-            <div className="flex justify-between items-center">
+          {/* Enhanced Footer */}
+          <div className="border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 px-6 lg:px-8 py-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               {isEditMode && (
                 <button
                   type="button"
                   onClick={handleDelete}
                   disabled={isLoading}
-                  className="px-4 py-2 text-sm text-krushr-secondary font-medium hover:bg-krushr-secondary-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="group px-5 py-2.5 text-sm text-red-600 font-medium hover:bg-red-50 rounded-xl transition-all duration-200 disabled:opacity-50 border border-red-200 hover:border-red-300 flex items-center gap-2"
                 >
+                  <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
                   {mode === 'calendar' ? 'Delete Event' : 'Delete Task'}
                 </button>
               )}
@@ -806,20 +849,41 @@ export default function CompactTaskModal({
                 <button 
                   type="button"
                   onClick={onClose}
-                  className="px-6 py-2 text-sm text-krushr-gray-700 font-medium border border-krushr-gray-300 rounded-lg hover:bg-krushr-gray-100 transition-colors"
+                  className="px-6 py-3 text-sm text-gray-700 font-medium border border-gray-300 rounded-xl hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 backdrop-blur-sm"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
                   disabled={isLoading || uploadingFiles || !title.trim()}
-                  className="px-6 py-2 text-sm text-white font-medium bg-krushr-primary rounded-lg hover:bg-krushr-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="group px-8 py-3 text-sm text-white font-semibold bg-gradient-to-r from-krushr-primary to-blue-600 rounded-xl hover:from-krushr-primary-700 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                   {(isLoading || uploadingFiles) && (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   )}
-                  {uploadingFiles ? 'Uploading...' : isLoading ? 'Saving...' : isEditMode ? (mode === 'calendar' ? 'Update Event' : 'Update Task') : (mode === 'calendar' ? 'Create Event' : 'Create Task')}
+                  <span>{uploadingFiles ? 'Uploading...' : isLoading ? 'Saving...' : isEditMode ? (mode === 'calendar' ? 'Update Event' : 'Update Task') : (mode === 'calendar' ? 'Create Event' : 'Create Task')}</span>
+                  {!isLoading && !uploadingFiles && (
+                    <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
                 </button>
+              </div>
+            </div>
+            
+            {/* Progress indicator for form completion */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span>Form completion</span>
+                <span>{Math.round((title.trim() ? 40 : 0) + (description.trim() ? 30 : 0) + (mode === 'calendar' ? (startTime && endTime ? 30 : 0) : (dueDate ? 30 : 0)))}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                <div 
+                  className="bg-gradient-to-r from-krushr-primary to-blue-500 h-1.5 rounded-full transition-all duration-300"
+                  style={{ 
+                    width: `${Math.round((title.trim() ? 40 : 0) + (description.trim() ? 30 : 0) + (mode === 'calendar' ? (startTime && endTime ? 30 : 0) : (dueDate ? 30 : 0)))}%` 
+                  }}
+                />
               </div>
             </div>
           </div>

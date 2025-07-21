@@ -5737,16 +5737,23 @@ function CompactTaskModal({
     }
   }, [open, isEditMode, task, kanbanColumnId, mode, selectedDate]);
   (0, import_react4.useEffect)(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape" && open) {
+    const handleKeydown = (e) => {
+      if (!open) return;
+      if (e.key === "Escape") {
         onClose();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        if (title.trim() && !isLoading && !uploadingFiles) {
+          handleSubmit(e);
+        }
       }
     };
     if (open) {
-      document.addEventListener("keydown", handleEsc);
-      return () => document.removeEventListener("keydown", handleEsc);
+      document.addEventListener("keydown", handleKeydown);
+      return () => document.removeEventListener("keydown", handleKeydown);
     }
-  }, [open, onClose]);
+  }, [open, onClose, title, isLoading, uploadingFiles, handleSubmit]);
   (0, import_react4.useEffect)(() => {
     if (kanbanColumnId) {
       if (kanbanColumnId === "todo") setStatus("TODO" /* TODO */);
@@ -5767,80 +5774,104 @@ function CompactTaskModal({
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative w-full max-w-4xl mx-4 max-h-[90vh] bg-white rounded-xl overflow-hidden flex flex-col shadow-2xl", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
           "div",
           {
-            className: "relative",
+            className: "relative overflow-hidden",
             style: {
-              background: "#0f0229",
-              backgroundImage: "url('/images/Pricing-Shapes.svg')",
-              backgroundPosition: "70%",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "900px",
+              background: "linear-gradient(135deg, #1e3a8a 0%, #143197 100%)",
+              backgroundSize: "100% 100%",
               borderRadius: "30px 30px 0 0",
               padding: "40px 40px 20px"
             },
-            children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mb-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                 "div",
                 {
-                  className: "inline-flex items-center px-4 py-2 rounded-full text-sm",
+                  className: "absolute inset-0 opacity-10",
                   style: {
-                    background: "rgba(255, 255, 255, 0.1)",
-                    color: "#ffffff",
-                    border: "1px solid rgba(255, 255, 255, 0.2)"
-                  },
-                  children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-white opacity-80 mr-2", children: mode === "calendar" ? "\u{1F4C5}" : "\u2728" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-white font-medium", children: mode === "calendar" ? "Calendar Event" : "Task Management" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { className: "text-white opacity-70 ml-1", children: [
-                      "- ",
-                      isEditMode ? "Edit" : "Create new"
-                    ] })
-                  ]
+                    backgroundImage: "url('/images/Pricing-Shapes.svg')",
+                    backgroundPosition: "70%",
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "900px"
+                  }
                 }
-              ) }),
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex-1 mr-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                  FloatingInput,
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mb-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                  "div",
                   {
-                    type: "text",
-                    label: mode === "calendar" ? "Event title" : "Task title",
-                    value: title,
-                    onChange: (e) => setTitle(e.target.value),
-                    autoFocus: true,
-                    className: "text-2xl font-bold font-manrope border-none bg-transparent focus:ring-0 focus:border-transparent p-0 h-auto text-white placeholder-white/50",
-                    style: { color: "#ffffff" }
+                    className: "inline-flex items-center px-4 py-2 rounded-full text-sm",
+                    style: {
+                      background: "rgba(255, 255, 255, 0.1)",
+                      color: "#ffffff",
+                      border: "1px solid rgba(255, 255, 255, 0.2)"
+                    },
+                    children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-white opacity-80 mr-2", children: mode === "calendar" ? "\u{1F4C5}" : "\u2728" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-white font-medium", children: mode === "calendar" ? "Calendar Event" : "Task Management" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { className: "text-white opacity-70 ml-1", children: [
+                        "- ",
+                        isEditMode ? "Edit" : "Create new"
+                      ] })
+                    ]
                   }
                 ) }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                  "button",
-                  {
-                    onClick: onClose,
-                    className: "text-white/60 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg",
-                    children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "w-5 h-5" })
-                  }
-                )
-              ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-4 flex items-center gap-4 text-white/70 text-sm", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-1", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(User, { className: "w-4 h-4" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: "You" })
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex-1 mr-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                      "input",
+                      {
+                        type: "text",
+                        value: title,
+                        onChange: (e) => setTitle(e.target.value),
+                        autoFocus: true,
+                        placeholder: mode === "calendar" ? "Enter event title..." : "Enter task title...",
+                        className: "w-full text-2xl font-bold font-manrope bg-transparent border-none outline-none text-white placeholder-white/50 pb-2 border-b-2 border-white/20 focus:border-white/60 transition-all duration-300"
+                      }
+                    ),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "text-sm text-white/60 mt-1 font-medium", children: mode === "calendar" ? "Event title" : "Task title" })
+                  ] }) }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                    "button",
+                    {
+                      onClick: onClose,
+                      className: "text-white/60 hover:text-white transition-all duration-200 p-3 hover:bg-white/10 rounded-xl backdrop-blur-sm",
+                      children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "w-6 h-6" })
+                    }
+                  )
                 ] }),
-                mode === "calendar" && selectedDate && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-1", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(CalendarIcon, { className: "w-4 h-4" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: format(selectedDate, "MMM d, yyyy") })
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-6 flex flex-wrap items-center gap-4 text-white/80 text-sm", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(User, { className: "w-4 h-4" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium", children: "You" })
+                  ] }),
+                  mode === "calendar" && selectedDate && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(CalendarIcon, { className: "w-4 h-4" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium", children: format(selectedDate, "MMM d, yyyy") })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Clock, { className: "w-4 h-4" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium", children: isEditMode ? "Editing" : "Creating" })
+                  ] }),
+                  mode === "calendar" && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 bg-green-500/20 text-green-200 rounded-full px-3 py-1.5 backdrop-blur-sm", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "w-2 h-2 bg-green-400 rounded-full animate-pulse" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "font-medium text-xs uppercase tracking-wide", children: "Calendar Event" })
+                  ] })
                 ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-1", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Clock, { className: "w-4 h-4" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: isEditMode ? "Editing" : "Creating" })
-                ] })
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "absolute bottom-4 right-4 lg:bottom-6 lg:right-6", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-white/70 border border-white/20", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex gap-1", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 bg-white/20 rounded text-xs", children: "\u2318" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("kbd", { className: "px-1.5 py-0.5 bg-white/20 rounded text-xs", children: "\u21B5" })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: "to save" })
+                ] }) }) })
               ] })
-            ] })
+            ]
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("form", { onSubmit: handleSubmit, className: "flex-1 overflow-y-auto", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "p-6", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-6", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("form", { onSubmit: handleSubmit, className: "flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "p-6 lg:p-8", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-1 xl:grid-cols-[1fr,360px] gap-8", children: [
             /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-4", children: [
               /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
@@ -6205,41 +6236,65 @@ function CompactTaskModal({
               ] })
             ] })
           ] }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "border-t border-krushr-gray-200 bg-krushr-gray-50 px-6 py-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex justify-between items-center", children: [
-            isEditMode && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-              "button",
-              {
-                type: "button",
-                onClick: handleDelete,
-                disabled: isLoading,
-                className: "px-4 py-2 text-sm text-krushr-secondary font-medium hover:bg-krushr-secondary-50 rounded-lg transition-colors disabled:opacity-50",
-                children: mode === "calendar" ? "Delete Event" : "Delete Task"
-              }
-            ),
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex gap-3 ml-auto", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 px-6 lg:px-8 py-6", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex flex-col sm:flex-row justify-between items-center gap-4", children: [
+              isEditMode && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
                 "button",
                 {
                   type: "button",
-                  onClick: onClose,
-                  className: "px-6 py-2 text-sm text-krushr-gray-700 font-medium border border-krushr-gray-300 rounded-lg hover:bg-krushr-gray-100 transition-colors",
-                  children: "Cancel"
-                }
-              ),
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
-                "button",
-                {
-                  type: "submit",
-                  disabled: isLoading || uploadingFiles || !title.trim(),
-                  className: "px-6 py-2 text-sm text-white font-medium bg-krushr-primary rounded-lg hover:bg-krushr-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2",
+                  onClick: handleDelete,
+                  disabled: isLoading,
+                  className: "group px-5 py-2.5 text-sm text-red-600 font-medium hover:bg-red-50 rounded-xl transition-all duration-200 disabled:opacity-50 border border-red-200 hover:border-red-300 flex items-center gap-2",
                   children: [
-                    (isLoading || uploadingFiles) && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" }),
-                    uploadingFiles ? "Uploading..." : isLoading ? "Saving..." : isEditMode ? mode === "calendar" ? "Update Event" : "Update Task" : mode === "calendar" ? "Create Event" : "Create Task"
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("svg", { className: "w-4 h-4 group-hover:scale-110 transition-transform", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }) }),
+                    mode === "calendar" ? "Delete Event" : "Delete Task"
                   ]
                 }
-              )
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex gap-3 ml-auto", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: onClose,
+                    className: "px-6 py-3 text-sm text-gray-700 font-medium border border-gray-300 rounded-xl hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 backdrop-blur-sm",
+                    children: "Cancel"
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                  "button",
+                  {
+                    type: "submit",
+                    disabled: isLoading || uploadingFiles || !title.trim(),
+                    className: "group px-8 py-3 text-sm text-white font-semibold bg-gradient-to-r from-krushr-primary to-blue-600 rounded-xl hover:from-krushr-primary-700 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]",
+                    children: [
+                      (isLoading || uploadingFiles) && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: uploadingFiles ? "Uploading..." : isLoading ? "Saving..." : isEditMode ? mode === "calendar" ? "Update Event" : "Update Task" : mode === "calendar" ? "Create Event" : "Create Task" }),
+                      !isLoading && !uploadingFiles && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("svg", { className: "w-4 h-4 group-hover:translate-x-0.5 transition-transform", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }) })
+                    ]
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-4 pt-4 border-t border-gray-200", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between text-xs text-gray-500", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: "Form completion" }),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { children: [
+                  Math.round((title.trim() ? 40 : 0) + (description.trim() ? 30 : 0) + (mode === "calendar" ? startTime && endTime ? 30 : 0 : dueDate ? 30 : 0)),
+                  "%"
+                ] })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-full bg-gray-200 rounded-full h-1.5 mt-2", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                "div",
+                {
+                  className: "bg-gradient-to-r from-krushr-primary to-blue-500 h-1.5 rounded-full transition-all duration-300",
+                  style: {
+                    width: `${Math.round((title.trim() ? 40 : 0) + (description.trim() ? 30 : 0) + (mode === "calendar" ? startTime && endTime ? 30 : 0 : dueDate ? 30 : 0))}%`
+                  }
+                }
+              ) })
             ] })
-          ] }) })
+          ] })
         ] })
       ] })
     ] }),
@@ -8883,4 +8938,4 @@ object-assign/index.js:
   @license MIT
   *)
 */
-//# sourceMappingURL=/chunks/chunk-37KHA5HS.js.map
+//# sourceMappingURL=/chunks/chunk-OMXNXWKY.js.map

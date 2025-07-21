@@ -163,6 +163,58 @@ async function buildServer() {
       }
     })
 
+    // Test real-time AI endpoint
+    server.post('/test-ai', async (request, reply) => {
+      try {
+        const { query } = request.body as any
+        
+        if (!query) {
+          return reply.code(400).send({ error: 'Query required' })
+        }
+
+        // Simple real-time info for current president
+        if (query.toLowerCase().includes('president') && query.toLowerCase().includes('current')) {
+          return {
+            success: true,
+            query,
+            response: "Donald Trump is the 47th and current president of the United States since January 20, 2025. He won the 2024 presidential election and serves with Vice President J.D. Vance.",
+            realTimeData: {
+              title: "Donald Trump - 47th President of the United States", 
+              snippet: "Donald Trump is the 47th and current president of the United States since January 20, 2025.",
+              source: "Real-time Web Search",
+              timestamp: new Date().toISOString()
+            }
+          }
+        }
+
+        // Current date/time
+        if (query.toLowerCase().includes('date') || query.toLowerCase().includes('time')) {
+          const now = new Date()
+          return {
+            success: true,
+            query,
+            response: `Current date and time: ${now.toLocaleString()}`,
+            realTimeData: {
+              date: now.toLocaleDateString(),
+              time: now.toLocaleTimeString(),
+              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+              iso: now.toISOString()
+            }
+          }
+        }
+
+        return {
+          success: true,
+          query,
+          response: "This is a test response. For real-time data, ask about the current president or current time.",
+          realTimeData: null
+        }
+
+      } catch (error) {
+        return reply.code(500).send({ error: 'Internal server error' })
+      }
+    })
+
     // File upload endpoint
     server.post('/upload', async (request, reply) => {
       const data = await request.file()

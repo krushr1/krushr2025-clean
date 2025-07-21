@@ -28,7 +28,7 @@ import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO, startOfWeek, endOfWeek } from 'date-fns'
 import AgendaView from './AgendaView'
-import EventModal from './EventModal'
+import CompactTaskModal from '../kanban/CompactTaskModal'
 
 interface NewCalendarPanelProps {
   workspaceId: string
@@ -421,7 +421,7 @@ export default function NewCalendarPanel({
                 size="sm"
                 onClick={() => setShowEventModal(true)}
                 className="bg-krushr-primary hover:bg-krushr-primary/90 text-white p-1 h-6 w-6 focus:ring-2 focus:ring-krushr-primary focus:outline-none"
-                title="Create new event"
+                title="Create new task"
               >
                 <Plus className="w-3 h-3" />
               </Button>
@@ -678,12 +678,12 @@ export default function NewCalendarPanel({
                       layoutConfig.showSearch !== false ? "border-l border-krushr-primary/20" : "rounded-xl",
                       layoutConfig.size === 'micro' ? "px-2" : "px-3"
                     )}
-                    title="Create new event"
+                    title="Create new task"
                   >
                     <Plus className={cn(
                       layoutConfig.size === 'micro' ? "w-3.5 h-3.5" : "w-4 h-4"
                     )} />
-                    {layoutConfig.size === 'large' && <span className="ml-1.5 text-xs font-medium">New Event</span>}
+                    {layoutConfig.size === 'large' && <span className="ml-1.5 text-xs font-medium">New Task</span>}
                   </Button>
                 )}
               </div>
@@ -1048,20 +1048,19 @@ export default function NewCalendarPanel({
         </div>
       )}
 
-      {/* Event Creation/Edit Modal */}
-      <EventModal
+      {/* Task Creation Modal - Reusing existing kanban form */}
+      <CompactTaskModal
         open={showEventModal}
         onClose={() => {
           setShowEventModal(false)
           setSelectedEvent(null)
         }}
-        onEventCreated={() => {
+        onTaskCreated={() => {
           // Refresh events data
           window.location.reload() // Simple refresh for now
         }}
         workspaceId={workspaceId}
-        selectedDate={selectedDate}
-        event={selectedEvent}
+        task={selectedEvent}
         isEditMode={!!selectedEvent}
       />
       </div>

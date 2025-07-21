@@ -1,10 +1,9 @@
 import {
   useAppStore
-} from "/chunks/chunk-YMUMBCS2.js";
-import "/chunks/chunk-5EULTY5F.js";
+} from "/chunks/chunk-IBXXHJB3.js";
 import {
   Button
-} from "/chunks/chunk-WJW35J2H.js";
+} from "/chunks/chunk-L2AE6HHB.js";
 import {
   trpc
 } from "/chunks/chunk-BD2IZKPD.js";
@@ -10594,4 +10593,4 @@ function WorkspaceAiChat({ workspaceId, className }) {
 export {
   WorkspaceAiChat as default
 };
-//# sourceMappingURL=/chunks/WorkspaceAiChat-MMBKRJBO.js.map
+//# sourceMappingURL=/chunks/WorkspaceAiChat-EJH5G3WD.js.map

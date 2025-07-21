@@ -29,8 +29,10 @@ When creating new pages or UI components, you MUST:
 5. Reference existing components in `/src/components/` directory structure
 6. Use established design tokens from `/frontend/tailwind.config.js`
 7. Follow brandkit specifications from `/frontend/public/brandkit.html`
-8. Maintain consistent spacing, typography, and color schemes
-9. Copy existing component patterns and adapt them appropriately
+8. **ONLY use elements from brandkit, brandkit-2, and the design system library**
+9. **REUSE existing forms and modals** - never create new ones when existing patterns exist
+10. Maintain consistent spacing, typography, and color schemes
+11. Copy existing component patterns and adapt them appropriately
 
 **VIOLATION CONSEQUENCES**: Any UI created that deviates from established patterns will be rejected. Always examine existing components first, then adapt them to new requirements while maintaining visual consistency.
 

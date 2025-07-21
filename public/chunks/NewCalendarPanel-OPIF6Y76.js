@@ -1,10 +1,4 @@
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -13,10 +7,11 @@ import {
   endOfWeek,
   formatDateShort,
   isSameMonth
-} from "/chunks/chunk-MMNZL6QD.js";
+} from "/chunks/chunk-FXX4HMSE.js";
 import {
   Badge,
   Card,
+  CompactTaskModal,
   addMonths,
   eachDayOfInterval,
   endOfMonth,
@@ -26,13 +21,14 @@ import {
   startOfMonth,
   startOfWeek,
   subMonths
-} from "/chunks/chunk-HCYFHHWO.js";
+} from "/chunks/chunk-LYB7KEBT.js";
+import "/chunks/chunk-XTC34SKS.js";
 import {
   FloatingInput
 } from "/chunks/chunk-KI66MM42.js";
 import {
   Button
-} from "/chunks/chunk-WJW35J2H.js";
+} from "/chunks/chunk-L2AE6HHB.js";
 import {
   trpc
 } from "/chunks/chunk-BD2IZKPD.js";
@@ -65,7 +61,7 @@ import {
 } from "/chunks/chunk-CPGAIYPB.js";
 
 // src/components/calendar/NewCalendarPanel.tsx
-var import_react3 = __toESM(require_react(), 1);
+var import_react2 = __toESM(require_react(), 1);
 
 // src/components/calendar/AgendaView.tsx
 var import_react = __toESM(require_react(), 1);
@@ -422,271 +418,9 @@ function AgendaView({ workspaceId, className }) {
   ] });
 }
 
-// src/components/calendar/EventModal.tsx
-var import_react2 = __toESM(require_react(), 1);
-var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
-var EVENT_TYPES = [
-  { value: "MEETING", label: "Meeting", icon: Users },
-  { value: "TASK", label: "Task", icon: CircleCheck },
-  { value: "REMINDER", label: "Reminder", icon: CircleAlert },
-  { value: "EVENT", label: "Event", icon: Calendar },
-  { value: "DEADLINE", label: "Deadline", icon: Zap },
-  { value: "MILESTONE", label: "Milestone", icon: CircleCheck }
-];
-var EVENT_PRIORITIES = [
-  { value: "LOW", label: "Low", color: "bg-gray-100 text-gray-800" },
-  { value: "MEDIUM", label: "Medium", color: "bg-blue-100 text-blue-800" },
-  { value: "HIGH", label: "High", color: "bg-orange-100 text-orange-800" },
-  { value: "CRITICAL", label: "Critical", color: "bg-red-100 text-red-800" }
-];
-var EVENT_COLORS = [
-  { value: "blue", label: "Blue", preview: "bg-blue-500" },
-  { value: "green", label: "Green", preview: "bg-green-500" },
-  { value: "purple", label: "Purple", preview: "bg-purple-500" },
-  { value: "orange", label: "Orange", preview: "bg-orange-500" },
-  { value: "red", label: "Red", preview: "bg-red-500" }
-];
-function EventModal({
-  open,
-  onClose,
-  onEventCreated,
-  workspaceId,
-  selectedDate,
-  event,
-  isEditMode = false
-}) {
-  const [title, setTitle] = (0, import_react2.useState)(event?.title || "");
-  const [description, setDescription] = (0, import_react2.useState)(event?.description || "");
-  const [startTime, setStartTime] = (0, import_react2.useState)(
-    event?.startTime ? format(new Date(event.startTime), "yyyy-MM-dd'T'HH:mm") : selectedDate ? format(selectedDate, "yyyy-MM-dd'T'09:00") : format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'09:00")
-  );
-  const [endTime, setEndTime] = (0, import_react2.useState)(
-    event?.endTime ? format(new Date(event.endTime), "yyyy-MM-dd'T'HH:mm") : selectedDate ? format(selectedDate, "yyyy-MM-dd'T'10:00") : format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'10:00")
-  );
-  const [allDay, setAllDay] = (0, import_react2.useState)(event?.allDay || false);
-  const [location, setLocation] = (0, import_react2.useState)(event?.location || "");
-  const [type, setType] = (0, import_react2.useState)(event?.type || "EVENT");
-  const [priority, setPriority] = (0, import_react2.useState)(event?.priority || "MEDIUM");
-  const [color, setColor] = (0, import_react2.useState)(event?.color || "blue");
-  const [isLoading, setIsLoading] = (0, import_react2.useState)(false);
-  (0, import_react2.useEffect)(() => {
-    if (open && !isEditMode) {
-      setTitle("");
-      setDescription("");
-      setLocation("");
-      setType("EVENT");
-      setPriority("MEDIUM");
-      setColor("blue");
-      setAllDay(false);
-      if (selectedDate) {
-        setStartTime(format(selectedDate, "yyyy-MM-dd'T'09:00"));
-        setEndTime(format(selectedDate, "yyyy-MM-dd'T'10:00"));
-      }
-    }
-  }, [open, isEditMode, selectedDate]);
-  const createEventMutation = trpc.calendar.create.useMutation({
-    onSuccess: () => {
-      onEventCreated?.();
-      onClose();
-    },
-    onError: (error) => {
-      console.error("Failed to create event:", error);
-    }
-  });
-  const updateEventMutation = trpc.calendar.update.useMutation({
-    onSuccess: () => {
-      onEventCreated?.();
-      onClose();
-    },
-    onError: (error) => {
-      console.error("Failed to update event:", error);
-    }
-  });
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-    setIsLoading(true);
-    try {
-      const eventData = {
-        title: title.trim(),
-        description: description.trim() || void 0,
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
-        allDay,
-        location: location.trim() || void 0,
-        type,
-        priority,
-        color,
-        status: "CONFIRMED",
-        workspaceId
-      };
-      if (isEditMode && event) {
-        await updateEventMutation.mutateAsync({
-          id: event.id,
-          ...eventData
-        });
-      } else {
-        await createEventMutation.mutateAsync(eventData);
-      }
-    } catch (error) {
-      console.error("Error saving event:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Dialog, { open, onOpenChange: onClose, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(DialogContent, { className: "max-w-2xl max-h-[90vh] overflow-y-auto", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(DialogHeader, { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(DialogTitle, { className: "flex items-center gap-2 text-lg font-semibold", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Calendar, { className: "w-5 h-5 text-krushr-primary" }),
-      isEditMode ? "Edit Event" : "Create New Event"
-    ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("form", { onSubmit: handleSubmit, className: "space-y-6", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-        FloatingInput,
-        {
-          label: "Event Title",
-          value: title,
-          onChange: (e) => setTitle(e.target.value),
-          required: true,
-          autoFocus: true,
-          className: "text-lg font-medium"
-        }
-      ) }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-        FloatingInput,
-        {
-          label: "Description (optional)",
-          value: description,
-          onChange: (e) => setDescription(e.target.value),
-          multiline: true,
-          rows: 3
-        }
-      ) }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: "Start Time" }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-            "input",
-            {
-              type: allDay ? "date" : "datetime-local",
-              value: allDay ? startTime.split("T")[0] : startTime,
-              onChange: (e) => setStartTime(e.target.value),
-              className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-krushr-primary focus:border-transparent",
-              required: true
-            }
-          )
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: "End Time" }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-            "input",
-            {
-              type: allDay ? "date" : "datetime-local",
-              value: allDay ? endTime.split("T")[0] : endTime,
-              onChange: (e) => setEndTime(e.target.value),
-              className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-krushr-primary focus:border-transparent",
-              required: true
-            }
-          )
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-          "input",
-          {
-            type: "checkbox",
-            id: "allDay",
-            checked: allDay,
-            onChange: (e) => setAllDay(e.target.checked),
-            className: "rounded border-gray-300 text-krushr-primary focus:ring-krushr-primary"
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("label", { htmlFor: "allDay", className: "text-sm font-medium text-gray-700", children: "All day event" })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-        FloatingInput,
-        {
-          label: "Location (optional)",
-          value: location,
-          onChange: (e) => setLocation(e.target.value),
-          icon: MapPin
-        }
-      ) }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Event Type" }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "grid grid-cols-3 gap-2", children: EVENT_TYPES.map((eventType) => {
-          const IconComponent = eventType.icon;
-          return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
-            "button",
-            {
-              type: "button",
-              onClick: () => setType(eventType.value),
-              className: cn(
-                "p-3 rounded-lg border-2 transition-all flex flex-col items-center gap-2",
-                type === eventType.value ? "border-krushr-primary bg-krushr-primary/5 text-krushr-primary" : "border-gray-200 hover:border-gray-300"
-              ),
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(IconComponent, { className: "w-5 h-5" }),
-                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-xs font-medium", children: eventType.label })
-              ]
-            },
-            eventType.value
-          );
-        }) })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Priority" }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "grid grid-cols-2 gap-2", children: EVENT_PRIORITIES.map((priorityOption) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-            "button",
-            {
-              type: "button",
-              onClick: () => setPriority(priorityOption.value),
-              className: cn(
-                "p-2 rounded-lg border-2 transition-all text-center",
-                priority === priorityOption.value ? "border-krushr-primary bg-krushr-primary/5" : "border-gray-200 hover:border-gray-300"
-              ),
-              children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Badge, { className: cn("text-xs", priorityOption.color), children: priorityOption.label })
-            },
-            priorityOption.value
-          )) })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-3", children: "Color" }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex gap-2", children: EVENT_COLORS.map((colorOption) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-            "button",
-            {
-              type: "button",
-              onClick: () => setColor(colorOption.value),
-              className: cn(
-                "w-8 h-8 rounded-full border-2 transition-all",
-                colorOption.preview,
-                color === colorOption.value ? "border-gray-900 ring-2 ring-gray-300" : "border-gray-200 hover:border-gray-400"
-              ),
-              title: colorOption.label
-            },
-            colorOption.value
-          )) })
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(DialogFooter, { className: "flex gap-3 pt-6", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(DialogClose, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Button, { type: "button", variant: "outline", disabled: isLoading, children: "Cancel" }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-          Button,
-          {
-            type: "submit",
-            disabled: !title.trim() || isLoading,
-            className: "bg-krushr-primary hover:bg-krushr-primary/90",
-            children: isLoading ? "Saving..." : isEditMode ? "Update Event" : "Create Event"
-          }
-        )
-      ] })
-    ] })
-  ] }) });
-}
-
 // src/components/calendar/NewCalendarPanel.tsx
-var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
-var EVENT_COLORS2 = {
+var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
+var EVENT_COLORS = {
   blue: { bg: "bg-krushr-primary/10", border: "border-krushr-primary/20", text: "text-krushr-primary" },
   green: { bg: "bg-krushr-success/10", border: "border-krushr-success/20", text: "text-krushr-success" },
   purple: { bg: "bg-krushr-purple/10", border: "border-krushr-purple/20", text: "text-krushr-purple" },
@@ -714,17 +448,17 @@ function NewCalendarPanel({
   holidayCountry = "US"
   // Currently only US holidays supported
 }) {
-  const [currentDate, setCurrentDate] = (0, import_react3.useState)(/* @__PURE__ */ new Date());
-  const [selectedDate, setSelectedDate] = (0, import_react3.useState)(null);
-  const [view, setView] = (0, import_react3.useState)("month");
-  const [showEventModal, setShowEventModal] = (0, import_react3.useState)(false);
-  const [selectedEvent, setSelectedEvent] = (0, import_react3.useState)(null);
-  const [searchQuery, setSearchQuery] = (0, import_react3.useState)("");
-  const [showFilters, setShowFilters] = (0, import_react3.useState)(false);
-  const [showSearch, setShowSearch] = (0, import_react3.useState)(false);
-  const [panelSize, setPanelSize] = (0, import_react3.useState)({ width: 0, height: 0 });
-  const containerRef = (0, import_react3.useRef)(null);
-  const usHolidays = (0, import_react3.useMemo)(() => {
+  const [currentDate, setCurrentDate] = (0, import_react2.useState)(/* @__PURE__ */ new Date());
+  const [selectedDate, setSelectedDate] = (0, import_react2.useState)(null);
+  const [view, setView] = (0, import_react2.useState)("month");
+  const [showEventModal, setShowEventModal] = (0, import_react2.useState)(false);
+  const [selectedEvent, setSelectedEvent] = (0, import_react2.useState)(null);
+  const [searchQuery, setSearchQuery] = (0, import_react2.useState)("");
+  const [showFilters, setShowFilters] = (0, import_react2.useState)(false);
+  const [showSearch, setShowSearch] = (0, import_react2.useState)(false);
+  const [panelSize, setPanelSize] = (0, import_react2.useState)({ width: 0, height: 0 });
+  const containerRef = (0, import_react2.useRef)(null);
+  const usHolidays = (0, import_react2.useMemo)(() => {
     if (!showHolidays) return [];
     const holidays = [
       // 2024 Holidays
@@ -767,7 +501,7 @@ function NewCalendarPanel({
     retry: false,
     refetchOnWindowFocus: false
   });
-  const events = (0, import_react3.useMemo)(() => {
+  const events = (0, import_react2.useMemo)(() => {
     if (!eventsData) return [];
     return eventsData.map((event) => ({
       ...event,
@@ -785,7 +519,7 @@ function NewCalendarPanel({
     const dateString = format(date, "yyyy-MM-dd");
     return usHolidays.find((holiday) => holiday.date === dateString) || null;
   };
-  (0, import_react3.useEffect)(() => {
+  (0, import_react2.useEffect)(() => {
     const updateSize = () => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
@@ -799,7 +533,7 @@ function NewCalendarPanel({
     }
     return () => resizeObserver.disconnect();
   }, []);
-  const layoutConfig = (0, import_react3.useMemo)(() => {
+  const layoutConfig = (0, import_react2.useMemo)(() => {
     const { width, height } = panelSize;
     if (width < 300 || height < 200) {
       return {
@@ -884,7 +618,7 @@ function NewCalendarPanel({
       compactMode: false
     };
   }, [panelSize, selectedDate, showSearch]);
-  const filteredEvents = (0, import_react3.useMemo)(() => {
+  const filteredEvents = (0, import_react2.useMemo)(() => {
     if (!searchQuery) return events;
     return events.filter(
       (event) => event.title.toLowerCase().includes(searchQuery.toLowerCase()) || event.description?.toLowerCase().includes(searchQuery.toLowerCase()) || event.location?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -905,7 +639,7 @@ function NewCalendarPanel({
     setSelectedEvent(event);
     setShowEventModal(true);
   };
-  import_react3.default.useEffect(() => {
+  import_react2.default.useEffect(() => {
     if (searchQuery === "" && showSearch) {
       const timer = setTimeout(() => {
         setShowSearch(false);
@@ -913,7 +647,7 @@ function NewCalendarPanel({
       return () => clearTimeout(timer);
     }
   }, [searchQuery, showSearch]);
-  import_react3.default.useEffect(() => {
+  import_react2.default.useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
@@ -969,19 +703,19 @@ function NewCalendarPanel({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [showSearch, selectedDate, layoutConfig, navigateMonth]);
   if (isLoading) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { ref: containerRef, className: cn("flex h-full bg-white", className), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex-1 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "text-center", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Calendar, { className: cn(
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { ref: containerRef, className: cn("flex h-full bg-white", className), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex-1 flex items-center justify-center", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "text-center", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Calendar, { className: cn(
         "text-krushr-primary mx-auto mb-2 animate-pulse",
         panelSize.width < 200 ? "w-4 h-4" : "w-8 h-8"
       ) }),
-      panelSize.width >= 200 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "text-sm text-gray-500 font-manrope", children: "Loading..." })
+      panelSize.width >= 200 && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "text-sm text-gray-500 font-manrope", children: "Loading..." })
     ] }) }) });
   }
   if (layoutConfig.size === "micro" && panelSize.height < 150) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { ref: containerRef, className: cn("flex h-full bg-white", className), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex-1 flex flex-col", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "p-2 border-b border-gray-200 bg-white", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center justify-between", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-1", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { ref: containerRef, className: cn("flex h-full bg-white", className), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex-1 flex flex-col", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "p-2 border-b border-gray-200 bg-white", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-1", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
             Button,
             {
               variant: "ghost",
@@ -989,11 +723,11 @@ function NewCalendarPanel({
               onClick: () => navigateMonth("prev"),
               className: "p-1 h-6 w-6 focus:ring-2 focus:ring-krushr-primary focus:outline-none",
               title: "Previous month",
-              children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ChevronLeft, { className: "w-3 h-3" })
+              children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(ChevronLeft, { className: "w-3 h-3" })
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-xs font-semibold text-gray-900 font-manrope min-w-0 px-1", children: format(currentDate, "M/yy") }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-xs font-semibold text-gray-900 font-manrope min-w-0 px-1", children: format(currentDate, "M/yy") }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
             Button,
             {
               variant: "ghost",
@@ -1001,30 +735,30 @@ function NewCalendarPanel({
               onClick: () => navigateMonth("next"),
               className: "p-1 h-6 w-6 focus:ring-2 focus:ring-krushr-primary focus:outline-none",
               title: "Next month",
-              children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ChevronRight, { className: "w-3 h-3" })
+              children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(ChevronRight, { className: "w-3 h-3" })
             }
           )
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
           Button,
           {
             variant: "default",
             size: "sm",
             onClick: () => setShowEventModal(true),
             className: "bg-krushr-primary hover:bg-krushr-primary/90 text-white p-1 h-6 w-6 focus:ring-2 focus:ring-krushr-primary focus:outline-none",
-            title: "Create new event",
-            children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Plus, { className: "w-3 h-3" })
+            title: "Create new task",
+            children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Plus, { className: "w-3 h-3" })
           }
         )
       ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "flex-1 p-1", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid grid-cols-7 gap-px bg-gray-200 rounded overflow-hidden text-xs", children: [
-        ["S", "M", "T", "W", "T", "F", "S"].map((day, index) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "bg-gray-50 text-center p-0.5", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-xs font-medium text-gray-600", children: day }) }, index)),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "flex-1 p-1", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "grid grid-cols-7 gap-px bg-gray-200 rounded overflow-hidden text-xs", children: [
+        ["S", "M", "T", "W", "T", "F", "S"].map((day, index) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "bg-gray-50 text-center p-0.5", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-xs font-medium text-gray-600", children: day }) }, index)),
         calendarDays.map((date) => {
           const dayEvents = getEventsForDay(date);
           const isCurrentMonth = isSameMonth(date, currentDate);
           const isCurrentDay = isToday(date);
           const holiday = getHolidayForDate(date);
-          return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+          return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
             "div",
             {
               onClick: () => handleDateClick(date),
@@ -1055,12 +789,12 @@ function NewCalendarPanel({
                 }
                 return tooltipParts.length > 0 ? tooltipParts.join("\n") : void 0;
               })(),
-              children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center justify-center h-full", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: cn(
+              children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center justify-center h-full", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: cn(
                   "text-xs",
                   holiday && "text-red-600 font-medium"
                 ), children: format(date, "d") }),
-                (dayEvents.length > 0 || holiday) && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: cn(
+                (dayEvents.length > 0 || holiday) && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn(
                   "w-1 h-1 rounded-full ml-0.5",
                   holiday ? "bg-red-500" : "bg-krushr-primary"
                 ) })
@@ -1072,13 +806,13 @@ function NewCalendarPanel({
       ] }) })
     ] }) });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(TooltipProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { ref: containerRef, className: cn("flex h-full bg-white", className), children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex-1 flex flex-col", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "border-b border-gray-200/80 bg-gradient-to-r from-white to-gray-50/30", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: cn("flex items-center justify-between", layoutConfig.headerPadding), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center min-w-0 flex-1", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/60 shadow-sm", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(TooltipProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { ref: containerRef, className: cn("flex h-full bg-white", className), children: [
+    /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex-1 flex flex-col", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "border-b border-gray-200/80 bg-gradient-to-r from-white to-gray-50/30", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: cn("flex items-center justify-between", layoutConfig.headerPadding), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center min-w-0 flex-1", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/60 shadow-sm", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                 Button,
                 {
                   variant: "ghost",
@@ -1089,17 +823,17 @@ function NewCalendarPanel({
                     "focus:ring-2 focus:ring-krushr-primary/20 focus:outline-none"
                   ),
                   title: "Previous month",
-                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ChevronLeft, { className: "w-4 h-4" })
+                  children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(ChevronLeft, { className: "w-4 h-4" })
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: cn(
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: cn(
                 "text-center py-2",
                 layoutConfig.size === "micro" ? "px-1 min-w-[50px]" : layoutConfig.size === "small" ? "px-1.5 min-w-[60px]" : "px-2 min-w-[80px]"
               ), children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h2", { className: "font-semibold text-gray-900 font-manrope text-sm leading-none", children: layoutConfig.size === "micro" ? format(currentDate, "M/yy") : layoutConfig.size === "small" ? format(currentDate, "MMM yy") : layoutConfig.size === "medium" ? format(currentDate, "MMM yyyy") : format(currentDate, "MMMM yyyy") }),
-                layoutConfig.size === "large" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "text-xs text-gray-500 mt-0.5 font-manrope", children: format(currentDate, "yyyy") })
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h2", { className: "font-semibold text-gray-900 font-manrope text-sm leading-none", children: layoutConfig.size === "micro" ? format(currentDate, "M/yy") : layoutConfig.size === "small" ? format(currentDate, "MMM yy") : layoutConfig.size === "medium" ? format(currentDate, "MMM yyyy") : format(currentDate, "MMMM yyyy") }),
+                layoutConfig.size === "large" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "text-xs text-gray-500 mt-0.5 font-manrope", children: format(currentDate, "yyyy") })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                 Button,
                 {
                   variant: "ghost",
@@ -1110,11 +844,11 @@ function NewCalendarPanel({
                     "focus:ring-2 focus:ring-krushr-primary/20 focus:outline-none"
                   ),
                   title: "Next month",
-                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ChevronRight, { className: "w-4 h-4" })
+                  children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(ChevronRight, { className: "w-4 h-4" })
                 }
               )
             ] }),
-            layoutConfig.showToday && layoutConfig.size !== "micro" && layoutConfig.size !== "small" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+            layoutConfig.showToday && layoutConfig.size !== "micro" && layoutConfig.size !== "small" && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
               Button,
               {
                 variant: "outline",
@@ -1127,15 +861,15 @@ function NewCalendarPanel({
                 ),
                 title: "Go to today",
                 children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Clock, { className: "w-3.5 h-3.5 mr-1.5" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Clock, { className: "w-3.5 h-3.5 mr-1.5" }),
                   "Today"
                 ]
               }
             )
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-2 ml-4", children: [
-            layoutConfig.showViewToggle && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "bg-white/90 backdrop-blur-sm rounded-xl border border-gray-200/60 shadow-sm p-1", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2 ml-4", children: [
+            layoutConfig.showViewToggle && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "bg-white/90 backdrop-blur-sm rounded-xl border border-gray-200/60 shadow-sm p-1", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
                 Button,
                 {
                   variant: "ghost",
@@ -1147,12 +881,12 @@ function NewCalendarPanel({
                   ),
                   title: "Month view",
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Calendar, { className: "w-3.5 h-3.5" }),
-                    layoutConfig.size === "large" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "ml-1.5 text-xs font-medium", children: "Month" })
+                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Calendar, { className: "w-3.5 h-3.5" }),
+                    layoutConfig.size === "large" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "ml-1.5 text-xs font-medium", children: "Month" })
                   ]
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
                 Button,
                 {
                   variant: "ghost",
@@ -1164,14 +898,14 @@ function NewCalendarPanel({
                   ),
                   title: "Agenda view",
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(List, { className: "w-3.5 h-3.5" }),
-                    layoutConfig.size === "large" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "ml-1.5 text-xs font-medium", children: "Agenda" })
+                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(List, { className: "w-3.5 h-3.5" }),
+                    layoutConfig.size === "large" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "ml-1.5 text-xs font-medium", children: "Agenda" })
                   ]
                 }
               )
             ] }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/60 shadow-sm", children: [
-              layoutConfig.showSearch !== false && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/60 shadow-sm", children: [
+              layoutConfig.showSearch !== false && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                 Button,
                 {
                   variant: "ghost",
@@ -1184,10 +918,12 @@ function NewCalendarPanel({
                     "focus:ring-2 focus:ring-krushr-primary/20 focus:outline-none"
                   ),
                   title: "Search events",
-                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Search, { className: "w-4 h-4" })
+                  children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Search, { className: cn(
+                    layoutConfig.size === "micro" ? "w-3.5 h-3.5" : "w-4 h-4"
+                  ) })
                 }
               ),
-              layoutConfig.showFilters && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+              layoutConfig.showFilters && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                 Button,
                 {
                   variant: "ghost",
@@ -1199,10 +935,12 @@ function NewCalendarPanel({
                     "focus:ring-2 focus:ring-krushr-primary/20 focus:outline-none"
                   ),
                   title: "Filter events",
-                  children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Funnel, { className: "w-4 h-4" })
+                  children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Funnel, { className: cn(
+                    layoutConfig.size === "micro" ? "w-3.5 h-3.5" : "w-4 h-4"
+                  ) })
                 }
               ),
-              layoutConfig.showEventButton && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+              layoutConfig.showEventButton && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
                 Button,
                 {
                   variant: "default",
@@ -1215,19 +953,24 @@ function NewCalendarPanel({
                     layoutConfig.showSearch !== false ? "border-l border-krushr-primary/20" : "rounded-xl",
                     layoutConfig.size === "micro" ? "px-2" : "px-3"
                   ),
-                  title: "Create new event",
+                  title: "Create new task",
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Plus, { className: "w-4 h-4" }),
-                    layoutConfig.size === "large" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "ml-1.5 text-xs font-medium", children: "New Event" })
+                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Plus, { className: cn(
+                      layoutConfig.size === "micro" ? "w-3.5 h-3.5" : "w-4 h-4"
+                    ) }),
+                    layoutConfig.size === "large" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "ml-1.5 text-xs font-medium", children: "New Task" })
                   ]
                 }
               )
             ] })
           ] })
         ] }),
-        showSearch && layoutConfig.showSearch !== false && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "px-4 pb-3 animate-in slide-in-from-top-2 duration-300", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "relative bg-white/95 backdrop-blur-sm rounded-xl border border-gray-200/60 shadow-lg", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Search, { className: "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        showSearch && layoutConfig.showSearch !== false && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "px-4 pb-3 animate-in slide-in-from-top-2 duration-300", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "relative bg-white/95 backdrop-blur-sm rounded-xl border border-gray-200/60 shadow-lg", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Search, { className: cn(
+            "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400",
+            layoutConfig.size === "micro" ? "w-3.5 h-3.5" : "w-4 h-4"
+          ) }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
             FloatingInput,
             {
               label: "Search events, locations, or attendees...",
@@ -1237,7 +980,7 @@ function NewCalendarPanel({
               autoFocus: true
             }
           ),
-          searchQuery && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+          searchQuery && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
             Button,
             {
               variant: "ghost",
@@ -1247,13 +990,13 @@ function NewCalendarPanel({
                 setShowSearch(false);
               },
               className: "absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 rounded-lg hover:bg-gray-100",
-              children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(X, { className: "w-4 h-4" })
+              children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(X, { className: "w-4 h-4" })
             }
           )
         ] }) })
       ] }),
-      view === "agenda" ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(AgendaView, { workspaceId, className: "flex-1" }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: cn("flex-1", layoutConfig.headerPadding), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden", children: [
-        (layoutConfig.size === "micro" ? ["S", "M", "T", "W", "T", "F", "S"] : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]).map((day, index) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: cn("bg-gray-50 text-center", layoutConfig.size === "micro" ? "p-1" : "p-2"), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: cn("font-medium text-gray-600 font-manrope", layoutConfig.fontSize), children: day }) }, index)),
+      view === "agenda" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(AgendaView, { workspaceId, className: "flex-1" }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn("flex-1", layoutConfig.headerPadding), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden", children: [
+        (layoutConfig.size === "micro" ? ["S", "M", "T", "W", "T", "F", "S"] : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]).map((day, index) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn("bg-gray-50 text-center", layoutConfig.size === "micro" ? "p-1" : "p-2"), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: cn("font-medium text-gray-600 font-manrope", layoutConfig.fontSize), children: day }) }, index)),
         calendarDays.map((date) => {
           const dayEvents = getEventsForDay(date);
           const isSelected = selectedDate && isSameDay(date, selectedDate);
@@ -1261,7 +1004,7 @@ function NewCalendarPanel({
           const isCurrentDay = isToday(date);
           const holiday = getHolidayForDate(date);
           const maxEvents = layoutConfig.maxEventsPerDay;
-          return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+          return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
             "div",
             {
               onClick: () => handleDateClick(date),
@@ -1296,67 +1039,67 @@ function NewCalendarPanel({
                 return tooltipParts.length > 0 ? tooltipParts.join("\n") : void 0;
               })(),
               children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: cn("flex items-center justify-between", layoutConfig.size !== "micro" && "mb-1"), children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: cn(
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: cn("flex items-center justify-between", layoutConfig.size !== "micro" && "mb-1"), children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: cn(
                     "font-manrope",
                     layoutConfig.fontSize,
                     isCurrentDay && "font-semibold text-krushr-primary",
                     !isCurrentMonth && "text-gray-400 opacity-75",
                     holiday && isCurrentMonth && "text-red-600 font-medium"
                   ), children: format(date, "d") }),
-                  dayEvents.length > 0 && layoutConfig.size !== "micro" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Badge, { variant: "secondary", className: cn("px-1 py-0", layoutConfig.fontSize === "text-xs" ? "text-xs" : "text-xs"), children: dayEvents.length }),
-                  holiday && layoutConfig.size !== "micro" && dayEvents.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(Tooltip, { children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "w-1.5 h-1.5 bg-red-500 rounded-full cursor-pointer" }) }),
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(TooltipContent, { side: "right", className: "max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "space-y-1", children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "font-semibold text-sm flex items-center gap-2", children: [
+                  dayEvents.length > 0 && layoutConfig.size !== "micro" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Badge, { variant: "secondary", className: cn("px-1 py-0", layoutConfig.fontSize === "text-xs" ? "text-xs" : "text-xs"), children: dayEvents.length }),
+                  holiday && layoutConfig.size !== "micro" && dayEvents.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(Tooltip, { children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "w-1.5 h-1.5 bg-red-500 rounded-full cursor-pointer" }) }),
+                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(TooltipContent, { side: "right", className: "max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "space-y-1", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "font-semibold text-sm flex items-center gap-2", children: [
                         "\u{1F389} ",
                         holiday.name
                       ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "text-xs text-gray-600", children: holiday.type }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "text-xs text-gray-500", children: format(date, "EEEE, MMMM d, yyyy") })
+                      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "text-xs text-gray-600", children: holiday.type }),
+                      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "text-xs text-gray-500", children: format(date, "EEEE, MMMM d, yyyy") })
                     ] }) })
                   ] }),
-                  (dayEvents.length > 0 || holiday) && layoutConfig.size === "micro" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(Tooltip, { children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: cn(
+                  (dayEvents.length > 0 || holiday) && layoutConfig.size === "micro" && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(Tooltip, { children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn(
                       "w-1.5 h-1.5 rounded-full cursor-pointer",
                       holiday ? "bg-red-500" : "bg-krushr-primary"
                     ) }) }),
-                    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(TooltipContent, { side: "right", className: "max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "space-y-1", children: [
-                      holiday && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "font-semibold text-sm flex items-center gap-2", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(TooltipContent, { side: "right", className: "max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "space-y-1", children: [
+                      holiday && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "font-semibold text-sm flex items-center gap-2", children: [
                           "\u{1F389} ",
                           holiday.name
                         ] }),
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "text-xs text-gray-600", children: holiday.type })
+                        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "text-xs text-gray-600", children: holiday.type })
                       ] }),
-                      dayEvents.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-                        holiday && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "border-t border-gray-100 pt-1 mt-1" }),
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "text-xs text-gray-600", children: [
+                      dayEvents.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
+                        holiday && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "border-t border-gray-100 pt-1 mt-1" }),
+                        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "text-xs text-gray-600", children: [
                           "\u{1F4C5} ",
                           dayEvents.length,
                           " event",
                           dayEvents.length > 1 ? "s" : ""
                         ] }),
-                        dayEvents.slice(0, 3).map((event) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "text-xs text-gray-500", children: [
+                        dayEvents.slice(0, 3).map((event) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "text-xs text-gray-500", children: [
                           "\u2022 ",
                           event.title
                         ] }, event.id)),
-                        dayEvents.length > 3 && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "text-xs text-gray-400", children: [
+                        dayEvents.length > 3 && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "text-xs text-gray-400", children: [
                           "+",
                           dayEvents.length - 3,
                           " more"
                         ] })
                       ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "text-xs text-gray-500 border-t border-gray-100 pt-1", children: format(date, "EEEE, MMMM d, yyyy") })
+                      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "text-xs text-gray-500 border-t border-gray-100 pt-1", children: format(date, "EEEE, MMMM d, yyyy") })
                     ] }) })
                   ] })
                 ] }),
-                maxEvents > 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "space-y-0.5", children: [
+                maxEvents > 0 && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "space-y-0.5", children: [
                   dayEvents.slice(0, maxEvents).map((event) => {
-                    const colorConfig = EVENT_COLORS2[event.color] || EVENT_COLORS2.blue;
+                    const colorConfig = EVENT_COLORS[event.color] || EVENT_COLORS.blue;
                     const IconComponent = EVENT_TYPE_ICONS[event.type];
-                    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(Tooltip, { children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(Tooltip, { children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                         "div",
                         {
                           onClick: (e) => {
@@ -1371,10 +1114,10 @@ function NewCalendarPanel({
                             layoutConfig.size === "small" ? "p-0.5" : "p-1",
                             !isCurrentMonth && "opacity-60"
                           ),
-                          children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-1", children: [
-                            layoutConfig.size !== "small" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(IconComponent, { className: cn("flex-shrink-0", layoutConfig.iconSize) }),
-                            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: cn("truncate font-manrope", layoutConfig.fontSize), children: event.title }),
-                            event.priority !== "LOW" && layoutConfig.size !== "small" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: cn(
+                          children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-1", children: [
+                            layoutConfig.size !== "small" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(IconComponent, { className: cn("flex-shrink-0", layoutConfig.iconSize) }),
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: cn("truncate font-manrope", layoutConfig.fontSize), children: event.title }),
+                            event.priority !== "LOW" && layoutConfig.size !== "small" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn(
                               "rounded-full flex-shrink-0",
                               PRIORITY_COLORS2[event.priority],
                               layoutConfig.size === "medium" ? "w-1 h-1" : "w-1.5 h-1.5"
@@ -1382,24 +1125,24 @@ function NewCalendarPanel({
                           ] })
                         }
                       ) }),
-                      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(TooltipContent, { side: "right", className: "max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "space-y-2", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "font-semibold text-sm", children: event.title }),
-                        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "text-xs space-y-1", children: [
-                          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-2", children: [
-                            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "font-medium", children: "Type:" }),
-                            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Badge, { variant: "secondary", className: "text-xs", children: event.type })
+                      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(TooltipContent, { side: "right", className: "max-w-xs", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "space-y-2", children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "font-semibold text-sm", children: event.title }),
+                        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "text-xs space-y-1", children: [
+                          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2", children: [
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "font-medium", children: "Type:" }),
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Badge, { variant: "secondary", className: "text-xs", children: event.type })
                           ] }),
-                          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-2", children: [
-                            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Clock, { className: "w-3 h-3" }),
-                            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: event.allDay ? "All day" : `${format(event.startTime, "h:mm a")} - ${format(event.endTime, "h:mm a")}` })
+                          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2", children: [
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Clock, { className: "w-3 h-3" }),
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: event.allDay ? "All day" : `${format(event.startTime, "h:mm a")} - ${format(event.endTime, "h:mm a")}` })
                           ] }),
-                          event.location && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-2", children: [
-                            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(MapPin, { className: "w-3 h-3" }),
-                            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { children: event.location })
+                          event.location && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2", children: [
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(MapPin, { className: "w-3 h-3" }),
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: event.location })
                           ] }),
-                          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-2", children: [
-                            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "font-medium", children: "Priority:" }),
-                            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+                          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2", children: [
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "font-medium", children: "Priority:" }),
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                               Badge,
                               {
                                 variant: event.priority === "HIGH" ? "destructive" : event.priority === "MEDIUM" ? "default" : "secondary",
@@ -1408,12 +1151,12 @@ function NewCalendarPanel({
                               }
                             )
                           ] }),
-                          event.description && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mt-2 pt-2 border-t border-gray-100", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-gray-700", children: event.description }) })
+                          event.description && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "mt-2 pt-2 border-t border-gray-100", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "text-gray-700", children: event.description }) })
                         ] })
                       ] }) })
                     ] }, event.id);
                   }),
-                  dayEvents.length > maxEvents && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: cn("text-gray-500 font-manrope pl-1", layoutConfig.fontSize), children: [
+                  dayEvents.length > maxEvents && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: cn("text-gray-500 font-manrope pl-1", layoutConfig.fontSize), children: [
                     "+",
                     dayEvents.length - maxEvents,
                     " more"
@@ -1426,25 +1169,25 @@ function NewCalendarPanel({
         })
       ] }) })
     ] }),
-    selectedDate && layoutConfig.showSidebar && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: cn(
+    selectedDate && layoutConfig.showSidebar && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn(
       "border-l border-gray-200 bg-gray-50",
       layoutConfig.size === "medium" ? "w-64" : "w-80"
-    ), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: layoutConfig.headerPadding, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h3", { className: cn("font-semibold text-gray-900 mb-2 font-manrope", layoutConfig.fontSize), children: layoutConfig.size === "medium" ? format(selectedDate, "MMM d") : format(selectedDate, "EEEE, MMMM d") }),
+    ), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: layoutConfig.headerPadding, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h3", { className: cn("font-semibold text-gray-900 mb-2 font-manrope", layoutConfig.fontSize), children: layoutConfig.size === "medium" ? format(selectedDate, "MMM d") : format(selectedDate, "EEEE, MMMM d") }),
       (() => {
         const holiday = getHolidayForDate(selectedDate);
-        return holiday ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "mb-3 p-2 bg-red-50 border border-red-200 rounded-lg", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "w-2 h-2 bg-red-500 rounded-full" }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: cn("text-red-700 font-medium font-manrope", layoutConfig.fontSize), children: holiday.name })
+        return holiday ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mb-3 p-2 bg-red-50 border border-red-200 rounded-lg", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "w-2 h-2 bg-red-500 rounded-full" }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: cn("text-red-700 font-medium font-manrope", layoutConfig.fontSize), children: holiday.name })
           ] }),
-          holiday.type && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: cn("text-red-600 mt-1 font-manrope", layoutConfig.fontSize === "text-sm" ? "text-xs" : "text-xs"), children: holiday.type })
+          holiday.type && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: cn("text-red-600 mt-1 font-manrope", layoutConfig.fontSize === "text-sm" ? "text-xs" : "text-xs"), children: holiday.type })
         ] }) : null;
       })(),
-      getEventsForDay(selectedDate).length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "text-center py-8", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Calendar, { className: cn("text-gray-400 mx-auto mb-2", layoutConfig.iconSize === "w-4 h-4" ? "w-6 h-6" : "w-8 h-8") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: cn("text-gray-500 font-manrope", layoutConfig.fontSize), children: "No events scheduled" }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+      getEventsForDay(selectedDate).length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "text-center py-8", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Calendar, { className: cn("text-gray-400 mx-auto mb-2", layoutConfig.iconSize === "w-4 h-4" ? "w-6 h-6" : "w-8 h-8") }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: cn("text-gray-500 font-manrope", layoutConfig.fontSize), children: "No events scheduled" }),
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
           Button,
           {
             variant: "outline",
@@ -1452,32 +1195,32 @@ function NewCalendarPanel({
             onClick: () => setShowEventModal(true),
             className: cn("mt-2", layoutConfig.buttonSize),
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Plus, { className: layoutConfig.iconSize }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "ml-1", children: "Add Event" })
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Plus, { className: layoutConfig.iconSize }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "ml-1", children: "Add Event" })
             ]
           }
         )
-      ] }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: cn("space-y-2", layoutConfig.size === "medium" && "space-y-1"), children: getEventsForDay(selectedDate).map((event) => {
-        const colorConfig = EVENT_COLORS2[event.color] || EVENT_COLORS2.blue;
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn("space-y-2", layoutConfig.size === "medium" && "space-y-1"), children: getEventsForDay(selectedDate).map((event) => {
+        const colorConfig = EVENT_COLORS[event.color] || EVENT_COLORS.blue;
         const IconComponent = EVENT_TYPE_ICONS[event.type];
-        return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Card, { className: cn(
+        return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Card, { className: cn(
           "hover:shadow-sm transition-shadow cursor-pointer",
           layoutConfig.size === "medium" ? "p-2" : "p-3"
-        ), onClick: () => handleEventClick(event), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-start gap-2", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: cn("rounded-lg", colorConfig.bg, layoutConfig.size === "medium" ? "p-1.5" : "p-2"), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(IconComponent, { className: cn(colorConfig.text, layoutConfig.iconSize) }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex-1 min-w-0", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h4", { className: cn("font-medium text-gray-900 truncate font-manrope", layoutConfig.fontSize), children: event.title }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-2 mt-1", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Clock, { className: cn("text-gray-400", layoutConfig.iconSize) }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: cn("text-gray-600 font-manrope", layoutConfig.fontSize), children: event.allDay ? "All day" : `${format(event.startTime, "h:mm a")} - ${format(event.endTime, "h:mm a")}` })
+        ), onClick: () => handleEventClick(event), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-start gap-2", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn("rounded-lg", colorConfig.bg, layoutConfig.size === "medium" ? "p-1.5" : "p-2"), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(IconComponent, { className: cn(colorConfig.text, layoutConfig.iconSize) }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex-1 min-w-0", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h4", { className: cn("font-medium text-gray-900 truncate font-manrope", layoutConfig.fontSize), children: event.title }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2 mt-1", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Clock, { className: cn("text-gray-400", layoutConfig.iconSize) }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: cn("text-gray-600 font-manrope", layoutConfig.fontSize), children: event.allDay ? "All day" : `${format(event.startTime, "h:mm a")} - ${format(event.endTime, "h:mm a")}` })
             ] }),
-            event.location && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-2 mt-1", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(MapPin, { className: cn("text-gray-400", layoutConfig.iconSize) }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: cn("text-gray-600 truncate font-manrope", layoutConfig.fontSize), children: event.location })
+            event.location && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2 mt-1", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(MapPin, { className: cn("text-gray-400", layoutConfig.iconSize) }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: cn("text-gray-600 truncate font-manrope", layoutConfig.fontSize), children: event.location })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex items-center gap-2 mt-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Badge, { variant: "outline", className: layoutConfig.fontSize, children: event.type }),
-              event.priority !== "LOW" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: cn(
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "flex items-center gap-2 mt-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Badge, { variant: "outline", className: layoutConfig.fontSize, children: event.type }),
+              event.priority !== "LOW" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn(
                 "rounded-full",
                 PRIORITY_COLORS2[event.priority],
                 layoutConfig.size === "medium" ? "w-1.5 h-1.5" : "w-2 h-2"
@@ -1487,20 +1230,19 @@ function NewCalendarPanel({
         ] }) }, event.id);
       }) })
     ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-      EventModal,
+    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+      CompactTaskModal,
       {
         open: showEventModal,
         onClose: () => {
           setShowEventModal(false);
           setSelectedEvent(null);
         },
-        onEventCreated: () => {
+        onTaskCreated: () => {
           window.location.reload();
         },
         workspaceId,
-        selectedDate,
-        event: selectedEvent,
+        task: selectedEvent,
         isEditMode: !!selectedEvent
       }
     )
@@ -1509,4 +1251,4 @@ function NewCalendarPanel({
 export {
   NewCalendarPanel as default
 };
-//# sourceMappingURL=/chunks/NewCalendarPanel-KBZSDDZI.js.map
+//# sourceMappingURL=/chunks/NewCalendarPanel-OPIF6Y76.js.map

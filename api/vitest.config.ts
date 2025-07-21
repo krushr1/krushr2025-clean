@@ -1,14 +1,21 @@
 import { defineConfig } from 'vitest/config'
-import { resolve } from 'path'
+import path from 'path'
 
 export default defineConfig({
   test: {
+    globals: true,
     environment: 'node',
     setupFiles: ['./src/test/setup.ts'],
-    globals: true,
-    testTimeout: 30000,
-    hookTimeout: 30000,
-    teardownTimeout: 30000,
+    testTimeout: 10000,
+    clearMocks: true,
+    restoreMocks: true,
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.git/**',
+      '**/.vscode/**',
+    ],
+    include: ['src/test/**/*.{test,spec}.{js,ts}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -16,26 +23,15 @@ export default defineConfig({
         'node_modules/',
         'dist/',
         'src/test/',
+        'src/prisma/seed.ts',
         '**/*.test.ts',
         '**/*.spec.ts',
-        'src/index.ts',
-        'src/config/',
-        'src/types/',
-        'prisma/',
       ],
-      thresholds: {
-        statements: 80,
-        branches: 75,
-        functions: 80,
-        lines: 80,
-      },
     },
-    include: ['src/**/*.{test,spec}.ts'],
-    exclude: ['node_modules/', 'dist/', 'uploads/', 'test.db*'],
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 })

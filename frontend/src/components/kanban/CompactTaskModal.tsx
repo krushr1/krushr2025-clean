@@ -213,11 +213,18 @@ export default function CompactTaskModal({
       
       {/* Modal Container - Brandkit Compliant */}
       <div className="relative w-full max-w-4xl mx-4 max-h-[90vh] bg-white rounded-xl overflow-hidden flex flex-col shadow-2xl">
-        {/* Header */}
+        {/* Header with Editable Title */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-krushr-gray-200">
-          <h2 className="text-xl font-semibold text-krushr-gray-dark font-manrope">
-            Task Title
-          </h2>
+          <div className="flex-1 mr-4">
+            <FloatingInput
+              type="text"
+              label="Task title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              autoFocus
+              className="text-xl font-semibold font-manrope border-none bg-transparent focus:ring-0 focus:border-transparent p-0 h-auto"
+            />
+          </div>
           <button 
             onClick={onClose}
             className="text-krushr-gray-400 hover:text-krushr-gray-600 transition-colors p-2 hover:bg-krushr-gray-100 rounded-lg"
@@ -232,15 +239,6 @@ export default function CompactTaskModal({
             <div className="grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-6">
               {/* Main Content */}
               <div className="space-y-4">
-                {/* Task Title - Floating Label */}
-                <FloatingInput
-                  type="text"
-                  label="Task title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  autoFocus
-                />
-                
                 {/* Description - Floating Label */}
                 <div className="relative">
                   <textarea

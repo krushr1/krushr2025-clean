@@ -7,7 +7,7 @@ import {
   endOfWeek,
   formatDateShort,
   isSameMonth
-} from "/chunks/chunk-FXX4HMSE.js";
+} from "/chunks/chunk-HPZKNMSB.js";
 import {
   Badge,
   Card,
@@ -21,7 +21,7 @@ import {
   startOfMonth,
   startOfWeek,
   subMonths
-} from "/chunks/chunk-LYB7KEBT.js";
+} from "/chunks/chunk-MPXAWBOR.js";
 import "/chunks/chunk-XTC34SKS.js";
 import {
   FloatingInput
@@ -1243,7 +1243,9 @@ function NewCalendarPanel({
         },
         workspaceId,
         task: selectedEvent,
-        isEditMode: !!selectedEvent
+        isEditMode: !!selectedEvent,
+        mode: "calendar",
+        selectedDate
       }
     )
   ] }) });
@@ -1251,4 +1253,4 @@ function NewCalendarPanel({
 export {
   NewCalendarPanel as default
 };
-//# sourceMappingURL=/chunks/NewCalendarPanel-OPIF6Y76.js.map
+//# sourceMappingURL=/chunks/NewCalendarPanel-ADKBP5MZ.js.map

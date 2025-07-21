@@ -114,7 +114,7 @@ var require_react_is_development = __commonJS({
         var ContextProvider = REACT_PROVIDER_TYPE;
         var Element2 = REACT_ELEMENT_TYPE;
         var ForwardRef = REACT_FORWARD_REF_TYPE;
-        var Fragment2 = REACT_FRAGMENT_TYPE;
+        var Fragment3 = REACT_FRAGMENT_TYPE;
         var Lazy = REACT_LAZY_TYPE;
         var Memo = REACT_MEMO_TYPE;
         var Portal2 = REACT_PORTAL_TYPE;
@@ -173,7 +173,7 @@ var require_react_is_development = __commonJS({
         exports.ContextProvider = ContextProvider;
         exports.Element = Element2;
         exports.ForwardRef = ForwardRef;
-        exports.Fragment = Fragment2;
+        exports.Fragment = Fragment3;
         exports.Lazy = Lazy;
         exports.Memo = Memo;
         exports.Portal = Portal2;
@@ -5561,7 +5561,9 @@ function CompactTaskModal({
   workspaceId,
   kanbanColumnId,
   task,
-  isEditMode = false
+  isEditMode = false,
+  mode = "task",
+  selectedDate
 }) {
   const [title, setTitle] = (0, import_react4.useState)(task?.title || "");
   const [description, setDescription] = (0, import_react4.useState)(task?.description || "");
@@ -5575,6 +5577,16 @@ function CompactTaskModal({
   const [isLoading, setIsLoading] = (0, import_react4.useState)(false);
   const [selectedColumnId, setSelectedColumnId] = (0, import_react4.useState)(kanbanColumnId || null);
   const [calendarDate, setCalendarDate] = (0, import_react4.useState)(/* @__PURE__ */ new Date());
+  const [startTime, setStartTime] = (0, import_react4.useState)(
+    task?.startTime ? format(new Date(task.startTime), "yyyy-MM-dd'T'HH:mm") : selectedDate ? format(selectedDate, "yyyy-MM-dd'T'09:00") : format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'09:00")
+  );
+  const [endTime, setEndTime] = (0, import_react4.useState)(
+    task?.endTime ? format(new Date(task.endTime), "yyyy-MM-dd'T'HH:mm") : selectedDate ? format(selectedDate, "yyyy-MM-dd'T'10:00") : format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'10:00")
+  );
+  const [allDay, setAllDay] = (0, import_react4.useState)(task?.allDay || false);
+  const [location, setLocation] = (0, import_react4.useState)(task?.location || "");
+  const [eventType, setEventType] = (0, import_react4.useState)(task?.type || "EVENT");
+  const [eventColor, setEventColor] = (0, import_react4.useState)(task?.color || "blue");
   const { currentWorkspace } = useAuthStore();
   const { data: workspaceUsers } = trpc.workspace.listUsers.useQuery(
     { workspaceId: currentWorkspace?.id || "" },
@@ -5584,45 +5596,69 @@ function CompactTaskModal({
   const updateTaskMutation = trpc.task.update.useMutation();
   const deleteTaskMutation = trpc.task.delete.useMutation();
   const uploadMutation = trpc.uploadNew.uploadFiles.useMutation();
+  const createCalendarEventMutation = trpc.calendar.create.useMutation();
+  const updateCalendarEventMutation = trpc.calendar.update.useMutation();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !workspaceId) return;
     setIsLoading(true);
     try {
-      const taskData = {
-        title: title.trim(),
-        description: description.trim(),
-        priority,
-        status,
-        dueDate: dueDate ? dueDate.toISOString() : null,
-        assigneeId: assigneeId || null,
-        tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
-        workspaceId
-      };
-      let createdTaskId = task?.id;
-      if (isEditMode && task?.id) {
-        await updateTaskMutation.mutateAsync({
-          id: task.id,
-          ...taskData
-        });
+      if (mode === "calendar") {
+        const calendarEventData = {
+          title: title.trim(),
+          description: description.trim(),
+          startTime: new Date(startTime),
+          endTime: new Date(endTime),
+          allDay,
+          location: location.trim() || void 0,
+          color: eventColor,
+          type: eventType,
+          workspaceId
+        };
+        if (isEditMode && task?.id) {
+          await updateCalendarEventMutation.mutateAsync({
+            id: task.id,
+            ...calendarEventData
+          });
+        } else {
+          await createCalendarEventMutation.mutateAsync(calendarEventData);
+        }
       } else {
-        const newTask = await createTaskMutation.mutateAsync(taskData);
-        createdTaskId = newTask.id;
-      }
-      if (pendingFiles.length > 0 && createdTaskId) {
-        setUploadingFiles(true);
-        const formData = new FormData();
-        pendingFiles.forEach((file) => {
-          formData.append("files", file);
-        });
-        formData.append("type", "task");
-        formData.append("targetId", createdTaskId);
-        await uploadMutation.mutateAsync(formData);
+        const taskData = {
+          title: title.trim(),
+          description: description.trim(),
+          priority,
+          status,
+          dueDate: dueDate ? dueDate.toISOString() : null,
+          assigneeId: assigneeId || null,
+          tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
+          workspaceId
+        };
+        let createdTaskId = task?.id;
+        if (isEditMode && task?.id) {
+          await updateTaskMutation.mutateAsync({
+            id: task.id,
+            ...taskData
+          });
+        } else {
+          const newTask = await createTaskMutation.mutateAsync(taskData);
+          createdTaskId = newTask.id;
+        }
+        if (pendingFiles.length > 0 && createdTaskId) {
+          setUploadingFiles(true);
+          const formData = new FormData();
+          pendingFiles.forEach((file) => {
+            formData.append("files", file);
+          });
+          formData.append("type", "task");
+          formData.append("targetId", createdTaskId);
+          await uploadMutation.mutateAsync(formData);
+        }
       }
       onTaskCreated?.();
       onClose();
     } catch (error) {
-      console.error("Failed to save task:", error);
+      console.error(`Failed to save ${mode}:`, error);
     } finally {
       setIsLoading(false);
       setUploadingFiles(false);
@@ -5663,23 +5699,41 @@ function CompactTaskModal({
       if (isEditMode && task) {
         setTitle(task.title || "");
         setDescription(task.description || "");
-        setPriority(task.priority || "medium" /* MEDIUM */);
-        setStatus(task.status || "TODO" /* TODO */);
-        setDueDate(task.dueDate ? new Date(task.dueDate) : null);
-        setAssigneeId(task.assigneeId || "");
-        setTags(task.tags?.join(", ") || "");
+        if (mode === "calendar") {
+          setStartTime(task.startTime ? format(new Date(task.startTime), "yyyy-MM-dd'T'HH:mm") : selectedDate ? format(selectedDate, "yyyy-MM-dd'T'09:00") : format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'09:00"));
+          setEndTime(task.endTime ? format(new Date(task.endTime), "yyyy-MM-dd'T'HH:mm") : selectedDate ? format(selectedDate, "yyyy-MM-dd'T'10:00") : format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'10:00"));
+          setAllDay(task.allDay || false);
+          setLocation(task.location || "");
+          setEventType(task.type || "EVENT");
+          setEventColor(task.color || "blue");
+        } else {
+          setPriority(task.priority || "medium" /* MEDIUM */);
+          setStatus(task.status || "TODO" /* TODO */);
+          setDueDate(task.dueDate ? new Date(task.dueDate) : null);
+          setAssigneeId(task.assigneeId || "");
+          setTags(task.tags?.join(", ") || "");
+        }
       } else {
         setTitle("");
         setDescription("");
-        setPriority("medium" /* MEDIUM */);
-        setStatus(kanbanColumnId === "todo" ? "TODO" /* TODO */ : kanbanColumnId === "progress" ? "IN_PROGRESS" /* IN_PROGRESS */ : kanbanColumnId === "review" ? "IN_REVIEW" /* IN_REVIEW */ : kanbanColumnId === "done" ? "DONE" /* DONE */ : "TODO" /* TODO */);
-        setDueDate(null);
-        setAssigneeId("");
-        setTags("");
+        if (mode === "calendar") {
+          setStartTime(selectedDate ? format(selectedDate, "yyyy-MM-dd'T'09:00") : format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'09:00"));
+          setEndTime(selectedDate ? format(selectedDate, "yyyy-MM-dd'T'10:00") : format(/* @__PURE__ */ new Date(), "yyyy-MM-dd'T'10:00"));
+          setAllDay(false);
+          setLocation("");
+          setEventType("EVENT");
+          setEventColor("blue");
+        } else {
+          setPriority("medium" /* MEDIUM */);
+          setStatus(kanbanColumnId === "todo" ? "TODO" /* TODO */ : kanbanColumnId === "progress" ? "IN_PROGRESS" /* IN_PROGRESS */ : kanbanColumnId === "review" ? "IN_REVIEW" /* IN_REVIEW */ : kanbanColumnId === "done" ? "DONE" /* DONE */ : "TODO" /* TODO */);
+          setDueDate(null);
+          setAssigneeId("");
+          setTags("");
+        }
       }
       setPendingFiles([]);
     }
-  }, [open, isEditMode, task, kanbanColumnId]);
+  }, [open, isEditMode, task, kanbanColumnId, mode, selectedDate]);
   (0, import_react4.useEffect)(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape" && open) {
@@ -5712,7 +5766,17 @@ function CompactTaskModal({
       ),
       /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative w-full max-w-4xl mx-4 max-h-[90vh] bg-white rounded-xl overflow-hidden flex flex-col shadow-2xl", children: [
         /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between px-6 py-4 border-b border-krushr-gray-200", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h2", { className: "text-xl font-semibold text-krushr-gray-dark font-manrope", children: "Task Title" }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex-1 mr-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+            FloatingInput,
+            {
+              type: "text",
+              label: mode === "calendar" ? "Event title" : "Task title",
+              value: title,
+              onChange: (e) => setTitle(e.target.value),
+              autoFocus: true,
+              className: "text-xl font-semibold font-manrope border-none bg-transparent focus:ring-0 focus:border-transparent p-0 h-auto"
+            }
+          ) }),
           /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
             "button",
             {
@@ -5725,16 +5789,6 @@ function CompactTaskModal({
         /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("form", { onSubmit: handleSubmit, className: "flex-1 overflow-y-auto", children: [
           /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "p-6", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-6", children: [
             /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-4", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-                FloatingInput,
-                {
-                  type: "text",
-                  label: "Task title",
-                  value: title,
-                  onChange: (e) => setTitle(e.target.value),
-                  autoFocus: true
-                }
-              ),
               /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                   "textarea",
@@ -5755,6 +5809,84 @@ function CompactTaskModal({
                     children: "Description"
                   }
                 )
+              ] }),
+              mode === "calendar" && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(import_jsx_runtime7.Fragment, { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                  FloatingInput,
+                  {
+                    type: "datetime-local",
+                    label: "Start time",
+                    value: startTime,
+                    onChange: (e) => setStartTime(e.target.value)
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                  FloatingInput,
+                  {
+                    type: "datetime-local",
+                    label: "End time",
+                    value: endTime,
+                    onChange: (e) => setEndTime(e.target.value)
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                    "input",
+                    {
+                      type: "checkbox",
+                      id: "all-day",
+                      checked: allDay,
+                      onChange: (e) => setAllDay(e.target.checked),
+                      className: "rounded border-krushr-gray-border focus:ring-krushr-primary"
+                    }
+                  ),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { htmlFor: "all-day", className: "text-sm text-krushr-gray-700", children: "All day event" })
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                  FloatingInput,
+                  {
+                    type: "text",
+                    label: "Location (optional)",
+                    value: location,
+                    onChange: (e) => setLocation(e.target.value)
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-krushr-gray-600 mb-2", children: "Event Type" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex flex-wrap gap-2", children: ["MEETING", "TASK", "REMINDER", "EVENT", "DEADLINE", "MILESTONE"].map((type) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => setEventType(type),
+                      className: cn(
+                        "px-3 py-1.5 text-xs font-medium rounded-full transition-all",
+                        eventType === type ? "bg-krushr-primary text-white" : "bg-krushr-gray-100 text-krushr-gray-700 hover:bg-krushr-gray-200"
+                      ),
+                      children: type
+                    },
+                    type
+                  )) })
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("label", { className: "block text-sm font-medium text-krushr-gray-600 mb-2", children: "Color" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex gap-2", children: ["blue", "green", "purple", "orange", "red"].map((color) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => setEventColor(color),
+                      className: cn(
+                        "w-8 h-8 rounded-full transition-all border-2",
+                        eventColor === color ? "border-krushr-gray-400" : "border-transparent",
+                        color === "blue" && "bg-blue-500",
+                        color === "green" && "bg-green-500",
+                        color === "purple" && "bg-purple-500",
+                        color === "orange" && "bg-orange-500",
+                        color === "red" && "bg-red-500"
+                      )
+                    },
+                    color
+                  )) })
+                ] })
               ] }),
               /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
                 FloatingInput,
@@ -6028,7 +6160,7 @@ function CompactTaskModal({
                 onClick: handleDelete,
                 disabled: isLoading,
                 className: "px-4 py-2 text-sm text-krushr-secondary font-medium hover:bg-krushr-secondary-50 rounded-lg transition-colors disabled:opacity-50",
-                children: "Delete Task"
+                children: mode === "calendar" ? "Delete Event" : "Delete Task"
               }
             ),
             /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex gap-3 ml-auto", children: [
@@ -6049,7 +6181,7 @@ function CompactTaskModal({
                   className: "px-6 py-2 text-sm text-white font-medium bg-krushr-primary rounded-lg hover:bg-krushr-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2",
                   children: [
                     (isLoading || uploadingFiles) && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" }),
-                    uploadingFiles ? "Uploading..." : isLoading ? "Saving..." : isEditMode ? "Update Task" : "Create Task"
+                    uploadingFiles ? "Uploading..." : isLoading ? "Saving..." : isEditMode ? mode === "calendar" ? "Update Event" : "Update Task" : mode === "calendar" ? "Create Event" : "Create Task"
                   ]
                 }
               )
@@ -8698,4 +8830,4 @@ object-assign/index.js:
   @license MIT
   *)
 */
-//# sourceMappingURL=/chunks/chunk-LYB7KEBT.js.map
+//# sourceMappingURL=/chunks/chunk-MPXAWBOR.js.map

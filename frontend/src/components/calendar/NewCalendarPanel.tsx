@@ -1062,6 +1062,8 @@ export default function NewCalendarPanel({
         workspaceId={workspaceId}
         task={selectedEvent}
         isEditMode={!!selectedEvent}
+        mode="calendar"
+        selectedDate={selectedDate}
       />
       </div>
     </TooltipProvider>

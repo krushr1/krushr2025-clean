@@ -18,6 +18,8 @@ interface CompactTaskModalProps {
   kanbanColumnId?: string
   task?: any
   isEditMode?: boolean
+  mode?: 'task' | 'calendar'
+  selectedDate?: Date | null
 }
 
 export default function CompactTaskModal({ 
@@ -27,7 +29,9 @@ export default function CompactTaskModal({
   workspaceId, 
   kanbanColumnId,
   task,
-  isEditMode = false
+  isEditMode = false,
+  mode = 'task',
+  selectedDate
 }: CompactTaskModalProps) {
   // Form state
   const [title, setTitle] = useState(task?.title || '')
@@ -43,6 +47,22 @@ export default function CompactTaskModal({
   const [selectedColumnId, setSelectedColumnId] = useState<string | null>(kanbanColumnId || null)
   const [calendarDate, setCalendarDate] = useState(new Date())
 
+  // Calendar-specific state
+  const [startTime, setStartTime] = useState(
+    task?.startTime ? format(new Date(task.startTime), "yyyy-MM-dd'T'HH:mm") :
+    selectedDate ? format(selectedDate, "yyyy-MM-dd'T'09:00") :
+    format(new Date(), "yyyy-MM-dd'T'09:00")
+  )
+  const [endTime, setEndTime] = useState(
+    task?.endTime ? format(new Date(task.endTime), "yyyy-MM-dd'T'HH:mm") :
+    selectedDate ? format(selectedDate, "yyyy-MM-dd'T'10:00") :
+    format(new Date(), "yyyy-MM-dd'T'10:00")
+  )
+  const [allDay, setAllDay] = useState(task?.allDay || false)
+  const [location, setLocation] = useState(task?.location || '')
+  const [eventType, setEventType] = useState(task?.type || 'EVENT')
+  const [eventColor, setEventColor] = useState(task?.color || 'blue')
+
   // Workspace data
   const { currentWorkspace } = useAuthStore()
   const { data: workspaceUsers } = trpc.workspace.listUsers.useQuery(
@@ -56,6 +76,10 @@ export default function CompactTaskModal({
   const deleteTaskMutation = trpc.task.delete.useMutation()
   const uploadMutation = trpc.uploadNew.uploadFiles.useMutation()
 
+  // Calendar mutations
+  const createCalendarEventMutation = trpc.calendar.create.useMutation()
+  const updateCalendarEventMutation = trpc.calendar.update.useMutation()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim() || !workspaceId) return
@@ -63,46 +87,71 @@ export default function CompactTaskModal({
     setIsLoading(true)
     
     try {
-      const taskData = {
-        title: title.trim(),
-        description: description.trim(),
-        priority,
-        status,
-        dueDate: dueDate ? dueDate.toISOString() : null,
-        assigneeId: assigneeId || null,
-        tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
-        workspaceId
-      }
+      if (mode === 'calendar') {
+        // Calendar event creation/update
+        const calendarEventData = {
+          title: title.trim(),
+          description: description.trim(),
+          startTime: new Date(startTime),
+          endTime: new Date(endTime),
+          allDay,
+          location: location.trim() || undefined,
+          color: eventColor,
+          type: eventType as any,
+          workspaceId
+        }
 
-      let createdTaskId = task?.id
-
-      if (isEditMode && task?.id) {
-        await updateTaskMutation.mutateAsync({
-          id: task.id,
-          ...taskData
-        })
+        if (isEditMode && task?.id) {
+          await updateCalendarEventMutation.mutateAsync({
+            id: task.id,
+            ...calendarEventData
+          })
+        } else {
+          await createCalendarEventMutation.mutateAsync(calendarEventData)
+        }
       } else {
-        const newTask = await createTaskMutation.mutateAsync(taskData)
-        createdTaskId = newTask.id
-      }
+        // Task creation/update (existing logic)
+        const taskData = {
+          title: title.trim(),
+          description: description.trim(),
+          priority,
+          status,
+          dueDate: dueDate ? dueDate.toISOString() : null,
+          assigneeId: assigneeId || null,
+          tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+          workspaceId
+        }
 
-      // Handle file uploads if any
-      if (pendingFiles.length > 0 && createdTaskId) {
-        setUploadingFiles(true)
-        const formData = new FormData()
-        pendingFiles.forEach(file => {
-          formData.append('files', file)
-        })
-        formData.append('type', 'task')
-        formData.append('targetId', createdTaskId)
+        let createdTaskId = task?.id
 
-        await uploadMutation.mutateAsync(formData as any)
+        if (isEditMode && task?.id) {
+          await updateTaskMutation.mutateAsync({
+            id: task.id,
+            ...taskData
+          })
+        } else {
+          const newTask = await createTaskMutation.mutateAsync(taskData)
+          createdTaskId = newTask.id
+        }
+
+        // Handle file uploads if any
+        if (pendingFiles.length > 0 && createdTaskId) {
+          setUploadingFiles(true)
+          const formData = new FormData()
+          pendingFiles.forEach(file => {
+            formData.append('files', file)
+          })
+          formData.append('type', 'task')
+          formData.append('targetId', createdTaskId)
+
+          await uploadMutation.mutateAsync(formData as any)
+        }
       }
 
       onTaskCreated?.()
       onClose()
     } catch (error) {
-      console.error('Failed to save task:', error)
+      console.error(`Failed to save ${mode}:`, error)
     } finally {
       setIsLoading(false)
       setUploadingFiles(false)
@@ -153,27 +202,58 @@ export default function CompactTaskModal({
       if (isEditMode && task) {
         setTitle(task.title || '')
         setDescription(task.description || '')
-        setPriority(task.priority || Priority.MEDIUM)
-        setStatus(task.status || TaskStatus.TODO)
-        setDueDate(task.dueDate ? new Date(task.dueDate) : null)
-        setAssigneeId(task.assigneeId || '')
-        setTags(task.tags?.join(', ') || '')
+        
+        if (mode === 'calendar') {
+          // Calendar event editing
+          setStartTime(task.startTime ? format(new Date(task.startTime), "yyyy-MM-dd'T'HH:mm") : 
+                      selectedDate ? format(selectedDate, "yyyy-MM-dd'T'09:00") : 
+                      format(new Date(), "yyyy-MM-dd'T'09:00"))
+          setEndTime(task.endTime ? format(new Date(task.endTime), "yyyy-MM-dd'T'HH:mm") : 
+                    selectedDate ? format(selectedDate, "yyyy-MM-dd'T'10:00") : 
+                    format(new Date(), "yyyy-MM-dd'T'10:00"))
+          setAllDay(task.allDay || false)
+          setLocation(task.location || '')
+          setEventType(task.type || 'EVENT')
+          setEventColor(task.color || 'blue')
+        } else {
+          // Task editing
+          setPriority(task.priority || Priority.MEDIUM)
+          setStatus(task.status || TaskStatus.TODO)
+          setDueDate(task.dueDate ? new Date(task.dueDate) : null)
+          setAssigneeId(task.assigneeId || '')
+          setTags(task.tags?.join(', ') || '')
+        }
       } else {
+        // Reset for new item
         setTitle('')
         setDescription('')
-        setPriority(Priority.MEDIUM)
-        setStatus(kanbanColumnId === 'todo' ? TaskStatus.TODO : 
-                 kanbanColumnId === 'progress' ? TaskStatus.IN_PROGRESS :
-                 kanbanColumnId === 'review' ? TaskStatus.IN_REVIEW :
-                 kanbanColumnId === 'done' ? TaskStatus.DONE : 
-                 TaskStatus.TODO)
-        setDueDate(null)
-        setAssigneeId('')
-        setTags('')
+        
+        if (mode === 'calendar') {
+          // New calendar event defaults
+          setStartTime(selectedDate ? format(selectedDate, "yyyy-MM-dd'T'09:00") : 
+                      format(new Date(), "yyyy-MM-dd'T'09:00"))
+          setEndTime(selectedDate ? format(selectedDate, "yyyy-MM-dd'T'10:00") : 
+                    format(new Date(), "yyyy-MM-dd'T'10:00"))
+          setAllDay(false)
+          setLocation('')
+          setEventType('EVENT')
+          setEventColor('blue')
+        } else {
+          // New task defaults
+          setPriority(Priority.MEDIUM)
+          setStatus(kanbanColumnId === 'todo' ? TaskStatus.TODO : 
+                   kanbanColumnId === 'progress' ? TaskStatus.IN_PROGRESS :
+                   kanbanColumnId === 'review' ? TaskStatus.IN_REVIEW :
+                   kanbanColumnId === 'done' ? TaskStatus.DONE : 
+                   TaskStatus.TODO)
+          setDueDate(null)
+          setAssigneeId('')
+          setTags('')
+        }
       }
       setPendingFiles([])
     }
-  }, [open, isEditMode, task, kanbanColumnId])
+  }, [open, isEditMode, task, kanbanColumnId, mode, selectedDate])
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -218,7 +298,7 @@ export default function CompactTaskModal({
           <div className="flex-1 mr-4">
             <FloatingInput
               type="text"
-              label="Task title"
+              label={mode === 'calendar' ? 'Event title' : 'Task title'}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               autoFocus
@@ -256,6 +336,98 @@ export default function CompactTaskModal({
                     Description
                   </label>
                 </div>
+                
+                {/* Calendar-specific fields */}
+                {mode === 'calendar' && (
+                  <>
+                    {/* Start Time */}
+                    <FloatingInput
+                      type="datetime-local"
+                      label="Start time"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                    />
+                    
+                    {/* End Time */}
+                    <FloatingInput
+                      type="datetime-local"
+                      label="End time"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                    />
+                    
+                    {/* All Day Toggle */}
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="all-day"
+                        checked={allDay}
+                        onChange={(e) => setAllDay(e.target.checked)}
+                        className="rounded border-krushr-gray-border focus:ring-krushr-primary"
+                      />
+                      <label htmlFor="all-day" className="text-sm text-krushr-gray-700">
+                        All day event
+                      </label>
+                    </div>
+                    
+                    {/* Location */}
+                    <FloatingInput
+                      type="text"
+                      label="Location (optional)"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                    />
+                    
+                    {/* Event Type */}
+                    <div>
+                      <label className="block text-sm font-medium text-krushr-gray-600 mb-2">
+                        Event Type
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {['MEETING', 'TASK', 'REMINDER', 'EVENT', 'DEADLINE', 'MILESTONE'].map((type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            onClick={() => setEventType(type)}
+                            className={cn(
+                              "px-3 py-1.5 text-xs font-medium rounded-full transition-all",
+                              eventType === type
+                                ? "bg-krushr-primary text-white"
+                                : "bg-krushr-gray-100 text-krushr-gray-700 hover:bg-krushr-gray-200"
+                            )}
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Event Color */}
+                    <div>
+                      <label className="block text-sm font-medium text-krushr-gray-600 mb-2">
+                        Color
+                      </label>
+                      <div className="flex gap-2">
+                        {['blue', 'green', 'purple', 'orange', 'red'].map((color) => (
+                          <button
+                            key={color}
+                            type="button"
+                            onClick={() => setEventColor(color)}
+                            className={cn(
+                              "w-8 h-8 rounded-full transition-all border-2",
+                              eventColor === color ? "border-krushr-gray-400" : "border-transparent",
+                              color === 'blue' && "bg-blue-500",
+                              color === 'green' && "bg-green-500",
+                              color === 'purple' && "bg-purple-500",
+                              color === 'orange' && "bg-orange-500",
+                              color === 'red' && "bg-red-500"
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
                 
                 {/* Tags - Floating Label */}
                 <FloatingInput
@@ -570,7 +742,7 @@ export default function CompactTaskModal({
                   disabled={isLoading}
                   className="px-4 py-2 text-sm text-krushr-secondary font-medium hover:bg-krushr-secondary-50 rounded-lg transition-colors disabled:opacity-50"
                 >
-                  Delete Task
+                  {mode === 'calendar' ? 'Delete Event' : 'Delete Task'}
                 </button>
               )}
               <div className="flex gap-3 ml-auto">
@@ -589,7 +761,7 @@ export default function CompactTaskModal({
                   {(isLoading || uploadingFiles) && (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   )}
-                  {uploadingFiles ? 'Uploading...' : isLoading ? 'Saving...' : isEditMode ? 'Update Task' : 'Create Task'}
+                  {uploadingFiles ? 'Uploading...' : isLoading ? 'Saving...' : isEditMode ? (mode === 'calendar' ? 'Update Event' : 'Update Task') : (mode === 'calendar' ? 'Create Event' : 'Create Task')}
                 </button>
               </div>
             </div>

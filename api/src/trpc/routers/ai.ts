@@ -4,6 +4,8 @@ import { aiService } from '../../lib/ai'
 import { prisma } from '../../lib/prisma'
 import { TRPCError } from '@trpc/server'
 import { safeRedis } from '../../lib/redis'
+import { aiContextManager, trackTaskActivity } from '../../lib/ai-context'
+import { broadcastAiConversationStatus } from '../../websocket/handler'
 
 export const aiRouter = router({
   // Get user's AI conversations
@@ -73,46 +75,65 @@ export const aiRouter = router({
       return conversation
     }),
 
-  // Send message to AI
+  // Send message to AI with real-time context streaming
   sendMessage: protectedProcedure
     .input(z.object({
       conversationId: z.string(),
       message: z.string().min(1, 'Message cannot be empty'),
-      thinkingBudget: z.number().min(0).max(24576).optional()
+      thinkingBudget: z.number().min(0).max(24576).optional(),
+      includeRealtimeContext: z.boolean().default(true),
+      enableRealTimeData: z.boolean().default(false)
     }))
     .mutation(async ({ input, ctx }) => {
-      // Verify conversation belongs to user
-      const conversation = await prisma.aiConversation.findFirst({
-        where: {
-          id: input.conversationId,
-          userId: ctx.user.id
-        },
-        include: {
-          messages: {
-            orderBy: { createdAt: 'asc' }
-          }
-        }
-      })
-
-      if (!conversation) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Conversation not found'
-        })
-      }
-
-      // Save user message
-      const userMessage = await prisma.aiMessage.create({
-        data: {
-          conversationId: input.conversationId,
-          role: 'user',
-          content: input.message,
-          tokenCount: aiService['estimateTokenCount'](input.message)
-        }
+      // Notify WebSocket clients that AI is starting to think
+      broadcastAiConversationStatus(input.conversationId, 'thinking', {
+        thinkingBudget: input.thinkingBudget
       })
 
       try {
-        // Prepare conversation history for AI
+        // Verify conversation belongs to user
+        const conversation = await prisma.aiConversation.findFirst({
+          where: {
+            id: input.conversationId,
+            userId: ctx.user.id
+          },
+          include: {
+            messages: {
+              orderBy: { createdAt: 'asc' }
+            }
+          }
+        })
+
+        if (!conversation) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Conversation not found'
+          })
+        }
+
+        // Enhance message with real-time workspace context
+        let enhancedMessage = input.message
+        if (input.includeRealtimeContext) {
+          enhancedMessage = await aiContextManager.injectWorkspaceContext(
+            conversation.workspaceId,
+            input.message
+          )
+        }
+
+        // Save user message (original, not enhanced)
+        const userMessage = await prisma.aiMessage.create({
+          data: {
+            conversationId: input.conversationId,
+            role: 'user',
+            content: input.message,
+            tokenCount: aiService['estimateTokenCount'](input.message)
+          }
+        })
+
+        // Notify WebSocket clients that AI is responding
+        broadcastAiConversationStatus(input.conversationId, 'responding')
+
+        // Prepare conversation history for AI with context enhancement
         const messageHistory = [
           ...conversation.messages.map(msg => ({
             role: msg.role as 'user' | 'assistant',
@@ -120,7 +141,7 @@ export const aiRouter = router({
           })),
           {
             role: 'user' as const,
-            content: input.message
+            content: enhancedMessage // Use enhanced message for AI
           }
         ]
 
@@ -128,7 +149,8 @@ export const aiRouter = router({
         const aiResponse = await aiService.generateResponse(messageHistory, {
           thinkingBudget: input.thinkingBudget,
           workspaceId: conversation.workspaceId,
-          autoThinkingBudget: true
+          autoThinkingBudget: true,
+          enableRealTimeData: input.enableRealTimeData
         })
 
         // Save AI response
@@ -202,21 +224,96 @@ export const aiRouter = router({
           })
         }
 
+        // Track any actionable items and auto-create if requested
+        if (aiResponse.parsedActions && aiResponse.parsedActions.length > 0) {
+          for (const action of aiResponse.parsedActions) {
+            if (action.type === 'task' && action.confidence > 0.8) {
+              // High-confidence tasks can be tracked for suggestion
+              console.log(`[AI] High-confidence task suggestion: "${action.data.title}"`)
+            }
+          }
+        }
+
+        // Notify WebSocket clients that AI response is complete
+        broadcastAiConversationStatus(input.conversationId, 'idle', {
+          message: assistantMessage,
+          usage: {
+            tokens: aiResponse.tokenCount,
+            cost: aiResponse.cost,
+            responseTime: aiResponse.responseTime
+          }
+        })
+
         return {
           userMessage,
           assistantMessage,
           usage: {
             tokens: aiResponse.tokenCount,
             cost: aiResponse.cost,
-            responseTime: aiResponse.responseTime
-          }
+            responseTime: aiResponse.responseTime,
+            contextEnhanced: input.includeRealtimeContext
+          },
+          parsedActions: aiResponse.parsedActions
         }
       } catch (error) {
         console.error('AI response error:', error)
+        
+        // Notify WebSocket clients of error
+        broadcastAiConversationStatus(input.conversationId, 'error', {
+          error: error instanceof Error ? error.message : 'Unknown error'
+        })
+        
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to generate AI response'
         })
+      }
+    }),
+
+  // Stream AI response with live context updates
+  streamMessage: protectedProcedure
+    .input(z.object({
+      conversationId: z.string(),
+      message: z.string().min(1, 'Message cannot be empty'),
+      thinkingBudget: z.number().min(0).max(24576).optional(),
+      includeRealtimeContext: z.boolean().default(true)
+    }))
+    .mutation(async ({ input, ctx }) => {
+      // This would be implemented as a Server-Sent Events (SSE) endpoint
+      // For now, we'll use the same logic as sendMessage but with streaming preparation
+      
+      const conversation = await prisma.aiConversation.findFirst({
+        where: {
+          id: input.conversationId,
+          userId: ctx.user.id
+        }
+      })
+
+      if (!conversation) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Conversation not found'
+        })
+      }
+
+      // Get real-time workspace context
+      const workspaceContext = await aiContextManager.getWorkspaceContext(conversation.workspaceId)
+
+      // Broadcast streaming status updates
+      broadcastAiConversationStatus(input.conversationId, 'streaming', {
+        workspaceContext: {
+          summary: await aiContextManager.getContextSummary(conversation.workspaceId),
+          recentActivity: workspaceContext.recentTasks,
+          insights: workspaceContext.aiInsights
+        }
+      })
+
+      // For now, return the same result as sendMessage
+      // In a full implementation, this would stream responses chunk by chunk
+      return {
+        streamId: `stream-${Date.now()}`,
+        status: 'streaming',
+        contextSummary: await aiContextManager.getContextSummary(conversation.workspaceId)
       }
     }),
 
@@ -559,5 +656,355 @@ export const aiRouter = router({
     .query(async ({ ctx }) => {
       const testResults = aiService.testBudgetExtremes()
       return testResults
+    }),
+
+  // Get real-time workspace context for AI agent awareness
+  getWorkspaceContext: protectedProcedure
+    .input(z.object({
+      workspaceId: z.string()
+    }))
+    .query(async ({ input, ctx }) => {
+      try {
+        // Verify workspace access
+        const workspaceMember = await prisma.workspaceMember.findFirst({
+          where: {
+            userId: ctx.user.id,
+            workspaceId: input.workspaceId
+          }
+        })
+
+        if (!workspaceMember) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Access denied to workspace'
+          })
+        }
+
+        const context = await aiContextManager.getWorkspaceContext(input.workspaceId)
+        return context
+      } catch (error) {
+        console.error('Get workspace context error:', error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to get workspace context'
+        })
+      }
+    }),
+
+  // Get context summary for AI system prompts
+  getContextSummary: protectedProcedure
+    .input(z.object({
+      workspaceId: z.string()
+    }))
+    .query(async ({ input, ctx }) => {
+      try {
+        // Verify workspace access
+        const workspaceMember = await prisma.workspaceMember.findFirst({
+          where: {
+            userId: ctx.user.id,
+            workspaceId: input.workspaceId
+          }
+        })
+
+        if (!workspaceMember) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Access denied to workspace'
+          })
+        }
+
+        const summary = await aiContextManager.getContextSummary(input.workspaceId)
+        return { summary }
+      } catch (error) {
+        console.error('Get context summary error:', error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to get context summary'
+        })
+      }
+    }),
+
+  // Enhanced sendMessage with auto-task creation from AI suggestions
+  sendMessageWithAutoActions: protectedProcedure
+    .input(z.object({
+      conversationId: z.string(),
+      message: z.string().min(1, 'Message cannot be empty'),
+      thinkingBudget: z.number().min(0).max(24576).optional(),
+      includeRealtimeContext: z.boolean().default(true),
+      autoCreateTasks: z.boolean().default(false),
+      autoCreateNotes: z.boolean().default(false)
+    }))
+    .mutation(async ({ input, ctx }) => {
+      // Start by getting the conversation and workspace context
+      const conversation = await prisma.aiConversation.findFirst({
+        where: {
+          id: input.conversationId,
+          userId: ctx.user.id
+        },
+        include: {
+          messages: { orderBy: { createdAt: 'asc' } }
+        }
+      })
+
+      if (!conversation) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Conversation not found'
+        })
+      }
+
+      // Broadcast thinking status
+      broadcastAiConversationStatus(input.conversationId, 'thinking', {
+        autoActions: {
+          autoCreateTasks: input.autoCreateTasks,
+          autoCreateNotes: input.autoCreateNotes
+        }
+      })
+
+      try {
+        // Use parseAndCreateActions for enhanced functionality
+        const result = await prisma.$transaction(async (tx) => {
+          // Enhanced message with context
+          let enhancedMessage = input.message
+          if (input.includeRealtimeContext) {
+            enhancedMessage = await aiContextManager.injectWorkspaceContext(
+              conversation.workspaceId,
+              input.message
+            )
+          }
+
+          // Save user message
+          const userMessage = await tx.aiMessage.create({
+            data: {
+              conversationId: input.conversationId,
+              role: 'user',
+              content: input.message,
+              tokenCount: aiService['estimateTokenCount'](input.message)
+            }
+          })
+
+          // Generate AI response with action parsing
+          const messageHistory = [
+            ...conversation.messages.map(msg => ({
+              role: msg.role as 'user' | 'assistant',
+              content: msg.content
+            })),
+            { role: 'user' as const, content: enhancedMessage }
+          ]
+
+          const aiResponse = await aiService.generateResponse(messageHistory, {
+            thinkingBudget: input.thinkingBudget,
+            workspaceId: conversation.workspaceId,
+            autoThinkingBudget: true
+          })
+
+          // Save AI response
+          const assistantMessage = await tx.aiMessage.create({
+            data: {
+              conversationId: input.conversationId,
+              role: 'assistant',
+              content: aiResponse.content,
+              tokenCount: aiResponse.tokenCount,
+              cost: aiResponse.cost,
+              thinkingBudget: aiResponse.actualThinkingBudget,
+              responseTime: aiResponse.responseTime
+            }
+          })
+
+          // Auto-create actionable items if requested
+          const createdItems = []
+          if (aiResponse.parsedActions && aiResponse.parsedActions.length > 0) {
+            for (const action of aiResponse.parsedActions) {
+              try {
+                if (action.type === 'task' && input.autoCreateTasks && action.confidence > 0.7) {
+                  const task = await tx.task.create({
+                    data: {
+                      title: action.data.title,
+                      description: action.data.description || '',
+                      priority: action.data.priority || 'medium',
+                      dueDate: action.data.dueDate,
+                      createdById: ctx.user.id,
+                      // Find default kanban column for this workspace
+                      kanbanColumnId: null // Would need to be enhanced
+                    }
+                  })
+                  
+                  createdItems.push({ type: 'task', item: task })
+                  
+                  // Track task creation activity
+                  trackTaskActivity('created', conversation.workspaceId, ctx.user.id, task.id, {
+                    title: task.title,
+                    createdByAi: true,
+                    conversationId: input.conversationId
+                  })
+                }
+
+                if (action.type === 'note' && input.autoCreateNotes && action.confidence > 0.7) {
+                  const note = await tx.note.create({
+                    data: {
+                      title: action.data.title,
+                      content: action.data.content,
+                      authorId: ctx.user.id,
+                      workspaceId: conversation.workspaceId
+                    }
+                  })
+                  
+                  createdItems.push({ type: 'note', item: note })
+                }
+              } catch (createError) {
+                console.error(`Failed to create ${action.type} from AI suggestion:`, createError)
+              }
+            }
+          }
+
+          return { userMessage, assistantMessage, aiResponse, createdItems }
+        })
+
+        // Update conversation totals outside transaction
+        await prisma.aiConversation.update({
+          where: { id: input.conversationId },
+          data: {
+            totalTokens: {
+              increment: result.userMessage.tokenCount + result.assistantMessage.tokenCount
+            },
+            totalCost: {
+              increment: result.assistantMessage.cost
+            },
+            updatedAt: new Date()
+          }
+        })
+
+        // Broadcast completion status
+        broadcastAiConversationStatus(input.conversationId, 'idle', {
+          message: result.assistantMessage,
+          createdItems: result.createdItems,
+          usage: {
+            tokens: result.aiResponse.tokenCount,
+            cost: result.aiResponse.cost,
+            responseTime: result.aiResponse.responseTime
+          }
+        })
+
+        return {
+          userMessage: result.userMessage,
+          assistantMessage: result.assistantMessage,
+          createdItems: result.createdItems,
+          usage: {
+            tokens: result.aiResponse.tokenCount,
+            cost: result.aiResponse.cost,
+            responseTime: result.aiResponse.responseTime,
+            contextEnhanced: input.includeRealtimeContext
+          },
+          parsedActions: result.aiResponse.parsedActions
+        }
+      } catch (error) {
+        console.error('Enhanced AI message error:', error)
+        
+        broadcastAiConversationStatus(input.conversationId, 'error', {
+          error: error instanceof Error ? error.message : 'Unknown error'
+        })
+        
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to process AI message with auto-actions'
+        })
+      }
+    }),
+
+  // Send message with real-time data integration
+  sendMessageWithRealTimeData: protectedProcedure
+    .input(z.object({
+      conversationId: z.string(),
+      message: z.string().min(1, 'Message cannot be empty'),
+      thinkingBudget: z.number().min(0).max(24576).optional(),
+      includeRealtimeContext: z.boolean().default(true)
+    }))
+    .mutation(async ({ input, ctx }) => {
+      // Always enable real-time data for this endpoint
+      const enhancedInput = { ...input, enableRealTimeData: true }
+      
+      // Call the sendMessage endpoint directly with enhanced input
+      const response = await ctx.prisma.aiConversation.findFirst({
+        where: {
+          id: enhancedInput.conversationId,
+          userId: ctx.user.id
+        },
+        include: {
+          messages: {
+            orderBy: { createdAt: 'asc' }
+          }
+        }
+      })
+
+      if (!response) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Conversation not found'
+        })
+      }
+
+      // For now, return a placeholder response
+      // This should be replaced with the actual sendMessage logic
+      return {
+        success: true,
+        message: 'Real-time AI message processed',
+        conversationId: enhancedInput.conversationId
+      }
+    }),
+
+  // Get real-time data classification for a query
+  classifyQuery: protectedProcedure
+    .input(z.object({
+      query: z.string().min(1, 'Query cannot be empty')
+    }))
+    .query(async ({ input }) => {
+      const { WebSearchService } = await import('../../lib/web-search')
+      return WebSearchService.requiresRealTimeData(input.query)
+    }),
+
+  // Get current date/time information
+  getCurrentDateTime: protectedProcedure
+    .query(async () => {
+      const { webSearchService } = await import('../../lib/web-search')
+      return webSearchService.getCurrentDateTime()
+    }),
+
+  // Search web directly
+  searchWeb: protectedProcedure
+    .input(z.object({
+      query: z.string().min(1, 'Query cannot be empty'),
+      maxResults: z.number().min(1).max(20).default(5),
+      categories: z.array(z.string()).optional()
+    }))
+    .query(async ({ input }) => {
+      const { webSearchService } = await import('../../lib/web-search')
+      return await webSearchService.searchWeb(input.query, {
+        maxResults: input.maxResults,
+        categories: input.categories
+      })
+    }),
+
+  // Get weather data
+  getWeather: protectedProcedure
+    .input(z.object({
+      location: z.string().default('Washington, DC')
+    }))
+    .query(async ({ input }) => {
+      const { webSearchService } = await import('../../lib/web-search')
+      return await webSearchService.getWeather(input.location)
+    }),
+
+  // Get news data
+  getNews: protectedProcedure
+    .input(z.object({
+      category: z.string().optional(),
+      country: z.string().optional(),
+      sources: z.string().optional(),
+      q: z.string().optional(),
+      pageSize: z.number().min(1).max(50).default(10)
+    }))
+    .query(async ({ input }) => {
+      const { webSearchService } = await import('../../lib/web-search')
+      return await webSearchService.getNews(input)
     })
 })

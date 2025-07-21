@@ -44,6 +44,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
   const [showThinkingControls, setShowThinkingControls] = useState(false)
   const [showFavorites, setShowFavorites] = useState(false)
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null)
+  const [enableRealTimeData, setEnableRealTimeData] = useState(false)
   
   const messageInputRef = useRef<HTMLTextAreaElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -93,6 +94,12 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       setIsLoading(false)
     }
   })
+
+  // Real-time data queries
+  const { data: queryClassification } = trpc.ai.classifyQuery.useQuery(
+    { query: message },
+    { enabled: message.length > 3 }
+  )
 
   const deleteConversation = trpc.ai.deleteConversation.useMutation({
     onSuccess: (_, variables) => {
@@ -153,7 +160,8 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     await sendMessage.mutateAsync({
       conversationId: conversationId!,
       message,
-      thinkingBudget
+      thinkingBudget,
+      enableRealTimeData
     })
   }
 
@@ -319,43 +327,62 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
         </div>
         
         <div className="flex items-center space-x-1">
-          {conversations && conversations.length > 0 && (
+          {/* Primary actions group */}
+          <div className="flex items-center space-x-1 border-r border-gray-200 pr-2 mr-2">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setShowConversations(!showConversations)}
-              className="h-7 px-2 text-xs"
+              onClick={() => createConversation.mutate({ workspaceId })}
+              className="h-8 px-3 text-xs bg-krushr-primary text-white hover:bg-krushr-primary/90"
+              title="New conversation"
             >
-              <MessageSquare className="w-3 h-3 mr-1" />
-              {conversations.length}
+              <Plus className="w-3 h-3 mr-1" />
+              New
             </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowFavorites(!showFavorites)}
-            className="h-7 px-2"
-            title="Favorite prompts"
-          >
-            <Star className="w-3 h-3" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowThinkingControls(!showThinkingControls)}
-            className="h-7 px-2"
-            title="Thinking settings"
-          >
-            <Brain className="w-3 h-3" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => createConversation.mutate({ workspaceId })}
-            className="h-7 px-2"
-          >
-            <Plus className="w-3 h-3" />
-          </Button>
+            {conversations && conversations.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowConversations(!showConversations)}
+                className={cn(
+                  "h-8 px-2 text-xs",
+                  showConversations ? "bg-gray-100" : ""
+                )}
+                title="Show conversations"
+              >
+                <MessageSquare className="w-3 h-3 mr-1" />
+                {conversations.length}
+              </Button>
+            )}
+          </div>
+          
+          {/* Settings group */}
+          <div className="flex items-center space-x-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowThinkingControls(!showThinkingControls)}
+              className={cn(
+                "h-8 px-2",
+                showThinkingControls ? "bg-gray-100" : ""
+              )}
+              title="AI settings & real-time data"
+            >
+              <Brain className="w-3 h-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowFavorites(!showFavorites)}
+              className={cn(
+                "h-8 px-2",
+                showFavorites ? "bg-gray-100" : ""
+              )}
+              title="Favorite prompts"
+            >
+              <Star className="w-3 h-3" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -487,6 +514,30 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
             </div>
             <div className="text-xs text-gray-600 text-center bg-white px-2 py-1 rounded border">
               {getCurrentThinkingLevel().description}
+            </div>
+            
+            {/* Real-time data toggle */}
+            <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+              <div className="flex items-center space-x-2">
+                <label className="text-xs font-medium text-gray-700">Real-time Data</label>
+                <div className="text-xs text-gray-500">
+                  Current info, weather, news
+                </div>
+              </div>
+              <button
+                onClick={() => setEnableRealTimeData(!enableRealTimeData)}
+                className={cn(
+                  "relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:ring-offset-2",
+                  enableRealTimeData ? "bg-krushr-primary" : "bg-gray-300"
+                )}
+              >
+                <span
+                  className={cn(
+                    "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                    enableRealTimeData ? "translate-x-4" : "translate-x-0.5"
+                  )}
+                />
+              </button>
             </div>
           </div>
         </div>
@@ -638,55 +689,78 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
         </div>
       </ScrollArea>
 
-      {/* Input area - compact design */}
-      <div className="p-3 border-t border-gray-200 bg-gray-50/50">
-        {/* Message input */}
-        <form 
-          onSubmit={(e) => {
-            e.preventDefault()
-            handleSendMessage()
-          }}
-          className="flex items-end space-x-2"
-        >
-          <div className="flex-1 relative">
-            <FloatingTextarea
-              ref={messageInputRef}
-              label="Ask AI anything... (Shift+Enter for new line)"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={isLoading}
-              className="h-8 min-h-8 max-h-24 text-sm pr-8 resize-none overflow-hidden leading-tight py-1.5 px-3"
-              rows={1}
-            />
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handlePasteFromClipboard}
-              className="absolute right-1 top-1 h-6 w-6 p-0 hover:bg-gray-200"
-              title="Paste from clipboard"
+      {/* Input area - optimized design */}
+      <div className="border-t border-gray-200 bg-gray-50/50">
+        {/* Real-time data suggestion bar */}
+        {queryClassification?.needsRealTime && !enableRealTimeData && (
+          <div className="px-3 py-2 text-xs text-krushr-primary bg-blue-50 border-b border-blue-200 flex items-center justify-between">
+            <span>💡 This query might benefit from real-time data</span>
+            <button
+              onClick={() => setEnableRealTimeData(true)}
+              className="text-krushr-primary hover:underline font-medium"
             >
-              <ClipboardPaste className="w-3 h-3" />
-            </Button>
+              Enable
+            </button>
           </div>
-          <Button
-            type="submit"
-            size="sm"
-            className="w-8 h-8 bg-krushr-primary text-white rounded-md flex items-center justify-center hover:bg-krushr-primary/90 transition-colors p-0"
-            onClick={(e) => {
-              if (!message.trim() || isLoading) {
-                e.preventDefault()
-                return
-              }
+        )}
+        
+        {/* Main input area */}
+        <div className="p-3">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleSendMessage()
             }}
+            className="flex items-center space-x-3"
           >
-            {isLoading ? (
-              <div className="animate-spin rounded-full h-3 w-3 border-white border-t-transparent border-2"></div>
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
-          </Button>
-        </form>
+            {/* Input field with full width utilization */}
+            <div className="flex-1 relative">
+              <FloatingTextarea
+                ref={messageInputRef}
+                label="Ask AI anything..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={isLoading}
+                className="w-full h-10 min-h-[40px] text-sm resize-none overflow-hidden block px-2.5 pb-2.5 pt-4 text-gray-900 bg-white rounded-lg border border-gray-300 appearance-none focus:outline-none focus:border-krushr-primary peer focus:ring-2 focus:ring-blue-500 pr-10"
+                rows={1}
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handlePasteFromClipboard}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-200 z-10"
+                title="Paste from clipboard"
+              >
+                <ClipboardPaste className="w-3 h-3" />
+              </Button>
+            </div>
+            
+            {/* Action buttons group */}
+            <div className="flex items-center space-x-2">
+              {/* Real-time data indicator */}
+              {enableRealTimeData && (
+                <div className="flex items-center text-xs text-krushr-primary bg-blue-100 px-2 py-1 rounded-full">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Live
+                </div>
+              )}
+              
+              {/* Send button */}
+              <Button
+                type="submit"
+                size="sm"
+                className="h-10 w-10 bg-krushr-primary text-white rounded-lg flex items-center justify-center hover:bg-krushr-primary/90 transition-colors p-0"
+              >
+                {isLoading ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-white border-t-transparent border-2"></div>
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   )

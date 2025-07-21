@@ -189,6 +189,31 @@ async function handleMessage(clientId: string, message: WebSocketMessage) {
         await handleLeaveTask(client, message.payload)
         break
 
+      // AI Context Streaming Events
+      case 'ai-context-request':
+        await handleAiContextRequest(client, message.payload)
+        break
+
+      case 'ai-context-update':
+        await handleAiContextUpdate(client, message.payload)
+        break
+
+      case 'ai-typing-start':
+        await handleAiTypingStart(client, message.payload)
+        break
+
+      case 'ai-typing-stop':
+        await handleAiTypingStop(client, message.payload)
+        break
+
+      case 'workspace-activity-stream':
+        await handleWorkspaceActivityStream(client, message.payload)
+        break
+
+      case 'ai-agent-status':
+        await handleAiAgentStatus(client, message.payload)
+        break
+
       default:
         logger.warn(`⚠️ Unknown message type: ${message.type}`)
         sendMessage(client.socket, {
@@ -566,4 +591,178 @@ export function sendCommentMentionNotification(userId: string, data: {
     type: 'comment-mention',
     data,
   })
+}
+
+/**
+ * Handle AI context request - provide live workspace data
+ */
+async function handleAiContextRequest(client: ConnectedClient, payload: { conversationId: string }) {
+  if (!client.workspaceId) {
+    sendMessage(client.socket, {
+      type: 'ai-context-error',
+      payload: { error: 'No workspace context available' },
+      timestamp: Date.now(),
+    })
+    return
+  }
+
+  // Join AI context room for this conversation
+  const roomId = `ai-context:${payload.conversationId}`
+  client.rooms.add(roomId)
+
+  // Get workspace activity aggregation (will be implemented in AI Context Manager)
+  const contextData = await getWorkspaceContext(client.workspaceId)
+
+  sendMessage(client.socket, {
+    type: 'ai-context-response',
+    payload: {
+      conversationId: payload.conversationId,
+      workspaceId: client.workspaceId,
+      context: contextData,
+    },
+    timestamp: Date.now(),
+  })
+}
+
+/**
+ * Handle AI context updates - broadcast workspace changes to AI agents
+ */
+async function handleAiContextUpdate(client: ConnectedClient, payload: any) {
+  const roomId = `ai-context:${payload.conversationId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'ai-context-updated',
+    payload: {
+      ...payload,
+      updatedBy: client.userId,
+    },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+/**
+ * Handle AI typing indicators
+ */
+async function handleAiTypingStart(client: ConnectedClient, payload: { conversationId: string }) {
+  const roomId = `ai-context:${payload.conversationId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'ai-typing-start',
+    payload: {
+      conversationId: payload.conversationId,
+      userId: client.userId,
+    },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+async function handleAiTypingStop(client: ConnectedClient, payload: { conversationId: string }) {
+  const roomId = `ai-context:${payload.conversationId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'ai-typing-stop',
+    payload: {
+      conversationId: payload.conversationId,
+      userId: client.userId,
+    },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+/**
+ * Handle workspace activity streaming for AI awareness
+ */
+async function handleWorkspaceActivityStream(client: ConnectedClient, payload: { subscribe: boolean }) {
+  if (!client.workspaceId) return
+
+  const roomId = `workspace-activity:${client.workspaceId}`
+  
+  if (payload.subscribe) {
+    client.rooms.add(roomId)
+    sendMessage(client.socket, {
+      type: 'workspace-activity-subscribed',
+      payload: { workspaceId: client.workspaceId },
+      timestamp: Date.now(),
+    })
+  } else {
+    client.rooms.delete(roomId)
+    sendMessage(client.socket, {
+      type: 'workspace-activity-unsubscribed',
+      payload: { workspaceId: client.workspaceId },
+      timestamp: Date.now(),
+    })
+  }
+}
+
+/**
+ * Handle AI agent status updates
+ */
+async function handleAiAgentStatus(client: ConnectedClient, payload: { 
+  conversationId: string
+  status: 'thinking' | 'responding' | 'idle'
+  thinkingBudget?: number
+}) {
+  const roomId = `ai-context:${payload.conversationId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'ai-agent-status',
+    payload: {
+      conversationId: payload.conversationId,
+      status: payload.status,
+      thinkingBudget: payload.thinkingBudget,
+      userId: client.userId,
+    },
+    timestamp: Date.now(),
+  }, getClientId(client))
+}
+
+/**
+ * Broadcast AI-related workspace changes
+ */
+export function broadcastAiWorkspaceUpdate(workspaceId: string, updateType: string, data: any) {
+  const activityRoomId = `workspace-activity:${workspaceId}`
+  
+  broadcastToRoom(activityRoomId, {
+    type: 'workspace-change',
+    payload: {
+      workspaceId,
+      updateType,
+      data,
+    },
+    timestamp: Date.now(),
+  })
+}
+
+/**
+ * Broadcast AI conversation status to interested clients
+ */
+export function broadcastAiConversationStatus(conversationId: string, status: string, data?: any) {
+  const roomId = `ai-context:${conversationId}`
+  
+  broadcastToRoom(roomId, {
+    type: 'ai-conversation-status',
+    payload: {
+      conversationId,
+      status,
+      data,
+    },
+    timestamp: Date.now(),
+  })
+}
+
+/**
+ * Get workspace context for AI using AI Context Manager
+ */
+async function getWorkspaceContext(workspaceId: string) {
+  try {
+    const { aiContextManager } = await import('../lib/ai-context')
+    return await aiContextManager.getWorkspaceContext(workspaceId)
+  } catch (error) {
+    logger.error('Failed to get workspace context:', error)
+    return {
+      workspaceId,
+      lastUpdated: Date.now(),
+      error: 'Failed to load workspace context',
+    }
+  }
 }

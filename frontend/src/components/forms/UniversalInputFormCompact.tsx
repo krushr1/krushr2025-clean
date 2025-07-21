@@ -328,27 +328,28 @@ export default function UniversalInputFormCompact({
                     {/* Priority */}
                     <div>
                       <Label className="text-sm text-gray-500">Priority</Label>
-                      <Select 
-                        value={formData.priority} 
-                        onValueChange={(value: Priority) => updateField('priority', value)}
-                      >
-                        <SelectTrigger className="h-7 w-full border border-gray-200 text-sm">
-                          <div className="flex items-center gap-2">
-                            {renderPriorityDots(formData.priority)}
-                            <span className="capitalize">{formData.priority.toLowerCase()}</span>
-                          </div>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.values(Priority).map((priority) => (
-                            <SelectItem key={priority} value={priority}>
-                              <div className="flex items-center gap-2">
-                                {renderPriorityDots(priority)}
-                                <span className="capitalize">{priority.toLowerCase()}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="flex items-center gap-1 mt-1">
+                        {[1, 2, 3].map((level) => {
+                          const isActive = (
+                            (formData.priority === Priority.LOW && level <= 1) ||
+                            (formData.priority === Priority.MEDIUM && level <= 2) ||
+                            (formData.priority === Priority.HIGH && level <= 3)
+                          )
+                          const targetPriority = level === 1 ? Priority.LOW : level === 2 ? Priority.MEDIUM : Priority.HIGH
+                          
+                          return (
+                            <button
+                              key={level}
+                              onClick={() => updateField('priority', targetPriority)}
+                              className={cn(
+                                "w-3 h-3 rounded-full transition-colors border-2",
+                                isActive ? "bg-krushr-secondary border-krushr-secondary" : "bg-white border-gray-300 hover:border-krushr-secondary/50"
+                              )}
+                              title={`${level === 1 ? 'Low' : level === 2 ? 'Medium' : 'High'} Priority`}
+                            />
+                          )
+                        })}
+                      </div>
                     </div>
                     
                     {/* Column (Status) */}

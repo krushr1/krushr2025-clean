@@ -28,6 +28,7 @@ import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO, startOfWeek, endOfWeek } from 'date-fns'
 import AgendaView from './AgendaView'
+import EventModal from './EventModal'
 
 interface NewCalendarPanelProps {
   workspaceId: string
@@ -790,13 +791,69 @@ export default function NewCalendarPanel({
                       </Badge>
                     )}
                     {holiday && layoutConfig.size !== 'micro' && dayEvents.length === 0 && (
-                      <div className="w-1.5 h-1.5 bg-red-500 rounded-full" />
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="w-1.5 h-1.5 bg-red-500 rounded-full cursor-pointer" />
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className="max-w-xs">
+                          <div className="space-y-1">
+                            <div className="font-semibold text-sm flex items-center gap-2">
+                              🎉 {holiday.name}
+                            </div>
+                            <div className="text-xs text-gray-600">
+                              {holiday.type}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {format(date, 'EEEE, MMMM d, yyyy')}
+                            </div>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                     {(dayEvents.length > 0 || holiday) && layoutConfig.size === 'micro' && (
-                      <div className={cn(
-                        "w-1.5 h-1.5 rounded-full",
-                        holiday ? "bg-red-500" : "bg-krushr-primary"
-                      )} />
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className={cn(
+                            "w-1.5 h-1.5 rounded-full cursor-pointer",
+                            holiday ? "bg-red-500" : "bg-krushr-primary"
+                          )} />
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className="max-w-xs">
+                          <div className="space-y-1">
+                            {holiday && (
+                              <>
+                                <div className="font-semibold text-sm flex items-center gap-2">
+                                  🎉 {holiday.name}
+                                </div>
+                                <div className="text-xs text-gray-600">
+                                  {holiday.type}
+                                </div>
+                              </>
+                            )}
+                            {dayEvents.length > 0 && (
+                              <>
+                                {holiday && <div className="border-t border-gray-100 pt-1 mt-1" />}
+                                <div className="text-xs text-gray-600">
+                                  📅 {dayEvents.length} event{dayEvents.length > 1 ? 's' : ''}
+                                </div>
+                                {dayEvents.slice(0, 3).map(event => (
+                                  <div key={event.id} className="text-xs text-gray-500">
+                                    • {event.title}
+                                  </div>
+                                ))}
+                                {dayEvents.length > 3 && (
+                                  <div className="text-xs text-gray-400">
+                                    +{dayEvents.length - 3} more
+                                  </div>
+                                )}
+                              </>
+                            )}
+                            <div className="text-xs text-gray-500 border-t border-gray-100 pt-1">
+                              {format(date, 'EEEE, MMMM d, yyyy')}
+                            </div>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
                   
@@ -981,6 +1038,23 @@ export default function NewCalendarPanel({
           </div>
         </div>
       )}
+
+      {/* Event Creation/Edit Modal */}
+      <EventModal
+        open={showEventModal}
+        onClose={() => {
+          setShowEventModal(false)
+          setSelectedEvent(null)
+        }}
+        onEventCreated={() => {
+          // Refresh events data
+          window.location.reload() // Simple refresh for now
+        }}
+        workspaceId={workspaceId}
+        selectedDate={selectedDate}
+        event={selectedEvent}
+        isEditMode={!!selectedEvent}
+      />
       </div>
     </TooltipProvider>
   )

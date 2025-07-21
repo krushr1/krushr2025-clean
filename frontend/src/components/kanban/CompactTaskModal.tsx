@@ -1,156 +1,127 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Calendar, User, Tag, ChevronLeft, ChevronRight, Paperclip, Upload, File, FileText, FileImage, FileVideo } from 'lucide-react'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameDay, isToday } from 'date-fns'
+import { X, Calendar, ChevronLeft, ChevronRight, User, Tag, Paperclip, Upload, FileText } from 'lucide-react'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameMonth, isSameDay, isToday, addMonths, subMonths } from 'date-fns'
+import { useAuthStore } from '../../stores/auth-store'
+import { TaskStatus, Priority } from '../../types/enums'
 import { trpc } from '../../lib/trpc'
-import { Priority, TaskStatus } from '../../types/enums'
-import { RichTextEditor } from '../ui/rich-text-editor'
+import { DueDatePicker } from '../forms/DueDatePicker'
 import { AttachmentUpload } from '../common/AttachmentUpload'
+import { FloatingInput } from '../ui/floating-input'
+import { cn } from '../../lib/utils'
 
 interface CompactTaskModalProps {
   open: boolean
   onClose: () => void
-  task?: any
-  kanbanColumnId?: string
+  onTaskCreated?: () => void
   workspaceId: string
-  projectId?: string
-  onSuccess?: () => void
+  kanbanColumnId?: string
+  task?: any
+  isEditMode?: boolean
 }
 
-export default function CompactTaskModal({
-  open,
-  onClose,
-  task,
+export default function CompactTaskModal({ 
+  open, 
+  onClose, 
+  onTaskCreated, 
+  workspaceId, 
   kanbanColumnId,
-  workspaceId,
-  projectId,
-  onSuccess
+  task,
+  isEditMode = false
 }: CompactTaskModalProps) {
-  const isEditMode = !!task
-
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [priority, setPriority] = useState<Priority>(Priority.MEDIUM)
-  const [status, setStatus] = useState<TaskStatus>(TaskStatus.TODO)
-  const [dueDate, setDueDate] = useState<Date | null>(null)
-  const [assigneeId, setAssigneeId] = useState('')
-  const [estimatedHours, setEstimatedHours] = useState('')
-  const [tags, setTags] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [showCalendar, setShowCalendar] = useState(false)
-  const [calendarDate, setCalendarDate] = useState(new Date())
-  const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null)
+  // Form state
+  const [title, setTitle] = useState(task?.title || '')
+  const [description, setDescription] = useState(task?.description || '')
+  const [priority, setPriority] = useState<Priority>(task?.priority || Priority.MEDIUM)
+  const [status, setStatus] = useState<TaskStatus>(task?.status || TaskStatus.TODO)
+  const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate ? new Date(task.dueDate) : null)
+  const [assigneeId, setAssigneeId] = useState(task?.assigneeId || '')
+  const [tags, setTags] = useState(task?.tags?.join(', ') || '')
   const [pendingFiles, setPendingFiles] = useState<File[]>([])
   const [uploadingFiles, setUploadingFiles] = useState(false)
-  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedColumnId, setSelectedColumnId] = useState<string | null>(kanbanColumnId || null)
+  const [calendarDate, setCalendarDate] = useState(new Date())
 
-  const { data: workspaceUsers } = trpc.user.getWorkspaceUsers.useQuery({ workspaceId })
-  
+  // Workspace data
+  const { currentWorkspace } = useAuthStore()
+  const { data: workspaceUsers } = trpc.workspace.listUsers.useQuery(
+    { workspaceId: currentWorkspace?.id || '' },
+    { enabled: !!currentWorkspace?.id }
+  )
+
+  // tRPC mutations
   const createTaskMutation = trpc.task.create.useMutation()
   const updateTaskMutation = trpc.task.update.useMutation()
   const deleteTaskMutation = trpc.task.delete.useMutation()
-  const uploadTaskFile = trpc.upload.uploadTaskFile.useMutation()
-
-  useEffect(() => {
-    if (task) {
-      setTitle(task.title || '')
-      setDescription(task.description || '')
-      setPriority(task.priority || Priority.MEDIUM)
-      setStatus(task.status || TaskStatus.TODO)
-      setDueDate(task.dueDate ? new Date(task.dueDate) : null)
-      setAssigneeId(task.assigneeId || '')
-      setEstimatedHours(task.estimatedHours?.toString() || '')
-      setTags(task.tags?.join(', ') || '')
-    } else {
-      setTitle('')
-      setDescription('')
-      setPriority(Priority.MEDIUM)
-      setStatus(TaskStatus.TODO)
-      setDueDate(null)
-      setAssigneeId('')
-      setEstimatedHours('')
-      setTags('')
-      setPendingFiles([])
-    }
-  }, [task, open])
+  const uploadMutation = trpc.uploadNew.uploadFiles.useMutation()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!title.trim()) return
+    if (!title.trim() || !workspaceId) return
 
     setIsLoading(true)
+    
     try {
       const taskData = {
         title: title.trim(),
         description: description.trim(),
         priority,
         status,
-        dueDate: dueDate ? dueDate.toISOString() : undefined,
-        assigneeId: assigneeId || undefined,
-        estimatedHours: estimatedHours ? parseInt(estimatedHours) : undefined,
-        tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
-        workspaceId,
-        projectId: projectId || undefined,
-        kanbanColumnId: selectedColumnId || kanbanColumnId || undefined
+        dueDate: dueDate ? dueDate.toISOString() : null,
+        assigneeId: assigneeId || null,
+        tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+        workspaceId
       }
 
-      let createdTask
-      if (isEditMode) {
+      let createdTaskId = task?.id
+
+      if (isEditMode && task?.id) {
         await updateTaskMutation.mutateAsync({
           id: task.id,
           ...taskData
         })
-        createdTask = task
       } else {
-        createdTask = await createTaskMutation.mutateAsync(taskData)
+        const newTask = await createTaskMutation.mutateAsync(taskData)
+        createdTaskId = newTask.id
       }
 
-      if (pendingFiles.length > 0 && createdTask?.id) {
+      // Handle file uploads if any
+      if (pendingFiles.length > 0 && createdTaskId) {
         setUploadingFiles(true)
-        for (const file of pendingFiles) {
-          try {
-            const arrayBuffer = await fileToArrayBuffer(file)
-            const buffer = Array.from(new Uint8Array(arrayBuffer))
-            
-            await uploadTaskFile.mutateAsync({
-              taskId: createdTask.id,
-              file: {
-                filename: file.name,
-                mimetype: file.type,
-                size: file.size,
-                buffer
-              }
-            })
-          } catch (uploadError) {
-            console.error('Error uploading file:', file.name, uploadError)
-          }
-        }
-        setUploadingFiles(false)
+        const formData = new FormData()
+        pendingFiles.forEach(file => {
+          formData.append('files', file)
+        })
+        formData.append('type', 'task')
+        formData.append('targetId', createdTaskId)
+
+        await uploadMutation.mutateAsync(formData as any)
       }
 
-      onSuccess?.()
+      onTaskCreated?.()
       onClose()
     } catch (error) {
-      console.error('Error saving task:', error)
+      console.error('Failed to save task:', error)
     } finally {
       setIsLoading(false)
       setUploadingFiles(false)
     }
   }
 
-  const fileToArrayBuffer = (file: File): Promise<ArrayBuffer> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => {
-        if (reader.result instanceof ArrayBuffer) {
-          resolve(reader.result)
-        } else {
-          reject(new Error('Failed to read file as ArrayBuffer'))
-        }
-      }
-      reader.onerror = () => reject(reader.error)
-      reader.readAsArrayBuffer(file)
-    })
+  const handleDelete = async () => {
+    if (!task?.id || !confirm('Are you sure you want to delete this task?')) return
+    
+    setIsLoading(true)
+    try {
+      await deleteTaskMutation.mutateAsync({ id: task.id })
+      onTaskCreated?.()
+      onClose()
+    } catch (error) {
+      console.error('Failed to delete task:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleFileSelect = (files: File[]) => {
@@ -161,74 +132,71 @@ export default function CompactTaskModal({
     setPendingFiles(prev => prev.filter((_, i) => i !== index))
   }
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes'
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-  }
-
-  const handleDelete = async () => {
-    if (!task?.id) return
-    
-    setIsLoading(true)
-    try {
-      await deleteTaskMutation.mutateAsync({ id: task.id })
-      onSuccess?.()
-      onClose()
-    } catch (error) {
-      console.error('Error deleting task:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   const generateCalendarDays = () => {
     const start = startOfMonth(calendarDate)
     const end = endOfMonth(calendarDate)
     const days = eachDayOfInterval({ start, end })
+    
     const startDay = getDay(start)
+    const paddingDays = Array(startDay).fill(null)
     
-    const emptyDays = Array(startDay).fill(null)
-    
-    return [...emptyDays, ...days]
+    return [...paddingDays, ...days]
   }
 
   const handleDateSelect = (date: Date) => {
     setDueDate(date)
   }
 
-  const setQuickDate = (days: number) => {
-    const date = new Date()
-    date.setDate(date.getDate() + days)
-    setDueDate(date)
-  }
-
+  // Reset form when modal opens/closes
   useEffect(() => {
-    if (!isEditMode && kanbanColumnId && !task) {
-      setSelectedColumnId(kanbanColumnId)
-      
-      const columnIdLower = kanbanColumnId.toLowerCase()
-      
-      if (columnIdLower.includes('urgent') || columnIdLower.includes('critical')) {
-        setPriority(Priority.URGENT)
-      } else if (columnIdLower.includes('high') || columnIdLower.includes('important')) {
-        setPriority(Priority.HIGH)
-      }
-      
-      if (columnIdLower.includes('progress') || columnIdLower.includes('doing') || columnIdLower.includes('active')) {
-        setStatus(TaskStatus.IN_PROGRESS)
-      } else if (columnIdLower.includes('review') || columnIdLower.includes('testing') || columnIdLower.includes('qa')) {
-        setStatus(TaskStatus.IN_REVIEW)
-      } else if (columnIdLower.includes('done') || columnIdLower.includes('complete') || columnIdLower.includes('finished')) {
-        setStatus(TaskStatus.DONE)
-      } else if (columnIdLower.includes('cancelled') || columnIdLower.includes('blocked') || columnIdLower.includes('abandoned')) {
-        setStatus(TaskStatus.CANCELLED)
+    if (open) {
+      if (isEditMode && task) {
+        setTitle(task.title || '')
+        setDescription(task.description || '')
+        setPriority(task.priority || Priority.MEDIUM)
+        setStatus(task.status || TaskStatus.TODO)
+        setDueDate(task.dueDate ? new Date(task.dueDate) : null)
+        setAssigneeId(task.assigneeId || '')
+        setTags(task.tags?.join(', ') || '')
       } else {
-        // Default to TODO for unknown columns
-        setStatus(TaskStatus.TODO)
+        setTitle('')
+        setDescription('')
+        setPriority(Priority.MEDIUM)
+        setStatus(kanbanColumnId === 'todo' ? TaskStatus.TODO : 
+                 kanbanColumnId === 'progress' ? TaskStatus.IN_PROGRESS :
+                 kanbanColumnId === 'review' ? TaskStatus.IN_REVIEW :
+                 kanbanColumnId === 'done' ? TaskStatus.DONE : 
+                 TaskStatus.TODO)
+        setDueDate(null)
+        setAssigneeId('')
+        setTags('')
       }
+      setPendingFiles([])
+    }
+  }, [open, isEditMode, task, kanbanColumnId])
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && open) {
+        onClose()
+      }
+    }
+    
+    if (open) {
+      document.addEventListener('keydown', handleEsc)
+      return () => document.removeEventListener('keydown', handleEsc)
+    }
+  }, [open, onClose])
+
+  // Map column IDs to task status
+  useEffect(() => {
+    if (kanbanColumnId) {
+      if (kanbanColumnId === 'todo') setStatus(TaskStatus.TODO)
+      else if (kanbanColumnId === 'progress') setStatus(TaskStatus.IN_PROGRESS)
+      else if (kanbanColumnId === 'review') setStatus(TaskStatus.IN_REVIEW)
+      else if (kanbanColumnId === 'done') setStatus(TaskStatus.DONE)
+      else if (kanbanColumnId === 'cancelled') setStatus(TaskStatus.CANCELLED)
     }
   }, [kanbanColumnId, isEditMode, task])
 
@@ -237,487 +205,84 @@ export default function CompactTaskModal({
 
   return createPortal(
     <div className="fixed inset-0 z-[999999] flex items-center justify-center">
-      {/* Modal Overlay - Brandkit Pattern */}
+      {/* Modal Overlay */}
       <div 
         className="absolute inset-0 bg-black bg-opacity-50"
         onClick={onClose}
       />
       
-      {/* Modal Container - Smart Responsive */}
-      <div className="relative w-full max-w-5xl mx-4 h-[90vh] bg-white rounded-xl border border-krushr-gray-border shadow-krushr-modal overflow-hidden flex flex-col">
-        {/* Header - Brandkit Panel Header Pattern */}
-        <div className="flex items-center justify-between p-4 border-b border-krushr-gray-border bg-krushr-gray-bg-light rounded-t-xl">
-          <h3 className="text-xl font-semibold text-krushr-gray-dark font-manrope">
-            {isEditMode ? 'Edit Task' : 'Create Task'}
-          </h3>
+      {/* Modal Container - Brandkit Compliant */}
+      <div className="relative w-full max-w-4xl mx-4 max-h-[90vh] bg-white rounded-xl overflow-hidden flex flex-col shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-krushr-gray-200">
+          <h2 className="text-xl font-semibold text-krushr-gray-dark font-manrope">
+            Task Title
+          </h2>
           <button 
             onClick={onClose}
-            className="w-6 h-6 rounded text-krushr-gray hover:text-krushr-gray-dark hover:bg-krushr-gray-200 flex items-center justify-center transition-colors"
+            className="text-krushr-gray-400 hover:text-krushr-gray-600 transition-colors p-2 hover:bg-krushr-gray-100 rounded-lg"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
         
-        {/* Content - Full Height Utilization */}
-        <div className="flex-1 overflow-y-auto">
-          <form onSubmit={handleSubmit} className="h-full flex flex-col">
-            <div className="flex-1 p-6 space-y-4">
-            {/* Title Field - Brandkit Floating Label */}
-            <div className="relative">
-              <input 
-                type="text" 
-                id="floating_title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="block px-2.5 pb-2.5 pt-4 w-full text-base text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary/20 focus:border-krushr-primary transition-all duration-200 peer font-manrope"
-                placeholder=" "
-                required
-                autoFocus
-              />
-              <label 
-                htmlFor="floating_title" 
-                className="absolute text-sm text-krushr-gray duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
-              >
-                Task Title *
-              </label>
-            </div>
-            
-            {/* Description Field - Shorter with Dynamic Growth */}
-            <div>
-              <label className="block text-base font-medium text-krushr-gray-dark mb-2 font-manrope">
-                Description
-              </label>
-              <RichTextEditor
-                content={description}
-                onChange={setDescription}
-                placeholder="Add task description with rich formatting..."
-                className="min-h-[60px] max-h-[120px] overflow-y-auto"
-                minimal={!description}
-                editable={true}
-              />
-            </div>
-            
-            {/* Responsive Layout with Visual Grouping */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 h-full">
-              {/* Priority & Status Section */}
-              <div className="bg-krushr-gray-bg-light p-4 rounded-lg space-y-4 border border-krushr-gray-border"
-                   role="group" aria-labelledby="priority-status-section">
-                <h3 id="priority-status-section" className="sr-only">Priority and Status</h3>
-                {/* Priority Badges */}
-                <div>
-                  <label className="block text-base font-medium text-krushr-gray-dark mb-2 font-manrope">
-                    Priority
-                  </label>
-                  <div className="grid grid-cols-2 gap-2 mb-2 max-w-xs">
-                    <button
-                      type="button"
-                      onClick={() => setPriority(Priority.URGENT)}
-                      className={`
-                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
-                        ${priority === Priority.URGENT
-                          ? 'bg-red-600 text-white border-red-600'
-                          : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-red-50'
-                        }
-                      `}
-                    >
-                      Urgent
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPriority(Priority.HIGH)}
-                      className={`
-                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
-                        ${priority === Priority.HIGH
-                          ? 'bg-krushr-secondary text-white border-krushr-secondary'
-                          : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-secondary/10'
-                        }
-                      `}
-                    >
-                      High
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 max-w-xs">
-                    <button
-                      type="button"
-                      onClick={() => setPriority(Priority.MEDIUM)}
-                      className={`
-                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
-                        ${priority === Priority.MEDIUM
-                          ? 'bg-krushr-warning text-white border-krushr-warning'
-                          : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-warning/10'
-                        }
-                      `}
-                    >
-                      Medium
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPriority(Priority.LOW)}
-                      className={`
-                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
-                        ${priority === Priority.LOW
-                          ? 'bg-krushr-success text-white border-krushr-success'
-                          : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-success/10'
-                        }
-                      `}
-                    >
-                      Low
-                    </button>
-                  </div>
-                </div>
+        {/* Content */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+          <div className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-6">
+              {/* Main Content */}
+              <div className="space-y-4">
+                {/* Task Title - Floating Label */}
+                <FloatingInput
+                  type="text"
+                  label="Task title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  autoFocus
+                />
                 
-                {/* Column Badges */}
-                <div>
-                  <label className="block text-base font-medium text-krushr-gray-dark mb-2 font-manrope">
-                    Status
-                  </label>
-                  <div className="grid grid-cols-3 gap-2 mb-2 max-w-sm">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setStatus(TaskStatus.TODO)
-                        setSelectedColumnId('todo')
-                      }}
-                      className={`
-                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
-                        ${status === TaskStatus.TODO
-                          ? 'bg-krushr-gray text-white border-krushr-gray'
-                          : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-gray/10'
-                        }
-                      `}
-                    >
-                      Todo
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setStatus(TaskStatus.IN_PROGRESS)
-                        setSelectedColumnId('progress')
-                      }}
-                      className={`
-                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
-                        ${status === TaskStatus.IN_PROGRESS
-                          ? 'bg-krushr-primary text-white border-krushr-primary'
-                          : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-primary/10'
-                        }
-                      `}
-                    >
-                      Doing
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setStatus(TaskStatus.IN_REVIEW)
-                        setSelectedColumnId('review')
-                      }}
-                      className={`
-                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
-                        ${status === TaskStatus.IN_REVIEW
-                          ? 'bg-krushr-warning text-white border-krushr-warning'
-                          : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-warning/10'
-                        }
-                      `}
-                    >
-                      Review
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 max-w-xs">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setStatus(TaskStatus.DONE)
-                        setSelectedColumnId('done')
-                      }}
-                      className={`
-                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
-                        ${status === TaskStatus.DONE
-                          ? 'bg-krushr-success text-white border-krushr-success'
-                          : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-success/10'
-                        }
-                      `}
-                    >
-                      Done
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setStatus(TaskStatus.CANCELLED)
-                        setSelectedColumnId('cancelled')
-                      }}
-                      className={`
-                        px-3 py-3 text-sm font-medium rounded border transition-all duration-200 font-manrope min-h-[44px] min-w-[80px]
-                        ${status === TaskStatus.CANCELLED
-                          ? 'bg-krushr-secondary text-white border-krushr-secondary'
-                          : 'border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-secondary/10'
-                        }
-                      `}
-                    >
-                      Cancelled
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Assignment */}
-                <div>
-                  <label className="block text-base font-medium text-krushr-gray-dark mb-2 font-manrope">
-                    <User className="w-4 h-4 inline mr-1" />
-                    Assign To
-                  </label>
-                  <div className="flex gap-2 flex-wrap max-w-md">
-                    <button
-                      type="button"
-                      onClick={() => setAssigneeId('')}
-                      className={`
-                        flex items-center gap-2 px-3 py-2 rounded-lg text-base font-medium font-manrope transition-all duration-200
-                        ${assigneeId === ''
-                          ? 'bg-krushr-primary/10 border border-krushr-primary text-krushr-primary'
-                          : 'border border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-primary/5'
-                        }
-                      `}
-                    >
-                      <div className="w-5 h-5 rounded-full bg-krushr-gray-400 flex items-center justify-center text-white text-xs">
-                        —
-                      </div>
-                      <span>Unassigned</span>
-                    </button>
-                    {workspaceUsers?.slice(0, 2).map((user) => {
-                      const initials = (user.name || user.email).slice(0, 2).toUpperCase()
-                      const isSelected = assigneeId === user.id
-                      const displayName = user.name || user.email.split('@')[0]
-                      
-                      return (
-                        <button
-                          key={user.id}
-                          type="button"
-                          onClick={() => setAssigneeId(user.id)}
-                          className={`
-                            flex items-center gap-2 px-3 py-2 rounded-lg text-base font-medium font-manrope transition-all duration-200
-                            ${isSelected
-                              ? 'bg-krushr-primary/10 border border-krushr-primary text-krushr-primary'
-                              : 'border border-krushr-gray-border text-krushr-gray-dark hover:bg-krushr-primary/5'
-                            }
-                          `}
-                          title={user.name || user.email}
-                        >
-                          <div className="w-5 h-5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
-                            {initials}
-                          </div>
-                          <span>{displayName}</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Due Date Section */}
-              <div className="bg-krushr-gray-bg-light p-4 rounded-lg border border-krushr-gray-border"
-                   role="group" aria-labelledby="due-date-section">
-                <h3 id="due-date-section" className="sr-only">Due Date</h3>
-                <label className="block text-base font-medium text-krushr-gray-dark mb-2 font-manrope">
-                  Due Date
-                </label>
-                
-                {/* Constrained Calendar Widget */}
-                <div className="bg-white border border-krushr-gray-200 rounded-lg p-3 shadow-sm w-full max-w-xs">
-                  {/* Calendar Header */}
-                  <div className="flex items-center justify-between mb-2 pb-1 border-b border-krushr-gray-100">
-                    <button 
-                      type="button"
-                      onClick={() => setCalendarDate(subMonths(calendarDate, 1))}
-                      className="w-5 h-5 flex items-center justify-center rounded text-krushr-gray-400 hover:text-krushr-primary hover:bg-krushr-gray-50 transition-all duration-200"
-                    >
-                      <ChevronLeft className="w-3 h-3" />
-                    </button>
-                    <h4 className="text-xs font-medium text-krushr-gray-dark font-manrope">
-                      {format(calendarDate, 'MMM yyyy')}
-                    </h4>
-                    <button 
-                      type="button"
-                      onClick={() => setCalendarDate(addMonths(calendarDate, 1))}
-                      className="w-5 h-5 flex items-center justify-center rounded text-krushr-gray-400 hover:text-krushr-primary hover:bg-krushr-gray-50 transition-all duration-200"
-                    >
-                      <ChevronRight className="w-3 h-3" />
-                    </button>
-                  </div>
-                  
-                  {/* Selected Date Display */}
-                  {dueDate && (
-                    <div className="mb-2 p-1 bg-krushr-primary-50 border border-krushr-primary-200 rounded">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="w-3 h-3 text-krushr-primary" />
-                          <span className="text-xs font-medium text-krushr-primary font-manrope">
-                            {format(dueDate, 'MMM dd')}
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setDueDate(null)}
-                          className="text-krushr-primary hover:text-krushr-primary-700 transition-colors"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Calendar Grid */}
-                  <div className="grid grid-cols-7 gap-0.5 mb-2">
-                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                      <div key={i} className="text-xs font-medium text-krushr-gray p-1 text-center font-manrope">
-                        {day}
-                      </div>
-                    ))}
-                    {generateCalendarDays().map((day, i) => (
-                      <div key={i} className="text-xs p-0.5">
-                        {day ? (
-                          <button
-                            type="button"
-                            onClick={() => handleDateSelect(day)}
-                            className={`w-full h-8 rounded font-medium transition-all duration-200 font-manrope ${
-                              isSameDay(day, dueDate || new Date('1900-01-01')) 
-                                ? 'bg-krushr-primary text-white shadow-sm ring-1 ring-krushr-primary ring-offset-1'
-                                : isToday(day)
-                                ? 'bg-krushr-primary-100 text-krushr-primary border border-krushr-primary-200'
-                                : 'text-krushr-gray-700 hover:bg-krushr-gray-100'
-                            }`}
-                          >
-                            {format(day, 'd')}
-                          </button>
-                        ) : (
-                          <div className="w-full h-8"></div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Quick Actions */}
-                  <div className="flex gap-1 pt-1 border-t border-krushr-gray-100">
-                    <button
-                      type="button"
-                      onClick={() => setDueDate(new Date())}
-                      className="flex-1 px-1 py-1 text-sm bg-krushr-gray-100 text-krushr-gray-700 rounded hover:bg-krushr-primary hover:text-white transition-all duration-200 font-manrope font-medium"
-                    >
-                      Today
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const tomorrow = new Date()
-                        tomorrow.setDate(tomorrow.getDate() + 1)
-                        setDueDate(tomorrow)
-                      }}
-                      className="flex-1 px-1 py-1 text-sm bg-krushr-gray-100 text-krushr-gray-700 rounded hover:bg-krushr-primary hover:text-white transition-all duration-200 font-manrope font-medium"
-                    >
-                      +1
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const nextWeek = new Date()
-                        nextWeek.setDate(nextWeek.getDate() + 7)
-                        setDueDate(nextWeek)
-                      }}
-                      className="flex-1 px-1 py-1 text-sm bg-krushr-gray-100 text-krushr-gray-700 rounded hover:bg-krushr-primary hover:text-white transition-all duration-200 font-manrope font-medium"
-                    >
-                      +7
-                    </button>
-                    {dueDate && (
-                      <button
-                        type="button"
-                        onClick={() => setDueDate(null)}
-                        className="px-1 py-1 text-sm bg-krushr-danger-100 text-krushr-danger-600 rounded hover:bg-krushr-danger hover:text-white transition-all duration-200 font-manrope font-medium"
-                      >
-                        ×
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Show/Hide Advanced Options */}
-              <div className="lg:col-span-2 xl:col-span-2">
-                <button
-                  type="button"
-                  onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="flex items-center gap-2 text-sm text-krushr-primary hover:text-krushr-primary/80 font-manrope mb-4"
-                >
-                  <svg 
-                    className={`w-4 h-4 transition-transform ${showAdvanced ? 'rotate-90' : ''}`}
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                  <span>Advanced Options</span>
-                </button>
-                
-                {showAdvanced && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 space-y-0">
-                {/* Tags - Moved here for better space usage */}
+                {/* Description - Floating Label */}
                 <div className="relative">
-                  <input 
-                    type="text" 
-                    id="floating_tags"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                    className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary/20 focus:border-krushr-primary transition-all duration-200 peer font-manrope"
+                  <textarea
+                    id="task-description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer resize-none"
                     placeholder=" "
+                    rows={6}
                   />
                   <label 
-                    htmlFor="floating_tags" 
-                    className="absolute text-sm text-krushr-gray duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
+                    htmlFor="task-description"
+                    className="absolute text-sm text-krushr-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-[20px] peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
                   >
-                    Tags
+                    Description
                   </label>
-                  <Tag className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-krushr-gray pointer-events-none" />
                 </div>
                 
-                {/* Estimated Hours */}
-                <div className="relative">
-                  <input 
-                    type="number" 
-                    id="floating_hours"
-                    value={estimatedHours}
-                    onChange={(e) => setEstimatedHours(e.target.value)}
-                    className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-krushr-gray-dark bg-transparent rounded-lg border border-krushr-gray-border appearance-none focus:outline-none focus:ring-2 focus:ring-krushr-primary/20 focus:border-krushr-primary transition-all duration-200 peer font-manrope"
-                    placeholder=" "
-                    min="0"
-                    step="0.5"
-                  />
-                  <label 
-                    htmlFor="floating_hours" 
-                    className="absolute text-sm text-krushr-gray duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1 font-manrope"
-                  >
-                    Estimated Hours
-                  </label>
-                </div>
-              </div>
-              
-              {/* Attachments Column */}
-              <div className="xl:col-span-1 space-y-4">
+                {/* Tags - Floating Label */}
+                <FloatingInput
+                  type="text"
+                  label="Tags (comma separated)"
+                  value={tags}
+                  onChange={(e) => setTags(e.target.value)}
+                />
+                
+                {/* File Upload */}
                 <div>
-                  <label className="block text-sm font-medium text-krushr-gray-dark mb-2 font-manrope flex items-center gap-2">
-                    <Paperclip className="w-4 h-4" />
+                  <label className="block text-sm font-medium text-krushr-gray-600 mb-2">
                     Attachments
                   </label>
-                  
                   {task?.id ? (
                     <AttachmentUpload
                       type="task"
                       targetId={task.id}
-                      onUploadComplete={(attachments) => {
-                        console.log('Files uploaded:', attachments)
-                      }}
+                      onUploadComplete={() => {}}
                       className="w-full"
                     />
                   ) : (
-                    <>
-                      {/* Compact File Drop Zone */}
+                    <div>
                       <div 
-                        className="border-2 border-dashed border-krushr-gray-border rounded-lg p-3 text-center hover:border-krushr-primary transition-colors cursor-pointer"
+                        className="border-2 border-dashed border-krushr-gray-200 rounded-lg p-6 text-center hover:border-krushr-primary transition-colors cursor-pointer"
                         onClick={() => document.getElementById('file-input')?.click()}
                         onDragOver={(e) => {
                           e.preventDefault()
@@ -734,11 +299,11 @@ export default function CompactTaskModal({
                           handleFileSelect(files)
                         }}
                       >
-                        <Upload className="w-5 h-5 mx-auto text-krushr-gray mb-1 block" />
-                        <p className="text-sm text-krushr-gray font-manrope">
-                          <span className="font-medium text-krushr-primary">Upload</span> or drag files
+                        <Upload className="w-8 h-8 mx-auto text-krushr-gray-400 mb-2" />
+                        <p className="text-sm text-krushr-gray-600">
+                          <span className="font-medium text-krushr-primary">Upload files</span> or drag and drop
                         </p>
-                        <p className="text-xs text-krushr-gray mt-1">Max: 15MB</p>
+                        <p className="text-xs text-krushr-gray-500 mt-1">Max 15MB per file</p>
                         <input
                           id="file-input"
                           type="file"
@@ -746,91 +311,292 @@ export default function CompactTaskModal({
                           className="hidden"
                           onChange={(e) => {
                             if (e.target.files) {
-                              const files = Array.from(e.target.files)
-                              handleFileSelect(files)
+                              handleFileSelect(Array.from(e.target.files))
                             }
                           }}
                         />
                       </div>
                       
-                      {/* Compact Pending Files List */}
                       {pendingFiles.length > 0 && (
-                        <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
-                          {pendingFiles.map((file, index) => {
-                            const fileExt = file.name.split('.').pop()?.toLowerCase()
-                            const isImage = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExt || '')
-                            const isDoc = ['pdf', 'doc', 'docx', 'txt', 'md'].includes(fileExt || '')
-                            
-                            const iconColor = isImage ? 'text-krushr-success' : isDoc ? 'text-krushr-info' : 'text-krushr-gray'
-                            
-                            return (
-                              <div key={index} className="flex items-center justify-between p-2 bg-krushr-gray-bg rounded text-xs">
-                                <div className="flex items-center gap-1 min-w-0">
-                                  <FileText className={`w-3 h-3 ${iconColor} flex-shrink-0`} />
-                                  <span className="text-krushr-gray-dark font-manrope truncate">{file.name}</span>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => removePendingFile(index)}
-                                  className="text-krushr-secondary hover:text-red-600 p-0.5 transition-colors flex-shrink-0"
-                                >
-                                  <X className="w-3 h-3" />
-                                </button>
+                        <div className="mt-3 space-y-2">
+                          {pendingFiles.map((file, index) => (
+                            <div key={index} className="flex items-center justify-between p-3 bg-krushr-gray-50 rounded-lg">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <FileText className="w-4 h-4 text-krushr-gray-500 flex-shrink-0" />
+                                <span className="text-sm text-krushr-gray-700 truncate">{file.name}</span>
                               </div>
-                            )
-                          })}
+                              <button
+                                type="button"
+                                onClick={() => removePendingFile(index)}
+                                className="text-krushr-gray-400 hover:text-krushr-secondary transition-colors"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
                         </div>
                       )}
-                    </>
-                  )}
-                </div>
                     </div>
                   )}
-                )}
+                </div>
               </div>
-            </div>
-            </div>
-            
-            {/* Footer - Sticky at Bottom */}
-            <div className="flex-shrink-0 border-t border-krushr-gray-border bg-krushr-gray-bg-light p-4">
-              <div className="flex justify-between items-center">
-                {isEditMode && (
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    disabled={isLoading}
-                    className="px-4 py-2 text-sm text-krushr-secondary border border-krushr-secondary rounded-lg hover:bg-krushr-secondary-50 disabled:opacity-50 transition-all duration-200 font-manrope"
-                  >
-                    Delete
-                  </button>
-                )}
-                <div className="flex gap-3 ml-auto">
-                  <button 
-                    type="button"
-                    onClick={onClose}
-                    className="px-6 py-2 text-sm text-krushr-gray-700 border border-krushr-gray-border rounded-lg hover:bg-krushr-gray-100 transition-all duration-200 font-manrope"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    type="submit"
-                    disabled={isLoading || uploadingFiles || !title.trim()}
-                    className="inline-flex items-center space-x-2 px-6 py-2 bg-krushr-primary text-white text-sm rounded-lg hover:bg-krushr-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-krushr-button-dark font-manrope"
-                  >
-                    {isLoading || uploadingFiles ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>{uploadingFiles ? 'Uploading...' : 'Saving...'}</span>
-                      </>
-                    ) : (
-                      <span>{isEditMode ? 'Update Task' : 'Create Task'}</span>
-                    )}
-                  </button>
+              
+              {/* Right Column - Calendar, Priority, and Status */}
+              <div className="lg:border-l lg:border-krushr-gray-100 lg:pl-6 space-y-6">
+                {/* Calendar Section */}
+                <div className="bg-krushr-gray-50 rounded-lg p-4">
+                  <h3 className="text-sm font-medium text-krushr-gray-700 mb-4">Due Date</h3>
+                  
+                  {/* Selected Date Display */}
+                  {dueDate && (
+                    <div className="mb-4 p-3 bg-krushr-primary-100 border border-krushr-primary-200 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-krushr-primary" />
+                          <span className="text-sm font-medium text-krushr-primary-700">
+                            {format(dueDate, 'MMMM d, yyyy')}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setDueDate(null)}
+                          className="text-krushr-primary-600 hover:text-krushr-primary-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Calendar Widget */}
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    {/* Calendar Header */}
+                    <div className="flex items-center justify-between mb-4">
+                      <button 
+                        type="button"
+                        onClick={() => setCalendarDate(subMonths(calendarDate, 1))}
+                        className="p-1 hover:bg-krushr-gray-100 rounded transition-colors"
+                      >
+                        <ChevronLeft className="w-4 h-4 text-krushr-gray-600" />
+                      </button>
+                      <h4 className="text-sm font-medium text-krushr-gray-700">
+                        {format(calendarDate, 'MMMM yyyy')}
+                      </h4>
+                      <button 
+                        type="button"
+                        onClick={() => setCalendarDate(addMonths(calendarDate, 1))}
+                        className="p-1 hover:bg-krushr-gray-100 rounded transition-colors"
+                      >
+                        <ChevronRight className="w-4 h-4 text-krushr-gray-600" />
+                      </button>
+                    </div>
+                    
+                    {/* Calendar Grid */}
+                    <div className="grid grid-cols-7 gap-1 mb-3">
+                      {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+                        <div key={i} className="text-xs font-medium text-krushr-gray-500 text-center py-1">
+                          {day}
+                        </div>
+                      ))}
+                      {generateCalendarDays().map((day, i) => (
+                        <div key={i} className="aspect-square">
+                          {day ? (
+                            <button
+                              type="button"
+                              onClick={() => handleDateSelect(day)}
+                              className={cn(
+                                "w-full h-full text-xs rounded transition-all",
+                                isSameDay(day, dueDate || new Date('1900-01-01')) 
+                                  ? "bg-krushr-primary text-white font-medium"
+                                  : isToday(day)
+                                  ? "bg-krushr-primary-100 text-krushr-primary-700 font-medium"
+                                  : "text-krushr-gray-700 hover:bg-krushr-gray-100"
+                              )}
+                            >
+                              {format(day, 'd')}
+                            </button>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Quick Actions */}
+                    <div className="flex gap-2 pt-3 border-t border-krushr-gray-100">
+                      <button
+                        type="button"
+                        onClick={() => setDueDate(new Date())}
+                        className="flex-1 px-3 py-1.5 text-xs bg-krushr-gray-100 text-krushr-gray-700 rounded hover:bg-krushr-gray-200 transition-colors font-medium"
+                      >
+                        Today
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const tomorrow = new Date()
+                          tomorrow.setDate(tomorrow.getDate() + 1)
+                          setDueDate(tomorrow)
+                        }}
+                        className="flex-1 px-3 py-1.5 text-xs bg-krushr-gray-100 text-krushr-gray-700 rounded hover:bg-krushr-gray-200 transition-colors font-medium"
+                      >
+                        Tomorrow
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const nextWeek = new Date()
+                          nextWeek.setDate(nextWeek.getDate() + 7)
+                          setDueDate(nextWeek)
+                        }}
+                        className="flex-1 px-3 py-1.5 text-xs bg-krushr-gray-100 text-krushr-gray-700 rounded hover:bg-krushr-gray-200 transition-colors font-medium"
+                      >
+                        Next Week
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Priority Section */}
+                <div>
+                  <h3 className="text-sm font-medium text-krushr-gray-700 mb-3">Priority</h3>
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1.5">
+                      {[1, 2, 3].map((level) => {
+                        const isActive = (
+                          (priority === Priority.LOW && level <= 1) ||
+                          (priority === Priority.MEDIUM && level <= 2) ||
+                          (priority === Priority.HIGH && level <= 3)
+                        )
+                        const targetPriority = level === 1 ? Priority.LOW : level === 2 ? Priority.MEDIUM : Priority.HIGH
+                        
+                        return (
+                          <button
+                            key={level}
+                            type="button"
+                            onClick={() => setPriority(targetPriority)}
+                            className={cn(
+                              "w-4 h-4 rounded-full transition-all",
+                              isActive 
+                                ? "bg-krushr-secondary shadow-sm" 
+                                : "bg-krushr-gray-200 hover:bg-krushr-gray-300"
+                            )}
+                            title={`${level === 1 ? 'Low' : level === 2 ? 'Medium' : 'High'} Priority`}
+                          />
+                        )
+                      })}
+                    </div>
+                    <span className="text-sm text-krushr-gray-600 capitalize">
+                      {priority.toLowerCase()} priority
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Status Section */}
+                <div>
+                  <h3 className="text-sm font-medium text-krushr-gray-700 mb-3">Status</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: TaskStatus.TODO, label: 'Todo', color: 'bg-krushr-gray-500' },
+                      { value: TaskStatus.IN_PROGRESS, label: 'In Progress', color: 'bg-krushr-primary' },
+                      { value: TaskStatus.IN_REVIEW, label: 'Review', color: 'bg-krushr-warning' },
+                      { value: TaskStatus.DONE, label: 'Done', color: 'bg-krushr-success' },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setStatus(option.value)}
+                        className={cn(
+                          "px-3 py-1.5 text-xs font-medium rounded-full transition-all",
+                          status === option.value
+                            ? `${option.color} text-white`
+                            : "bg-krushr-gray-100 text-krushr-gray-700 hover:bg-krushr-gray-200"
+                        )}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Assignee Section */}
+                <div>
+                  <h3 className="text-sm font-medium text-krushr-gray-700 mb-3">Assignee</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setAssigneeId('')}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-1.5 text-xs rounded-full transition-all",
+                        assigneeId === ''
+                          ? "bg-krushr-primary text-white"
+                          : "bg-krushr-gray-100 text-krushr-gray-700 hover:bg-krushr-gray-200"
+                      )}
+                    >
+                      <div className="w-4 h-4 rounded-full bg-krushr-gray-300" />
+                      Unassigned
+                    </button>
+                    {workspaceUsers?.map((user) => {
+                      const initials = (user.name || user.email).slice(0, 2).toUpperCase()
+                      
+                      return (
+                        <button
+                          key={user.id}
+                          type="button"
+                          onClick={() => setAssigneeId(user.id)}
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-1.5 text-xs rounded-full transition-all",
+                            assigneeId === user.id
+                              ? "bg-krushr-primary text-white"
+                              : "bg-krushr-gray-100 text-krushr-gray-700 hover:bg-krushr-gray-200"
+                          )}
+                        >
+                          <div className="w-4 h-4 bg-gradient-to-br from-krushr-primary to-krushr-primary-600 rounded-full flex items-center justify-center text-white text-[10px] font-medium">
+                            {initials}
+                          </div>
+                          {user.name || user.email.split('@')[0]}
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+          
+          {/* Footer */}
+          <div className="border-t border-krushr-gray-200 bg-krushr-gray-50 px-6 py-4">
+            <div className="flex justify-between items-center">
+              {isEditMode && (
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={isLoading}
+                  className="px-4 py-2 text-sm text-krushr-secondary font-medium hover:bg-krushr-secondary-50 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  Delete Task
+                </button>
+              )}
+              <div className="flex gap-3 ml-auto">
+                <button 
+                  type="button"
+                  onClick={onClose}
+                  className="px-6 py-2 text-sm text-krushr-gray-700 font-medium border border-krushr-gray-300 rounded-lg hover:bg-krushr-gray-100 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  disabled={isLoading || uploadingFiles || !title.trim()}
+                  className="px-6 py-2 text-sm text-white font-medium bg-krushr-primary rounded-lg hover:bg-krushr-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {(isLoading || uploadingFiles) && (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  )}
+                  {uploadingFiles ? 'Uploading...' : isLoading ? 'Saving...' : isEditMode ? 'Update Task' : 'Create Task'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>,
     document.body

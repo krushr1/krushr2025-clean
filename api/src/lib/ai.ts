@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { config } from '../config'
+import { webSearchService, WebSearchService, SearchResult, WeatherData, NewsResult } from './web-search'
 
 export class AiService {
   private client: GoogleGenerativeAI
@@ -16,6 +17,7 @@ export class AiService {
       temperature?: number
       workspaceId?: string
       autoThinkingBudget?: boolean
+      enableRealTimeData?: boolean
     } = {}
   ): Promise<{
     content: string
@@ -24,6 +26,12 @@ export class AiService {
     responseTime: number
     thinkingTokens?: number
     actualThinkingBudget?: number
+    realTimeData?: {
+      searchResults?: SearchResult[]
+      weatherData?: WeatherData
+      newsResults?: NewsResult[]
+      currentDateTime?: any
+    }
     parsedActions?: Array<{
       type: 'task' | 'note' | 'event' | 'project'
       data: any
@@ -31,8 +39,18 @@ export class AiService {
     }>
   }> {
     const startTime = Date.now()
+    let realTimeData: any = {}
     
     try {
+      // Check if the query needs real-time data
+      const lastUserMessage = messages[messages.length - 1]?.content || ''
+      const realTimeAnalysis = WebSearchService.requiresRealTimeData(lastUserMessage)
+      
+      // Gather real-time data if needed and enabled
+      if (options.enableRealTimeData && realTimeAnalysis.needsRealTime) {
+        realTimeData = await this.gatherRealTimeData(lastUserMessage, realTimeAnalysis.categories)
+      }
+      
       // Get the model
       const model = this.client.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
@@ -49,7 +67,7 @@ export class AiService {
       }
 
       // Always add the system prompt as the first message for consistent behavior
-      const systemPrompt = this.generateSystemPrompt(options.workspaceId)
+      const systemPrompt = this.generateSystemPrompt(options.workspaceId, realTimeData)
       const enhancedMessages = [
         { role: 'user' as const, content: systemPrompt },
         ...messages
@@ -97,6 +115,7 @@ export class AiService {
         responseTime,
         thinkingTokens: response.response.usageMetadata?.candidatesTokenCount || 0,
         actualThinkingBudget,
+        realTimeData: Object.keys(realTimeData).length > 0 ? realTimeData : undefined,
         parsedActions
       }
     } catch (error) {
@@ -116,7 +135,7 @@ export class AiService {
     return tokenCount * pricePerToken
   }
 
-  private generateSystemPrompt(workspaceId?: string): string {
+  private generateSystemPrompt(workspaceId?: string, realTimeData?: any): string {
     return `You are KRUSHR AI, an intelligent productivity assistant permanently oriented towards intelligent conciseness.
 
 **Core Directive**: Maximize insight per word. Every response must deliver maximum value with minimum verbosity.
@@ -146,6 +165,8 @@ export class AiService {
 - Format sparingly: **bold** for critical points only
 
 ${workspaceId ? `**Workspace**: ${workspaceId}` : ''}
+
+${realTimeData && Object.keys(realTimeData).length > 0 ? this.formatRealTimeDataContext(realTimeData) : ''}
 
 Your mission: Make users more productive through intelligent, concise assistance.`
   }
@@ -513,6 +534,134 @@ Your mission: Make users more productive through intelligent, concise assistance
       console.error('Conversation summary error:', error)
       return 'AI conversation summary unavailable'
     }
+  }
+
+  /**
+   * Gathers real-time data based on the query categories
+   */
+  private async gatherRealTimeData(
+    query: string, 
+    categories: Array<'weather' | 'news' | 'time' | 'government' | 'search'>
+  ): Promise<any> {
+    const realTimeData: any = {}
+
+    try {
+      // Always include current date/time for context
+      if (categories.includes('time') || categories.length > 0) {
+        realTimeData.currentDateTime = webSearchService.getCurrentDateTime()
+      }
+
+      // Gather weather data
+      if (categories.includes('weather')) {
+        // Extract location from query or use default
+        const location = this.extractLocationFromQuery(query) || 'Washington, DC'
+        realTimeData.weatherData = await webSearchService.getWeather(location)
+      }
+
+      // Gather news data
+      if (categories.includes('news')) {
+        const newsQuery = this.extractNewsQueryFromText(query)
+        realTimeData.newsResults = await webSearchService.getNews({
+          q: newsQuery,
+          pageSize: 5
+        })
+      }
+
+      // Gather government information
+      if (categories.includes('government')) {
+        realTimeData.governmentInfo = await webSearchService.getGovernmentInfo(query)
+      }
+
+      // Perform general web search
+      if (categories.includes('search') || categories.length === 0) {
+        realTimeData.searchResults = await webSearchService.searchWeb(query, {
+          maxResults: 5
+        })
+      }
+
+      return realTimeData
+    } catch (error) {
+      console.error('Error gathering real-time data:', error)
+      return {}
+    }
+  }
+
+  /**
+   * Formats real-time data for inclusion in system prompt
+   */
+  private formatRealTimeDataContext(realTimeData: any): string {
+    let context = '**Real-Time Context**:\n'
+
+    if (realTimeData.currentDateTime) {
+      const dt = realTimeData.currentDateTime
+      context += `- **Current Time**: ${dt.date} ${dt.time} (${dt.timezone})\n`
+    }
+
+    if (realTimeData.weatherData) {
+      const weather = realTimeData.weatherData
+      context += `- **Weather in ${weather.location}**: ${weather.temperature}°F, ${weather.condition}\n`
+    }
+
+    if (realTimeData.newsResults && realTimeData.newsResults.length > 0) {
+      context += `- **Recent News**: ${realTimeData.newsResults.length} articles found\n`
+      realTimeData.newsResults.slice(0, 3).forEach((news: NewsResult, i: number) => {
+        context += `  ${i + 1}. ${news.title} (${news.source})\n`
+      })
+    }
+
+    if (realTimeData.searchResults && realTimeData.searchResults.length > 0) {
+      context += `- **Web Search Results**: ${realTimeData.searchResults.length} results found\n`
+      realTimeData.searchResults.slice(0, 3).forEach((result: SearchResult, i: number) => {
+        context += `  ${i + 1}. ${result.title}: ${result.snippet}\n`
+      })
+    }
+
+    if (realTimeData.governmentInfo && realTimeData.governmentInfo.length > 0) {
+      context += `- **Government Information**: ${realTimeData.governmentInfo.length} results found\n`
+    }
+
+    return context
+  }
+
+  /**
+   * Extracts location from a weather-related query
+   */
+  private extractLocationFromQuery(query: string): string | null {
+    const lowerQuery = query.toLowerCase()
+    
+    // Look for "in [location]" pattern
+    const inMatch = lowerQuery.match(/\bin\s+([a-zA-Z\s,]+)/)
+    if (inMatch) {
+      return inMatch[1].trim()
+    }
+
+    // Look for common city patterns
+    const cityMatch = lowerQuery.match(/\b(new york|los angeles|chicago|houston|philadelphia|phoenix|san antonio|san diego|dallas|san jose|austin|jacksonville|fort worth|columbus|charlotte|san francisco|indianapolis|seattle|denver|washington|boston|nashville|baltimore|oklahoma city|louisville|portland|las vegas|milwaukee|albuquerque|tucson|fresno|sacramento|kansas city|long beach|mesa|atlanta|colorado springs|virginia beach|raleigh|omaha|miami|oakland|minneapolis|tulsa|wichita|new orleans|arlington|cleveland|bakersfield|tampa|aurora|honolulu|anaheim|santa ana|corpus christi|riverside|lexington|stockton|toledo|st. paul|newark|greensboro|plano|henderson|lincoln|buffalo|jersey city|chula vista|fort wayne|orlando|st. petersburg|chandler|laredo|norfolk|durham|madison|lubbock|irvine|winston-salem|glendale|garland|hialeah|reno|chesapeake|gilbert|baton rouge|irving|scottsdale|north las vegas|fremont|boise|richmond|san bernardino|birmingham|spokane|rochester|des moines|modesto|fayetteville|tacoma|oxnard|fontana|columbus|montgomery|moreno valley|shreveport|aurora|yonkers|akron|huntington beach|little rock|augusta|amarillo|glendale|mobile|grand rapids|salt lake city|tallahassee|huntsville|grand prairie|knoxville|worcester|newport news|brownsville|overland park|santa clarita|providence|garden grove|chattanooga|oceanside|jackson|fort lauderdale|santa rosa|rancho cucamonga|port st. lucie|tempe|ontario|vancouver|cape coral|sioux falls|springfield|peoria|pembroke pines|elk grove|salem|lancaster|corona|eugene|palmdale|salinas|springfield|pasadena|fort collins|hayward|pomona|cary|rockford|alexandria|escondido|mckinney|kansas city|joliet|sunnyvale|torrance|bridgeport|lakewood|hollywood|paterson|naperville|syracuse|mesquite|dayton|savannah|clarksville|orange|pasadena|fullerton|killeen|frisco|hampton|mcallen|warren|west valley city|columbia|olathe|sterling heights|new haven|miramar|waco|thousand oaks|cedar rapids|charleston|sioux city|round rock|fargo|concord|stamford|manchester|allentown|evansville|ann arbor|beaumont|independence|rochester|visalia|carrollton|coral springs|clearwater|lowell|daly city|sandy springs|new bedford|rialto|davenport|temecula|santa maria|greeley|santa clara|compton|tyler|pompano beach|west jordan|norman|richmond|centennial|murfreesboro|lewisville|clovis|allen|macon|broken arrow|sparks|el cajon|west palm beach|carlsbad|pearland|richardson|antioch|inglewood|high point|midland|billings|manchester|surprise|thornton|west covina|vallejo|ann arbor|el monte|carlsbad|downey|costa mesa|berkeley|arvada|west jordan|provo|lee's summit|lynn|jurupa valley|westminster|davie|dearborn|ventura|alhambra|norwalk|renton|roseville|victorville|woodbridge|chico|tuscaloosa|livonia|new bedford|brandon|buena park|lakeland|albany|redding|nampa|san mateo|quincy|brockton|mission viejo|plantation|medford|reading|somerville|cedar rapids|gary|cambridge|green bay|evanston|fairfield|lowell|everett|ventura|richardson|concord|st. petersburg|vista|cambridge|westminster|san buenaventura|norman|rochester|troy|pueblo|west jordan|cicero|mission|peoria|el paso|south bend|edmond|miami gardens|las cruces|college station|davie|midland|clearwater|odessa|west jordan|west palm beach|west valley city|west covina|west jordan|west valley city|west palm beach|west covina|lakewood|west jordan|west valley city)\b/)
+    if (cityMatch) {
+      return cityMatch[1]
+    }
+
+    return null
+  }
+
+  /**
+   * Extracts news search terms from the query
+   */
+  private extractNewsQueryFromText(query: string): string {
+    const lowerQuery = query.toLowerCase()
+    
+    // Remove common query prefixes
+    let newsQuery = lowerQuery
+      .replace(/^(what's the|what is the|tell me about|news about|latest news on|recent news about)\s+/i, '')
+      .replace(/\b(news|latest|recent|current|today|breaking)\b/gi, '')
+      .trim()
+
+    // If nothing useful remains, return a general news query
+    if (newsQuery.length < 3) {
+      return 'latest news'
+    }
+
+    return newsQuery
   }
 }
 

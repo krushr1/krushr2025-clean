@@ -37,6 +37,7 @@ import {
   FileText,
   FileVideo,
   Upload,
+  User,
   X,
   __commonJS,
   __toESM,
@@ -5765,27 +5766,78 @@ function CompactTaskModal({
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative w-full max-w-4xl mx-4 max-h-[90vh] bg-white rounded-xl overflow-hidden flex flex-col shadow-2xl", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between px-6 py-4 border-b border-krushr-gray-200", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex-1 mr-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-            FloatingInput,
-            {
-              type: "text",
-              label: mode === "calendar" ? "Event title" : "Task title",
-              value: title,
-              onChange: (e) => setTitle(e.target.value),
-              autoFocus: true,
-              className: "text-xl font-semibold font-manrope border-none bg-transparent focus:ring-0 focus:border-transparent p-0 h-auto"
-            }
-          ) }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-            "button",
-            {
-              onClick: onClose,
-              className: "text-krushr-gray-400 hover:text-krushr-gray-600 transition-colors p-2 hover:bg-krushr-gray-100 rounded-lg",
-              children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "w-5 h-5" })
-            }
-          )
-        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+          "div",
+          {
+            className: "relative",
+            style: {
+              background: "#0f0229",
+              backgroundImage: "url('/images/Pricing-Shapes.svg')",
+              backgroundPosition: "70%",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "900px",
+              borderRadius: "30px 30px 0 0",
+              padding: "40px 40px 20px"
+            },
+            children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "relative", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "mb-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                "div",
+                {
+                  className: "inline-flex items-center px-4 py-2 rounded-full text-sm",
+                  style: {
+                    background: "rgba(255, 255, 255, 0.1)",
+                    color: "#ffffff",
+                    border: "1px solid rgba(255, 255, 255, 0.2)"
+                  },
+                  children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-white opacity-80 mr-2", children: mode === "calendar" ? "\u{1F4C5}" : "\u2728" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-white font-medium", children: mode === "calendar" ? "Calendar Event" : "Task Management" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { className: "text-white opacity-70 ml-1", children: [
+                      "- ",
+                      isEditMode ? "Edit" : "Create new"
+                    ] })
+                  ]
+                }
+              ) }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex-1 mr-4", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                  FloatingInput,
+                  {
+                    type: "text",
+                    label: mode === "calendar" ? "Event title" : "Task title",
+                    value: title,
+                    onChange: (e) => setTitle(e.target.value),
+                    autoFocus: true,
+                    className: "text-2xl font-bold font-manrope border-none bg-transparent focus:ring-0 focus:border-transparent p-0 h-auto text-white placeholder-white/50",
+                    style: { color: "#ffffff" }
+                  }
+                ) }),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                  "button",
+                  {
+                    onClick: onClose,
+                    className: "text-white/60 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg",
+                    children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(X, { className: "w-5 h-5" })
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "mt-4 flex items-center gap-4 text-white/70 text-sm", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-1", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(User, { className: "w-4 h-4" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: "You" })
+                ] }),
+                mode === "calendar" && selectedDate && /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-1", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(CalendarIcon, { className: "w-4 h-4" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: format(selectedDate, "MMM d, yyyy") })
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-1", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Clock, { className: "w-4 h-4" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: isEditMode ? "Editing" : "Creating" })
+                ] })
+              ] })
+            ] })
+          }
+        ),
         /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("form", { onSubmit: handleSubmit, className: "flex-1 overflow-y-auto", children: [
           /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "p-6", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "grid grid-cols-1 lg:grid-cols-[1fr,320px] gap-6", children: [
             /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "space-y-4", children: [
@@ -8830,4 +8882,4 @@ object-assign/index.js:
   @license MIT
   *)
 */
-//# sourceMappingURL=/chunks/chunk-MPXAWBOR.js.map
+//# sourceMappingURL=/chunks/chunk-5P4EFELG.js.map

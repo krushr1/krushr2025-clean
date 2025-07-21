@@ -3807,6 +3807,12 @@ div {
   --tw-placeholder-opacity: 1;
   color: rgb(156 163 175 / var(--tw-placeholder-opacity, 1));
 }
+.placeholder-white\/50::-moz-placeholder {
+  color: rgb(255 255 255 / 0.5);
+}
+.placeholder-white\/50::placeholder {
+  color: rgb(255 255 255 / 0.5);
+}
 .opacity-0 {
   opacity: 0;
 }

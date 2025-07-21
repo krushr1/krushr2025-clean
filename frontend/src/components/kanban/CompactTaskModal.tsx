@@ -293,24 +293,81 @@ export default function CompactTaskModal({
       
       {/* Modal Container - Brandkit Compliant */}
       <div className="relative w-full max-w-4xl mx-4 max-h-[90vh] bg-white rounded-xl overflow-hidden flex flex-col shadow-2xl">
-        {/* Header with Editable Title */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-krushr-gray-200">
-          <div className="flex-1 mr-4">
-            <FloatingInput
-              type="text"
-              label={mode === 'calendar' ? 'Event title' : 'Task title'}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              autoFocus
-              className="text-xl font-semibold font-manrope border-none bg-transparent focus:ring-0 focus:border-transparent p-0 h-auto"
-            />
+        {/* Dark Gradient Hero Header - Pricing Template Style */}
+        <div 
+          className="relative"
+          style={{
+            background: '#0f0229',
+            backgroundImage: "url('/images/Pricing-Shapes.svg')",
+            backgroundPosition: '70%',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '900px',
+            borderRadius: '30px 30px 0 0',
+            padding: '40px 40px 20px'
+          }}
+        >
+          <div className="relative">
+            {/* Notice Badge */}
+            <div className="mb-4">
+              <div 
+                className="inline-flex items-center px-4 py-2 rounded-full text-sm"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#ffffff',
+                  border: '1px solid rgba(255, 255, 255, 0.2)'
+                }}
+              >
+                <span className="text-white opacity-80 mr-2">
+                  {mode === 'calendar' ? '📅' : '✨'}
+                </span>
+                <span className="text-white font-medium">
+                  {mode === 'calendar' ? 'Calendar Event' : 'Task Management'}
+                </span>
+                <span className="text-white opacity-70 ml-1">
+                  - {isEditMode ? 'Edit' : 'Create new'}
+                </span>
+              </div>
+            </div>
+
+            {/* Main Title Input */}
+            <div className="flex items-center justify-between">
+              <div className="flex-1 mr-4">
+                <FloatingInput
+                  type="text"
+                  label={mode === 'calendar' ? 'Event title' : 'Task title'}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  autoFocus
+                  className="text-2xl font-bold font-manrope border-none bg-transparent focus:ring-0 focus:border-transparent p-0 h-auto text-white placeholder-white/50"
+                  style={{ color: '#ffffff' }}
+                />
+              </div>
+              <button 
+                onClick={onClose}
+                className="text-white/60 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Quick Info Row */}
+            <div className="mt-4 flex items-center gap-4 text-white/70 text-sm">
+              <div className="flex items-center gap-1">
+                <User className="w-4 h-4" />
+                <span>You</span>
+              </div>
+              {mode === 'calendar' && selectedDate && (
+                <div className="flex items-center gap-1">
+                  <CalendarIcon className="w-4 h-4" />
+                  <span>{format(selectedDate, 'MMM d, yyyy')}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                <span>{isEditMode ? 'Editing' : 'Creating'}</span>
+              </div>
+            </div>
           </div>
-          <button 
-            onClick={onClose}
-            className="text-krushr-gray-400 hover:text-krushr-gray-600 transition-colors p-2 hover:bg-krushr-gray-100 rounded-lg"
-          >
-            <X className="w-5 h-5" />
-          </button>
         </div>
         
         {/* Content */}

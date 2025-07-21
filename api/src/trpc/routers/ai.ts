@@ -258,6 +258,27 @@ export const aiRouter = router({
             if (action.type === 'task' && action.confidence > 0.8) {
               // High-confidence tasks can be tracked for suggestion
               console.log(`[AI] High-confidence task suggestion: "${action.data.title}"`)
+            } else if (action.type === 'note' && action.confidence > 0.8) {
+              // Auto-create notes with high confidence
+              try {
+                const note = await prisma.note.create({
+                  data: {
+                    title: action.data.title || 'AI Generated Note',
+                    content: action.data.content || '',
+                    workspaceId: conversation.workspaceId,
+                    authorId: ctx.user.id,
+                    tags: {
+                      create: action.data.tags?.map((tag: string) => ({ name: tag })) || [{ name: 'ai-generated' }]
+                    }
+                  }
+                })
+                console.log(`[AI] Created note: "${note.title}" (ID: ${note.id})`)
+                
+                // Add confirmation to the response
+                assistantMessage.content += `\n\nI've created a note titled "${note.title}" in your Notes panel.`
+              } catch (error) {
+                console.error('[AI] Failed to create note:', error)
+              }
             }
           }
         }

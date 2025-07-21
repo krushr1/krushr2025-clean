@@ -162,9 +162,14 @@ export class AiService {
 
 **What You Create**:
 - **Tasks**: Action-oriented requests → Clear task with priority/deadline
-- **Notes**: Information storage → Structured note with key details
+- **Notes**: Information storage → Structured note with key details (I can create these for you!)
 - **Projects**: Large-scope work → Project with clear scope/deliverables
 - **Events**: Scheduling requests → Event with time/participants
+
+When users ask me to create a note, I will:
+1. Extract the key information
+2. Create a well-structured note in the Notes panel
+3. Confirm creation with the note title
 
 **Communication Style**:
 - Professional but conversational
@@ -194,10 +199,13 @@ Your mission: Make users more productive through intelligent, concise assistance
       /(.+?)\s+(?:by|due|deadline|before)\s+(.+?)(?:\.|$)/gi
     ]
     
-    // Note patterns
+    // Note patterns - expanded to catch more variations
     const notePatterns = [
+      /(?:create a note|make a note|add a note)\s+(?:about|for|titled|called)?\s*(.+?)(?:\.|$)/gi,
       /(?:note|remember|jot down|write down|document)\s+(.+?)(?:\.|$)/gi,
-      /(?:keep track of|record|log)\s+(.+?)(?:\.|$)/gi
+      /(?:keep track of|record|log)\s+(.+?)(?:\.|$)/gi,
+      /(?:save|store)\s+(?:this|the following)\s+(?:as a note|in notes)\s*:?\s*(.+?)(?:\.|$)/gi,
+      /(?:please|can you|could you)\s+(?:create|make|add)\s+a note\s+(.+?)(?:\.|$)/gi
     ]
     
     // Project patterns
@@ -233,13 +241,17 @@ Your mission: Make users more productive through intelligent, concise assistance
     notePatterns.forEach(pattern => {
       let match
       while ((match = pattern.exec(content)) !== null) {
+        const noteContent = match[1] || match[0]
+        const noteData = this.extractNoteData(noteContent, content)
+        
         actions.push({
           type: 'note',
           data: {
-            title: this.generateNoteTitle(match[1] || match[0]),
-            content: match[0]
+            title: noteData.title,
+            content: noteData.content,
+            tags: noteData.tags
           },
-          confidence: 0.7
+          confidence: 0.85 // Higher confidence for note creation
         })
       }
     })
@@ -332,8 +344,47 @@ Your mission: Make users more productive through intelligent, concise assistance
   
   private generateNoteTitle(content: string): string {
     // Generate a concise title from note content
-    const words = content.trim().split(' ').slice(0, 6)
-    return words.join(' ') + (content.trim().split(' ').length > 6 ? '...' : '')
+    const words = content.trim().split(/\s+/)
+    if (words.length <= 5) {
+      return content.trim()
+    }
+    return words.slice(0, 5).join(' ') + '...'
+  }
+  
+  private extractNoteData(noteText: string, fullContent: string): { title: string; content: string; tags: string[] } {
+    // Extract title if specified
+    let title = ''
+    let content = noteText
+    
+    // Check for explicit title patterns
+    const titleMatch = noteText.match(/(?:titled?|called?)\s+"([^"]+)"/i) || 
+                       noteText.match(/(?:titled?|called?)\s+([^.]+?)(?:\.|$)/i)
+    
+    if (titleMatch) {
+      title = titleMatch[1].trim()
+      // Remove the title part from content
+      content = noteText.replace(titleMatch[0], '').trim()
+    } else {
+      // Generate title from first few words
+      title = this.generateNoteTitle(noteText)
+    }
+    
+    // Extract any hashtags or mentioned topics as tags
+    const tags: string[] = []
+    const hashtagMatches = content.match(/#\w+/g) || []
+    tags.push(...hashtagMatches.map(tag => tag.substring(1)))
+    
+    // Add default tag
+    tags.push('ai-generated')
+    
+    // Clean up content
+    content = content.replace(/^(?:about|for|with)\s+/i, '')
+    
+    return {
+      title: title || 'AI Note',
+      content: content || noteText,
+      tags: [...new Set(tags)] // Remove duplicates
+    }
   }
 
   private calculateOptimalThinkingBudget(

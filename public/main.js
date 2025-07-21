@@ -20123,7 +20123,7 @@ function PanelRenderer({ panel, workspaceId, onRefresh, onFullscreen, onFocus })
                 ),
                 panel.is_locked && /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(Lock, { className: "w-3 h-3 text-amber-600 flex-shrink-0" })
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "flex items-center gap-0.5 flex-shrink-0", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)("div", { className: "flex items-center flex-shrink-0 gap-1 min-w-max", children: [
                 (panel.type === "KANBAN" || panel.type === "CHAT" || panel.type === "AI_CHAT" || panel.type === "NOTES") && /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)(DropdownMenu2, { children: [
                   /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(DropdownMenuTrigger2, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(
                     Button,

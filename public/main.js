@@ -27,7 +27,7 @@ import {
   hideOthers,
   useFocusGuards,
   usePrevious
-} from "/chunks/chunk-NDJWTC4L.js";
+} from "/chunks/chunk-IPBQ77DO.js";
 import {
   NotesPanel_default
 } from "/chunks/chunk-4TQQ7EHU.js";
@@ -41,7 +41,7 @@ import {
   formatDateShort,
   formatDateTime,
   isSameMonth
-} from "/chunks/chunk-VU4KFXLP.js";
+} from "/chunks/chunk-25FXT3DU.js";
 import {
   Anchor,
   Arrow,
@@ -84,7 +84,7 @@ import {
   useControllableState,
   useId,
   useSize
-} from "/chunks/chunk-5P4EFELG.js";
+} from "/chunks/chunk-37KHA5HS.js";
 import {
   Toaster,
   toast
@@ -19774,10 +19774,10 @@ DropdownMenuShortcut.displayName = "DropdownMenuShortcut";
 
 // src/components/workspace/PanelRenderer.tsx
 var import_jsx_runtime63 = __toESM(require_jsx_runtime(), 1);
-var KanbanBoard2 = (0, import_react30.lazy)(() => import("/chunks/KanbanBoard-IDQHRXOO.js"));
+var KanbanBoard2 = (0, import_react30.lazy)(() => import("/chunks/KanbanBoard-BZC5YRLM.js"));
 var Chat2 = (0, import_react30.lazy)(() => import("/chunks/Chat-V5PQSFMQ.js"));
 var NotesPanel = (0, import_react30.lazy)(() => import("/chunks/NotesPanel-6A7DTOGB.js"));
-var NewCalendarPanel = (0, import_react30.lazy)(() => import("/chunks/NewCalendarPanel-KYEGC23E.js"));
+var NewCalendarPanel = (0, import_react30.lazy)(() => import("/chunks/NewCalendarPanel-ZOYEWNHX.js"));
 var Contacts = (0, import_react30.lazy)(() => import("/chunks/Contacts-DEZDJRCN.js"));
 var WorkspaceAiChat = (0, import_react30.lazy)(() => import("/chunks/WorkspaceAiChat-EJH5G3WD.js"));
 var PanelLoadingSpinner = () => /* @__PURE__ */ (0, import_jsx_runtime63.jsx)("div", { className: "flex items-center justify-center h-full", children: /* @__PURE__ */ (0, import_jsx_runtime63.jsx)(LoaderCircle, { className: "w-6 h-6 animate-spin text-krushr-primary" }) });

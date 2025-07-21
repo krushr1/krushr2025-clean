@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Calendar, ChevronLeft, ChevronRight, User, Tag, Paperclip, Upload, FileText } from 'lucide-react'
+import { X, Calendar, ChevronLeft, ChevronRight, User, Tag, Paperclip, Upload, FileText, Clock } from 'lucide-react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameMonth, isSameDay, isToday, addMonths, subMonths } from 'date-fns'
 import { useAuthStore } from '../../stores/auth-store'
 import { TaskStatus, Priority } from '../../types/enums'

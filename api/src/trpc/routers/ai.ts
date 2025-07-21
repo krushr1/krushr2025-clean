@@ -1060,5 +1060,88 @@ export const aiRouter = router({
     .query(async ({ input }) => {
       const { webSearchService } = await import('../../lib/web-search')
       return await webSearchService.getNews(input)
+    }),
+
+  // Debug test endpoint
+  testNoteCreation: protectedProcedure
+    .input(z.object({
+      message: z.string()
+    }))
+    .mutation(async ({ input, ctx }) => {
+      console.log('\n=== TEST NOTE CREATION ===')
+      console.log('Raw input:', JSON.stringify(input, null, 2))
+      console.log('User message:', input.message)
+      console.log('User ID:', ctx.user.id)
+      
+      // Parse the message
+      const { parseActionableItems } = await import('../../lib/ai')
+      const aiService = new (await import('../../lib/ai')).AiService()
+      const actions = aiService['parseActionableItems'](input.message)
+      
+      console.log('Parsed actions:', JSON.stringify(actions, null, 2))
+      
+      const results = []
+      
+      for (const action of actions) {
+        if (action.type === 'note' && action.confidence > 0.8) {
+          console.log('Creating note:', action.data)
+          
+          try {
+            // Find user's workspace
+            const workspace = await prisma.workspace.findFirst({
+              where: {
+                OR: [
+                  { ownerId: ctx.user.id },
+                  { members: { some: { userId: ctx.user.id } } }
+                ]
+              }
+            })
+            
+            if (!workspace) {
+              throw new Error('No workspace found')
+            }
+            
+            const note = await prisma.note.create({
+              data: {
+                title: action.data.title || 'Test Note',
+                content: action.data.content || '',
+                workspaceId: workspace.id,
+                authorId: ctx.user.id,
+                tags: {
+                  create: action.data.tags?.map((tag: string) => ({ name: tag })) || []
+                }
+              },
+              include: {
+                tags: true,
+                author: { select: { name: true } }
+              }
+            })
+            
+            console.log('Note created:', note.id)
+            results.push({
+              success: true,
+              note: {
+                id: note.id,
+                title: note.title,
+                content: note.content,
+                tags: note.tags.map(t => t.name),
+                author: note.author.name
+              }
+            })
+          } catch (error) {
+            console.error('Error creating note:', error)
+            results.push({
+              success: false,
+              error: error instanceof Error ? error.message : 'Unknown error'
+            })
+          }
+        }
+      }
+      
+      return {
+        message: input.message,
+        parsedActions: actions,
+        results
+      }
     })
 })

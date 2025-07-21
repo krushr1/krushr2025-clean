@@ -116,7 +116,8 @@ export class AiService {
       // Try to parse any actionable items from the USER'S MESSAGE, not the AI response
       console.log('[AI DEBUG] Parsing user message for actions:', lastUserMessage)
       const parsedActions = this.parseActionableItems(lastUserMessage)
-      console.log('[AI DEBUG] Found actions:', parsedActions)
+      console.log('[AI DEBUG] Found actions:', JSON.stringify(parsedActions, null, 2))
+      console.log('[AI DEBUG] Number of actions found:', parsedActions.length)
 
       return {
         content,

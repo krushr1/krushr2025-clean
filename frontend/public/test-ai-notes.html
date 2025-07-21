@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test AI Note Creation</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #143197;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #143197;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0e2470;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f4f8;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .error {
+            background: #fee;
+            color: #c00;
+        }
+        .success {
+            background: #efe;
+            color: #060;
+        }
+        .examples {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test AI Note Creation</h1>
+        
+        <div class="test-section">
+            <h2>Test Note Parsing</h2>
+            <div class="examples">
+                Try these examples:
+                <ul>
+                    <li>Create a note about the meeting tomorrow</li>
+                    <li>make a note titled "Project Ideas" with some content about new features</li>
+                    <li>Can you create a note for the bug fixes we discussed</li>
+                    <li>create a note that says hello world</li>
+                </ul>
+            </div>
+            <input type="text" id="testMessage" placeholder="Enter a message to test note creation..." value="Create a note about the meeting tomorrow">
+            <button onclick="testNoteCreation()">Test Note Creation</button>
+            <div id="testResults" class="results" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test AI Conversation</h2>
+            <input type="text" id="aiMessage" placeholder="Send a message to the AI..." value="Create a note titled 'Test Note' about testing the AI functionality">
+            <button onclick="sendAIMessage()">Send to AI</button>
+            <div id="aiResults" class="results" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Get auth token from localStorage
+        const authData = localStorage.getItem('auth-store');
+        let token = null;
+        if (authData) {
+            try {
+                const parsed = JSON.parse(authData);
+                token = parsed.state?.token;
+            } catch (e) {
+                console.error('Failed to parse auth data:', e);
+            }
+        }
+
+        if (!token) {
+            alert('Please log in first at http://127.0.0.1:8001/#/login');
+            window.location.href = 'http://127.0.0.1:8001/#/login';
+        }
+
+        async function testNoteCreation() {
+            const message = document.getElementById('testMessage').value;
+            const resultsDiv = document.getElementById('testResults');
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.className = 'results';
+            resultsDiv.textContent = 'Testing...';
+
+            try {
+                const response = await fetch('http://localhost:3002/trpc/ai.testNoteCreation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        json: { message }
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    resultsDiv.className = 'results error';
+                    resultsDiv.textContent = 'Error: ' + JSON.stringify(data.error, null, 2);
+                } else {
+                    resultsDiv.className = 'results success';
+                    resultsDiv.textContent = 'Result:\n' + JSON.stringify(data.result?.data?.json, null, 2);
+                }
+            } catch (error) {
+                resultsDiv.className = 'results error';
+                resultsDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function sendAIMessage() {
+            const message = document.getElementById('aiMessage').value;
+            const resultsDiv = document.getElementById('aiResults');
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.className = 'results';
+            resultsDiv.textContent = 'Sending to AI...';
+
+            try {
+                // First get conversations
+                const conversationsResponse = await fetch('http://localhost:3002/trpc/ai.getConversations?batch=1&input=' + encodeURIComponent(JSON.stringify({
+                    "0": {
+                        "json": {
+                            "workspaceId": "cmd5h651y0004qhdklsudml39"
+                        }
+                    }
+                })), {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const conversationsData = await conversationsResponse.json();
+                let conversationId = null;
+
+                if (conversationsData[0]?.result?.data?.json?.length > 0) {
+                    conversationId = conversationsData[0].result.data.json[0].id;
+                } else {
+                    // Create new conversation
+                    const createResponse = await fetch('http://localhost:3002/trpc/ai.createConversation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            json: {
+                                workspaceId: "cmd5h651y0004qhdklsudml39",
+                                title: "Test Note Creation"
+                            }
+                        })
+                    });
+                    const createData = await createResponse.json();
+                    conversationId = createData.result?.data?.json?.id;
+                }
+
+                if (!conversationId) {
+                    throw new Error('Failed to get or create conversation');
+                }
+
+                // Send message
+                const response = await fetch('http://localhost:3002/trpc/ai.sendMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        json: {
+                            conversationId,
+                            message,
+                            enableRealTimeData: false
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    resultsDiv.className = 'results error';
+                    resultsDiv.textContent = 'Error: ' + JSON.stringify(data.error, null, 2);
+                } else {
+                    resultsDiv.className = 'results success';
+                    const result = data.result?.data?.json;
+                    resultsDiv.textContent = `AI Response:\n${result?.assistantMessage?.content}\n\nParsed Actions:\n${JSON.stringify(result?.parsedActions, null, 2)}`;
+                }
+            } catch (error) {
+                resultsDiv.className = 'results error';
+                resultsDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

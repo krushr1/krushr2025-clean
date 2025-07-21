@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Note Creation Test Instructions</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #143197;
+        }
+        .test-case {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            border-left: 4px solid #143197;
+        }
+        .message {
+            font-family: monospace;
+            background: #e8f4f8;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .expected {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .steps {
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+        .important {
+            background: #fee;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #c00;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Testing AI Note Creation</h1>
+        
+        <div class="important">
+            <strong>IMPORTANT:</strong> The AI Assistant is configured to automatically create notes when you ask it to. The backend parsing and creation logic is implemented and working.
+        </div>
+
+        <h2>How to Test</h2>
+        <div class="steps">
+            <ol>
+                <li>Go to <a href="http://127.0.0.1:8001/#/workspace" target="_blank">http://127.0.0.1:8001/#/workspace</a></li>
+                <li>Log in with alice@krushr.dev / password123</li>
+                <li>Click on the AI Assistant panel on the right side</li>
+                <li>Send one of the test messages below</li>
+                <li>Check the Notes panel to see if the note was created</li>
+                <li>Check the browser console (F12) for any errors</li>
+            </ol>
+        </div>
+
+        <h2>Test Messages</h2>
+        
+        <div class="test-case">
+            <h3>Test 1: Simple Note Creation</h3>
+            <div class="message">Create a note about the meeting tomorrow</div>
+            <p class="expected">Expected: A note titled "meeting tomorrow" should appear in the Notes panel</p>
+        </div>
+
+        <div class="test-case">
+            <h3>Test 2: Note with Title</h3>
+            <div class="message">Make a note titled "Project Ideas" with some content about new features</div>
+            <p class="expected">Expected: A note titled "Project Ideas" with content about new features</p>
+        </div>
+
+        <div class="test-case">
+            <h3>Test 3: Simple Content</h3>
+            <div class="message">Create a note that says hello world</div>
+            <p class="expected">Expected: A note containing "hello world"</p>
+        </div>
+
+        <div class="test-case">
+            <h3>Test 4: With Tags</h3>
+            <div class="message">Create a note about API refactoring #backend #urgent</div>
+            <p class="expected">Expected: A note about API refactoring with tags "backend" and "urgent"</p>
+        </div>
+
+        <h2>What's Happening Behind the Scenes</h2>
+        <ul>
+            <li>When you send a message, the AI service parses it for actionable items</li>
+            <li>If it detects a note creation request with confidence > 0.8, it creates the note</li>
+            <li>The note is created with your user ID and workspace ID</li>
+            <li>The AI response is updated to confirm the note was created</li>
+        </ul>
+
+        <h2>Checking the Logs</h2>
+        <p>To see what's happening, check the API logs:</p>
+        <div class="message">tail -f /tmp/api.log | grep -E "(AI DEBUG|Note created|AI] Created)"</div>
+
+        <h2>Current Status</h2>
+        <ul>
+            <li>✅ Note parsing is working (tested)</li>
+            <li>✅ Direct database creation is working (tested)</li>
+            <li>✅ AI router has note creation logic</li>
+            <li>✅ Debug logging is in place</li>
+            <li>❓ Need to verify end-to-end flow through UI</li>
+        </ul>
+    </div>
+</body>
+</html>

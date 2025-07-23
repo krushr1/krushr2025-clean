@@ -21,7 +21,8 @@ import {
   User,
   ChevronDown,
   Plus,
-  Check
+  Check,
+  Loader2
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { trpc } from '../../lib/trpc'
@@ -222,374 +223,436 @@ export default function SimpleCreatePanel({
           </div>
         </SheetHeader>
 
-        <div className="mt-4 space-y-6">
-          {/* Task Title */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2 font-manrope">Task Title</label>
-            <FloatingInput
-              label="Task Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="text-lg font-medium border border-gray-200 rounded-lg px-3 py-2 focus:border-krushr-blue focus:ring-2 focus:ring-krushr-blue/20"
-              autoFocus
-            />
-          </div>
-
-          {/* Status + Priority Row */}
-          <div className="flex items-center justify-between">
-            {/* Status Tags */}
-            <div className="flex gap-1">
-              {[TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.REVIEW, TaskStatus.DONE].map((statusOption) => {
-                const labels = {
-                  [TaskStatus.TODO]: 'To Do',
-                  [TaskStatus.IN_PROGRESS]: 'In Progress', 
-                  [TaskStatus.REVIEW]: 'Review',
-                  [TaskStatus.DONE]: 'Done'
-                }
-                const colors = {
-                  [TaskStatus.TODO]: status === statusOption ? 'bg-blue-50 text-krushr-blue border-krushr-blue/30' : 'bg-white text-gray-600 border-gray-200 hover:border-krushr-blue/30',
-                  [TaskStatus.IN_PROGRESS]: status === statusOption ? 'bg-orange-50 text-orange-700 border-orange-300' : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300',
-                  [TaskStatus.REVIEW]: status === statusOption ? 'bg-purple-50 text-purple-700 border-purple-300' : 'bg-white text-gray-600 border-gray-200 hover:border-purple-300',
-                  [TaskStatus.DONE]: status === statusOption ? 'bg-green-50 text-green-700 border-green-300' : 'bg-white text-gray-600 border-gray-200 hover:border-green-300'
-                }
-                return (
-                  <button
-                    key={statusOption}
-                    onClick={() => setStatus(statusOption)}
-                    className={cn(
-                      "px-3 py-1.5 text-sm font-medium rounded-md border transition-all duration-200",
-                      colors[statusOption]
-                    )}
-                  >
-                    {labels[statusOption]}
-                  </button>
-                )
-              })}
-            </div>
-            
-            {/* Priority Dots */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Priority:</span>
-              <div className="flex gap-1">
-                {[1, 2, 3].map((level) => {
-                  const isActive = (
-                    (priority === Priority.LOW && level <= 1) ||
-                    (priority === Priority.MEDIUM && level <= 2) ||
-                    (priority === Priority.HIGH && level <= 3)
-                  )
-                  const targetPriority = level === 1 ? Priority.LOW : level === 2 ? Priority.MEDIUM : Priority.HIGH
-                  
-                  return (
-                    <button
-                      key={level}
-                      onClick={() => setPriority(targetPriority)}
-                      className={cn(
-                        "w-3 h-3 rounded-full transition-colors border-2",
-                        isActive ? "bg-krushr-secondary border-krushr-secondary" : "bg-white border-gray-300 hover:border-krushr-secondary/50"
-                      )}
-                      title={`${level === 1 ? 'Low' : level === 2 ? 'Medium' : 'High'} Priority`}
-                    />
-                  )
-                })}
+        <div className="mt-6 space-y-6">
+          {/* Primary Information Card */}
+          <Card className="border-0 shadow-elevation-sm bg-krushr-gray-bg-light rounded-modal">
+            <CardContent className="p-6">
+              {/* Task Title - Prominent */}
+              <div className="mb-6">
+                <FloatingInput
+                  label="Task Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="text-xl font-semibold border-2 border-krushr-gray-border rounded-input px-4 py-3 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200"
+                  autoFocus
+                />
               </div>
-            </div>
-          </div>
 
-          {/* Description - Main Content Area */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-gray-700">Description & Notes</label>
-            <Textarea
-              placeholder="Add a description..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[100px] resize-y text-sm border-gray-200 rounded-lg p-4 focus:border-krushr-blue focus:ring-2 focus:ring-krushr-blue/20"
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && e.ctrlKey && !createTaskMutation.isLoading) {
-                  e.preventDefault()
-                  handleSubmit()
-                }
-              }}
-            />
-          </div>
-
-          {/* Metadata - Clean Grid */}
-          <div className="grid grid-cols-3 gap-4 py-3 border-t border-gray-100">
-            {/* Assignee */}
-            <div className="relative" ref={assigneeRef}>
-              <div 
-                className="flex items-center gap-2 p-2 rounded-lg border border-gray-200 cursor-pointer hover:border-krushr-blue/50 transition-colors" 
-                onClick={() => setShowAssigneeDropdown(!showAssigneeDropdown)}
-              >
-                {assigneeId ? (
-                  <>
-                    {(() => {
-                      const assignee = workspaceMembers.find(m => m.id === assigneeId)
-                      return assignee ? (
-                        <>
-                          <div className="w-4 h-4 rounded-full bg-krushr-blue text-white text-xs flex items-center justify-center">
-                            {assignee.name?.charAt(0)}
+              {/* Status & Priority Section */}
+              <div className="space-y-4">
+                {/* Status Selection */}
+                <div>
+                  <label className="text-xs font-medium text-krushr-gray-dark uppercase tracking-wide mb-2 block">Status</label>
+                  <div className="flex gap-2">
+                    {[TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.REVIEW, TaskStatus.DONE].map((statusOption) => {
+                      const labels = {
+                        [TaskStatus.TODO]: 'To Do',
+                        [TaskStatus.IN_PROGRESS]: 'In Progress', 
+                        [TaskStatus.REVIEW]: 'Review',
+                        [TaskStatus.DONE]: 'Done'
+                      }
+                      const isSelected = status === statusOption
+                      const colors = {
+                        [TaskStatus.TODO]: isSelected ? 'bg-blue-100 text-blue-800 border-blue-300 shadow-sm' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-blue-300',
+                        [TaskStatus.IN_PROGRESS]: isSelected ? 'bg-amber-100 text-amber-800 border-amber-300 shadow-sm' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-amber-300',
+                        [TaskStatus.REVIEW]: isSelected ? 'bg-purple-100 text-purple-800 border-purple-300 shadow-sm' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-purple-300',
+                        [TaskStatus.DONE]: isSelected ? 'bg-green-100 text-green-800 border-green-300 shadow-sm' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-green-300'
+                      }
+                      return (
+                        <button
+                          key={statusOption}
+                          onClick={() => setStatus(statusOption)}
+                          className={cn(
+                            "px-4 py-2 text-sm font-medium rounded-button border-2 transition-all duration-200 flex-1",
+                            colors[statusOption]
+                          )}
+                        >
+                          <div className="flex items-center justify-center gap-2">
+                            {getStatusIcon(statusOption)}
+                            {labels[statusOption]}
                           </div>
-                          <span className="text-sm text-gray-900">{assignee.name}</span>
-                        </>
-                      ) : (
-                        <>
-                          <User className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm text-gray-600">Unassigned</span>
-                        </>
+                        </button>
                       )
-                    })()}
+                    })}
+                  </div>
+                </div>
+                
+                {/* Priority Selection */}
+                <div>
+                  <label className="text-xs font-medium text-krushr-gray-dark uppercase tracking-wide mb-2 block">Priority</label>
+                  <div className="flex gap-2">
+                    {[Priority.LOW, Priority.MEDIUM, Priority.HIGH].map((priorityOption) => {
+                      const labels = {
+                        [Priority.LOW]: 'Low',
+                        [Priority.MEDIUM]: 'Medium',
+                        [Priority.HIGH]: 'High'
+                      }
+                      const isSelected = priority === priorityOption
+                      const colors = {
+                        [Priority.LOW]: isSelected ? 'bg-green-100 text-green-800 border-green-300' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-green-300',
+                        [Priority.MEDIUM]: isSelected ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-amber-300',
+                        [Priority.HIGH]: isSelected ? 'bg-red-100 text-red-800 border-red-300' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-red-300'
+                      }
+                      const icons = {
+                        [Priority.LOW]: '○',
+                        [Priority.MEDIUM]: '◐',
+                        [Priority.HIGH]: '●'
+                      }
+                      
+                      return (
+                        <button
+                          key={priorityOption}
+                          onClick={() => setPriority(priorityOption)}
+                          className={cn(
+                            "px-4 py-2 text-sm font-medium rounded-button border-2 transition-all duration-200 flex-1",
+                            colors[priorityOption],
+                            isSelected && "shadow-sm"
+                          )}
+                        >
+                          <div className="flex items-center justify-center gap-2">
+                            <span className="text-lg">{icons[priorityOption]}</span>
+                            {labels[priorityOption]}
+                          </div>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Description Card */}
+          <Card className="border-0 shadow-elevation-sm">
+            <CardContent className="p-6">
+              <label className="text-xs font-medium text-krushr-gray-dark uppercase tracking-wide mb-3 block">Description</label>
+              <Textarea
+                placeholder="Add task details, requirements, or notes..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="min-h-[120px] resize-y text-base border-2 border-krushr-gray-border rounded-input p-4 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200 placeholder:text-krushr-gray-light"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && e.ctrlKey && !createTaskMutation.isLoading) {
+                    e.preventDefault()
+                    handleSubmit()
+                  }
+                }}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Task Details Card */}
+          <Card className="border-0 shadow-elevation-sm">
+            <CardContent className="p-6">
+              <h3 className="text-xs font-medium text-krushr-gray-dark uppercase tracking-wide mb-4">Task Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Assignee */}
+                <div className="relative" ref={assigneeRef}>
+                  <label className="text-xs text-krushr-gray mb-2 block">Assignee</label>
+                  <div 
+                    className="flex items-center gap-3 p-3 rounded-input border-2 border-krushr-gray-border cursor-pointer hover:border-krushr-primary transition-colors bg-white" 
+                    onClick={() => setShowAssigneeDropdown(!showAssigneeDropdown)}
+                  >
+                    {assigneeId ? (
+                      <>
+                        {(() => {
+                          const assignee = workspaceMembers.find(m => m.id === assigneeId)
+                          return assignee ? (
+                            <>
+                              <div className="w-8 h-8 rounded-full bg-krushr-primary text-white text-sm font-medium flex items-center justify-center">
+                                {assignee.name?.charAt(0).toUpperCase()}
+                              </div>
+                              <span className="text-sm font-medium text-krushr-gray-dark">{assignee.name}</span>
+                            </>
+                          ) : (
+                            <>
+                              <div className="w-8 h-8 rounded-full bg-krushr-gray-bg flex items-center justify-center">
+                                <User className="w-4 h-4 text-krushr-gray" />
+                              </div>
+                              <span className="text-sm text-krushr-gray">Unassigned</span>
+                            </>
+                          )
+                        })()}
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-8 h-8 rounded-full bg-krushr-gray-bg flex items-center justify-center">
+                          <User className="w-4 h-4 text-krushr-gray" />
+                        </div>
+                        <span className="text-sm text-krushr-gray">Unassigned</span>
+                      </>
+                    )}
+                    <ChevronDown className="w-4 h-4 text-krushr-gray-light ml-auto" />
+                  </div>
+                  
+                  {showAssigneeDropdown && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-krushr-gray-border rounded-input shadow-elevation-lg z-10 max-h-48 overflow-y-auto">
+                      <div 
+                        className="p-3 hover:bg-krushr-gray-bg-light cursor-pointer"
+                        onClick={() => {
+                          setAssigneeId(null)
+                          setShowAssigneeDropdown(false)
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-krushr-gray-bg flex items-center justify-center">
+                            <User className="w-4 h-4 text-krushr-gray" />
+                          </div>
+                          <span className="text-sm text-krushr-gray">Unassigned</span>
+                        </div>
+                      </div>
+                      {workspaceMembers.map(member => (
+                        <div 
+                          key={member.id}
+                          className="p-3 hover:bg-krushr-gray-bg-light cursor-pointer"
+                          onClick={() => {
+                            setAssigneeId(member.id)
+                            setShowAssigneeDropdown(false)
+                          }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-krushr-primary text-white text-sm font-medium flex items-center justify-center">
+                              {member.name?.charAt(0).toUpperCase()}
+                            </div>
+                            <span className="text-sm font-medium text-krushr-gray-dark">{member.name}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Due Date */}
+                <div className="relative" ref={datePickerRef}>
+                  <label className="text-xs text-krushr-gray mb-2 block">Due Date</label>
+                  <div 
+                    className="flex items-center gap-3 p-3 rounded-input border-2 border-krushr-gray-border cursor-pointer hover:border-krushr-primary transition-colors bg-white" 
+                    onClick={() => setShowDatePicker(!showDatePicker)}
+                  >
+                    <div className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center",
+                      dueDate ? "bg-krushr-primary-50" : "bg-krushr-gray-bg"
+                    )}>
+                      <Calendar className={cn(
+                        "w-4 h-4",
+                        dueDate ? "text-krushr-primary" : "text-krushr-gray"
+                      )} />
+                    </div>
+                    <span className={cn(
+                      "text-sm",
+                      dueDate ? "font-medium text-krushr-gray-dark" : "text-krushr-gray"
+                    )}>
+                      {dueDate ? new Date(dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'No due date'}
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-krushr-gray-light ml-auto" />
+                  </div>
+                  
+                  {showDatePicker && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-krushr-gray-border rounded-input shadow-elevation-lg z-10 p-4">
+                      <input
+                        type="date"
+                        value={dueDate}
+                        onChange={(e) => {
+                          setDueDate(e.target.value)
+                          setShowDatePicker(false)
+                        }}
+                        className="w-full p-3 border-2 border-krushr-gray-border rounded-input text-sm focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary"
+                      />
+                      {dueDate && (
+                        <button
+                          onClick={() => {
+                            setDueDate('')
+                            setShowDatePicker(false)
+                          }}
+                          className="mt-3 text-sm text-krushr-secondary hover:text-krushr-secondary/80 font-medium"
+                        >
+                          Clear date
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Created Time */}
+                <div>
+                  <label className="text-xs text-krushr-gray mb-2 block">Created</label>
+                  <div className="flex items-center gap-3 p-3 rounded-input bg-krushr-gray-bg-light">
+                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                      <Clock className="w-4 h-4 text-krushr-gray" />
+                    </div>
+                    <span className="text-sm text-krushr-gray">Just now</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Activity & Collaboration Card */}
+          <Card className="border-0 shadow-elevation-sm">
+            <CardContent className="p-6 space-y-6">
+              {/* Comments Section */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <MessageSquare className="w-4 h-4 text-krushr-primary" />
+                  <h3 className="text-xs font-medium text-krushr-gray-dark uppercase tracking-wide">Comments</h3>
+                  {comments.length > 0 && (
+                    <Badge variant="secondary" className="ml-auto text-xs px-2 py-0.5 bg-krushr-primary-50 text-krushr-primary border-0">
+                      {comments.length}
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex gap-3">
+                  <Textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Add a comment or note..."
+                    className="flex-1 min-h-[80px] text-sm resize-none border-2 border-krushr-gray-border rounded-input p-3 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200 placeholder:text-krushr-gray-light"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault()
+                        handleAddComment()
+                      }
+                    }}
+                  />
+                  <Button
+                    size="sm"
+                    onClick={handleAddComment}
+                    disabled={!comment.trim()}
+                    className="h-[42px] px-4 bg-krushr-primary hover:bg-krushr-primary-700 rounded-button"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
+                
+                {/* Show local comments */}
+                {comments.length > 0 && (
+                  <div className="mt-4 space-y-2 max-h-40 overflow-y-auto">
+                    {comments.map((comment) => (
+                      <div key={comment.id} className="bg-krushr-gray-bg-light rounded-input p-3 border border-krushr-gray-border">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-krushr-gray-dark">
+                            {comment.user?.name}
+                          </span>
+                          <span className="text-xs text-krushr-gray">
+                            {comment.isLocal ? 'Pending' : 'Just now'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-krushr-gray-dark">{comment.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Files Section */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Paperclip className="w-4 h-4 text-krushr-primary" />
+                  <h3 className="text-xs font-medium text-krushr-gray-dark uppercase tracking-wide">Attachments</h3>
+                  {attachments.length > 0 && (
+                    <Badge variant="secondary" className="ml-auto text-xs px-2 py-0.5 bg-krushr-primary-50 text-krushr-primary border-0">
+                      {attachments.length}
+                    </Badge>
+                  )}
+                </div>
+                
+                <div className="border-2 border-dashed border-krushr-gray-border rounded-input p-6 text-center hover:border-krushr-primary transition-colors bg-krushr-gray-bg-light/50">
+                  <Upload className="h-8 w-8 mx-auto text-krushr-gray mb-2" />
+                  <input
+                    type="file"
+                    multiple
+                    className="hidden"
+                    id="file-upload"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || [])
+                      const newAttachments = files.map(file => ({
+                        id: Date.now() + Math.random(),
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        file: file,
+                        isLocal: true
+                      }))
+                      setAttachments(prev => [...prev, ...newAttachments])
+                    }}
+                  />
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-sm text-krushr-gray hover:text-krushr-primary p-0 font-medium"
+                    onClick={() => document.getElementById('file-upload')?.click()}
+                  >
+                    Drop files here or click to browse
+                  </Button>
+                  <p className="text-xs text-krushr-gray-light mt-1">Maximum file size: 15MB</p>
+                </div>
+
+                {attachments.length > 0 && (
+                  <div className="mt-3 space-y-2 max-h-32 overflow-y-auto">
+                    {attachments.map((attachment) => (
+                      <div key={attachment.id} className="flex items-center justify-between p-3 bg-white rounded-input border border-krushr-gray-border">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="w-8 h-8 rounded-full bg-krushr-primary-50 flex items-center justify-center">
+                            <Paperclip className="w-4 h-4 text-krushr-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-krushr-gray-dark truncate">{attachment.name}</p>
+                            <p className="text-xs text-krushr-gray">{(attachment.size / 1024).toFixed(1)} KB</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-krushr-secondary hover:text-krushr-secondary/80 hover:bg-red-50 rounded-full"
+                          onClick={() => {
+                            setAttachments(prev => prev.filter(a => a.id !== attachment.id))
+                          }}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+        </div>
+
+        {/* Footer Actions - Fixed at bottom */}
+        <div className="sticky bottom-0 left-0 right-0 bg-white border-t-2 border-krushr-gray-border px-6 py-4 -mx-6 -mb-6 mt-8">
+          <div className="flex justify-between items-center">
+            <p className="text-sm text-krushr-gray">
+              {title.trim() ? 'Ready to create' : 'Enter a task title to continue'}
+            </p>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={onClose}
+                disabled={createTaskMutation.isLoading}
+                className="h-11 px-6 text-sm font-medium border-2 border-krushr-gray-border hover:bg-krushr-gray-bg rounded-button"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={!title.trim() || createTaskMutation.isLoading}
+                className="h-11 px-8 text-sm gap-2 bg-krushr-primary hover:bg-krushr-primary-700 focus:ring-2 focus:ring-krushr-primary/50 text-white font-medium rounded-button shadow-elevation-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {createTaskMutation.isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Creating...
                   </>
                 ) : (
                   <>
-                    <User className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">Unassigned</span>
+                    <Plus className="w-4 h-4" />
+                    Create Task
                   </>
                 )}
-                <ChevronDown className="w-3 h-3 text-gray-400 ml-auto" />
-              </div>
-              
-              {showAssigneeDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
-                  <div 
-                    className="p-2 hover:bg-gray-50 cursor-pointer text-sm"
-                    onClick={() => {
-                      setAssigneeId(null)
-                      setShowAssigneeDropdown(false)
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-600">Unassigned</span>
-                    </div>
-                  </div>
-                  {workspaceMembers.map(member => (
-                    <div 
-                      key={member.id}
-                      className="p-2 hover:bg-gray-50 cursor-pointer text-sm"
-                      onClick={() => {
-                        setAssigneeId(member.id)
-                        setShowAssigneeDropdown(false)
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full bg-krushr-blue text-white text-xs flex items-center justify-center">
-                          {member.name?.charAt(0)}
-                        </div>
-                        <span className="text-gray-900">{member.name}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              </Button>
             </div>
-            
-            {/* Due Date */}
-            <div className="relative" ref={datePickerRef}>
-              <div 
-                className="flex items-center gap-2 p-2 rounded-lg border border-gray-200 cursor-pointer hover:border-krushr-blue/50 transition-colors" 
-                onClick={() => setShowDatePicker(!showDatePicker)}
-              >
-                <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
-                  {dueDate ? new Date(dueDate).toLocaleDateString() : 'No date'}
-                </span>
-                <ChevronDown className="w-3 h-3 text-gray-400 ml-auto" />
-              </div>
-              
-              {showDatePicker && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 p-3">
-                  <input
-                    type="date"
-                    value={dueDate}
-                    onChange={(e) => {
-                      setDueDate(e.target.value)
-                      setShowDatePicker(false)
-                    }}
-                    className="w-full p-2 border border-gray-200 rounded text-sm focus:ring-2 focus:ring-krushr-blue focus:border-krushr-blue"
-                  />
-                  {dueDate && (
-                    <button
-                      onClick={() => {
-                        setDueDate('')
-                        setShowDatePicker(false)
-                      }}
-                      className="mt-2 text-xs text-red-500 hover:text-red-700"
-                    >
-                      Clear date
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-            
-            {/* Created */}
-            <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-50">
-              <Clock className="w-4 h-4 text-gray-400" />
-              <span className="text-sm text-gray-500">Just now</span>
-            </div>
-          </div>
-
-          {/* Unified Features - Streamlined */}
-          <div className="space-y-4">
-            
-            {/* Comments Section */}
-            <div className="bg-gray-50 rounded-lg p-3 space-y-3">
-              <div className="flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-krushr-blue" />
-                <h4 className="text-sm font-medium text-gray-900">Comments ({comments.length})</h4>
-              </div>
-              <div className="flex gap-2">
-                <Textarea
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Add a comment..."
-                  className="flex-1 min-h-[60px] text-sm resize-none border-gray-200 focus:border-krushr-blue focus:ring-2 focus:ring-krushr-blue/20"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault()
-                      handleAddComment()
-                    }
-                  }}
-                />
-                <Button
-                  size="sm"
-                  onClick={handleAddComment}
-                  disabled={!comment.trim()}
-                  className="h-10 px-3 bg-krushr-blue hover:bg-krushr-blue/90"
-                >
-                  <Send className="w-3 h-3" />
-                </Button>
-              </div>
-              
-              {/* Show local comments */}
-              {comments.length > 0 && (
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {comments.map((comment) => (
-                    <div key={comment.id} className="bg-white rounded p-2 border">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-medium text-gray-900">
-                          {comment.user?.name}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {comment.isLocal ? 'Just now' : 'Unknown'}
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-600">{comment.content}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Files Section */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Paperclip className="w-4 h-4 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">Files ({attachments.length})</span>
-              </div>
-              
-              <div className="border border-dashed border-gray-200 rounded-lg p-2 text-center hover:border-krushr-blue/50 transition-colors">
-                <Upload className="h-4 w-4 mx-auto text-gray-400 mb-1" />
-                <input
-                  type="file"
-                  multiple
-                  className="hidden"
-                  id="file-upload"
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || [])
-                    const newAttachments = files.map(file => ({
-                      id: Date.now() + Math.random(),
-                      name: file.name,
-                      size: file.size,
-                      type: file.type,
-                      file: file,
-                      isLocal: true
-                    }))
-                    setAttachments(prev => [...prev, ...newAttachments])
-                  }}
-                />
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-xs text-gray-600 hover:text-gray-800 p-0"
-                  onClick={() => document.getElementById('file-upload')?.click()}
-                >
-                  Drop files or click to upload
-                </Button>
-              </div>
-
-              {attachments.length > 0 && (
-                <div className="space-y-1 max-h-24 overflow-y-auto">
-                  {attachments.map((attachment) => (
-                    <div key={attachment.id} className="flex items-center justify-between p-2 bg-gray-50 rounded text-sm">
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <Paperclip className="w-3 h-3 text-gray-500 flex-shrink-0" />
-                        <span className="truncate">{attachment.name}</span>
-                        <span className="text-xs text-gray-400">({(attachment.size / 1024).toFixed(1)} KB)</span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-5 w-5 p-0 text-red-500 hover:text-red-700 flex-shrink-0"
-                        onClick={() => {
-                          setAttachments(prev => prev.filter(a => a.id !== attachment.id))
-                        }}
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Activity Summary - Only show if there's content */}
-            {(comments.length > 0 || attachments.length > 0) && (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="w-4 h-4 text-gray-500" />
-                  <h4 className="text-sm font-medium text-gray-700">Ready to Create</h4>
-                </div>
-                <div className="space-y-1 text-sm text-gray-600">
-                  {comments.length > 0 && (
-                    <div>
-                      {comments.length} comment{comments.length > 1 ? 's' : ''} prepared
-                    </div>
-                  )}
-                  {attachments.length > 0 && (
-                    <div>
-                      {attachments.length} file{attachments.length > 1 ? 's' : ''} ready to upload
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Submit Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-            <Button
-              variant="ghost"
-              onClick={onClose}
-              disabled={createTaskMutation.isLoading}
-              className="h-10 px-4 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              disabled={!title.trim() || createTaskMutation.isLoading}
-              className="h-10 px-6 text-sm gap-2 bg-krushr-secondary hover:bg-krushr-secondary/90 focus:ring-2 focus:ring-krushr-secondary/50 text-white font-medium"
-            >
-              {createTaskMutation.isLoading ? (
-                <>Creating...</>
-              ) : (
-                <>
-                  <Send className="w-4 h-4" />
-                  Create Task
-                </>
-              )}
-            </Button>
           </div>
         </div>
       </SheetContent>

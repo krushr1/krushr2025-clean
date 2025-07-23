@@ -48,6 +48,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
   
   const messageInputRef = useRef<HTMLTextAreaElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
   
   const { user } = useAppStore()
   
@@ -117,8 +118,12 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
   })
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    // Scroll to bottom of messages container, not the whole page
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]')
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight
+      }
     }
   }, [currentConversation?.messages])
 
@@ -544,7 +549,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       )}
 
       {/* Messages area */}
-      <ScrollArea className="flex-1 p-3">
+      <ScrollArea ref={scrollAreaRef} className="flex-1 p-3">
         <div className="space-y-4">
           {selectedConversation && currentConversation ? (
             currentConversation.messages.map((msg) => (

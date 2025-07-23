@@ -6,7 +6,7 @@ import {
   addDays,
   endOfWeek,
   formatDateShort
-} from "/chunks/chunk-DYE23CGZ.js";
+} from "/chunks/chunk-RGPFVMLT.js";
 import {
   Badge,
   Card,
@@ -21,8 +21,7 @@ import {
   startOfMonth,
   startOfWeek,
   subMonths
-} from "/chunks/chunk-WPWKPIGS.js";
-import "/chunks/chunk-XTC34SKS.js";
+} from "/chunks/chunk-UVGALXX6.js";
 import {
   FloatingInput
 } from "/chunks/chunk-KI66MM42.js";
@@ -1258,4 +1257,4 @@ function NewCalendarPanel({
 export {
   NewCalendarPanel as default
 };
-//# sourceMappingURL=/chunks/NewCalendarPanel-Y5ZWY3K5.js.map
+//# sourceMappingURL=/chunks/NewCalendarPanel-SDULDVSX.js.map

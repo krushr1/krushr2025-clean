@@ -1,4 +1,7 @@
 import {
+  toast
+} from "/chunks/chunk-XTC34SKS.js";
+import {
   Anchor,
   Arrow,
   Badge,
@@ -12,9 +15,6 @@ import {
   Root2,
   TaskStatus,
   VISUALLY_HIDDEN_STYLES,
-  __assign,
-  __rest,
-  __spreadArray,
   constructNow,
   createPopperScope,
   enUS,
@@ -27,10 +27,7 @@ import {
   toDate,
   useControllableState,
   useId
-} from "/chunks/chunk-WPWKPIGS.js";
-import {
-  toast
-} from "/chunks/chunk-XTC34SKS.js";
+} from "/chunks/chunk-UVGALXX6.js";
 import {
   FloatingInput
 } from "/chunks/chunk-KI66MM42.js";
@@ -5133,6 +5130,65 @@ function createFocusGuard() {
   element.style.position = "fixed";
   element.style.pointerEvents = "none";
   return element;
+}
+
+// ../node_modules/tslib/tslib.es6.mjs
+var __assign = function() {
+  __assign = Object.assign || function __assign2(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+    }
+    return t;
+  };
+  return __assign.apply(this, arguments);
+};
+function __rest(s, e) {
+  var t = {};
+  for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+    t[p] = s[p];
+  if (s != null && typeof Object.getOwnPropertySymbols === "function")
+    for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+      if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+        t[p[i]] = s[p[i]];
+    }
+  return t;
+}
+function __awaiter(thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function(resolve) {
+      resolve(value);
+    });
+  }
+  return new (P || (P = Promise))(function(resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+}
+function __spreadArray(to, from2, pack) {
+  if (pack || arguments.length === 2) for (var i = 0, l = from2.length, ar; i < l; i++) {
+    if (ar || !(i in from2)) {
+      if (!ar) ar = Array.prototype.slice.call(from2, 0, i);
+      ar[i] = from2[i];
+    }
+  }
+  return to.concat(ar || Array.prototype.slice.call(from2));
 }
 
 // ../node_modules/react-remove-scroll/dist/es2015/Combination.js
@@ -30153,6 +30209,7 @@ function KanbanBoard({ kanban, className }) {
           setSelectedColumnId(null);
         },
         workspaceId: kanban.workspaceId,
+        kanbanId: kanban.id,
         kanbanColumnId: selectedColumnId || void 0,
         onSuccess: () => {
           refetchTasks();
@@ -30180,6 +30237,7 @@ function KanbanBoard({ kanban, className }) {
 export {
   FocusScope,
   useFocusGuards,
+  __awaiter,
   Combination_default,
   hideOthers,
   createDialogScope,
@@ -30253,4 +30311,4 @@ export {
    * LICENSE file in the root directory of this source tree.
    *)
 */
-//# sourceMappingURL=/chunks/chunk-J7TN7SAX.js.map
+//# sourceMappingURL=/chunks/chunk-AMS5GO54.js.map

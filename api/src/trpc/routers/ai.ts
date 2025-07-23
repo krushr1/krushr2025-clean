@@ -82,7 +82,8 @@ export const aiRouter = router({
       message: z.string().min(1, 'Message cannot be empty'),
       thinkingBudget: z.number().min(0).max(24576).optional(),
       includeRealtimeContext: z.boolean().default(true),
-      enableRealTimeData: z.boolean().default(false)
+      enableRealTimeData: z.boolean().default(false),
+      autoCreate: z.boolean().default(true) // Enable auto-creation by default
     }))
     .mutation(async ({ input, ctx }) => {
       // Notify WebSocket clients that AI is starting to think
@@ -145,6 +146,41 @@ export const aiRouter = router({
           }
         ]
 
+        // Parse user's message for actionable items BEFORE AI response
+        console.log('[AI DEBUG] Parsing user message for actions BEFORE AI response:', input.message)
+        
+        // Check if user is referring to previous content
+        let noteContent = input.message
+        let forceNoteCreation = false
+        
+        if (input.message.toLowerCase().match(/^(add|save|make|create)\s+(that|this|it)\s+(as\s+)?a?\s*note/i)) {
+          // User wants to save previous AI response as a note
+          const lastAssistantMessage = conversation.messages
+            .filter(m => m.role === 'assistant')
+            .pop()
+          
+          if (lastAssistantMessage) {
+            console.log('[AI DEBUG] Using previous AI response as note content')
+            noteContent = lastAssistantMessage.content
+            forceNoteCreation = true
+          }
+        }
+        
+        let parsedActions = aiService['parseActionableItems'](noteContent)
+        
+        // If user explicitly wants to save previous response as note, force it
+        if (forceNoteCreation && parsedActions.length === 0) {
+          const noteData = aiService['extractNoteData'](noteContent, noteContent)
+          parsedActions = [{
+            type: 'note' as const,
+            data: noteData,
+            confidence: 1.0
+          }]
+          console.log('[AI DEBUG] Forced note creation with content:', noteData)
+        }
+        
+        console.log('[AI DEBUG] Pre-parsed actions:', JSON.stringify(parsedActions, null, 2))
+
         // DIRECT INTERVENTION: Check for government queries and override
         const userQuery = input.message.toLowerCase()
         let finalResponse: any
@@ -168,7 +204,7 @@ export const aiRouter = router({
             cost: 0.0001,
             responseTime: 0,
             actualThinkingBudget: 0,
-            parsedActions: []
+            parsedActions: parsedActions // Use pre-parsed actions
           }
         } else {
           console.log('🤖 Using normal AI response')
@@ -179,6 +215,8 @@ export const aiRouter = router({
             autoThinkingBudget: true,
             enableRealTimeData: input.enableRealTimeData
           })
+          // Override parsed actions with our pre-parsed ones
+          finalResponse.parsedActions = parsedActions
         }
 
         // Save AI response
@@ -259,15 +297,15 @@ export const aiRouter = router({
         console.log('🔥 Workspace ID:', conversation.workspaceId)
         console.log('[AI DEBUG] Parsed actions:', JSON.stringify(finalResponse.parsedActions, null, 2))
         
-        if (finalResponse.parsedActions && finalResponse.parsedActions.length > 0) {
+        let updatedContent = finalResponse.content
+        const createdNotes = []
+        
+        if (finalResponse.parsedActions && finalResponse.parsedActions.length > 0 && input.autoCreate) {
           for (const action of finalResponse.parsedActions) {
             console.log(`[AI DEBUG] Processing action: type=${action.type}, confidence=${action.confidence}`)
             
-            if (action.type === 'task' && action.confidence > 0.8) {
-              // High-confidence tasks can be tracked for suggestion
-              console.log(`[AI] High-confidence task suggestion: "${action.data.title}"`)
-            } else if (action.type === 'note' && action.confidence > 0.8) {
-              // Auto-create notes with high confidence
+            if (action.type === 'note' && action.confidence > 0.8) {
+              // Auto-create notes with high confidence when autoCreate is enabled
               console.log('[AI DEBUG] Attempting to create note:', action.data)
               try {
                 const note = await prisma.note.create({
@@ -282,14 +320,28 @@ export const aiRouter = router({
                   }
                 })
                 console.log(`[AI] Created note: "${note.title}" (ID: ${note.id})`)
-                
-                // Add confirmation to the response
-                assistantMessage.content += `\n\nI've created a note titled "${note.title}" in your Notes panel.`
+                createdNotes.push(note)
               } catch (error) {
                 console.error('[AI] Failed to create note:', error)
               }
             }
           }
+          
+          // Add confirmation for all created notes
+          if (createdNotes.length > 0) {
+            updatedContent += '\n\n---\n'
+            for (const note of createdNotes) {
+              updatedContent += `\nCreated note: "${note.title}"`
+            }
+          }
+        }
+        
+        // Update the assistant message with note confirmations
+        if (createdNotes.length > 0) {
+          await prisma.aiMessage.update({
+            where: { id: assistantMessage.id },
+            data: { content: updatedContent }
+          })
         }
 
         // Notify WebSocket clients that AI response is complete

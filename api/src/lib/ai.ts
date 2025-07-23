@@ -147,45 +147,38 @@ export class AiService {
   }
 
   private generateSystemPrompt(workspaceId?: string, realTimeData?: any): string {
-    return `You are KRUSHR AI, an intelligent productivity assistant permanently oriented towards intelligent conciseness.
+    return `You are Krushr AI - a sharp, capable productivity assistant.
 
-**Core Directive**: Maximize insight per word. Every response must deliver maximum value with minimum verbosity.
+**Core abilities:**
+- Create notes instantly when asked ("make a note", "save this", "remember")
+- Organize information into tasks, projects, and events
+- Provide quick, actionable answers
+- Access real-time data when enabled
 
-**Response Requirements**:
-- **Lead with action**: Start with what matters most
-- **Be decisive**: Give clear recommendations, not options
-- **Stay practical**: Focus on implementable solutions
-- **Cut fluff**: No preambles, pleasantries, or unnecessary explanations
+**Communication style:**
+- Use bullet points and numbered lists for clarity
+- Structure responses with clear sections
+- Direct and concise - no fluff or emojis
+- Start with the answer, add context only if needed
+- One clear recommendation over multiple options
 
-**Intelligent Conciseness Means**:
-- One sentence when one sentence suffices
-- Direct answers to direct questions
-- Specific solutions over general advice
-- Examples only when they clarify, not decorate
+**Response formatting:**
+- Use headers for different sections
+- Bullet points for lists and key points
+- Numbered steps for processes
+- Clear separation between topics
 
-**What You Create**:
-- **Tasks**: Action-oriented requests → Clear task with priority/deadline
-- **Notes**: Information storage → Structured note with key details (I can create these for you!)
-- **Projects**: Large-scope work → Project with clear scope/deliverables
-- **Events**: Scheduling requests → Event with time/participants
+**When creating notes:**
+- The system automatically creates notes when you ask
+- Do NOT say "I'll create a note" - it happens automatically
+- Do NOT say "Creating a note titled..." - just provide the information
+- When user says "make that a note", the system saves your previous response
+- Focus on providing good content, the system handles note creation
 
-When users ask me to create a note:
-- I should acknowledge their request clearly
-- I cannot directly create notes myself - I'm just an AI language model
-- The system will attempt to parse their request and create the note automatically
-- I should NOT claim I've created the note - only that I understand their request
-
-**Communication Style**:
-- Professional but conversational
-- Confident without being arrogant
-- Helpful without being verbose
-- Format sparingly: **bold** for critical points only
-
-${workspaceId ? `**Workspace**: ${workspaceId}` : ''}
-
+${workspaceId ? `Workspace: ${workspaceId}` : ''}
 ${realTimeData && Object.keys(realTimeData).length > 0 ? this.formatRealTimeDataContext(realTimeData) : ''}
 
-Your mission: Make users more productive through intelligent, concise assistance.`
+Be helpful. Be fast. Get things done.`
   }
 
   private parseActionableItems(content: string): Array<{
@@ -193,25 +186,22 @@ Your mission: Make users more productive through intelligent, concise assistance
     data: any
     confidence: number
   }> {
-    const actions = []
+    const actions: Array<{
+      type: 'task' | 'note' | 'event' | 'project'
+      data: any
+      confidence: number
+    }> = []
     const text = content.toLowerCase()
     
-    // Task patterns
-    const taskPatterns = [
-      /(?:need to|have to|must|should|todo|task)\s+(.+?)(?:\.|$)/gi,
-      /(?:create|build|fix|update|review|test|deploy)\s+(.+?)(?:\.|$)/gi,
-      /(.+?)\s+(?:by|due|deadline|before)\s+(.+?)(?:\.|$)/gi
-    ]
+    // Check for explicit note requests FIRST to prevent task pattern overlap
+    const isNoteRequest = /(?:create|make|add|write|save)\s+(?:a?\s*)?note|^(add|save|make)\s+(that|this|it)\s+(as\s+)?a?\s*note$/i.test(content)
     
-    // Note patterns - improved to capture full content
+    // Note patterns - capture everything after "note"
     const notePatterns = [
-      /(?:create a note|make a note|add a note)\s+(?:about|for|titled|called)?\s*(.+)$/gi,
-      /(?:create a note|make a note|add a note)\s+(?:about|for|titled|called)?\s*(.+?)(?:\s*\.\s*(?:create|make|add|also|and then|then|next)|$)/gi,
-      /(?:please|can you|could you)\s+(?:create|make|add)\s+a note\s+(.+)$/gi,
-      /(?:please|can you|could you)\s+(?:create|make|add)\s+a note\s+(.+?)(?:\s*\.\s*(?:create|make|add|also|and then|then|next)|$)/gi,
+      /(?:create|make|add|write)\s+(?:a?\s*)?note\s+(?:in\s+\w+\s+)?(?:about|for|on|regarding|with|titled)?\s*(.+)$/gi,
       /^(?:note|remember|jot down|write down|document)\s+(.+)$/gi,
       /(?:keep track of|record|log)\s+(.+)$/gi,
-      /(?:save|store)\s+(?:this|the following)\s+(?:as a note|in notes)\s*:?\s*(.+)$/gi
+      /^(add|save|make)\s+(that|this|it)\s+(as\s+)?a?\s*note$/gi  // For contextual references
     ]
     
     // Project patterns
@@ -224,6 +214,53 @@ Your mission: Make users more productive through intelligent, concise assistance
     const eventPatterns = [
       /(?:meeting|call|appointment|schedule|book)\s+(.+?)(?:\.|$)/gi,
       /(?:standup|review|demo|presentation)\s+(.+?)(?:\.|$)/gi
+    ]
+    
+    // Parse notes FIRST if it's a note request
+    if (isNoteRequest) {
+      // For "make note" at the end, capture everything before it
+      const makeNoteEndMatch = content.match(/^(.+?)\.\s*make\s+note(?:\s+in\s+\w+)?$/i)
+      if (makeNoteEndMatch) {
+        const noteData = this.extractNoteData(makeNoteEndMatch[1], content)
+        actions.push({
+          type: 'note',
+          data: {
+            title: noteData.title,
+            content: noteData.content,
+            tags: noteData.tags
+          },
+          confidence: 0.95
+        })
+        return actions
+      }
+      
+      // Otherwise try standard patterns
+      notePatterns.forEach(pattern => {
+        let match
+        while ((match = pattern.exec(content)) !== null) {
+          const noteContent = match[1] || match[0]
+          const noteData = this.extractNoteData(noteContent, content)
+          
+          actions.push({
+            type: 'note',
+            data: {
+              title: noteData.title,
+              content: noteData.content,
+              tags: noteData.tags
+            },
+            confidence: 0.95 // Very high confidence for explicit note requests
+          })
+          return // Only create ONE note per request
+        }
+      })
+      return actions // Skip other patterns if it's a note request
+    }
+    
+    // Task patterns - only check if NOT a note request
+    const taskPatterns = [
+      /(?:need to|have to|must|should|todo|task)\s+(.+?)(?:\.|$)/gi,
+      /(?:build|fix|update|review|test|deploy)\s+(.+?)(?:\.|$)/gi, // Removed 'create' to avoid overlap
+      /(.+?)\s+(?:by|due|deadline|before)\s+(.+?)(?:\.|$)/gi
     ]
     
     // Parse tasks
@@ -239,25 +276,6 @@ Your mission: Make users more productive through intelligent, concise assistance
             dueDate: this.extractDate(match[0])
           },
           confidence: 0.8
-        })
-      }
-    })
-    
-    // Parse notes
-    notePatterns.forEach(pattern => {
-      let match
-      while ((match = pattern.exec(content)) !== null) {
-        const noteContent = match[1] || match[0]
-        const noteData = this.extractNoteData(noteContent, content)
-        
-        actions.push({
-          type: 'note',
-          data: {
-            title: noteData.title,
-            content: noteData.content,
-            tags: noteData.tags
-          },
-          confidence: 0.85 // Higher confidence for note creation
         })
       }
     })
@@ -365,41 +383,58 @@ Your mission: Make users more productive through intelligent, concise assistance
     let title = ''
     let content = noteText
     
-    // Check for explicit title patterns with quotes
-    const quotedTitleMatch = noteText.match(/(?:titled?|called?)\s+"([^"]+)"/i)
-    if (quotedTitleMatch) {
-      title = quotedTitleMatch[1].trim()
-      // Remove the title part and keep the rest as content
-      content = noteText.replace(quotedTitleMatch[0], '').trim()
-      console.log('[AI DEBUG] Found quoted title:', title)
+    // For numbered lists or structured content, extract title from first line
+    const lines = noteText.trim().split('\n')
+    if (lines.length > 1 && (lines[0].match(/^(top \d+|best \d+|\d+\.|##?\s)/i) || lines[1].match(/^[1-9]\./))) {
+      // First line is likely the title
+      title = lines[0].replace(/^##?\s*/, '').replace(/:$/, '').trim()
+      content = noteText.trim() // Keep full content including title
+      console.log('[AI DEBUG] Extracted title from first line:', title)
     } else {
-      // Check for title without quotes - but be more careful about content extraction
-      const unquotedTitleMatch = noteText.match(/(?:titled?|called?)\s+([^,]+?)(?:\s+(?:with|about|that|containing|for)|$)/i)
-      if (unquotedTitleMatch) {
-        title = unquotedTitleMatch[1].trim()
-        // Keep everything after the title as content
-        const titleEndIndex = noteText.indexOf(unquotedTitleMatch[1]) + unquotedTitleMatch[1].length
-        content = noteText.substring(titleEndIndex).replace(/^\s*(?:with|about|that|containing|for)\s*/i, '').trim()
-        console.log('[AI DEBUG] Found unquoted title:', title)
-        console.log('[AI DEBUG] Extracted content after title:', content)
+      // Check for explicit title patterns with quotes
+      const quotedTitleMatch = noteText.match(/(?:titled?|called?)\s+"([^"]+)"/i)
+      if (quotedTitleMatch && quotedTitleMatch[1]) {
+        title = quotedTitleMatch[1].trim()
+        // Remove the title part and keep the rest as content
+        content = noteText.replace(quotedTitleMatch[0], '').trim()
+        console.log('[AI DEBUG] Found quoted title:', title)
       } else {
-        // No explicit title - use first few words as title, rest as content
-        const words = noteText.trim().split(/\s+/)
-        if (words.length > 5) {
-          title = words.slice(0, 5).join(' ') + '...'
-          content = words.slice(5).join(' ')
+        // Check for title without quotes
+        const unquotedTitleMatch = noteText.match(/(?:titled?|called?)\s+([^,]+?)(?:\s+(?:with|about|that|containing|for)|$)/i)
+        if (unquotedTitleMatch && unquotedTitleMatch[1]) {
+          title = unquotedTitleMatch[1].trim()
+          // Keep everything after the title as content
+          const titleEndIndex = noteText.indexOf(unquotedTitleMatch[1]) + unquotedTitleMatch[1].length
+          content = noteText.substring(titleEndIndex).replace(/^\s*(?:with|about|that|containing|for)\s*/i, '').trim()
+          console.log('[AI DEBUG] Found unquoted title:', title)
         } else {
-          title = noteText.trim()
+          // No explicit title - generate smart title from content
+          const words = noteText.trim().split(/\s+/)
+          
+          // Look for key topic words to create a meaningful title
+          if (noteText.toLowerCase().includes('restaurants')) {
+            title = 'Restaurant List'
+          } else if (noteText.toLowerCase().includes('meeting')) {
+            const meetingMatch = noteText.match(/(\w+\s+)?meeting/i)
+            title = meetingMatch ? meetingMatch[0] : 'Meeting Notes'
+          } else if (words.length > 3) {
+            // Use first 3-4 words as title
+            title = words.slice(0, Math.min(4, words.length)).join(' ')
+          } else {
+            title = noteText.trim()
+          }
+          
+          // Always use FULL text as content
           content = noteText.trim()
+          console.log('[AI DEBUG] Generated title from content:', title)
         }
-        console.log('[AI DEBUG] Generated title from content:', title)
       }
     }
     
-    // If content is still empty or too short, use the original noteText
-    if (!content || content.length < 3) {
-      content = noteText
-      console.log('[AI DEBUG] Using full noteText as content')
+    // Always ensure we have the full content
+    if (!content || content.length < 10) {
+      content = noteText.trim()
+      console.log('[AI DEBUG] Ensuring full content is captured')
     }
     
     // Extract any hashtags or mentioned topics as tags

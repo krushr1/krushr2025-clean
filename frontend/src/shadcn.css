@@ -509,8 +509,9 @@ h1, h2, h3, h4, h5, h6 {
 /* Mobile-first responsive utilities */
 @media (max-width: 768px) {
   /* Ensure all interactive elements meet touch target size */
-  button, 
-  [role="button"],
+  /* But exclude small icon buttons that need to stay compact */
+  button:not([class*="w-5"]):not([class*="w-4"]):not([class*="w-6"]):not(.btn-icon-sm), 
+  [role="button"]:not([class*="w-5"]):not([class*="w-4"]):not([class*="w-6"]):not(.btn-icon-sm),
   input[type="checkbox"],
   input[type="radio"],
   select,
@@ -518,6 +519,15 @@ h1, h2, h3, h4, h5, h6 {
     min-width: 44px;
     min-height: 44px;
     touch-action: manipulation;
+  }
+  
+  /* Small icon buttons should not have minimum width */
+  button[class*="w-5"],
+  button[class*="w-4"], 
+  button[class*="w-6"],
+  .btn-icon-sm {
+    min-width: unset !important;
+    min-height: unset !important;
   }
   
   /* Larger tap areas for small icons on mobile */

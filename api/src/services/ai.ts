@@ -213,5 +213,4 @@ export const aiService = new AIService({
   maxTokens: 1000
 })
 
-// Export types for frontend use
-export type { AITaskAnalysis, AIServiceConfig }
+// Types are already exported above as interfaces

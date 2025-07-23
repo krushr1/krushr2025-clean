@@ -10009,6 +10009,7 @@ function WorkspaceAiChat({ workspaceId, className }) {
   const [enableRealTimeData, setEnableRealTimeData] = (0, import_react2.useState)(false);
   const messageInputRef = (0, import_react2.useRef)(null);
   const messagesEndRef = (0, import_react2.useRef)(null);
+  const scrollAreaRef = (0, import_react2.useRef)(null);
   const { user } = useAppStore();
   const utils = trpc.useUtils();
   const { data: conversations, refetch: refetchConversations } = trpc.ai.getConversations.useQuery({
@@ -10062,8 +10063,11 @@ function WorkspaceAiChat({ workspaceId, className }) {
     }
   });
   (0, import_react2.useEffect)(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector("[data-radix-scroll-area-viewport]");
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
     }
   }, [currentConversation?.messages]);
   (0, import_react2.useEffect)(() => {
@@ -10420,7 +10424,7 @@ function WorkspaceAiChat({ workspaceId, className }) {
         )
       ] })
     ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ScrollArea, { className: "flex-1 p-3", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "space-y-4", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ScrollArea, { ref: scrollAreaRef, className: "flex-1 p-3", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "space-y-4", children: [
       selectedConversation && currentConversation ? currentConversation.messages.map((msg) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "group flex items-start space-x-3 hover:bg-gray-50 -mx-2 px-2 py-1 rounded", children: [
         /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Avatar, { className: "w-7 h-7 flex-shrink-0", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(AvatarFallback, { className: "text-xs", children: msg.role === "user" ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(User, { className: "w-4 h-4" }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Bot, { className: "w-4 h-4 text-krushr-coral-red" }) }) }),
         /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex-1 min-w-0", children: [
@@ -10590,4 +10594,4 @@ function WorkspaceAiChat({ workspaceId, className }) {
 export {
   WorkspaceAiChat as default
 };
-//# sourceMappingURL=/chunks/WorkspaceAiChat-PBTIQQBY.js.map
+//# sourceMappingURL=/chunks/WorkspaceAiChat-IYODR6ZU.js.map

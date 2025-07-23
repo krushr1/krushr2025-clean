@@ -671,6 +671,7 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
           setSelectedColumnId(null)
         }}
         workspaceId={kanban.workspaceId}
+        kanbanId={kanban.id}
         kanbanColumnId={selectedColumnId || undefined}
         onSuccess={() => {
           refetchTasks()

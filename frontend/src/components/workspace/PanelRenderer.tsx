@@ -472,6 +472,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
           "flex flex-row items-center space-y-0 p-0 px-3 py-1.5",
           panel.is_locked && "cursor-not-allowed"
         )}
+        style={{ justifyContent: 'flex-start' }}
       >
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <div className="text-krushr-coral-red">
@@ -505,7 +506,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
           
         </div>
         
-        <div className="grid grid-flow-col auto-cols-max gap-0.5 items-center ml-auto">
+        <div className="flex items-center" style={{ marginLeft: 'auto', gap: '2px' }}>
           {/* Panel-specific actions dropdown */}
           {(panel.type === 'KANBAN' || panel.type === 'CHAT' || panel.type === 'AI_CHAT' || panel.type === 'NOTES') && (
             <DropdownMenu>
@@ -513,7 +514,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
                 <Button 
                   size="sm" 
                   variant="ghost" 
-                  className="w-5 h-5 p-0 hover:bg-gray-100"
+                  className="w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0"
                   title="Panel actions"
                 >
                   <MoreHorizontal className="w-2.5 h-2.5" />
@@ -589,7 +590,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
           <Button 
             size="sm" 
             variant="ghost" 
-            className="w-5 h-5 p-0 hover:bg-gray-100"
+            className="w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0"
             onClick={handleToggleLock}
             disabled={toggleLock.isPending}
             title={panel.is_locked ? "Unlock panel" : "Lock panel"}
@@ -606,7 +607,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
           <Button 
             size="sm" 
             variant="ghost" 
-            className="w-5 h-5 p-0 hover:bg-blue-100 hover:text-blue-600"
+            className="w-5 h-5 p-0 hover:bg-blue-100 hover:text-blue-600 flex-shrink-0"
             onClick={handleToggleFullscreen}
             disabled={toggleFullscreen.isPending}
             title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
@@ -623,7 +624,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
           <Button 
             size="sm" 
             variant="ghost" 
-            className="w-5 h-5 p-0 hover:bg-gray-100"
+            className="w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0"
             onClick={handleToggleMinimize}
             disabled={toggleMinimize.isPending}
             title={panel.is_minimized ? "Restore panel" : "Minimize panel"}
@@ -640,7 +641,7 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
           <Button 
             size="sm" 
             variant="ghost" 
-            className="w-5 h-5 p-0 hover:bg-red-100 hover:text-red-600"
+            className="w-5 h-5 p-0 hover:bg-red-100 hover:text-red-600 flex-shrink-0"
             onClick={handleDelete}
             title="Delete panel"
           >

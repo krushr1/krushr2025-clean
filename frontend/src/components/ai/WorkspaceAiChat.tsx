@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useOptimisticDelete } from '@/hooks/use-optimistic-delete'
+import { useOptimisticAction } from '@/hooks/use-optimistic-action'
 import ReactMarkdown from 'react-markdown'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -292,25 +294,59 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     }
   }
 
-  const handleDeleteConversation = (conversationId: string, e: React.MouseEvent) => {
+  const { deleteItem } = useOptimisticDelete()
+  const { execute } = useOptimisticAction()
+
+  const handleDeleteConversation = async (conversationId: string, e: React.MouseEvent) => {
     e.stopPropagation() // Prevent conversation selection
-    if (confirm('Delete this conversation? This action cannot be undone.')) {
-      deleteConversation.mutate({ conversationId })
-    }
+    
+    const conversationToDelete = conversations?.find(c => c.id === conversationId)
+    if (!conversationToDelete) return
+    
+    await deleteItem({
+      type: 'conversation',
+      item: conversationToDelete,
+      itemName: conversationToDelete.title || 'Untitled conversation',
+      deleteAction: async () => {
+        await deleteConversation.mutateAsync({ conversationId })
+      },
+      onOptimisticRemove: () => {
+        // Clear if active conversation
+        if (activeConversation?.id === conversationId) {
+          setActiveConversation(null)
+        }
+        // Conversation will disappear from list due to refetch
+      },
+      onRestore: () => {
+        // Just trigger a refetch to show the conversation again
+        refetchConversations()
+      }
+    })
   }
 
-  const handleAddToFavorites = (messageContent: string, e: React.MouseEvent) => {
+  const handleAddToFavorites = async (messageContent: string, e: React.MouseEvent) => {
     e.stopPropagation()
     
     // Get first line or truncate for title
     const title = messageContent.split('\n')[0].substring(0, 50)
     const prompt = messageContent.length > 200 ? messageContent.substring(0, 200) + '...' : messageContent
     
-    // For now, just show confirmation - in a real app you'd save to backend
-    if (confirm(`Add "${title}" to favorites?`)) {
-      // TODO: Implement actual saving to favorites
-      alert('Favorite saved! (Note: This is a demo - real implementation would save to database)')
-    }
+    // Immediately add to favorites without confirmation
+    await execute({
+      type: 'conversation',
+      action: async () => {
+        // TODO: Implement actual saving to favorites
+        console.log('Adding to favorites:', title)
+      },
+      undoAction: async () => {
+        // TODO: Remove from favorites
+        console.log('Removing from favorites:', title)
+      },
+      item: { title, content: messageContent },
+      getMessage: () => 'Added to favorites',
+      getUndoMessage: () => 'Removed from favorites',
+      showUndo: true
+    })
   }
 
   return (

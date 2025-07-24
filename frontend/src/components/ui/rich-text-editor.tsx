@@ -3,11 +3,24 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
-import TaskList from '@tiptap/extension-task-list';
-import TaskItem from '@tiptap/extension-task-item';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import { cn } from '@/lib/utils';
+import { 
+  Bold, 
+  Italic, 
+  Strikethrough, 
+  Heading1, 
+  Heading2, 
+  Heading3, 
+  List, 
+  ListOrdered, 
+ 
+  Quote, 
+  Code2, 
+  Link2, 
+  Link2Off 
+} from 'lucide-react';
 
 interface RichTextEditorProps {
   content?: string;
@@ -49,13 +62,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           class: 'text-krushr-primary hover:text-krushr-primary-700 underline cursor-pointer',
         },
       }),
-      TaskList,
-      TaskItem.configure({
-        nested: true,
-        HTMLAttributes: {
-          class: 'flex items-start gap-2',
-        },
-      }),
       TextStyle,
       Color,
     ],
@@ -75,21 +81,19 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           'focus:outline-none',
           'text-krushr-gray-dark',
           'cursor-text',
-          '[&_p]:my-2',
-          '[&_h1]:text-xl [&_h1]:font-semibold [&_h1]:text-krushr-gray-900 [&_h1]:my-3',
-          '[&_h2]:text-lg [&_h2]:font-medium [&_h2]:text-krushr-gray-900 [&_h2]:my-2',
-          '[&_h3]:text-base [&_h3]:font-medium [&_h3]:text-krushr-gray-900 [&_h3]:my-2',
-          '[&_ul]:my-2 [&_ol]:my-2',
-          '[&_li]:my-1',
-          '[&_blockquote]:border-l-4 [&_blockquote]:border-krushr-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-krushr-gray-600',
-          '[&_code]:bg-krushr-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:text-krushr-gray-800',
-          '[&_pre]:bg-krushr-gray-100 [&_pre]:p-3 [&_pre]:rounded [&_pre]:overflow-x-auto',
+          'text-sm leading-relaxed',
+          '[&_p]:my-1 [&_p]:text-sm [&_p]:leading-relaxed',
+          '[&_h1]:text-lg [&_h1]:font-semibold [&_h1]:text-krushr-gray-900 [&_h1]:my-2',
+          '[&_h2]:text-base [&_h2]:font-medium [&_h2]:text-krushr-gray-900 [&_h2]:my-1.5',
+          '[&_h3]:text-sm [&_h3]:font-medium [&_h3]:text-krushr-gray-900 [&_h3]:my-1',
+          '[&_ul]:my-1 [&_ul]:list-disc [&_ul]:ml-4',
+          '[&_ol]:my-1 [&_ol]:list-decimal [&_ol]:ml-4',
+          '[&_li]:my-0.5 [&_li]:text-sm',
+          '[&_blockquote]:border-l-4 [&_blockquote]:border-krushr-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-krushr-gray-600 [&_blockquote]:text-sm',
+          '[&_code]:bg-krushr-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_code]:text-krushr-gray-800',
+          '[&_pre]:bg-krushr-gray-100 [&_pre]:p-2 [&_pre]:rounded [&_pre]:overflow-x-auto [&_pre]:text-sm',
           '[&_strong]:font-semibold [&_strong]:text-krushr-gray-900',
           '[&_em]:italic',
-          '[&_ul[data-type="taskList"]]:list-none [&_ul[data-type="taskList"]]:pl-0',
-          '[&_li[data-type="taskItem"]]:flex [&_li[data-type="taskItem"]]:items-start [&_li[data-type="taskItem"]]:gap-2',
-          '[&_li[data-type="taskItem"]>label]:flex [&_li[data-type="taskItem"]>label]:items-center [&_li[data-type="taskItem"]>label]:gap-2',
-          '[&_li[data-type="taskItem"]>label>input]:mt-0.5',
           className
         ),
         spellcheck: 'true',
@@ -126,14 +130,14 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div className="relative">
       {!minimal && (
-        <div className="border-b border-krushr-gray-200 pb-2 mb-3">
+        <div className="border-b border-krushr-gray-200 pb-1 mb-2">
           <EditorToolbar editor={editor} />
         </div>
       )}
       <div
         onClick={handleClick}
         className={cn(
-          'min-h-[200px] p-4',
+          'min-h-[60px] p-3',
           'border-2 border-blue-300 rounded-lg bg-white',
           'focus-within:border-blue-500',
           !editable && 'bg-gray-100 cursor-not-allowed opacity-60',
@@ -141,8 +145,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           className
         )}
         style={{ 
-          minHeight: '200px',
-          padding: '16px',
+          minHeight: '60px',
+          padding: '12px',
           border: '2px solid #93c5fd',
           cursor: editable ? 'text' : 'not-allowed'
         }}
@@ -150,7 +154,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         <EditorContent
           editor={editor}
           className="w-full"
-          style={{ minHeight: '150px' }}
+          style={{ minHeight: '40px' }}
         />
       </div>
     </div>
@@ -162,26 +166,37 @@ interface EditorToolbarProps {
 }
 
 const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
+  
   const ToolbarButton: React.FC<{
     onClick: () => void;
     isActive?: boolean;
     children: React.ReactNode;
     title?: string;
-  }> = ({ onClick, isActive, children, title }) => (
-    <button
-      onClick={onClick}
-      title={title}
-      className={cn(
-        'p-2 rounded text-sm font-medium transition-colors',
-        'hover:bg-krushr-gray-100',
-        isActive
-          ? 'bg-krushr-primary text-white hover:bg-krushr-primary-700'
-          : 'text-krushr-gray-600'
-      )}
-    >
-      {children}
-    </button>
-  );
+  }> = ({ onClick, isActive, children, title }) => {
+    const handleClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onClick();
+    };
+    
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        onMouseDown={(e) => e.preventDefault()}
+        title={title}
+        className={cn(
+          'p-1.5 rounded text-sm font-medium transition-colors flex items-center justify-center',
+          'hover:bg-krushr-gray-100',
+          isActive
+            ? 'bg-krushr-primary text-white hover:bg-krushr-primary-700'
+            : 'text-krushr-gray-600'
+        )}
+      >
+        {children}
+      </button>
+    );
+  };
 
   return (
     <div className="flex flex-wrap gap-1">
@@ -190,7 +205,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('bold')}
         title="Bold"
       >
-        <strong>B</strong>
+        <Bold className="w-4 h-4" />
       </ToolbarButton>
 
       <ToolbarButton
@@ -198,7 +213,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('italic')}
         title="Italic"
       >
-        <em>I</em>
+        <Italic className="w-4 h-4" />
       </ToolbarButton>
 
       <ToolbarButton
@@ -206,7 +221,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('strike')}
         title="Strikethrough"
       >
-        <s>S</s>
+        <Strikethrough className="w-4 h-4" />
       </ToolbarButton>
 
       <div className="w-px h-6 bg-krushr-gray-300 mx-1" />
@@ -216,7 +231,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('heading', { level: 1 })}
         title="Heading 1"
       >
-        H1
+        <Heading1 className="w-4 h-4" />
       </ToolbarButton>
 
       <ToolbarButton
@@ -224,7 +239,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('heading', { level: 2 })}
         title="Heading 2"
       >
-        H2
+        <Heading2 className="w-4 h-4" />
       </ToolbarButton>
 
       <ToolbarButton
@@ -232,7 +247,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('heading', { level: 3 })}
         title="Heading 3"
       >
-        H3
+        <Heading3 className="w-4 h-4" />
       </ToolbarButton>
 
       <div className="w-px h-6 bg-krushr-gray-300 mx-1" />
@@ -242,7 +257,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('bulletList')}
         title="Bullet List"
       >
-        •
+        <List className="w-4 h-4" />
       </ToolbarButton>
 
       <ToolbarButton
@@ -250,16 +265,9 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('orderedList')}
         title="Numbered List"
       >
-        1.
+        <ListOrdered className="w-4 h-4" />
       </ToolbarButton>
 
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleTaskList().run()}
-        isActive={editor.isActive('taskList')}
-        title="Task List"
-      >
-        ☐
-      </ToolbarButton>
 
       <div className="w-px h-6 bg-krushr-gray-300 mx-1" />
 
@@ -268,7 +276,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('blockquote')}
         title="Quote"
       >
-        "
+        <Quote className="w-4 h-4" />
       </ToolbarButton>
 
       <ToolbarButton
@@ -276,7 +284,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         isActive={editor.isActive('codeBlock')}
         title="Code Block"
       >
-        &lt;/&gt;
+        <Code2 className="w-4 h-4" />
       </ToolbarButton>
 
       <div className="w-px h-6 bg-krushr-gray-300 mx-1" />
@@ -285,20 +293,25 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         onClick={() => {
           const url = window.prompt('Enter URL:');
           if (url) {
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+              alert('URL must start with http:// or https://');
+              return;
+            }
             editor.chain().focus().setLink({ href: url }).run();
           }
         }}
         isActive={editor.isActive('link')}
         title="Add Link"
       >
-        🔗
+        <Link2 className="w-4 h-4" />
       </ToolbarButton>
 
       <ToolbarButton
         onClick={() => editor.chain().focus().unsetLink().run()}
         title="Remove Link"
+        isActive={false}
       >
-        🔗⃠
+        <Link2Off className="w-4 h-4" />
       </ToolbarButton>
     </div>
   );

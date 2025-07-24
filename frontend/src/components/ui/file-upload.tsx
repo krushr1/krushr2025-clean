@@ -2,6 +2,7 @@
 import React, { useRef, useState } from 'react'
 import { Upload, X, File, CheckCircle, AlertCircle } from 'lucide-react'
 import { Button } from './button'
+import { useToast } from '@/hooks/use-toast'
 
 interface FileUploadProps {
   onFileSelect: (files: File[]) => void
@@ -32,6 +33,7 @@ export function FileUpload({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState<FileWithStatus[]>([])
+  const { toast } = useToast()
 
   const validateFile = (file: File): string | null => {
     if (file.size > maxSize) {
@@ -69,7 +71,11 @@ export function FileUpload({
 
     const totalFiles = selectedFiles.length + newFiles.length
     if (totalFiles > maxFiles) {
-      alert(`Maximum ${maxFiles} files allowed`)
+      toast({
+        title: 'Too Many Files',
+        description: `Maximum ${maxFiles} files allowed. You have selected ${totalFiles} files.`,
+        variant: 'destructive'
+      })
       return
     }
 

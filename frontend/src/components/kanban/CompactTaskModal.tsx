@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Calendar, ChevronLeft, ChevronRight, User, Tag, Paperclip, Upload, FileText, Clock, Plus, Loader2 } from 'lucide-react'
+import { useOptimisticDelete } from '@/hooks/use-optimistic-delete'
+import { RichTextEditor } from '../ui/rich-text-editor'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameMonth, isSameDay, isToday, addMonths, subMonths } from 'date-fns'
 import { useAuthStore } from '../../stores/auth-store'
 import { Priority } from '../../types/enums'
@@ -280,20 +282,28 @@ export default function CompactTaskModal({
     }
   }
 
+  const { deleteItem } = useOptimisticDelete()
+
   const handleDelete = async () => {
-    if (!task?.id || !confirm('Are you sure you want to delete this task?')) return
+    if (!task?.id) return
     
-    setIsLoading(true)
-    try {
-      await deleteTaskMutation.mutateAsync({ id: task.id })
-      onTaskCreated?.()
-      onSuccess?.()
-      onClose()
-    } catch (error) {
-      console.error('Failed to delete task:', error)
-    } finally {
-      setIsLoading(false)
-    }
+    await deleteItem({
+      type: 'task',
+      item: task,
+      itemName: task.title || 'Untitled task',
+      deleteAction: async () => {
+        await deleteTaskMutation.mutateAsync({ id: task.id })
+      },
+      onOptimisticRemove: () => {
+        onClose() // Close modal immediately
+        onTaskCreated?.() // Trigger refresh
+        onSuccess?.()
+      },
+      onRestore: () => {
+        // Just trigger a refresh to show the task again
+        onTaskCreated?.()
+      }
+    })
   }
 
   const handleFileSelect = (files: File[]) => {
@@ -418,22 +428,21 @@ export default function CompactTaskModal({
         onClick={onClose}
       />
       
-      {/* Modal Container - Compact Intelligent Design */}
-      <div className="relative w-full max-w-2xl mx-4 max-h-[85vh] bg-white rounded-lg overflow-hidden flex flex-col shadow-lg border border-krushr-gray-border">
+      {/* Modal Container - Responsive Intelligent Design */}
+      <div className="relative w-full max-w-3xl mx-4 max-h-[90vh] bg-white rounded-lg overflow-hidden flex flex-col shadow-lg border border-krushr-gray-border">
         {/* Compact Header with Task Title */}
         <div className="px-4 py-3 border-b border-krushr-gray-border bg-gradient-to-r from-krushr-gray-bg-light to-white">
           <div className="flex items-center justify-between">
-            <FloatingInput
+            <input
               type="text"
-              label={isEditMode ? 'Edit task' : 'What needs to be done?'}
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value)
                 analyzeTitle(e.target.value)
               }}
               autoFocus
-              className="flex-1 mr-3 text-lg font-semibold border-0 px-0 py-0 focus:ring-0 bg-transparent placeholder:text-krushr-gray-light"
-              placeholder="Enter task title..."
+              className="flex-1 mr-3 text-lg font-semibold border-0 px-0 py-0 focus:outline-none focus:ring-0 bg-transparent placeholder:text-krushr-gray-light"
+              placeholder={isEditMode ? 'Edit task title...' : 'What needs to be done?'}
             />
             <button 
               onClick={onClose}
@@ -447,137 +456,49 @@ export default function CompactTaskModal({
         {/* Content - Intelligent Compact Layout */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
           <div className="p-4">
-            {/* Two Column Layout for Efficiency */}
-            <div className="grid grid-cols-[1fr,280px] gap-4">
+            {/* Two Column Layout - Responsive */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr,300px] gap-4">
               {/* Left Column - Main Content */}
               <div className="space-y-4">
-                {/* Description - Expandable */}
-                <div className="relative">
-                  <textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="w-full min-h-[80px] resize-y text-sm border border-krushr-gray-border rounded-md px-3 pt-5 pb-2 focus:border-krushr-primary focus:ring-1 focus:ring-krushr-primary/20 transition-all duration-200 peer"
-                    placeholder=" "
-                  />
-                  <label
-                    htmlFor="description"
-                    className="absolute text-xs text-gray-500 duration-300 transform -translate-y-3 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-3 left-1"
-                  >
-                    Description
-                  </label>
-                </div>
-
-                {/* Quick Properties Grid */}
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Kanban Column Selection */}
-                  <div>
-                    <label className="text-xs font-medium text-krushr-gray mb-2 block">Column</label>
-                    <div className="grid grid-cols-2 gap-1">
-                      {columns.map((column) => (
-                        <button
-                          key={column.id}
-                          type="button"
-                          onClick={() => setSelectedColumnId(column.id)}
-                          className={cn(
-                            "px-2 py-1.5 text-xs font-medium rounded border transition-all",
-                            selectedColumnId === column.id
-                              ? "bg-krushr-primary text-white border-krushr-primary"
-                              : "bg-white text-krushr-gray border-krushr-gray-border hover:border-krushr-gray"
-                          )}
-                          style={{
-                            borderColor: selectedColumnId === column.id ? column.color : undefined
-                          }}
-                        >
-                          {column.title}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Assignee */}
-                  <div className="relative">
-                    <select
-                      id="assignee"
-                      value={assigneeId}
-                      onChange={(e) => setAssigneeId(e.target.value)}
-                      className="w-full h-[34px] px-2 pt-4 pb-1 text-xs border border-krushr-gray-border rounded focus:border-krushr-primary focus:ring-1 focus:ring-krushr-primary/20 appearance-none bg-white peer"
-                    >
-                      <option value="" className="text-xs">Unassigned</option>
-                      {workspaceUsers?.map((user) => (
-                        <option key={user.id} value={user.id} className="text-xs">
-                          {user.name || user.email}
-                        </option>
-                      ))}
-                    </select>
-                    <label
-                      htmlFor="assignee"
-                      className="absolute text-xs text-gray-500 duration-300 transform -translate-y-3 scale-75 top-1 z-10 origin-[0] bg-white px-1 left-2 pointer-events-none"
-                    >
-                      Assignee
-                    </label>
-                  </div>
-                </div>
-                {/* Tags Input */}
+                {/* Description - Rich Text Editor */}
                 <div>
-                  <FloatingInput
-                    type="text"
-                    label="Tags (comma separated)"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                    className="w-full px-3 py-1.5 text-sm border border-krushr-gray-border rounded focus:border-krushr-primary focus:ring-1 focus:ring-krushr-primary/20"
-                  />
-                  {tags && (
-                    <div className="flex gap-1 mt-1 flex-wrap">
-                      {tags.split(',').map((tag, idx) => tag.trim() && (
-                        <span key={idx} className="text-xs bg-krushr-gray-bg px-2 py-0.5 rounded">
-                          #{tag.trim()}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Attachments */}
-                <div>
-                  <label className="text-xs font-medium text-krushr-gray mb-2 block">Attachments</label>
-                  <div 
-                    className="border border-dashed border-krushr-gray-border rounded p-3 text-center hover:border-krushr-primary transition-colors cursor-pointer hover:bg-krushr-gray-bg-light"
-                    onClick={() => document.getElementById('file-input')?.click()}
-                  >
-                    <Upload className="w-4 h-4 mx-auto text-krushr-gray mb-1" />
-                    <p className="text-xs text-krushr-gray">
-                      Drop files or <span className="text-krushr-primary">browse</span>
-                    </p>
-                    <input
-                      id="file-input"
-                      type="file"
-                      multiple
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files) {
-                          handleFileSelect(Array.from(e.target.files))
-                        }
-                      }}
+                  <label className="text-xs font-medium text-krushr-gray mb-2 block">Description</label>
+                  <div className="border border-krushr-gray-border rounded-md overflow-hidden">
+                    <RichTextEditor
+                      content={description}
+                      onChange={(content) => setDescription(content)}
+                      placeholder="Add task details, requirements, or notes..."
+                      className="min-h-[60px] [&>div:last-child]:min-h-[40px] [&>div:last-child]:border-0 [&_.border-b]:border-krushr-gray-border [&_.border-b]:pb-1 [&_.border-b]:mb-1 [&_.flex-wrap]:gap-0.5 [&_button]:p-1 [&_.w-px]:mx-0.5"
+                      minimal={false}
                     />
                   </div>
-                  {pendingFiles.length > 0 && (
-                    <div className="mt-2 space-y-1">
-                      {pendingFiles.map((file, index) => (
-                        <div key={index} className="flex items-center justify-between p-1.5 bg-krushr-gray-bg-light rounded text-xs">
-                          <span className="truncate">{file.name}</span>
-                          <button
-                            type="button"
-                            onClick={() => removePendingFile(index)}
-                            className="text-krushr-gray hover:text-krushr-secondary"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
+
+                {/* Kanban Column Selection */}
+                <div>
+                  <label className="text-xs font-medium text-krushr-gray mb-2 block">Column</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-1">
+                    {columns.map((column) => (
+                      <button
+                        key={column.id}
+                        type="button"
+                        onClick={() => setSelectedColumnId(column.id)}
+                        className={cn(
+                          "px-2 py-1.5 text-xs font-medium rounded border transition-all",
+                          selectedColumnId === column.id
+                            ? "bg-krushr-primary text-white border-krushr-primary"
+                            : "bg-white text-krushr-gray border-krushr-gray-border hover:border-krushr-gray"
+                        )}
+                        style={{
+                          borderColor: selectedColumnId === column.id ? column.color : undefined
+                        }}
+                      >
+                        {column.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
               </div>
 
               {/* Right Column - Calendar */}
@@ -700,6 +621,121 @@ export default function CompactTaskModal({
 
                 {/* Priority Selector - Now under calendar */}
                 <PrioritySelector priority={priority} onChange={setPriority} />
+
+                {/* Assignee Selection */}
+                <div className="bg-white border border-krushr-gray-border rounded p-3">
+                  <label className="text-xs font-medium text-krushr-gray mb-2 block">Assignee</label>
+                  {!assigneeId ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // If only one user, assign directly, otherwise show selection
+                        if (workspaceUsers && workspaceUsers.length === 1) {
+                          setAssigneeId(workspaceUsers[0].id)
+                        }
+                      }}
+                      className="w-full px-3 py-1.5 text-xs font-medium text-krushr-gray border border-dashed border-krushr-gray-border rounded hover:border-krushr-primary hover:text-krushr-primary transition-all flex items-center justify-center gap-1"
+                    >
+                      <Plus className="w-3 h-3" />
+                      Assignee
+                    </button>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-krushr-primary rounded-full flex items-center justify-center text-white text-xs font-medium">
+                          {workspaceUsers?.find(u => u.id === assigneeId)?.name?.[0] || 
+                           workspaceUsers?.find(u => u.id === assigneeId)?.email?.[0] || '?'}
+                        </div>
+                        <span className="text-xs text-krushr-gray-dark">
+                          {workspaceUsers?.find(u => u.id === assigneeId)?.name || 
+                           workspaceUsers?.find(u => u.id === assigneeId)?.email}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setAssigneeId('')}
+                        className="text-krushr-gray hover:text-krushr-secondary p-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                  {workspaceUsers && workspaceUsers.length > 1 && !assigneeId && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {workspaceUsers.map((user) => (
+                        <button
+                          key={user.id}
+                          type="button"
+                          onClick={() => setAssigneeId(user.id)}
+                          className="px-2 py-1 text-xs bg-krushr-gray-bg hover:bg-krushr-gray-light rounded transition-colors"
+                        >
+                          {user.name || user.email}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Tags Input */}
+                <div className="bg-white border border-krushr-gray-border rounded p-3">
+                  <FloatingInput
+                    type="text"
+                    label="Tags (comma separated)"
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
+                    className="w-full px-3 py-1.5 text-xs border-0 focus:ring-0"
+                  />
+                  {tags && (
+                    <div className="flex gap-1 mt-1 flex-wrap">
+                      {tags.split(',').map((tag, idx) => tag.trim() && (
+                        <span key={idx} className="text-xs bg-krushr-gray-bg px-2 py-0.5 rounded">
+                          #{tag.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Attachments - Compact */}
+                <div className="bg-white border border-krushr-gray-border rounded p-3">
+                  <label className="text-xs font-medium text-krushr-gray mb-2 block">Attachments</label>
+                  <div 
+                    className="border border-dashed border-krushr-gray-border rounded p-2 text-center hover:border-krushr-primary transition-colors cursor-pointer hover:bg-krushr-gray-bg-light"
+                    onClick={() => document.getElementById('file-input')?.click()}
+                  >
+                    <div className="flex items-center justify-center gap-1 text-xs text-krushr-gray">
+                      <Upload className="w-3 h-3" />
+                      <span>Drop or <span className="text-krushr-primary">browse</span></span>
+                    </div>
+                    <input
+                      id="file-input"
+                      type="file"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files) {
+                          handleFileSelect(Array.from(e.target.files))
+                        }
+                      }}
+                    />
+                  </div>
+                  {pendingFiles.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      {pendingFiles.map((file, index) => (
+                        <div key={index} className="flex items-center justify-between p-1 bg-krushr-gray-bg-light rounded text-xs">
+                          <span className="truncate text-[11px]">{file.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => removePendingFile(index)}
+                            className="text-krushr-gray hover:text-krushr-secondary"
+                          >
+                            <X className="w-2.5 h-2.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
                 {/* Smart Suggestions */}
                 {smartSuggestions.length > 0 && (

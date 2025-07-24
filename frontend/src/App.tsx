@@ -16,6 +16,7 @@ import Profile from './pages/Profile'
 import Settings from './pages/Settings'
 import Pricing from './pages/Pricing'
 import Workspace from './pages/Workspace'
+import { Toaster } from './components/ui/toaster'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuthStore()
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         </Routes>
       </HashRouter>
+      <Toaster />
     </TRPCProvider>
   )
 }

@@ -13,6 +13,9 @@ import CompactTaskModal from './CompactTaskModal'
 import TaskDetail from '../task/TaskDetail'
 import { cn } from '../../lib/utils'
 import { Task } from '../../types'
+import { useOptimisticDelete } from '@/hooks/use-optimistic-delete'
+import { useOptimisticAction } from '@/hooks/use-optimistic-action'
+import { useToast } from '@/hooks/use-toast'
 
 interface KanbanBoardProps {
   kanban: any
@@ -46,6 +49,18 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
   })
   
   const updateTaskMutation = trpc.task.update.useMutation({
+    onSuccess: () => {
+      refetchTasks()
+    }
+  })
+
+  const createTaskMutation = trpc.task.create.useMutation({
+    onSuccess: () => {
+      refetchTasks()
+    }
+  })
+
+  const deleteTaskMutation = trpc.task.delete.useMutation({
     onSuccess: () => {
       refetchTasks()
     }
@@ -271,22 +286,40 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
     }
   }
 
+  const { deleteItem } = useOptimisticDelete()
+  const { execute } = useOptimisticAction()
+  const { toast } = useToast()
+
   const handleDeleteColumn = async (columnId: string) => {
     const column = columns.find(col => col.id === columnId)
     const taskCount = getTaskCount(columnId)
     
     if (taskCount > 0) {
-      alert(`Cannot delete column "${column?.title}" because it contains ${taskCount} task${taskCount !== 1 ? 's' : ''}. Please move or delete the tasks first.`)
+      toast({
+        title: 'Cannot Delete Column',
+        description: `The column "${column?.title}" contains ${taskCount} task${taskCount !== 1 ? 's' : ''}. Please move or delete the tasks first.`,
+        variant: 'destructive'
+      })
       return
     }
     
-    if (confirm(`Delete column "${column?.title}"? This action cannot be undone.`)) {
-      try {
+    if (!column) return
+    
+    await deleteItem({
+      type: 'column',
+      item: column,
+      itemName: column.title,
+      deleteAction: async () => {
         await deleteColumnMutation.mutateAsync({ id: columnId })
-      } catch (error) {
-        console.error('Failed to delete column:', error)
+      },
+      onOptimisticRemove: () => {
+        // The column will be removed from the UI by the refetch
+      },
+      onRestore: () => {
+        // Trigger a refetch to show the column again
+        refetchKanban()
       }
-    }
+    })
   }
 
   const handleReorderColumns = async (newOrder: string[]) => {
@@ -352,11 +385,45 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
               <Button 
                 size="sm" 
                 variant="destructive" 
-                onClick={() => {
-                  if (confirm(`Delete ${selectedTasks.size} selected tasks?`)) {
-                    // TODO: Implement bulk delete functionality
-                    clearSelection()
-                  }
+                onClick={async () => {
+                  const selectedTasksArray = Array.from(selectedTasks)
+                  const tasksToDelete = selectedTasksArray.map(id => 
+                    tasks.find(t => t.id === id)
+                  ).filter(Boolean)
+                  
+                  clearSelection() // Clear selection immediately for better UX
+                  
+                  await execute({
+                    type: 'bulk-tasks',
+                    action: async () => {
+                      // TODO: Implement bulk delete API call
+                      // For now, delete one by one
+                      for (const taskId of selectedTasksArray) {
+                        await deleteTaskMutation.mutateAsync({ id: taskId })
+                      }
+                    },
+                    undoAction: async () => {
+                      // Restore all tasks
+                      for (const task of tasksToDelete) {
+                        if (task) {
+                          await createTaskMutation.mutateAsync({
+                            title: task.title,
+                            description: task.description,
+                            status: task.status,
+                            priority: task.priority,
+                            dueDate: task.dueDate,
+                            assignedUserId: task.assignedUserId,
+                            tags: task.tags,
+                            kanbanColumnId: task.kanbanColumnId,
+                            projectId: task.projectId
+                          })
+                        }
+                      }
+                    },
+                    item: tasksToDelete,
+                    getMessage: () => `${selectedTasksArray.length} tasks deleted`,
+                    getUndoMessage: () => `${selectedTasksArray.length} tasks restored`
+                  })
                 }}
                 className="h-10 min-h-[40px] text-sm px-3 hover:bg-red-600 focus:bg-red-600 focus:ring-2 focus:ring-red-500 transition-all duration-200"
                 aria-label={`Delete ${selectedTasks.size} selected tasks`}

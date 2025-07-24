@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useOptimisticDelete } from '@/hooks/use-optimistic-delete'
 import { Search, Plus, Trash2, Archive, Star, Palette, ArrowLeft, Edit3 } from 'lucide-react'
 import { FloatingInput } from '../ui/floating-input'
 import { trpc } from '../../lib/trpc'
@@ -481,10 +482,32 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
     })
   }
 
-  const handleDeleteNote = () => {
-    if (activeNoteId && confirm('Delete this note?')) {
-      deleteNote.mutate({ id: activeNoteId })
-    }
+  const { deleteItem } = useOptimisticDelete()
+
+  const handleDeleteNote = async () => {
+    if (!activeNoteId) return
+    
+    const noteToDelete = notesQuery.data?.notes?.find(n => n.id === activeNoteId)
+    if (!noteToDelete) return
+    
+    await deleteItem({
+      type: 'note',
+      item: noteToDelete,
+      itemName: noteToDelete.title || 'Untitled note',
+      deleteAction: async () => {
+        await deleteNote.mutateAsync({ id: activeNoteId })
+      },
+      onOptimisticRemove: () => {
+        // Clear active note immediately for better UX
+        setActiveNoteId(notesQuery.data?.notes?.find(n => n.id !== activeNoteId)?.id || null)
+        // Note will disappear from list due to refetch
+      },
+      onRestore: () => {
+        // Restore the active note
+        setActiveNoteId(noteToDelete.id)
+        notesQuery.refetch()
+      }
+    })
   }
 
   const handleSelectNote = (note: Note) => {

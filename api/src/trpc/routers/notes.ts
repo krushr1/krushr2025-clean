@@ -22,10 +22,11 @@ export const notesRouter = router({
         tags: z.array(z.string()).optional(),
         limit: z.number().min(1).max(100).default(50),
         cursor: z.string().optional(),
+        taskId: z.string().optional(),
       })
     )
     .query(async ({ input, ctx }) => {
-      const { workspaceId, folderId, isPinned, isArchived, search, tags, limit, cursor } = input
+      const { workspaceId, folderId, isPinned, isArchived, search, tags, limit, cursor, taskId } = input
 
       // Verify workspace access
       const workspace = await ctx.prisma.workspace.findFirst({
@@ -51,6 +52,7 @@ export const notesRouter = router({
         ...(folderId !== undefined && { folderId }),
         ...(isPinned !== undefined && { isPinned }),
         ...(isArchived !== undefined && { isArchived }),
+        ...(taskId && { taskId }),
         ...(search && {
           OR: [
             { title: { contains: search } },

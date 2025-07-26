@@ -94,7 +94,7 @@ export default function CommandPalette({
       subtitle: 'Add new task to Kanban',
       icon: PlusIcon,
       shortcut: '⌘N',
-      action: () => onCreatePanel?.('KANBAN'),
+      action: () => onCreatePanel?.('TASK'),
       group: 'Quick Actions',
       keywords: ['task', 'todo', 'create', 'add', 'kanban'],
       priority: 10
@@ -105,7 +105,7 @@ export default function CommandPalette({
       subtitle: 'Start writing immediately',
       icon: FileTextIcon,
       shortcut: '⌘⇧N',
-      action: () => onCreatePanel?.('NOTES'),
+      action: () => onCreatePanel?.('NOTE'),
       group: 'Quick Actions',
       keywords: ['note', 'write', 'document', 'create'],
       priority: 9
@@ -375,9 +375,9 @@ export default function CommandPalette({
       <CommandList>
         <CommandEmpty>
           <div className="text-center py-6">
-            <CommandIcon className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-            <p className="text-gray-500">No commands found.</p>
-            <p className="text-sm text-gray-400 mt-1">Try searching for actions, panels, or navigation</p>
+            <CommandIcon className="w-8 h-8 mx-auto mb-2 text-krushr-secondary" />
+            <p className="text-sidebar-foreground font-manrope">No commands found.</p>
+            <p className="text-sm text-sidebar-foreground/60 mt-1 font-manrope">Try searching for actions, panels, or navigation</p>
           </div>
         </CommandEmpty>
         
@@ -392,20 +392,20 @@ export default function CommandPalette({
                     command.action()
                     onOpenChange(false)
                   }}
-                  className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50"
+                  className="flex items-center gap-3 px-3 py-2"
                 >
-                  <command.icon className="w-4 h-4 text-gray-500" />
+                  <command.icon className="w-4 h-4 text-krushr-secondary" />
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm">{command.title}</div>
+                    <div className="text-sm font-light font-manrope text-sidebar-foreground">{command.title}</div>
                     {command.subtitle && (
-                      <div className="text-xs text-gray-500 truncate">{command.subtitle}</div>
+                      <div className="text-xs text-sidebar-foreground/60 truncate font-manrope">{command.subtitle}</div>
                     )}
                   </div>
                   {command.shortcut && (
                     <CommandShortcut className="text-xs">{command.shortcut}</CommandShortcut>
                   )}
                   {group === 'AI Assistant' && (
-                    <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                    <Badge variant="secondary" className="text-xs px-1.5 py-0.5 font-manrope">
                       AI
                     </Badge>
                   )}

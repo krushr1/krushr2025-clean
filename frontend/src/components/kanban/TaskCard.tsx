@@ -19,6 +19,7 @@ import {
 import { Task } from '../../types'
 import { cn } from '../../lib/utils'
 import { formatDate } from '../../lib/utils'
+import { useWorkspaceContextStore } from '../../stores/workspace-context-store'
 
 interface TaskCardProps {
   task: Task
@@ -39,6 +40,8 @@ export default function TaskCard({
   isSelected = false,
   onSelect 
 }: TaskCardProps) {
+  const setActiveContext = useWorkspaceContextStore((state) => state.setActiveContext)
+
   const {
     attributes,
     listeners,
@@ -58,6 +61,11 @@ export default function TaskCard({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+  }
+
+  const handleCardClick = () => {
+    setActiveContext('task', task.id)
+    onClick?.()
   }
 
   const getPriorityColor = () => {
@@ -89,11 +97,11 @@ export default function TaskCard({
     <Card
       ref={setNodeRef}
       style={style}
-      onClick={onClick}
+      onClick={handleCardClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
-          onClick?.()
+          handleCardClick()
         }
       }}
       className={cn(
@@ -145,9 +153,16 @@ export default function TaskCard({
 
         {/* Task Description */}
         {task.description && (
-          <p className="text-sm text-gray-600 mb-3 line-clamp-2 font-manrope">
-            {task.description}
-          </p>
+          <div 
+            className="text-sm text-gray-600 mb-3 line-clamp-2 font-manrope prose prose-sm max-w-none prose-p:my-0 prose-br:my-0"
+            dangerouslySetInnerHTML={{ 
+              __html: task.description
+                .replace(/<p><\/p>/g, '') // Remove empty paragraphs
+                .replace(/<p>/g, '') // Remove opening p tags
+                .replace(/<\/p>/g, '<br>') // Replace closing p tags with br
+                .replace(/<br>\s*$/, '') // Remove trailing br
+            }}
+          />
         )}
 
 

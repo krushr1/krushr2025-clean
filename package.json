@@ -30,7 +30,13 @@
     "claude:stop": "./stop-claude-automation.sh",
     "claude:orchestrator": "cd Github-CC-Research/claudecode-orchestrator && npm start",
     "claude:auto-action": "cd Github-CC-Research/claude-code-auto-action && ./scripts/setup-auto-mode.sh",
-    "claude:status": "ps aux | grep -E \"(orchestrator|auto-action)\" | grep -v grep"
+    "claude:status": "ps aux | grep -E \"(orchestrator|auto-action)\" | grep -v grep",
+    "gemini": "gemini",
+    "gemini:debug": "gemini --debug",
+    "gemini:all-files": "gemini --all-files",
+    "gemini:sandbox": "gemini --sandbox",
+    "gemini:prompt": "gemini --prompt",
+    "gemini:setup": "./scripts/setup-gemini.sh"
   },
   "workspaces": [
     "frontend",
@@ -38,6 +44,7 @@
     "shared"
   ],
   "devDependencies": {
+    "@google/gemini-cli": "^0.1.14",
     "concurrently": "^9.2.0"
   },
   "engines": {

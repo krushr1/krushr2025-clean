@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Checklist in Task Creation</title>
+</head>
+<body>
+    <h1>Manual Test Instructions for Checklist in Task Creation Form</h1>
+    
+    <h2>Steps to Test:</h2>
+    <ol>
+        <li>Go to http://127.0.0.1:8001/#/workspace</li>
+        <li>Click "Add a task" button in any Kanban column</li>
+        <li>In the task creation modal, scroll down to find the "Checklist" section</li>
+        <li>Click in the input field next to the empty checkbox</li>
+        <li>Type "First checklist item" and press Enter</li>
+        <li>The item should be added above the input field</li>
+        <li>Add a few more items the same way</li>
+        <li>Fill in the task title at the top</li>
+        <li>Click "Create" button</li>
+        <li>The task should be created with the checklist items</li>
+    </ol>
+    
+    <h2>What to Check:</h2>
+    <ul>
+        <li>Can you add checklist items by pressing Enter?</li>
+        <li>Do the items appear in the list above the input?</li>
+        <li>Can you check/uncheck items before creating the task?</li>
+        <li>Can you delete items with the X button on hover?</li>
+        <li>After creating the task, open it to see if checklist was saved</li>
+    </ul>
+    
+    <h2>Current Status:</h2>
+    <p>The checklist UI is present in CompactTaskModal.tsx and has event handlers to add items. 
+    The backend integration was added to save checklist items when creating a task.</p>
+</body>
+</html>

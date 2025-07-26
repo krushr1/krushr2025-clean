@@ -68,6 +68,15 @@ type FormState = {
   blockedBy: string | null
   blockedReason: string | null
   attachments: LocalAttachment[]
+  checklists: Array<{
+    id: string
+    title: string
+    items: Array<{
+      id: string
+      text: string
+      completed: boolean
+    }>
+  }>
   customFields: Record<string, any>
 }
 
@@ -78,6 +87,12 @@ type FormAction =
   | { type: 'ADD_ATTACHMENT'; attachment: LocalAttachment }
   | { type: 'REMOVE_ATTACHMENT'; id: string }
   | { type: 'UPDATE_ATTACHMENT'; id: string; updates: Partial<LocalAttachment> }
+  | { type: 'ADD_CHECKLIST'; title: string }
+  | { type: 'REMOVE_CHECKLIST'; id: string }
+  | { type: 'ADD_CHECKLIST_ITEM'; checklistId: string; text: string }
+  | { type: 'TOGGLE_CHECKLIST_ITEM'; checklistId: string; itemId: string }
+  | { type: 'REMOVE_CHECKLIST_ITEM'; checklistId: string; itemId: string }
+  | { type: 'UPDATE_CHECKLIST_ITEM'; checklistId: string; itemId: string; text: string }
   | { type: 'RESET' }
 
 const initialState: FormState = {
@@ -105,6 +120,7 @@ const initialState: FormState = {
   blockedBy: null,
   blockedReason: null,
   attachments: [],
+  checklists: [],
   customFields: {}
 }
 
@@ -135,6 +151,80 @@ function formReducer(state: FormState, action: FormAction): FormState {
         ...state,
         attachments: state.attachments.map(a =>
           a.id === action.id ? { ...a, ...action.updates } : a
+        )
+      }
+    case 'ADD_CHECKLIST':
+      return {
+        ...state,
+        checklists: [...state.checklists, {
+          id: `checklist-${Date.now()}`,
+          title: action.title,
+          items: []
+        }]
+      }
+    case 'REMOVE_CHECKLIST':
+      return {
+        ...state,
+        checklists: state.checklists.filter(c => c.id !== action.id)
+      }
+    case 'ADD_CHECKLIST_ITEM':
+      return {
+        ...state,
+        checklists: state.checklists.map(checklist =>
+          checklist.id === action.checklistId
+            ? {
+                ...checklist,
+                items: [...checklist.items, {
+                  id: `item-${Date.now()}`,
+                  text: action.text,
+                  completed: false
+                }]
+              }
+            : checklist
+        )
+      }
+    case 'TOGGLE_CHECKLIST_ITEM':
+      return {
+        ...state,
+        checklists: state.checklists.map(checklist =>
+          checklist.id === action.checklistId
+            ? {
+                ...checklist,
+                items: checklist.items.map(item =>
+                  item.id === action.itemId
+                    ? { ...item, completed: !item.completed }
+                    : item
+                )
+              }
+            : checklist
+        )
+      }
+    case 'REMOVE_CHECKLIST_ITEM':
+      return {
+        ...state,
+        checklists: state.checklists.map(checklist =>
+          checklist.id === action.checklistId
+            ? {
+                ...checklist,
+                items: checklist.items.filter(item => item.id !== action.itemId)
+              }
+            : checklist
+        )
+      }
+    case 'UPDATE_CHECKLIST_ITEM':
+      return {
+        ...state,
+        checklists: state.checklists.map(checklist =>
+          checklist.id === action.checklistId
+            ? {
+                ...checklist,
+                items: checklist.items.map(item =>
+                  item.id === action.itemId
+                    ? { ...item, text: action.text }
+                    : item
+                )
+              }
+            : checklist
         )
       }
     case 'RESET':
@@ -239,6 +329,8 @@ export default function MinimalClickTaskForm({
   // Mutations
   const createTaskMutation = trpc.task.createEnhanced.useMutation()
   const uploadMutation = trpc.uploadNew.uploadTaskFile.useMutation()
+  const createChecklistMutation = trpc.checklist.create.useMutation()
+  const addChecklistItemMutation = trpc.checklist.addItem.useMutation()
 
   // Memoized callbacks
   const handleFileUpload = useCallback(async (files: File[]) => {
@@ -410,6 +502,26 @@ export default function MinimalClickTaskForm({
               updates: { status: 'error' } 
             })
           }
+        }
+      }
+      
+      // Create checklists
+      for (const checklist of state.checklists) {
+        try {
+          const createdChecklist = await createChecklistMutation.mutateAsync({
+            taskId: result.task.id,
+            title: checklist.title
+          })
+          
+          // Add items to the checklist
+          for (const item of checklist.items) {
+            await addChecklistItemMutation.mutateAsync({
+              checklistId: createdChecklist.id,
+              text: item.text
+            })
+          }
+        } catch (checklistError) {
+          console.error('Failed to create checklist:', checklist.title, checklistError)
         }
       }
       
@@ -1056,6 +1168,137 @@ export default function MinimalClickTaskForm({
             ))}
           </div>
         )}
+      </div>
+
+      {/* Checklists Section */}
+      <div className="mb-6">
+        <label className={styles.sectionLabel}>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" />
+            Checklists
+            {state.checklists.length > 0 && (
+              <Badge variant="secondary" className="ml-2">
+                {state.checklists.reduce((total, checklist) => total + checklist.items.length, 0)} items
+              </Badge>
+            )}
+          </div>
+        </label>
+
+        {/* Existing Checklists */}
+        {state.checklists.map((checklist) => {
+          const completedCount = checklist.items.filter(item => item.completed).length
+          const totalCount = checklist.items.length
+          const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
+
+          return (
+            <div key={checklist.id} className="mb-4 bg-white rounded-lg border border-krushr-gray-border p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm text-krushr-gray-dark">{checklist.title}</h4>
+                  {totalCount > 0 && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <Progress value={progress} className="h-1.5 flex-1 max-w-[100px]" />
+                      <span className="text-xs text-krushr-gray">{completedCount}/{totalCount}</span>
+                    </div>
+                  )}
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => dispatch({ type: 'REMOVE_CHECKLIST', id: checklist.id })}
+                  className="h-8 w-8 p-0 hover:text-krushr-secondary"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+
+              {/* Checklist Items */}
+              <div className="space-y-2">
+                {checklist.items.map((item) => (
+                  <div key={item.id} className="flex items-center gap-2 group">
+                    <button
+                      type="button"
+                      onClick={() => dispatch({ 
+                        type: 'TOGGLE_CHECKLIST_ITEM', 
+                        checklistId: checklist.id, 
+                        itemId: item.id 
+                      })}
+                      className={cn(
+                        "flex-shrink-0 w-5 h-5 rounded border-2 transition-all",
+                        "flex items-center justify-center",
+                        item.completed
+                          ? "bg-krushr-success border-krushr-success"
+                          : "border-krushr-gray-border hover:border-krushr-primary"
+                      )}
+                    >
+                      {item.completed && <Check className="w-3 h-3 text-white" />}
+                    </button>
+                    <span className={cn(
+                      "flex-1 text-sm",
+                      item.completed && "line-through text-krushr-gray"
+                    )}>
+                      {item.text}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => dispatch({ 
+                        type: 'REMOVE_CHECKLIST_ITEM', 
+                        checklistId: checklist.id, 
+                        itemId: item.id 
+                      })}
+                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 hover:text-krushr-secondary"
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Add Item */}
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    placeholder="Add item..."
+                    className="w-full px-3 py-2 text-sm border border-krushr-gray-border rounded-md focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-transparent"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                        e.preventDefault()
+                        dispatch({
+                          type: 'ADD_CHECKLIST_ITEM',
+                          checklistId: checklist.id,
+                          text: e.currentTarget.value.trim()
+                        })
+                        e.currentTarget.value = ''
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )
+        })}
+
+        {/* Add Checklist Button */}
+        <button
+          type="button"
+          className={cn(
+            "w-full p-3 rounded-lg border-2 border-dashed",
+            "border-krushr-gray-border hover:border-krushr-primary",
+            "text-sm text-krushr-gray hover:text-krushr-primary",
+            "transition-all duration-200 flex items-center justify-center gap-2"
+          )}
+          onClick={() => {
+            const title = prompt('Checklist title:')
+            if (title?.trim()) {
+              dispatch({ type: 'ADD_CHECKLIST', title: title.trim() })
+            }
+          }}
+        >
+          <Plus className="w-4 h-4" />
+          Add Checklist
+        </button>
       </div>
 
       {/* Action Bar - Always Visible */}

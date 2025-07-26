@@ -37,6 +37,7 @@ import { Priority, TaskStatus } from '../../types/enums'
 import CompactTaskModal from '../kanban/CompactTaskModal'
 import AttachmentUploadSimple from '../common/AttachmentUpload-simple'
 import AttachmentListSimple from '../common/AttachmentList-simple'
+import TaskChecklist from './TaskChecklist'
 
 interface TaskDetailProps {
   taskId: string
@@ -51,7 +52,6 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
   const [editingDescription, setEditingDescription] = useState(false)
   const [tempTitle, setTempTitle] = useState('')
   const [tempDescription, setTempDescription] = useState('')
-  const [newChecklistItem, setNewChecklistItem] = useState('')
   const [showEditModal, setShowEditModal] = useState(false)
 
   const { data: task, refetch } = trpc.task.get.useQuery(
@@ -77,13 +77,6 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
   const { data: activities = [] } = trpc.activity.list.useQuery(
     { taskId },
     { enabled: !!taskId }
-  )
-  const { data: checklists = [], refetch: refetchChecklists } = trpc.task.get.useQuery(
-    { id: taskId },
-    { 
-      enabled: !!taskId,
-      select: (data) => data?.checklists || []
-    }
   )
 
   const addCommentMutation = trpc.comment.create.useMutation({
@@ -459,86 +452,16 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
             )}
 
             {/* Checklist Section */}
-            <div className="space-y-4 bg-white rounded-lg border border-krushr-panel-border p-4">
-              <h3 className="text-sm font-medium text-krushr-gray-dark">Checklist</h3>
-              <div className="space-y-2">
-                {task.checklists?.[0]?.items?.map((item: any) => (
-                  <div key={item.id} className="flex items-center gap-2 group">
-                    <button
-                      onClick={() => {
-                        updateChecklistItemMutation.mutate({
-                          id: item.id,
-                          completed: !item.completed
-                        })
-                      }}
-                      className={cn(
-                        "w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200",
-                        item.completed 
-                          ? "bg-krushr-success border-krushr-success text-white" 
-                          : "border-krushr-panel-border hover:border-krushr-success/50"
-                      )}
-                    >
-                      {item.completed && <Check className="w-2.5 h-2.5" />}
-                    </button>
-                    <span className={cn(
-                      "text-sm flex-1",
-                      item.completed ? "line-through text-krushr-gray-light" : "text-krushr-gray-dark"
-                    )}>
-                      {item.text}
-                    </span>
-                    <button
-                      onClick={() => {
-                        deleteChecklistItemMutation.mutate({ id: item.id })
-                      }}
-                      className="opacity-0 group-hover:opacity-100 text-krushr-secondary hover:text-krushr-secondary/80 transition-all duration-200"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                )) || []}
-                
-                {/* Add new checklist item */}
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-krushr-panel-border rounded" />
-                  <FloatingInput
-                    label="Add checklist item"
-                    value={newChecklistItem}
-                    onChange={(e) => setNewChecklistItem(e.target.value)}
-                    className="text-sm border-none shadow-none px-0 focus-visible:ring-0"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && newChecklistItem.trim()) {
-                        const checklistId = task.checklists?.[0]?.id
-                        if (checklistId) {
-                          addChecklistItemMutation.mutate({
-                            checklistId,
-                            text: newChecklistItem.trim()
-                          })
-                        } else {
-                          console.log('Need to create checklist first')
-                        }
-                      }
-                    }}
-                  />
-                  {newChecklistItem.trim() && (
-                    <button
-                      onClick={() => {
-                        const checklistId = task.checklists?.[0]?.id
-                        if (checklistId) {
-                          addChecklistItemMutation.mutate({
-                            checklistId,
-                            text: newChecklistItem.trim()
-                          })
-                        }
-                      }}
-                      className="text-krushr-success hover:text-krushr-success/80 transition-colors"
-                    >
-                      <Plus className="w-3 h-3" />
-                    </button>
-                  )}
-                </div>
-              </div>
+            <div className="bg-white rounded-lg border border-krushr-panel-border p-4">
+              <TaskChecklist 
+                taskId={taskId}
+                workspaceId={task.project?.workspaceId || ''}
+                onUpdate={() => {
+                  refetch()
+                  onUpdate?.()
+                }}
+              />
             </div>
-          </div>
 
             {/* Unified Comments, Files, and Activity View */}
             <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
@@ -668,6 +591,7 @@ export default function TaskDetail({ taskId, open, onClose, onUpdate }: TaskDeta
               ))}
               </div>
             </div>
+          </div>
         </SheetContent>
       </Sheet>
       

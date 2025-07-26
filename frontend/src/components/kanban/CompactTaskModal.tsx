@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Calendar, ChevronLeft, ChevronRight, User, Tag, Paperclip, Upload, FileText, Clock, Plus, Loader2, Folder } from 'lucide-react'
+import { X, Calendar, ChevronLeft, ChevronRight, User, Tag, Paperclip, Upload, FileText, Clock, Plus, Loader2, Folder, Check, Square, Edit2, Trash2, CornerDownRight, CornerUpLeft, GripVertical } from 'lucide-react'
 import { useOptimisticDelete } from '@/hooks/use-optimistic-delete'
+import { useToast } from '@/hooks/use-toast'
 import { RichTextEditor } from '../ui/rich-text-editor'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameMonth, isSameDay, isToday, addMonths, subMonths } from 'date-fns'
 import { useAuthStore } from '../../stores/auth-store'
@@ -153,6 +154,18 @@ export default function CompactTaskModal({
   const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate ? new Date(task.dueDate) : null)
   const [assigneeId, setAssigneeId] = useState(task?.assigneeId || '')
   const [tags, setTags] = useState(task?.tags?.join(', ') || '')
+  const [newTag, setNewTag] = useState('')
+  const [projectId, setProjectId] = useState(task?.projectId || '')
+  const [checklistItems, setChecklistItems] = useState<Array<{id: string, text: string, completed: boolean, level?: number}>>(task?.checklistItems || [])
+  const [newChecklistItem, setNewChecklistItem] = useState('')
+  const [newChecklistItemLevel, setNewChecklistItemLevel] = useState(0)
+  const [editingChecklistItemId, setEditingChecklistItemId] = useState<string | null>(null)
+  const [editingChecklistText, setEditingChecklistText] = useState('')
+  const [draggingItemId, setDraggingItemId] = useState<string | null>(null)
+  const [dragOverItemId, setDragOverItemId] = useState<string | null>(null)
+  const [dragStartX, setDragStartX] = useState(0)
+  const [dragStartY, setDragStartY] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
   const [pendingFiles, setPendingFiles] = useState<File[]>([])
   const [uploadingFiles, setUploadingFiles] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -203,6 +216,8 @@ export default function CompactTaskModal({
   const createTaskMutation = trpc.task.create.useMutation()
   const updateTaskMutation = trpc.task.update.useMutation()
   const deleteTaskMutation = trpc.task.delete.useMutation()
+  const createChecklistMutation = trpc.checklist.create.useMutation()
+  const addChecklistItemMutation = trpc.checklist.addItem.useMutation()
   const uploadMutation = trpc.upload.uploadTaskFile.useMutation()
 
   // Calendar mutations
@@ -340,6 +355,28 @@ export default function CompactTaskModal({
             })
           }
         }
+
+        // Create checklist if there are items
+        if (checklistItems.length > 0 && createdTaskId && !isEditMode) {
+          try {
+            const checklist = await createChecklistMutation.mutateAsync({
+              taskId: createdTaskId,
+              title: 'Task Checklist'
+            })
+            
+            // Add each checklist item
+            for (const item of checklistItems) {
+              if (item.text.trim()) {
+                await addChecklistItemMutation.mutateAsync({
+                  checklistId: checklist.id,
+                  text: item.text.trim()
+                })
+              }
+            }
+          } catch (checklistError) {
+            console.error('Failed to create checklist:', checklistError)
+          }
+        }
       }
 
       toast.success(isEditMode ? 'Item updated' : 'Item created')
@@ -357,10 +394,61 @@ export default function CompactTaskModal({
     title, workspaceId, currentMode, description, startTime, endTime, allDay, location, eventColor, eventType,
     isEditMode, task?.id, priority, dueDate, assigneeId, tags, selectedColumnId, pendingFiles, mode,
     onTaskCreated, onSuccess, onClose, updateCalendarEventMutation, createCalendarEventMutation,
-    updateTaskMutation, createTaskMutation, uploadMutation
+    updateTaskMutation, createTaskMutation, uploadMutation, checklistItems, createChecklistMutation, 
+    addChecklistItemMutation, projectId
   ])
 
   const { deleteItem } = useOptimisticDelete()
+  const { toast } = useToast()
+
+  const handleDeleteChecklistItem = (item: {id: string, text: string, completed: boolean, level?: number}) => {
+    const originalItems = [...checklistItems]
+    
+    // Optimistically remove the item
+    setChecklistItems(items => items.filter(i => i.id !== item.id))
+    
+    // Show toast with undo
+    toast({
+      title: 'Checklist item deleted',
+      duration: 5000,
+      action: (
+        <button
+          onClick={() => {
+            // Restore the item
+            setChecklistItems(originalItems)
+          }}
+          className="text-sm font-medium text-krushr-primary hover:text-krushr-primary/80"
+        >
+          Undo
+        </button>
+      )
+    })
+  }
+
+  const handleIndentItem = (itemId: string, direction: 'indent' | 'outdent') => {
+    setChecklistItems(items => {
+      const index = items.findIndex(i => i.id === itemId)
+      if (index === -1) return items
+      
+      const item = items[index]
+      const currentLevel = item.level || 0
+      
+      if (direction === 'indent') {
+        // Can only indent if there's a parent item above
+        if (index > 0) {
+          const parentLevel = items[index - 1].level || 0
+          const newLevel = Math.min(parentLevel + 1, 2) // Max 2 levels deep
+          return items.map(i => i.id === itemId ? { ...i, level: newLevel } : i)
+        }
+      } else {
+        // Outdent
+        const newLevel = Math.max(currentLevel - 1, 0)
+        return items.map(i => i.id === itemId ? { ...i, level: newLevel } : i)
+      }
+      
+      return items
+    })
+  }
 
   const handleDelete = async () => {
     if (!task?.id) return
@@ -501,15 +589,15 @@ export default function CompactTaskModal({
   if (!open) return null
 
   return createPortal(
-    <div className="fixed inset-0 z-[999999] flex items-center justify-center">
+    <div className="fixed inset-0 z-[999999] flex items-start sm:items-center justify-center overflow-y-auto">
       {/* Modal Overlay */}
       <div 
         className="absolute inset-0 bg-black bg-opacity-50"
         onClick={onClose}
       />
       
-      {/* Intelligently Compact Modal */}
-      <div className="relative w-full max-w-2xl bg-white rounded-lg shadow-lg border border-krushr-gray-border overflow-hidden">
+      {/* Intelligently Compact Modal - Mobile Responsive */}
+      <div className="relative w-[calc(100%-2rem)] sm:w-full max-w-2xl max-h-[85vh] sm:max-h-[90vh] bg-white rounded-lg shadow-lg border border-krushr-gray-border overflow-hidden flex flex-col mx-4 sm:mx-0 my-8 sm:my-0">
         {/* Ultra-compact header with priority dots */}
         <div className="px-4 py-2 border-b border-krushr-gray-border bg-gray-50">
           <div className="flex items-center">
@@ -521,9 +609,9 @@ export default function CompactTaskModal({
               className="flex-1 mr-3 text-base font-medium border-0 px-0 py-0 focus:outline-none focus:ring-0 bg-transparent placeholder:text-gray-400"
               placeholder={isEditMode ? 'Edit task...' : 'What needs to be done?'}
             />
-            {/* Priority Dots in Header */}
-            <div className="flex items-center gap-2 mr-3">
-              <span className="text-xs font-medium text-gray-600">Priority:</span>
+            {/* Priority Dots in Header - Fixed size on mobile */}
+            <div className="flex items-center gap-1 sm:gap-2 mr-2 sm:mr-3">
+              <span className="hidden sm:inline text-xs font-medium text-gray-600">Priority:</span>
               <div className="flex gap-0.5">
                 {[
                   { value: Priority.LOW, color: 'bg-green-500', hoverColor: 'hover:bg-green-500/50' },
@@ -539,9 +627,11 @@ export default function CompactTaskModal({
                       key={p.value}
                       type="button"
                       className={cn(
-                        "w-2.5 h-2.5 rounded-full transition-all duration-200 shadow-sm",
+                        "w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-200 shadow-sm",
                         isActive ? p.color : "bg-gray-300",
-                        p.hoverColor
+                        p.hoverColor,
+                        // Larger touch target without visual change
+                        "relative after:absolute after:inset-[-10px] after:content-['']"
                       )}
                       title={`${p.value} Priority`}
                       onClick={() => setPriority(p.value)}
@@ -559,8 +649,8 @@ export default function CompactTaskModal({
           </div>
         </div>
         
-        {/* Compact content area */}
-        <form onSubmit={handleSubmit} className="p-4 space-y-3">
+        {/* Compact content area - Better mobile padding */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
           {/* Description - Collapsible height */}
           <div>
             <label className="text-xs font-medium text-gray-600 mb-1 block">Description</label>
@@ -569,27 +659,18 @@ export default function CompactTaskModal({
                 content={description}
                 onChange={setDescription}
                 placeholder="Add details..."
-                className="min-h-[60px] max-h-[120px] [&>div:last-child]:min-h-[40px]"
-                minimal={true}
+                className="min-h-[80px] max-h-[150px]"
+                minimal={false}
               />
             </div>
           </div>
 
-          {/* Column selection - Visual buttons */}
+          {/* Column selection - Compact pills with better mobile sizing */}
           <div>
             <label className="text-xs font-medium text-gray-600 mb-1 block">Column</label>
-            <div className="grid grid-cols-4 gap-2">
-              {columns.slice(0, 4).map((column) => {
+            <div className="flex gap-1 flex-wrap">
+              {columns.map((column) => {
                 const isSelected = selectedColumnId === column.id;
-                // Map column names to status colors and icons
-                const columnMap: Record<string, { color: string; icon: string }> = {
-                  'Backlog': { color: 'bg-gray-500', icon: '○' },
-                  'To Do': { color: 'bg-gray-500', icon: '○' },
-                  'In Progress': { color: 'bg-blue-500', icon: '◐' },
-                  'Review': { color: 'bg-purple-500', icon: '◎' },
-                  'Done': { color: 'bg-green-500', icon: '●' }
-                };
-                const config = columnMap[column.title] || { color: 'bg-gray-400', icon: '○' };
                 
                 return (
                   <button
@@ -597,37 +678,82 @@ export default function CompactTaskModal({
                     type="button"
                     onClick={() => setSelectedColumnId(column.id)}
                     className={cn(
-                      "px-3 py-3 rounded-lg border-2 transition-all duration-200",
-                      "flex flex-col items-center gap-1.5",
+                      "px-2 sm:px-3 py-1 sm:py-1.5 rounded-md border transition-all duration-200",
+                      "text-xs font-medium",
                       isSelected 
-                        ? `${config.color} text-white border-transparent shadow-sm` 
-                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                        ? "bg-krushr-primary text-white border-krushr-primary" 
+                        : "bg-white text-gray-700 border-gray-300 hover:border-gray-400",
+                      // Ensure minimum touch target
+                      "min-h-[36px] sm:min-h-0"
                     )}
                   >
-                    <span className="text-lg">{config.icon}</span>
-                    <span className="text-xs font-medium">{column.title}</span>
+                    {column.title}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Assignee as avatar grid */}
+          {/* Project Selection - Compact pills */}
+          {projects && projects.length > 0 && (
+            <div>
+              <label className="text-xs font-medium text-gray-600 mb-1 block">Project</label>
+              <div className="flex gap-1 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setProjectId('')}
+                  className={cn(
+                    "px-2 py-1 rounded-md border transition-all duration-200 text-xs",
+                    !projectId 
+                      ? "border-krushr-primary bg-krushr-primary/10 text-krushr-primary" 
+                      : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                  )}
+                >
+                  No Project
+                </button>
+                {projects.map((project) => {
+                  const isSelected = projectId === project.id;
+                  return (
+                    <button
+                      key={project.id}
+                      type="button"
+                      onClick={() => setProjectId(project.id)}
+                      className={cn(
+                        "px-2 py-1 rounded-md border transition-all duration-200 text-xs",
+                        "flex items-center gap-1",
+                        isSelected 
+                          ? "border-krushr-primary bg-krushr-primary/10 text-krushr-primary" 
+                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      )}
+                    >
+                      <Folder className="w-3 h-3" />
+                      <span>{project.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Assignee - Compact avatar row with touch targets */}
           <div>
             <label className="text-xs font-medium text-gray-600 mb-1 block">Assignee</label>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-1.5 flex-wrap">
               <button
                 type="button"
                 onClick={() => setAssigneeId('')}
                 className={cn(
-                  "w-10 h-10 rounded-full border-2 transition-all",
+                  "w-8 h-8 sm:w-8 sm:h-8 rounded-full border-2 transition-all",
+                  "relative", // For touch target
                   !assigneeId 
                     ? "border-krushr-primary bg-gray-100" 
-                    : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                    : "border-gray-200 bg-gray-50 hover:border-gray-300",
+                  // Larger touch target
+                  "after:absolute after:inset-[-6px] after:content-['']"
                 )}
                 title="Unassigned"
               >
-                <User className="w-5 h-5 mx-auto text-gray-400" />
+                <User className="w-4 h-4 mx-auto text-gray-400" />
               </button>
               {workspaceUsers?.map((user) => {
                 const isSelected = assigneeId === user.id;
@@ -637,10 +763,13 @@ export default function CompactTaskModal({
                     type="button"
                     onClick={() => setAssigneeId(user.id)}
                     className={cn(
-                      "w-10 h-10 rounded-full border-2 transition-all font-medium text-sm",
+                      "w-8 h-8 sm:w-8 sm:h-8 rounded-full border-2 transition-all font-medium text-xs",
+                      "relative", // For touch target
                       isSelected 
                         ? "border-krushr-primary bg-krushr-primary text-white" 
-                        : "border-gray-200 bg-gray-100 text-gray-700 hover:border-gray-300"
+                        : "border-gray-200 bg-gray-100 text-gray-700 hover:border-gray-300",
+                      // Larger touch target
+                      "after:absolute after:inset-[-6px] after:content-['']"
                     )}
                     title={user.name}
                   >
@@ -708,28 +837,28 @@ export default function CompactTaskModal({
               </button>
             </div>
 
-            {/* Ultra-compact calendar */}
+            {/* Ultra-compact calendar - Mobile optimized */}
             <div className="bg-white border border-gray-200 rounded-md p-2">
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center justify-between mb-2 sm:mb-1">
                 <button
                   type="button"
                   onClick={() => setCalendarDate(subMonths(calendarDate, 1))}
-                  className="p-0.5 hover:bg-gray-100 rounded"
+                  className="p-1 sm:p-0.5 hover:bg-gray-100 rounded relative after:absolute after:inset-[-4px] after:content-['']"
                 >
-                  <ChevronLeft className="w-3 h-3" />
+                  <ChevronLeft className="w-4 h-4 sm:w-3 sm:h-3" />
                 </button>
                 <span className="text-xs font-medium">{format(calendarDate, 'MMM yyyy')}</span>
                 <button
                   type="button"
                   onClick={() => setCalendarDate(addMonths(calendarDate, 1))}
-                  className="p-0.5 hover:bg-gray-100 rounded"
+                  className="p-1 sm:p-0.5 hover:bg-gray-100 rounded relative after:absolute after:inset-[-4px] after:content-['']"
                 >
-                  <ChevronRight className="w-3 h-3" />
+                  <ChevronRight className="w-4 h-4 sm:w-3 sm:h-3" />
                 </button>
               </div>
               <div className="grid grid-cols-7 gap-0">
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
-                  <div key={d} className="text-[9px] text-gray-500 text-center p-0.5">{d}</div>
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+                  <div key={`${d}-${i}`} className="text-[10px] sm:text-[9px] text-gray-500 text-center p-1 sm:p-0.5">{d}</div>
                 ))}
                 {generateCalendarDays().map((date, index) => {
                   if (!date) return <div key={index} />
@@ -742,13 +871,13 @@ export default function CompactTaskModal({
                       type="button"
                       onClick={() => setDueDate(date)}
                       className={cn(
-                        "text-[10px] p-0.5 rounded relative",
+                        "text-[11px] sm:text-[10px] p-1.5 sm:p-0.5 rounded relative",
                         "hover:bg-gray-100",
                         isSelected && "bg-krushr-primary text-white hover:bg-krushr-primary",
                         isCurrentDay && !isSelected && "font-bold text-krushr-primary",
                         !isSameMonth(date, calendarDate) && "text-gray-300",
-                        // Larger touch target
-                        "after:absolute after:inset-[-2px] after:content-['']"
+                        // Larger touch target for mobile
+                        "after:absolute after:inset-[-4px] sm:after:inset-[-2px] after:content-['']"
                       )}
                     >
                       {format(date, 'd')}
@@ -757,6 +886,284 @@ export default function CompactTaskModal({
                 })}
               </div>
             </div>
+            </div>
+
+            {/* Checklist Section */}
+            <div>
+              <label className="text-xs font-medium text-gray-600 mb-1 block">Checklist</label>
+              <div className="space-y-1 max-h-32 overflow-y-auto">
+                {checklistItems.map((item, index) => (
+                  <div 
+                    key={item.id} 
+                    className={cn(
+                      "flex items-center gap-2 group py-1 relative",
+                      // Add a subtle border for subtasks
+                      (item.level || 0) > 0 && "before:absolute before:left-0 before:top-0 before:bottom-0 before:w-px before:bg-gray-200",
+                      draggingItemId === item.id && "opacity-50",
+                      dragOverItemId === item.id && "border-t-2 border-krushr-primary"
+                    )}
+                    style={{ paddingLeft: `${(item.level || 0) * 24}px` }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      if (draggingItemId && draggingItemId !== item.id) {
+                        setDragOverItemId(item.id);
+                      }
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      // Only clear if we're leaving to a non-child element
+                      const relatedTarget = e.relatedTarget as HTMLElement;
+                      if (!e.currentTarget.contains(relatedTarget)) {
+                        setDragOverItemId(null);
+                      }
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      if (draggingItemId && draggingItemId !== item.id) {
+                        // Reorder items
+                        const draggedIndex = checklistItems.findIndex(i => i.id === draggingItemId);
+                        const targetIndex = checklistItems.findIndex(i => i.id === item.id);
+                        if (draggedIndex !== -1 && targetIndex !== -1) {
+                          const newItems = [...checklistItems];
+                          const [draggedItem] = newItems.splice(draggedIndex, 1);
+                          newItems.splice(targetIndex, 0, draggedItem);
+                          setChecklistItems(newItems);
+                        }
+                      }
+                      setDraggingItemId(null);
+                      setDragOverItemId(null);
+                    }}
+                  >
+                    <div 
+                      className="cursor-move text-gray-400 hover:text-gray-600 p-0.5 opacity-0 group-hover:opacity-100 transition-opacity" 
+                      title="Drag to reorder or indent"
+                      draggable
+                      onDragStart={(e) => {
+                        e.stopPropagation();
+                        setDraggingItemId(item.id);
+                        setDragStartX(e.clientX);
+                        setDragStartY(e.clientY);
+                        setIsDragging(true);
+                        e.dataTransfer.effectAllowed = 'move';
+                        
+                        // Create a visual feedback for dragging
+                        const dragElement = e.currentTarget.parentElement as HTMLElement;
+                        if (dragElement) {
+                          const rect = dragElement.getBoundingClientRect();
+                          const dragImage = dragElement.cloneNode(true) as HTMLElement;
+                          dragImage.style.position = 'absolute';
+                          dragImage.style.top = '-9999px';
+                          dragImage.style.width = rect.width + 'px';
+                          dragImage.style.opacity = '0.8';
+                          dragImage.style.backgroundColor = 'white';
+                          dragImage.style.border = '1px solid #e5e7eb';
+                          dragImage.style.borderRadius = '4px';
+                          dragImage.style.padding = '4px';
+                          document.body.appendChild(dragImage);
+                          e.dataTransfer.setDragImage(dragImage, e.clientX - rect.left, e.clientY - rect.top);
+                          setTimeout(() => document.body.removeChild(dragImage), 0);
+                        }
+                      }}
+                      onDragEnd={(e) => {
+                        e.stopPropagation();
+                        setIsDragging(false);
+                        
+                        const dragDistanceX = e.clientX - dragStartX;
+                        const dragDistanceY = Math.abs(e.clientY - dragStartY);
+                        const indentThreshold = 40;
+                        
+                        // If horizontal movement is significant and vertical movement is minimal, handle indent/outdent
+                        if (Math.abs(dragDistanceX) > indentThreshold && dragDistanceY < 20) {
+                          const draggedItem = checklistItems.find(i => i.id === draggingItemId);
+                          if (draggedItem) {
+                            const currentLevel = draggedItem.level || 0;
+                            const draggedIndex = checklistItems.findIndex(i => i.id === draggingItemId);
+                            
+                            if (dragDistanceX > 0 && draggedIndex > 0) {
+                              // Dragged right - indent
+                              const parentLevel = checklistItems[draggedIndex - 1].level || 0;
+                              const newLevel = Math.min(parentLevel + 1, 2);
+                              setChecklistItems(items => 
+                                items.map(i => i.id === draggingItemId ? { ...i, level: newLevel } : i)
+                              );
+                            } else if (dragDistanceX < 0) {
+                              // Dragged left - outdent
+                              const newLevel = Math.max(currentLevel - 1, 0);
+                              setChecklistItems(items => 
+                                items.map(i => i.id === draggingItemId ? { ...i, level: newLevel } : i)
+                              );
+                            }
+                          }
+                        }
+                        
+                        setDraggingItemId(null);
+                        setDragOverItemId(null);
+                      }}
+                    >
+                      <GripVertical className="w-3 h-3" />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setChecklistItems(items =>
+                          items.map(i =>
+                            i.id === item.id ? { ...i, completed: !i.completed } : i
+                          )
+                        );
+                      }}
+                      className={cn(
+                        "w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200",
+                        "relative cursor-pointer flex-shrink-0",
+                        item.completed
+                          ? "bg-krushr-primary border-krushr-primary"
+                          : "bg-white border-gray-300 hover:border-krushr-primary",
+                        // Make subtasks slightly smaller
+                        (item.level || 0) > 0 && "w-3.5 h-3.5"
+                      )}
+                    >
+                      {item.completed && <Check className="w-2.5 h-2.5 text-white" />}
+                    </button>
+                    
+                    {editingChecklistItemId === item.id ? (
+                      <input
+                        type="text"
+                        value={editingChecklistText}
+                        onChange={(e) => setEditingChecklistText(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (editingChecklistText.trim()) {
+                              setChecklistItems(items =>
+                                items.map(i =>
+                                  i.id === item.id ? { ...i, text: editingChecklistText.trim() } : i
+                                )
+                              );
+                            }
+                            setEditingChecklistItemId(null);
+                            setEditingChecklistText('');
+                          } else if (e.key === 'Escape') {
+                            setEditingChecklistItemId(null);
+                            setEditingChecklistText('');
+                          } else if (e.key === 'Tab') {
+                            e.preventDefault();
+                            handleIndentItem(item.id, e.shiftKey ? 'outdent' : 'indent');
+                          }
+                        }}
+                        onBlur={() => {
+                          if (editingChecklistText.trim() && editingChecklistText !== item.text) {
+                            setChecklistItems(items =>
+                              items.map(i =>
+                                i.id === item.id ? { ...i, text: editingChecklistText.trim() } : i
+                              )
+                            );
+                          }
+                          setEditingChecklistItemId(null);
+                          setEditingChecklistText('');
+                        }}
+                        className="flex-1 px-2 py-0.5 text-xs border border-gray-200 rounded focus:outline-none focus:border-krushr-primary"
+                        autoFocus
+                      />
+                    ) : (
+                      <span
+                        className={cn(
+                          "flex-1 text-xs cursor-text",
+                          item.completed ? "line-through text-gray-400" : "text-gray-700"
+                        )}
+                        onClick={() => {
+                          setEditingChecklistItemId(item.id);
+                          setEditingChecklistText(item.text);
+                        }}
+                      >
+                        {item.text}
+                      </span>
+                    )}
+                    
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {(item.level || 0) > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => handleIndentItem(item.id, 'outdent')}
+                          className="text-gray-400 hover:text-gray-600 transition-colors p-0.5"
+                          title="Outdent (Shift+Tab)"
+                        >
+                          <CornerUpLeft className="w-3 h-3" />
+                        </button>
+                      )}
+                      {index > 0 && (item.level || 0) < 2 && (
+                        <button
+                          type="button"
+                          onClick={() => handleIndentItem(item.id, 'indent')}
+                          className="text-gray-400 hover:text-gray-600 transition-colors p-0.5"
+                          title="Indent (Tab)"
+                        >
+                          <CornerDownRight className="w-3 h-3" />
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingChecklistItemId(item.id);
+                          setEditingChecklistText(item.text);
+                        }}
+                        className="text-gray-400 hover:text-gray-600 transition-colors p-0.5"
+                        title="Edit"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleDeleteChecklistItem(item);
+                        }}
+                        className="text-gray-400 hover:text-red-500 transition-colors p-0.5"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <div 
+                  className="flex items-center gap-2 py-1"
+                  style={{ paddingLeft: `${newChecklistItemLevel * 24}px` }}
+                >
+                  <div className="w-4 h-4 rounded border-2 border-gray-300 flex-shrink-0" />
+                  <input
+                    type="text"
+                    value={newChecklistItem}
+                    onChange={(e) => setNewChecklistItem(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && newChecklistItem.trim()) {
+                        e.preventDefault();
+                        setChecklistItems(items => [
+                          ...items,
+                          {
+                            id: Date.now().toString(),
+                            text: newChecklistItem.trim(),
+                            completed: false,
+                            level: newChecklistItemLevel
+                          }
+                        ]);
+                        setNewChecklistItem('');
+                      } else if (e.key === 'Tab') {
+                        e.preventDefault();
+                        // Tab/Shift+Tab adjusts the indentation level for the new item
+                        if (e.shiftKey) {
+                          setNewChecklistItemLevel(prev => Math.max(prev - 1, 0));
+                        } else {
+                          // Can only indent if there's a parent item
+                          if (checklistItems.length > 0) {
+                            const lastItemLevel = checklistItems[checklistItems.length - 1].level || 0;
+                            setNewChecklistItemLevel(prev => Math.min(prev + 1, lastItemLevel + 1, 2));
+                          }
+                        }
+                      }
+                    }}
+                    placeholder="Add checklist item"
+                    className="flex-1 px-2 py-1 text-xs border-0 focus:outline-none placeholder:text-gray-400 bg-transparent"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Attachment Section */}
@@ -781,10 +1188,12 @@ export default function CompactTaskModal({
               </div>
             </div>
         
-        {/* Ultra-compact footer */}
-        <div className="px-4 py-2 border-t border-gray-200 bg-gray-50">
+        </form>
+        
+        {/* Ultra-compact footer - Mobile optimized */}
+        <div className="px-3 sm:px-4 py-2 border-t border-gray-200 bg-gray-50 mt-auto">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-[10px] text-gray-500">
+            <div className="hidden sm:flex items-center gap-2 text-[10px] text-gray-500">
               <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">⌘</kbd>
               <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">Enter</kbd>
               <span>to save</span>
@@ -809,7 +1218,7 @@ export default function CompactTaskModal({
               <button 
                 type="submit"
                 disabled={isLoading || !title.trim()}
-                className="px-4 py-1 text-xs font-medium bg-krushr-primary text-white rounded-md hover:bg-krushr-primary/90 disabled:opacity-50 flex items-center gap-1"
+                className="px-3 sm:px-4 py-1.5 sm:py-1 text-xs font-medium bg-krushr-primary text-white rounded-md hover:bg-krushr-primary/90 disabled:opacity-50 flex items-center gap-1"
               >
                 {isLoading ? (
                   <>
@@ -823,7 +1232,6 @@ export default function CompactTaskModal({
             </div>
           </div>
         </div>
-        </form>
       </div>
     </div>,
     document.body

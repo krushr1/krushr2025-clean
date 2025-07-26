@@ -1,32 +1,55 @@
 import Redis from 'ioredis';
 
 let redis: Redis | null = null;
+let isRedisConnected = false;
 
-try {
-  redis = new Redis({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379'),
-    password: process.env.REDIS_PASSWORD,
-    lazyConnect: true,
-    maxRetriesPerRequest: 3,
-    retryDelayOnFailover: 100,
-  });
+// Only initialize Redis if REDIS_URL is set
+if (process.env.REDIS_URL) {
+  try {
+    redis = new Redis(process.env.REDIS_URL, {
+      lazyConnect: true,
+      maxRetriesPerRequest: 3,
+      retryDelayOnFailover: 100,
+      connectTimeout: 1000,
+    });
 
-  // Test connection
-  redis.on('error', (err) => {
-    console.warn('Redis connection error:', err.message);
+    redis.on('connect', () => {
+      isRedisConnected = true;
+      console.log('Redis connected');
+    });
+
+    redis.on('error', (err) => {
+      if (isRedisConnected) {
+        console.warn('Redis connection error:', err.message);
+      }
+      isRedisConnected = false;
+      redis = null;
+    });
+
+    redis.on('close', () => {
+      isRedisConnected = false;
+      console.log('Redis connection closed');
+    });
+
+    // Attempt to connect
+    redis.connect().catch(() => {
+      // Prevent unhandled promise rejection
+      isRedisConnected = false;
+      redis = null;
+    });
+
+  } catch (error) {
+    console.warn('Redis initialization failed:', error);
     redis = null;
-  });
-} catch (error) {
-  console.warn('Redis initialization failed:', error);
-  redis = null;
+  }
 }
 
 // Safe Redis wrapper with fallback
 export const safeRedis = {
   async get(key: string): Promise<string | null> {
+    if (!redis || !isRedisConnected) return null;
     try {
-      return redis ? await redis.get(key) : null;
+      return await redis.get(key);
     } catch (error) {
       console.warn('Redis GET error:', error);
       return null;
@@ -34,16 +57,24 @@ export const safeRedis = {
   },
 
   async set(key: string, value: string, mode?: string, duration?: number): Promise<void> {
+    if (!redis || !isRedisConnected) return;
     try {
-      if (redis) {
-        if (mode === 'EX' && duration) {
-          await redis.set(key, value, 'EX', duration);
-        } else {
-          await redis.set(key, value);
-        }
+      if (mode === 'EX' && duration) {
+        await redis.set(key, value, 'EX', duration);
+      } else {
+        await redis.set(key, value);
       }
     } catch (error) {
       console.warn('Redis SET error:', error);
+    }
+  },
+
+  async del(key: string): Promise<void> {
+    if (!redis || !isRedisConnected) return;
+    try {
+      await redis.del(key);
+    } catch (error) {
+      console.warn('Redis DEL error:', error);
     }
   }
 };

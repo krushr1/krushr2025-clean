@@ -37,6 +37,7 @@ import {
 } from '../ui/dropdown-menu'
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
+import { useUIStore } from '../../stores/ui-store'
 
 const KanbanBoard = lazy(() => import('../kanban/KanbanBoard'))
 const Chat = lazy(() => import('../chat/Chat'))  
@@ -114,6 +115,7 @@ interface PanelRendererProps {
 export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscreen, onFocus }: PanelRendererProps) {
   const { toast } = useToast()
   const utils = trpc.useUtils()
+  const { focusMode, focusedPanelId, toggleFocusMode } = useUIStore()
   const [floatingPanels, setFloatingPanels] = useState<Set<string>>(() => new Set())
   
   const [showCreatePanel, setShowCreatePanel] = useState(false)
@@ -456,9 +458,9 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   return (
     <Card 
       className={cn(
-        "panel-card h-full flex flex-col",
+        "panel-card flex flex-col",
+        panel.is_minimized ? "h-auto" : "h-full",
         panel.is_locked && "border-amber-200 bg-amber-50",
-        panel.is_minimized && "min-h-0",
         isFullscreen && "fixed inset-0 z-[9999] m-0 rounded-none shadow-2xl bg-white"
       )}
       onClick={handleFocus}
@@ -507,6 +509,20 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
         </div>
         
         <div className="flex items-center" style={{ marginLeft: 'auto', gap: '2px' }}>
+          {/* Focus mode button */}
+          <Button
+            size="sm"
+            variant="ghost"
+            className={cn(
+              "w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0",
+              focusMode && focusedPanelId === panel.id && "bg-krushr-primary/10 text-krushr-primary"
+            )}
+            onClick={() => toggleFocusMode(panel.id)}
+            title={focusMode && focusedPanelId === panel.id ? "Exit focus mode" : "Focus on this panel"}
+          >
+            <Focus className="w-2.5 h-2.5" />
+          </Button>
+          
           {/* Panel-specific actions dropdown */}
           {(panel.type === 'KANBAN' || panel.type === 'CHAT' || panel.type === 'AI_CHAT' || panel.type === 'NOTES') && (
             <DropdownMenu>

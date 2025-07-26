@@ -445,6 +445,7 @@ model Note {
   folderId    String?
   authorId    String
   workspaceId String
+  taskId      String?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   color       String?          @default("#ffffff")
@@ -453,6 +454,7 @@ model Note {
   workspace   Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   author      User             @relation(fields: [authorId], references: [id])
   folder      NoteFolder?      @relation(fields: [folderId], references: [id])
+  task        Task?            @relation(fields: [taskId], references: [id])
 
   @@map("notes")
 }

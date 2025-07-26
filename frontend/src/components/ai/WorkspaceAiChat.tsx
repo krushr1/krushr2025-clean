@@ -763,7 +763,7 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={isLoading}
-                className="w-full h-10 min-h-[40px] text-sm resize-none overflow-hidden block px-2.5 pb-2.5 pt-4 text-gray-900 bg-white rounded-lg border border-gray-300 appearance-none focus:outline-none focus:border-krushr-primary peer focus:ring-2 focus:ring-blue-500 pr-10"
+                className="w-full h-10 min-h-[40px] text-sm resize-none overflow-hidden text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 pr-10"
                 rows={1}
               />
               <Button

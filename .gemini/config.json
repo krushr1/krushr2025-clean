@@ -1,0 +1,57 @@
+{
+  "model": "gemini-2.5-pro",
+  "context": {
+    "project_name": "Krushr",
+    "project_type": "Full-stack project management platform",
+    "tech_stack": [
+      "TypeScript",
+      "React",
+      "Node.js",
+      "tRPC",
+      "Prisma",
+      "PostgreSQL"
+    ],
+    "key_directories": {
+      "frontend": "React frontend application",
+      "api": "Backend API with tRPC and Prisma",
+      "shared": "Shared types and constants",
+      "Github-CC-Research": "Claude automation and AI integration tools"
+    },
+    "architecture_notes": [
+      "Monorepo structure with workspaces",
+      "tRPC for type-safe API communication",
+      "Prisma for database ORM",
+      "WebSocket support for real-time features",
+      "AI integration for enhanced productivity"
+    ]
+  },
+  "include_patterns": [
+    "frontend/src/**/*.{ts,tsx}",
+    "api/src/**/*.{ts,js}",
+    "shared/**/*.ts",
+    "*.json",
+    "*.md",
+    "api/prisma/schema.prisma"
+  ],
+  "exclude_patterns": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "public/chunks/**",
+    "*.log",
+    "venv/**",
+    "uploads/**"
+  ],
+  "extensions": [
+    "typescript",
+    "react",
+    "nodejs",
+    "database"
+  ],
+  "prompts": {
+    "code_review": "Review this code for TypeScript best practices, React patterns, and tRPC usage",
+    "debug": "Help debug this issue in the Krushr application",
+    "feature": "Implement this feature following the existing patterns in the codebase",
+    "refactor": "Refactor this code to improve maintainability and follow project conventions"
+  }
+} 

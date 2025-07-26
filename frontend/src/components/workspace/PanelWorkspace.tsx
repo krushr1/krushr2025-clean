@@ -7,6 +7,7 @@ import PanelRenderer from './PanelRenderer'
 import { cn, debounce } from '../../lib/utils'
 import { shouldProcessHotkey } from '../../lib/keyboard-utils'
 import { useLayoutPersistence } from '../../hooks/use-layout-persistence'
+import { useUIStore } from '../../stores/ui-store'
 
 const ResponsiveGridLayout = WidthProvider(Responsive)
 const FixedGridLayout = WidthProvider(GridLayout)
@@ -31,6 +32,7 @@ interface Panel {
 
 export default function PanelWorkspace({ workspaceId, className }: PanelWorkspaceProps) {
   const [focusedPanelId, setFocusedPanelId] = useState<string | null>(null)
+  const { focusMode, focusedPanelId: globalFocusedPanelId } = useUIStore()
 
   const { data: allPanels = [], refetch } = trpc.panel.list.useQuery(
     { workspaceId },
@@ -45,11 +47,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   // Track hidden panels
   const [hiddenPanelIds, setHiddenPanelIds] = useState<Set<string>>(new Set())
 
-  // Visible panels for layout
-  const panels = useMemo(() =>
-    allPanels.filter(panel => !hiddenPanelIds.has(panel.id)) as any[],
-    [allPanels, hiddenPanelIds]
-  )
+  // Note: We no longer need a separate panels array since we handle visibility in the render method
 
   const [containerWidth, setContainerWidth] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -78,12 +76,12 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     isAutoSaving
   } = useLayoutPersistence({
     workspaceId,
-    panels,
+    panels: allPanels,
     autoSaveInterval: 30000, // Auto-save every 30 seconds
     enabled: false // Temporarily disable to prevent conflicts with real-time updates
   })
   
-  const fullscreenPanel = panels.find(panel => {
+  const fullscreenPanel = allPanels.find(panel => {
     try {
       const panelData = typeof panel.data === 'string' ? JSON.parse(panel.data) : panel.data
       return panelData?.isFullscreen === true
@@ -133,7 +131,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [fullscreenPanel, focusedPanelId, panels])
+  }, [fullscreenPanel, focusedPanelId])
 
   const handleFullscreen = useCallback((panelId: string, isFullscreen: boolean) => {
     refetch()
@@ -156,10 +154,10 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   )
 
   const handleLayoutChange = useCallback((newLayout: Layout[]) => {
-    if (panels.length === 0 || !newLayout) return
+    if (allPanels.length === 0 || !newLayout) return
     
     console.log('🔄 Layout Change Handler:', {
-      panelCount: panels.length,
+      panelCount: allPanels.length,
       newLayoutCount: newLayout.length,
       newLayout: newLayout.map(item => ({ id: item.i, x: item.x, y: item.y, w: item.w, h: item.h }))
     })
@@ -204,7 +202,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     }
 
     // Note: Removed onLayoutPersistenceChange call to prevent conflicts
-  }, [panels, debouncedUpdatePositions, onLayoutPersistenceChange, allPanels])
+  }, [allPanels, debouncedUpdatePositions, onLayoutPersistenceChange])
 
   const [originalLayout, setOriginalLayout] = useState<Layout[] | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -302,24 +300,32 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   }, [handleLayoutChange])
 
   const layout = useMemo(() => {
-    const gridLayout = panels.map(panel => ({
-      i: panel.id,
-      x: panel.position_x,
-      y: panel.position_y,
-      w: panel.width,
-      h: panel.height,
-      minW: 2,
-      minH: 2,
-      maxW: 24,
-      maxH: 50,
-      isDraggable: !panel.is_locked,
-      isResizable: !panel.is_locked
-    } as Layout))
+    // IMPORTANT: Keep ALL panels in the layout to preserve positions
+    // We'll hide panels visually, not remove them from the grid
+    const gridLayout = allPanels.map(panel => {
+      const isHidden = hiddenPanelIds.has(panel.id) || (focusMode && globalFocusedPanelId && panel.id !== globalFocusedPanelId)
+      
+      return {
+        i: panel.id,
+        x: panel.position_x,
+        y: panel.position_y,
+        w: panel.width,
+        h: panel.is_minimized ? 2 : panel.height, // Minimized panels get height of 2 grid units
+        minW: 2,
+        minH: panel.is_minimized ? 2 : 2,
+        maxW: 24,
+        maxH: panel.is_minimized ? 2 : 50, // Prevent resizing minimized panels vertically
+        isDraggable: !panel.is_locked && !isHidden,
+        isResizable: !panel.is_locked && !isHidden && !panel.is_minimized, // Disable resize for minimized panels
+        static: panel.is_minimized // Make minimized panels static so they don't interfere with layout
+      } as Layout
+    })
     
     console.log('📊 Panel to Grid Layout Conversion:', {
-      panelCount: panels.length,
-      panelDimensions: panels.map(p => ({ id: p.id, w: p.width, h: p.height, x: p.position_x, y: p.position_y })),
-      gridLayout: gridLayout.map(l => ({ id: l.i, w: l.w, h: l.h, x: l.x, y: l.y, minW: l.minW, minH: l.minH, maxW: l.maxW, maxH: l.maxH }))
+      panelCount: allPanels.length,
+      focusMode,
+      focusedPanelId: globalFocusedPanelId,
+      gridLayout: gridLayout.map(l => ({ id: l.i, w: l.w, h: l.h, x: l.x, y: l.y }))
     })
     
     gridLayout.forEach(item => {
@@ -329,13 +335,13 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     })
     
     return gridLayout
-  }, [panels])
+  }, [allPanels, hiddenPanelIds, focusMode, globalFocusedPanelId])
 
 
 
   const cols = 24
 
-  if (panels.length === 0) {
+  if (allPanels.length === 0) {
     return (
       <div className={cn('flex items-center justify-center h-full p-8', className)}>
         <div className="text-center">
@@ -520,7 +526,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
         draggableHandle=".panel-drag-handle"
         useCSSTransforms={true}
         preventCollision={false}
-        compactType="vertical"
+        compactType={null}
         autoSize={true}
         draggableCancel="input,textarea,button,select,option,.panel-content"
         transformScale={1}
@@ -532,22 +538,30 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
         onResizeStart={handlePanelResizeStart}
         onResizeStop={handlePanelResizeStop}
       >
-        {allPanels.map(panel => (
-          <div 
-            key={panel.id} 
-            className="panel-container"
-            data-panel-type={panel.type}
-            style={{ display: hiddenPanelIds.has(panel.id) ? 'none' : 'block' }}
-          >
-                                      <PanelRenderer 
-              panel={{ ...panel, data: panel.data || {} }}
-              workspaceId={workspaceId}
-              onRefresh={refetch}
-              onFullscreen={handleFullscreen}
-              onFocus={handleFocus}
-            />
-          </div>
-        ))}
+        {allPanels.map(panel => {
+          // Hide panel if it's in hiddenPanelIds OR if we're in focus mode and it's not the focused panel
+          const shouldHide = hiddenPanelIds.has(panel.id) || (focusMode && globalFocusedPanelId && panel.id !== globalFocusedPanelId)
+          
+          return (
+            <div 
+              key={panel.id} 
+              className="panel-container"
+              data-panel-type={panel.type}
+              style={{ 
+                visibility: shouldHide ? 'hidden' : 'visible',
+                pointerEvents: shouldHide ? 'none' : 'auto'
+              }}
+            >
+              <PanelRenderer 
+                panel={{ ...panel, data: panel.data || {} }}
+                workspaceId={workspaceId}
+                onRefresh={refetch}
+                onFullscreen={handleFullscreen}
+                onFocus={handleFocus}
+              />
+            </div>
+          )
+        })}
       </FixedGridLayout>
 
       {/* No separate fullscreen overlay needed - PanelRenderer handles fullscreen with CSS classes */}

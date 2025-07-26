@@ -6,6 +6,8 @@ import { trpc } from '../../lib/trpc'
 import { toast } from 'sonner'
 import { cn } from '../../lib/utils'
 import { useIsMobile } from '../../hooks/use-mobile'
+import { useWorkspaceContextStore } from '../../stores/workspace-context-store'
+import { useUIStore } from '../../stores/ui-store'
 
 interface NotesPanelProps {
   workspaceId: string
@@ -316,11 +318,14 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
   const [hiddenNoteIds, setHiddenNoteIds] = useState<Set<string>>(new Set())
   const containerRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
+  const { activeContextType, activeEntityId } = useWorkspaceContextStore()
+  const { shouldCreateNote, clearNoteCreation } = useUIStore()
 
   // tRPC queries
   const notesQuery = trpc.notes.list.useQuery({
     workspaceId,
-    search: searchQuery || undefined
+    search: searchQuery || undefined,
+    taskId: activeContextType === 'task' ? activeEntityId : undefined,
   })
 
   const activeNoteQuery = trpc.notes.get.useQuery(
@@ -425,6 +430,14 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
       setNoteContent(activeNoteQuery.data.content || '')
     }
   }, [activeNoteQuery.data])
+  
+  // Watch for note creation trigger from command palette
+  useEffect(() => {
+    if (shouldCreateNote) {
+      handleCreateNote()
+      clearNoteCreation()
+    }
+  }, [shouldCreateNote])
 
   // Responsive layout detection
   useEffect(() => {

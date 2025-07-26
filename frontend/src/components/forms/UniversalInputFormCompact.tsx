@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react'
 import { format } from 'date-fns'
-import { ChevronDownIcon, ChevronRightIcon, CalendarIcon, PlusIcon, XIcon, UploadIcon } from 'lucide-react'
+import { ChevronDownIcon, ChevronRightIcon, CalendarIcon, PlusIcon, XIcon, UploadIcon, CheckIcon } from 'lucide-react'
 
 import { Button } from '../ui/button'
 import { FloatingInput } from '../ui/floating-input'
@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Badge } from '../ui/badge'
 
 import { trpc } from '../../lib/trpc'
-import { UniversalFormData, ContentType } from '../../types/universal-form'
+import { UniversalFormData, ContentType, ChecklistItem } from '../../types/universal-form'
 import { Priority, TaskStatus } from '../../types/enums'
 import { cn } from '../../lib/utils'
 
@@ -82,11 +82,13 @@ export default function UniversalInputFormCompact({
   })
   
   const [currentTag, setCurrentTag] = useState('')
+  const [newChecklistItem, setNewChecklistItem] = useState('')
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
     dates: false,
     team: false,
-    workflow: false
+    workflow: false,
+    checklist: false
   })
   
   const updateField = useCallback(<K extends keyof UniversalFormData>(
@@ -96,12 +98,9 @@ export default function UniversalInputFormCompact({
     setFormData(prev => ({ ...prev, [field]: value }))
   }, [])
   
-  const createTaskMutation = trpc.task.create.useMutation({
-    onSuccess: (data) => {
-      onSuccess?.(formData, ContentType.TASK)
-      onClose?.()
-    }
-  })
+  const createTaskMutation = trpc.task.create.useMutation()
+  const createChecklistMutation = trpc.checklist.create.useMutation()
+  const addChecklistItemMutation = trpc.checklist.addItem.useMutation()
   
   const createNoteMutation = trpc.notes?.create?.useMutation?.({
     onSuccess: (data) => {
@@ -123,6 +122,29 @@ export default function UniversalInputFormCompact({
   
   const removeTag = (tag: string) => {
     updateField('tags', formData.tags.filter(t => t !== tag))
+  }
+  
+  const addChecklistItem = () => {
+    if (newChecklistItem.trim()) {
+      const newItem = {
+        id: `temp-${Date.now()}`,
+        text: newChecklistItem.trim(),
+        completed: false,
+        order: formData.checklist.length
+      }
+      updateField('checklist', [...formData.checklist, newItem])
+      setNewChecklistItem('')
+    }
+  }
+  
+  const removeChecklistItem = (id: string) => {
+    updateField('checklist', formData.checklist.filter(item => item.id !== id))
+  }
+  
+  const toggleChecklistItem = (id: string) => {
+    updateField('checklist', formData.checklist.map(item => 
+      item.id === id ? { ...item, completed: !item.completed } : item
+    ))
   }
   
   const renderPriorityDots = (priority: Priority) => {
@@ -155,7 +177,7 @@ export default function UniversalInputFormCompact({
     try {
       switch (formData.contentType) {
         case ContentType.TASK:
-          createTaskMutation.mutate({
+          const task = await createTaskMutation.mutateAsync({
             title: formData.title,
             description: formData.description,
             priority: formData.priority,
@@ -164,17 +186,48 @@ export default function UniversalInputFormCompact({
             tags: formData.tags,
             startDate: formData.startDate,
             endDate: formData.endDate,
-            assigneeId: formData.assigneeId
+            assigneeId: formData.assigneeId,
+            projectId: formData.projectId,
+            kanbanColumnId: formData.kanbanColumnId
           })
+          
+          // Create checklist if there are items
+          if (formData.checklist.length > 0 && task.id) {
+            try {
+              const checklist = await createChecklistMutation.mutateAsync({
+                taskId: task.id,
+                title: 'Task Checklist'
+              })
+              
+              // Add each checklist item
+              for (const item of formData.checklist) {
+                if (item.text.trim()) {
+                  await addChecklistItemMutation.mutateAsync({
+                    checklistId: checklist.id,
+                    text: item.text.trim()
+                  })
+                }
+              }
+            } catch (checklistError) {
+              console.error('Failed to create checklist:', checklistError)
+            }
+          }
+          
+          onSuccess?.(formData, ContentType.TASK)
+          onClose?.()
           break
+          
         case ContentType.NOTE:
-          createNoteMutation.mutate({
+          await createNoteMutation.mutateAsync({
             title: formData.title,
             content: formData.description,
             workspaceId: formData.workspaceId,
             tags: formData.tags
           })
+          onSuccess?.(formData, ContentType.NOTE)
+          onClose?.()
           break
+          
         default:
           console.log('Creating:', formData.contentType, formData)
       }
@@ -512,6 +565,78 @@ export default function UniversalInputFormCompact({
               </div>
             )}
           </div>
+          
+          {/* Checklist Section */}
+          {formData.contentType === ContentType.TASK && (
+            <div className="border border-gray-100 rounded">
+              <button
+                type="button"
+                onClick={() => toggleSection('checklist')}
+                className="flex items-center justify-between w-full p-2 text-sm font-medium text-left hover:bg-gray-50"
+              >
+                <span>✓ Checklist ({formData.checklist.length})</span>
+                {expandedSections.checklist ? (
+                  <ChevronDownIcon className="h-3 w-3" />
+                ) : (
+                  <ChevronRightIcon className="h-3 w-3" />
+                )}
+              </button>
+              
+              {expandedSections.checklist && (
+                <div className="p-2 border-t border-gray-100 space-y-2">
+                  {/* Existing checklist items */}
+                  {formData.checklist.map((item, index) => (
+                    <div key={item.id} className="flex items-center gap-2 group">
+                      <button
+                        type="button"
+                        onClick={() => toggleChecklistItem(item.id!)}
+                        className={cn(
+                          "w-4 h-4 rounded border flex items-center justify-center",
+                          item.completed 
+                            ? "bg-krushr-primary border-krushr-primary" 
+                            : "border-gray-300 hover:border-krushr-primary"
+                        )}
+                      >
+                        {item.completed && <CheckIcon className="w-3 h-3 text-white" />}
+                      </button>
+                      <span className={cn(
+                        "flex-1 text-sm",
+                        item.completed && "line-through text-gray-400"
+                      )}>
+                        {item.text}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeChecklistItem(item.id!)}
+                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+                      >
+                        <XIcon className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                  
+                  {/* Add new item */}
+                  <div className="flex gap-1">
+                    <div className="w-4 h-4 rounded border border-gray-300" />
+                    <input
+                      type="text"
+                      placeholder="Add item..."
+                      value={newChecklistItem}
+                      onChange={(e) => setNewChecklistItem(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault()
+                          addChecklistItem()
+                        }
+                      }}
+                      className="flex-1 text-sm bg-transparent border-none focus:outline-none placeholder:text-gray-400"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           
           {/* Workflow Section */}
           <div className="border border-gray-100 rounded">

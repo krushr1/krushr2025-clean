@@ -92,8 +92,8 @@
   --secondary-foreground: 0 0% 100%;
   --muted: 0 0% 94.5%;                    /* #F1F1F1 */
   --muted-foreground: var(--krushr-gray);
-  --accent: var(--krushr-coral-red);      /* #EB5857 Coral Red */
-  --accent-foreground: 0 0% 100%;
+  --accent: 0 0% 96%;                     /* Light gray for hover in light mode */
+  --accent-foreground: var(--krushr-gray-dark);
   --destructive: var(--krushr-secondary); /* #EB5857 */
   --destructive-foreground: 0 0% 100%;
   --border: 0 0% 91%;                     /* #E9E9E9 */
@@ -135,7 +135,7 @@
   --secondary-foreground: 0 0% 98%;
   --muted: 0 0% 14.9%;
   --muted-foreground: 0 0% 63.9%;
-  --accent: 0 0% 14.9%;
+  --accent: 0 0% 20%;                     /* Darker gray for hover in dark mode */
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
@@ -415,16 +415,12 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Accessibility & Mobile Touch Enhancements */
 
-/* WCAG AA compliant touch targets - minimum 44x44px */
+/* Touch target classes - can be used when needed */
 .touch-target {
-  min-width: 44px !important;
-  min-height: 44px !important;
   touch-action: manipulation;
 }
 
 .touch-target-small {
-  min-width: 32px !important;
-  min-height: 32px !important;
   touch-action: manipulation;
 }
 
@@ -508,26 +504,14 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Mobile-first responsive utilities */
 @media (max-width: 768px) {
-  /* Ensure all interactive elements meet touch target size */
-  /* But exclude small icon buttons that need to stay compact */
-  button:not([class*="w-5"]):not([class*="w-4"]):not([class*="w-6"]):not(.btn-icon-sm), 
-  [role="button"]:not([class*="w-5"]):not([class*="w-4"]):not([class*="w-6"]):not(.btn-icon-sm),
+  /* Touch action for better mobile interaction */
+  button,
+  [role="button"],
   input[type="checkbox"],
   input[type="radio"],
   select,
   .interactive {
-    min-width: 44px;
-    min-height: 44px;
     touch-action: manipulation;
-  }
-  
-  /* Small icon buttons should not have minimum width */
-  button[class*="w-5"],
-  button[class*="w-4"], 
-  button[class*="w-6"],
-  .btn-icon-sm {
-    min-width: unset !important;
-    min-height: unset !important;
   }
   
   /* Larger tap areas for small icons on mobile */

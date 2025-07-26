@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Calendar, ChevronLeft, ChevronRight, User, Tag, Paperclip, Upload, FileText, Clock, Plus, Loader2 } from 'lucide-react'
+import { X, Calendar, ChevronLeft, ChevronRight, User, Tag, Paperclip, Upload, FileText, Clock, Plus, Loader2, Folder } from 'lucide-react'
 import { useOptimisticDelete } from '@/hooks/use-optimistic-delete'
 import { RichTextEditor } from '../ui/rich-text-editor'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameMonth, isSameDay, isToday, addMonths, subMonths } from 'date-fns'
@@ -185,6 +185,12 @@ export default function CompactTaskModal({
     { workspaceId: workspaceId },
     { enabled: !!workspaceId }
   )
+
+  // Fetch projects for project selection
+  const { data: projects = [] } = trpc.project.list.useQuery(
+    { workspaceId },
+    { enabled: !!workspaceId }
+  )
   
   // Get kanban columns from provided kanbanId
   const { data: kanbanData } = trpc.kanban.get.useQuery(
@@ -302,7 +308,8 @@ export default function CompactTaskModal({
           assigneeId: assigneeId || null,
           tags: tags ? tags.split(',').map((t: string) => t.trim()).filter(Boolean) : [],
           workspaceId,
-          kanbanColumnId: selectedColumnId || undefined
+          kanbanColumnId: selectedColumnId || undefined,
+          projectId: projectId || undefined
         }
 
         let createdTaskId = task?.id
@@ -503,7 +510,7 @@ export default function CompactTaskModal({
       
       {/* Intelligently Compact Modal */}
       <div className="relative w-full max-w-2xl bg-white rounded-lg shadow-lg border border-krushr-gray-border overflow-hidden">
-        {/* Ultra-compact header */}
+        {/* Ultra-compact header with priority dots */}
         <div className="px-4 py-2 border-b border-krushr-gray-border bg-gray-50">
           <div className="flex items-center">
             <input
@@ -514,6 +521,35 @@ export default function CompactTaskModal({
               className="flex-1 mr-3 text-base font-medium border-0 px-0 py-0 focus:outline-none focus:ring-0 bg-transparent placeholder:text-gray-400"
               placeholder={isEditMode ? 'Edit task...' : 'What needs to be done?'}
             />
+            {/* Priority Dots in Header */}
+            <div className="flex items-center gap-2 mr-3">
+              <span className="text-xs font-medium text-gray-600">Priority:</span>
+              <div className="flex gap-0.5">
+                {[
+                  { value: Priority.LOW, color: 'bg-green-500', hoverColor: 'hover:bg-green-500/50' },
+                  { value: Priority.MEDIUM, color: 'bg-yellow-500', hoverColor: 'hover:bg-yellow-500/50' },
+                  { value: Priority.HIGH, color: 'bg-red-500', hoverColor: 'hover:bg-red-500/50' }
+                ].map((p, index) => {
+                  const isActive = priority === p.value || 
+                                 (priority === Priority.LOW && index === 0) ||
+                                 (priority === Priority.MEDIUM && index <= 1) ||
+                                 (priority === Priority.HIGH && index <= 2);
+                  return (
+                    <button
+                      key={p.value}
+                      type="button"
+                      className={cn(
+                        "w-2.5 h-2.5 rounded-full transition-all duration-200 shadow-sm",
+                        isActive ? p.color : "bg-gray-300",
+                        p.hoverColor
+                      )}
+                      title={`${p.value} Priority`}
+                      onClick={() => setPriority(p.value)}
+                    />
+                  );
+                })}
+              </div>
+            </div>
             <button 
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 p-1"
@@ -539,64 +575,79 @@ export default function CompactTaskModal({
             </div>
           </div>
 
-          {/* Column selection - Horizontal pills */}
+          {/* Column selection - Visual buttons */}
           <div>
             <label className="text-xs font-medium text-gray-600 mb-1 block">Column</label>
-            <div className="flex gap-1 overflow-x-auto scrollbar-hide">
-              {columns.map((column) => (
-                <button
-                  key={column.id}
-                  type="button"
-                  onClick={() => setSelectedColumnId(column.id)}
-                  className={cn(
-                    "px-3 py-1 text-xs font-medium rounded-md shrink-0 transition-all",
-                    selectedColumnId === column.id
-                      ? "bg-krushr-primary text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  )}
-                >
-                  {column.title}
-                </button>
-              ))}
+            <div className="grid grid-cols-4 gap-2">
+              {columns.slice(0, 4).map((column) => {
+                const isSelected = selectedColumnId === column.id;
+                // Map column names to status colors and icons
+                const columnMap: Record<string, { color: string; icon: string }> = {
+                  'Backlog': { color: 'bg-gray-500', icon: '○' },
+                  'To Do': { color: 'bg-gray-500', icon: '○' },
+                  'In Progress': { color: 'bg-blue-500', icon: '◐' },
+                  'Review': { color: 'bg-purple-500', icon: '◎' },
+                  'Done': { color: 'bg-green-500', icon: '●' }
+                };
+                const config = columnMap[column.title] || { color: 'bg-gray-400', icon: '○' };
+                
+                return (
+                  <button
+                    key={column.id}
+                    type="button"
+                    onClick={() => setSelectedColumnId(column.id)}
+                    className={cn(
+                      "px-3 py-3 rounded-lg border-2 transition-all duration-200",
+                      "flex flex-col items-center gap-1.5",
+                      isSelected 
+                        ? `${config.color} text-white border-transparent shadow-sm` 
+                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                    )}
+                  >
+                    <span className="text-lg">{config.icon}</span>
+                    <span className="text-xs font-medium">{column.title}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Priority & Assignee in same row */}
-          <div className="flex items-center justify-between gap-3">
-            <InlinePrioritySelector priority={priority} onChange={setPriority} />
-            
-            {/* Assignee - Compact */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-600">Assignee</span>
-              {!assigneeId ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const firstUser = workspaceUsers?.[0]
-                    if (firstUser) setAssigneeId(firstUser.id)
-                  }}
-                  className="flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded-md"
-                >
-                  <Plus className="w-3 h-3" />
-                  <span>Add</span>
-                </button>
-              ) : (
-                <div className="flex items-center gap-1">
-                  <div className="w-6 h-6 bg-krushr-primary rounded-full flex items-center justify-center text-white text-[10px] font-medium">
-                    {workspaceUsers?.find((u) => u.id === assigneeId)?.name?.[0] || '?'}
-                  </div>
-                  <span className="text-xs text-gray-700">
-                    {workspaceUsers?.find((u) => u.id === assigneeId)?.name?.split(' ')[0]}
-                  </span>
+          {/* Assignee as avatar grid */}
+          <div>
+            <label className="text-xs font-medium text-gray-600 mb-1 block">Assignee</label>
+            <div className="flex gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setAssigneeId('')}
+                className={cn(
+                  "w-10 h-10 rounded-full border-2 transition-all",
+                  !assigneeId 
+                    ? "border-krushr-primary bg-gray-100" 
+                    : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                )}
+                title="Unassigned"
+              >
+                <User className="w-5 h-5 mx-auto text-gray-400" />
+              </button>
+              {workspaceUsers?.map((user) => {
+                const isSelected = assigneeId === user.id;
+                return (
                   <button
+                    key={user.id}
                     type="button"
-                    onClick={() => setAssigneeId('')}
-                    className="text-gray-400 hover:text-red-500 p-0.5"
+                    onClick={() => setAssigneeId(user.id)}
+                    className={cn(
+                      "w-10 h-10 rounded-full border-2 transition-all font-medium text-sm",
+                      isSelected 
+                        ? "border-krushr-primary bg-krushr-primary text-white" 
+                        : "border-gray-200 bg-gray-100 text-gray-700 hover:border-gray-300"
+                    )}
+                    title={user.name}
                   >
-                    <X className="w-3 h-3" />
+                    {user.name?.[0]?.toUpperCase() || '?'}
                   </button>
-                </div>
-              )}
+                );
+              })}
             </div>
           </div>
 

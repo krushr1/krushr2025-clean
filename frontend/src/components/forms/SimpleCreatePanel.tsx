@@ -203,7 +203,37 @@ export default function SimpleCreatePanel({
         <SheetHeader className="space-y-0">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-xl font-brand">Create New Task</SheetTitle>
-            <div className="flex items-center gap-1">
+            {/* Priority Dots Selector */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-krushr-gray-dark mr-1">Priority:</span>
+                <div className="flex gap-0.5">
+                  {[
+                    { value: Priority.LOW, color: 'bg-green-500', hoverColor: 'hover:bg-green-500/50' },
+                    { value: Priority.MEDIUM, color: 'bg-yellow-500', hoverColor: 'hover:bg-yellow-500/50' },
+                    { value: Priority.HIGH, color: 'bg-red-500', hoverColor: 'hover:bg-red-500/50' }
+                  ].map((p, index) => {
+                    const isActive = priority === p.value || 
+                                   (priority === Priority.LOW && index === 0) ||
+                                   (priority === Priority.MEDIUM && index <= 1) ||
+                                   (priority === Priority.HIGH && index <= 2);
+                    return (
+                      <button
+                        key={p.value}
+                        type="button"
+                        className={cn(
+                          "w-2.5 h-2.5 rounded-full transition-all duration-200 shadow-sm",
+                          isActive ? p.color : "bg-krushr-gray-300",
+                          p.hoverColor
+                        )}
+                        title={`${p.value} Priority`}
+                        onClick={() => setPriority(p.value)}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
                 size="sm"
@@ -243,39 +273,33 @@ export default function SimpleCreatePanel({
 
               {/* Status & Priority Section */}
               <div className="space-y-4">
-                {/* Status Selection */}
+                {/* Status Selection - Column Buttons */}
                 <div>
                   <label className="text-xs font-medium text-krushr-gray-dark uppercase tracking-wide mb-2 block">Status</label>
-                  <div className="flex gap-2">
-                    {[TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.REVIEW, TaskStatus.DONE].map((statusOption) => {
-                      const labels = {
-                        [TaskStatus.TODO]: 'To Do',
-                        [TaskStatus.IN_PROGRESS]: 'In Progress', 
-                        [TaskStatus.REVIEW]: 'Review',
-                        [TaskStatus.DONE]: 'Done'
-                      }
-                      const isSelected = status === statusOption
-                      const colors = {
-                        [TaskStatus.TODO]: isSelected ? 'bg-blue-100 text-blue-800 border-blue-300 shadow-sm' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-blue-300',
-                        [TaskStatus.IN_PROGRESS]: isSelected ? 'bg-amber-100 text-amber-800 border-amber-300 shadow-sm' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-amber-300',
-                        [TaskStatus.REVIEW]: isSelected ? 'bg-purple-100 text-purple-800 border-purple-300 shadow-sm' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-purple-300',
-                        [TaskStatus.DONE]: isSelected ? 'bg-green-100 text-green-800 border-green-300 shadow-sm' : 'bg-white text-krushr-gray border-krushr-gray-border hover:border-green-300'
-                      }
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { status: TaskStatus.TODO, label: 'To Do', icon: Circle, color: 'bg-gray-500' },
+                      { status: TaskStatus.IN_PROGRESS, label: 'In Progress', icon: AlertCircle, color: 'bg-blue-500' },
+                      { status: TaskStatus.REVIEW, label: 'Review', icon: MessageSquare, color: 'bg-purple-500' },
+                      { status: TaskStatus.DONE, label: 'Done', icon: CheckCircle2, color: 'bg-green-500' }
+                    ].map(({ status: statusOption, label, icon: Icon, color }) => {
+                      const isSelected = status === statusOption;
                       return (
                         <button
                           key={statusOption}
                           onClick={() => setStatus(statusOption)}
                           className={cn(
-                            "px-4 py-2 text-sm font-medium rounded-button border-2 transition-all duration-200 flex-1",
-                            colors[statusOption]
+                            "px-3 py-4 rounded-lg border-2 transition-all duration-200",
+                            "flex flex-col items-center gap-2",
+                            isSelected 
+                              ? `${color} text-white border-transparent shadow-elevation-sm` 
+                              : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
                           )}
                         >
-                          <div className="flex items-center justify-center gap-2">
-                            {getStatusIcon(statusOption)}
-                            {labels[statusOption]}
-                          </div>
+                          <Icon className="w-5 h-5" />
+                          <span className="text-xs font-medium">{label}</span>
                         </button>
-                      )
+                      );
                     })}
                   </div>
                 </div>

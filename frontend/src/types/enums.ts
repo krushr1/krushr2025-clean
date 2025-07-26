@@ -10,6 +10,7 @@ export enum TaskStatus {
   TODO = 'TODO',
   IN_PROGRESS = 'IN_PROGRESS',
   IN_REVIEW = 'IN_REVIEW',
+  REVIEW = 'REVIEW',
   DONE = 'DONE',
   CANCELLED = 'CANCELLED'
 }
@@ -54,4 +55,16 @@ export enum ChatMessageType {
   FILE = 'FILE',
   IMAGE = 'IMAGE',
   SYSTEM = 'SYSTEM'
+}
+
+export enum TaskComplexity {
+  SIMPLE = 'SIMPLE',
+  MEDIUM = 'MEDIUM',
+  COMPLEX = 'COMPLEX'
+}
+
+export enum TaskRiskLevel {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH'
 }

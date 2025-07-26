@@ -45,7 +45,7 @@ const NewCalendarPanel = lazy(() => import('../calendar/NewCalendarPanel'))
 const Contacts = lazy(() => import('../contacts/Contacts'))
 const WorkspaceAiChat = lazy(() => import('../ai/WorkspaceAiChat'))
 
-import SimpleCreatePanel from '../forms/SimpleCreatePanel'
+import SimpleCreatePanel from '../forms/SimpleCreatePanelEnhanced'
 
 
 const PanelLoadingSpinner = () => (

@@ -10,7 +10,7 @@ import { Plus, Loader2 } from 'lucide-react'
 import KrushrLoader from '../components/common/KrushrLoader'
 import KrushrLogo from '../components/common/KrushrLogo'
 import FloatingActionButton from '../components/ui/floating-action-button'
-import SimpleCreatePanel from '../components/forms/SimpleCreatePanel'
+import SimpleCreatePanel from '../components/forms/SimpleCreatePanelEnhanced'
 
 export default function Board() {
   const { isAuthenticated } = useAuthStore()

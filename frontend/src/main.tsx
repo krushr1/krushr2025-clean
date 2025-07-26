@@ -86,6 +86,28 @@ function preventDuplicateCustomElements(): void {
 
 preventDuplicateCustomElements()
 
+// Suppress React DevTools suggestion in development
+if (isDevelopment()) {
+  const originalLog = console.log
+  const originalInfo = console.info
+  const originalWarn = console.warn
+  
+  const filterDevTools = (method: Function) => {
+    return function(...args: any[]) {
+      // Filter out React DevTools suggestion
+      if (args.length > 0 && typeof args[0] === 'string' && 
+          args[0].includes('Download the React DevTools')) {
+        return
+      }
+      return method.apply(console, args)
+    }
+  }
+  
+  console.log = filterDevTools(originalLog)
+  console.info = filterDevTools(originalInfo)
+  console.warn = filterDevTools(originalWarn)
+}
+
 window.addEventListener('error', (event) => {
   const message = event.error?.message || event.message || ''
   if (message.includes('mce-autosize-textarea') || 

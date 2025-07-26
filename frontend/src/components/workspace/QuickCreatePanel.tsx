@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { PlusIcon, XIcon, MinimizeIcon, MaximizeIcon } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
-import SimpleCreatePanel from '../forms/SimpleCreatePanel'
+import SimpleCreatePanel from '../forms/SimpleCreatePanelEnhanced'
 import { cn } from '../../lib/utils'
 
 interface QuickCreatePanelProps {

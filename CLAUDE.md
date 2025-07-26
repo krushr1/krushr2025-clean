@@ -263,7 +263,7 @@ gemini -p "@api/src/websocket/ @frontend/src/ Are WebSocket connections implemen
 ```
 
 **Test Coverage Analysis:**
-```bash
+```bash/
 gemini -p "@frontend/ @api/ What testing frameworks are used? Is there comprehensive test coverage? List all test files and their purposes."
 ```
 

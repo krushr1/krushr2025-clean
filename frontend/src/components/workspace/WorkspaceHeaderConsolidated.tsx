@@ -58,6 +58,7 @@ import LayoutManager from './LayoutManager'
 import { trpc } from '../../lib/trpc'
 import { useAuthStore } from '../../stores/auth-store'
 import { cn } from '../../lib/utils'
+import { shouldProcessHotkey } from '../../lib/keyboard-utils'
 
 interface WorkspaceHeaderConsolidatedProps {
   workspaceId: string
@@ -200,6 +201,11 @@ export default function WorkspaceHeaderConsolidated({
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't process hotkeys if user is typing in an input field
+      if (!shouldProcessHotkey(e)) {
+        return
+      }
+      
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
         setIsCommandPaletteOpen(true)

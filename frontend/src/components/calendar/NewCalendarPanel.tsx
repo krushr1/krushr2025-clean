@@ -26,6 +26,7 @@ import { FloatingInput } from '../ui/floating-input'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
+import { shouldProcessHotkey } from '../../lib/keyboard-utils'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO, startOfWeek, endOfWeek } from 'date-fns'
 import AgendaView from './AgendaView'
 import CompactTaskModal from '../kanban/CompactTaskModal'
@@ -308,7 +309,8 @@ export default function NewCalendarPanel({
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      // Don't process shortcuts if user is typing
+      if (!shouldProcessHotkey(e)) {
         return
       }
 

@@ -43,6 +43,7 @@ import {
 import { trpc } from '../../lib/trpc'
 import { useAuthStore } from '../../stores/auth-store'
 import { Badge } from '../ui/badge'
+import { shouldProcessHotkey } from '../../lib/keyboard-utils'
 
 interface CommandPaletteProps {
   isOpen: boolean
@@ -346,10 +347,15 @@ export default function CommandPalette({
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't process Cmd+K if user is typing
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        if (!shouldProcessHotkey(e)) {
+          return
+        }
         e.preventDefault()
         onOpenChange(true)
       }
+      // Always allow Escape to close the command palette
       if (e.key === 'Escape') {
         onOpenChange(false)
       }

@@ -852,4 +852,13 @@ h1, h2, h3, h4, h5, h6 {
   .text-block-6 {
     font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
   }
+  
+  /* Mobile-specific utilities for compact modal */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

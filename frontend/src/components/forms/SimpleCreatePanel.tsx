@@ -3,6 +3,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet'
 import { Button } from '../ui/button'
 import { FloatingInput } from '../ui/floating-input'
 import { Textarea } from '../ui/textarea'
+import { useSafeKeyboardInput } from '../../hooks/use-safe-keyboard-input'
 import { Badge } from '../ui/badge'
 import { Card, CardContent } from '../ui/card'
 import {
@@ -63,6 +64,8 @@ export default function SimpleCreatePanel({
 
   const assigneeRef = useRef<HTMLDivElement>(null)
   const datePickerRef = useRef<HTMLDivElement>(null)
+  const descriptionRef = useSafeKeyboardInput<HTMLTextAreaElement>(open)
+  const titleRef = useSafeKeyboardInput<HTMLInputElement>(open)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -327,10 +330,11 @@ export default function SimpleCreatePanel({
             <CardContent className="p-6">
               <label className="text-xs font-medium text-krushr-gray-dark uppercase tracking-wide mb-3 block">Description</label>
               <Textarea
+                ref={descriptionRef}
                 placeholder="Add task details, requirements, or notes..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="min-h-[120px] resize-y text-base border-2 border-krushr-gray-border rounded-input p-4 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200 placeholder:text-krushr-gray-light"
+                className="min-h-[100px] resize-y text-sm border-2 border-krushr-gray-border rounded-input p-3 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200 placeholder:text-krushr-gray-light"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter' && e.ctrlKey && !createTaskMutation.isLoading) {
                     e.preventDefault()

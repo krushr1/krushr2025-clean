@@ -5,6 +5,7 @@ import 'react-resizable/css/styles.css'
 import { trpc } from '../../lib/trpc'
 import PanelRenderer from './PanelRenderer'
 import { cn, debounce } from '../../lib/utils'
+import { shouldProcessHotkey } from '../../lib/keyboard-utils'
 import { useLayoutPersistence } from '../../hooks/use-layout-persistence'
 
 const ResponsiveGridLayout = WidthProvider(Responsive)
@@ -109,7 +110,8 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      // Don't process hotkeys if user is typing in an input field
+      if (!shouldProcessHotkey(e)) {
         return
       }
 

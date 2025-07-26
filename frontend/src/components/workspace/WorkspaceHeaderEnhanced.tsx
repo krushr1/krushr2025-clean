@@ -45,6 +45,7 @@ import KeyboardShortcuts from './KeyboardShortcuts'
 import { trpc } from '../../lib/trpc'
 import { useAuthStore } from '../../stores/auth-store'
 import { cn } from '../../lib/utils'
+import { shouldProcessHotkey } from '../../lib/keyboard-utils'
 
 interface WorkspaceHeaderEnhancedProps {
   workspaceId: string
@@ -102,6 +103,11 @@ export default function WorkspaceHeaderEnhanced({
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't process hotkeys if user is typing
+      if (!shouldProcessHotkey(e)) {
+        return
+      }
+      
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
         setIsCommandPaletteOpen(true)

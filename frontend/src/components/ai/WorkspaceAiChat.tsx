@@ -312,8 +312,8 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       },
       onOptimisticRemove: () => {
         // Clear if active conversation
-        if (activeConversation?.id === conversationId) {
-          setActiveConversation(null)
+        if (selectedConversation === conversationId) {
+          setSelectedConversation(null)
         }
         // Conversation will disappear from list due to refetch
       },

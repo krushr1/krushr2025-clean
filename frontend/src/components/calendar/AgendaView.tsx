@@ -23,8 +23,9 @@ import { Card, CardContent } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { cn } from '../../lib/utils'
-import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, addDays, isToday, isTomorrow, isYesterday } from 'date-fns'
+import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, addDays, isToday, isTomorrow, isYesterday, startOfDay, endOfDay } from 'date-fns'
 import { formatDateShort } from '../../../../shared/utils'
+import { trpc } from '../../lib/trpc'
 
 interface AgendaViewProps {
   workspaceId: string
@@ -45,142 +46,6 @@ interface AgendaItem {
   tags?: string[]
   notes?: string
 }
-
-const SAMPLE_AGENDA_DATA: AgendaItem[] = [
-  {
-    id: '1',
-    title: 'Leadership Team Sync',
-    description: 'Weekly leadership alignment - Q4 priorities, resource allocation, blockers',
-    startTime: new Date(2025, 6, 4, 9, 0), // July 4, 2025, 9:00 AM
-    endTime: new Date(2025, 6, 4, 10, 0),
-    location: 'Executive Conference Room',
-    type: 'meeting',
-    priority: 'high',
-    status: 'confirmed',
-    attendees: ['Sarah Chen', 'Mike Rodriguez', 'David Kim'],
-    tags: ['strategy', 'leadership'],
-    notes: 'Focus on API performance metrics and mobile release timeline'
-  },
-  {
-    id: '2',
-    title: 'Review Sprint 23 Deliverables',
-    description: 'Final review of authentication system and user onboarding flow',
-    startTime: new Date(2025, 6, 4, 11, 30),
-    endTime: new Date(2025, 6, 4, 12, 30),
-    type: 'review',
-    priority: 'high',
-    status: 'confirmed',
-    attendees: ['Engineering Team', 'QA Team'],
-    tags: ['sprint-review', 'deliverables'],
-    notes: 'Security audit results due. Check penetration testing report.'
-  },
-  {
-    id: '3',
-    title: 'Client Check-in: TechCorp Integration',
-    description: 'Progress update on API integration, timeline confirmation',
-    startTime: new Date(2025, 6, 4, 14, 0),
-    endTime: new Date(2025, 6, 4, 15, 0),
-    location: 'Zoom',
-    type: 'call',
-    priority: 'critical',
-    status: 'confirmed',
-    attendees: ['Jennifer Walsh (TechCorp)', 'Alex Thompson'],
-    tags: ['client', 'integration'],
-    notes: '$2.3M contract. Address their concerns about data migration timeline.'
-  },
-  {
-    id: '4',
-    title: 'Finalize Q4 Budget Proposal',
-    description: 'Complete budget analysis for additional engineering headcount',
-    startTime: new Date(2025, 6, 4, 16, 30),
-    endTime: new Date(2025, 6, 4, 17, 30),
-    type: 'task',
-    priority: 'high',
-    status: 'pending',
-    tags: ['budget', 'planning'],
-    notes: 'Include ROI projections for 3 senior engineers. CFO meeting Monday.'
-  },
-
-  {
-    id: '5',
-    title: 'Architecture Review Board',
-    description: 'Microservices migration proposal - security, scalability, timeline',
-    startTime: new Date(2025, 6, 5, 10, 0),
-    endTime: new Date(2025, 6, 5, 11, 30),
-    location: 'Tech Hub - Room 401',
-    type: 'meeting',
-    priority: 'critical',
-    status: 'confirmed',
-    attendees: ['CTO', 'Senior Architects', 'Security Team'],
-    tags: ['architecture', 'migration'],
-    notes: 'Present 6-month migration plan. Emphasize zero-downtime approach.'
-  },
-  {
-    id: '6',
-    title: 'All-Hands Presentation Prep',
-    description: 'Rehearse quarterly results presentation - focus on team achievements',
-    startTime: new Date(2025, 6, 5, 13, 0),
-    endTime: new Date(2025, 6, 5, 14, 0),
-    type: 'planning',
-    priority: 'medium',
-    status: 'confirmed',
-    tags: ['presentation', 'all-hands'],
-    notes: 'Highlight 40% performance improvement and 99.7% uptime achievement'
-  },
-  {
-    id: '7',
-    title: 'Vendor Evaluation: Cloud Infrastructure',
-    description: 'Final decision on AWS vs Azure for new regions',
-    startTime: new Date(2025, 6, 5, 15, 30),
-    endTime: new Date(2025, 6, 5, 16, 30),
-    type: 'meeting',
-    priority: 'high',
-    status: 'confirmed',
-    attendees: ['DevOps Lead', 'Finance', 'Procurement'],
-    tags: ['vendor', 'infrastructure'],
-    notes: 'Cost analysis complete. AWS 23% more cost-effective for our use case.'
-  },
-
-  {
-    id: '8',
-    title: 'Product Roadmap Review',
-    description: 'H1 2026 feature prioritization with product and design teams',
-    startTime: new Date(2025, 6, 6, 9, 30),
-    endTime: new Date(2025, 6, 6, 11, 0),
-    location: 'Product Suite',
-    type: 'planning',
-    priority: 'high',
-    status: 'confirmed',
-    attendees: ['Product Team', 'Design Team', 'Engineering Leads'],
-    tags: ['roadmap', 'planning'],
-    notes: 'Focus on AI features and mobile-first initiatives'
-  },
-  {
-    id: '9',
-    title: 'Security Incident Response Drill',
-    description: 'Quarterly security simulation - test response procedures',
-    startTime: new Date(2025, 6, 6, 14, 0),
-    endTime: new Date(2025, 6, 6, 15, 30),
-    type: 'task',
-    priority: 'medium',
-    status: 'confirmed',
-    attendees: ['Security Team', 'DevOps', 'On-call Engineers'],
-    tags: ['security', 'drill'],
-    notes: 'Simulating data breach scenario. Update runbooks based on results.'
-  },
-  {
-    id: '10',
-    title: 'Performance Review: Senior Engineers',
-    description: 'Quarterly performance discussions and career development planning',
-    startTime: new Date(2025, 6, 6, 16, 0),
-    endTime: new Date(2025, 6, 6, 17, 30),
-    type: 'meeting',
-    priority: 'high',
-    status: 'confirmed',
-    tags: ['performance', 'career-development'],
-    notes: 'Promotion recommendations due. Focus on growth paths and compensation.'
-  }
-]
 
 const TYPE_ICONS = {
   meeting: Users,
@@ -209,34 +74,63 @@ export default function AgendaView({ workspaceId, className }: AgendaViewProps) 
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set(['today']))
   const [selectedItem, setSelectedItem] = useState<AgendaItem | null>(null)
 
+  // Fetch calendar events for the next 3 days
+  const today = new Date()
+  const tomorrow = addDays(today, 1)
+  const dayAfter = addDays(today, 2)
+  
+  const { data: calendarEvents } = trpc.calendar.list.useQuery({
+    workspaceId,
+    startDate: startOfDay(today).toISOString(),
+    endDate: endOfDay(dayAfter).toISOString()
+  })
+
   const groupedAgenda = useMemo(() => {
-    const today = new Date()
-    const tomorrow = addDays(today, 1)
-    const dayAfter = addDays(today, 2)
+    if (!calendarEvents) {
+      return []
+    }
+
+    // Transform calendar events to agenda items
+    const agendaItems: AgendaItem[] = calendarEvents.map(event => ({
+      id: event.id,
+      title: event.title,
+      description: event.description || undefined,
+      startTime: new Date(event.startTime),
+      endTime: new Date(event.endTime),
+      location: event.location || undefined,
+      type: event.type === 'MEETING' ? 'meeting' : 
+            event.type === 'TASK' ? 'task' :
+            event.type === 'EVENT' ? 'meeting' : 'meeting',
+      priority: 'medium', // Calendar events don't have priority, default to medium
+      status: 'confirmed',
+      attendees: event.attendees?.map(a => a.user?.name || a.user?.email || 'Unknown') || [],
+      tags: event.type ? [event.type.toLowerCase()] : [],
+      notes: event.description || undefined
+    }))
 
     const groups = [
       {
         key: 'today',
         label: 'Today',
         date: today,
-        items: SAMPLE_AGENDA_DATA.filter(item => isSameDay(item.startTime, today))
+        items: agendaItems.filter(item => isSameDay(item.startTime, today))
       },
       {
         key: 'tomorrow',
         label: `Tomorrow (${formatDateShort(tomorrow)})`,
         date: tomorrow,
-        items: SAMPLE_AGENDA_DATA.filter(item => isSameDay(item.startTime, tomorrow))
+        items: agendaItems.filter(item => isSameDay(item.startTime, tomorrow))
       },
       {
         key: 'dayafter',
         label: formatDateShort(dayAfter),
         date: dayAfter,
-        items: SAMPLE_AGENDA_DATA.filter(item => isSameDay(item.startTime, dayAfter))
+        items: agendaItems.filter(item => isSameDay(item.startTime, dayAfter))
       }
     ]
 
     return groups.filter(group => group.items.length > 0)
-  }, [])
+  }, [calendarEvents, today, tomorrow, dayAfter])
 
   const toggleDayExpansion = (dayKey: string) => {
     const newExpanded = new Set(expandedDays)

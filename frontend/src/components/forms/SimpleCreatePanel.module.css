@@ -1,0 +1,194 @@
+/* SimpleCreatePanel Performance-Optimized Styles */
+
+/* Base Variables */
+.panel {
+  --transition-base: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --spacing-unit: 0.25rem;
+  --radius-base: 0.5rem;
+}
+
+/* Reusable Card Styles */
+.card {
+  border: 0;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  background: var(--krushr-gray-bg-light);
+  border-radius: calc(var(--radius-base) * 1.5);
+}
+
+/* Button Base - Reduce repetition */
+.button-base {
+  padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-base);
+  border-width: 2px;
+  transition: var(--transition-base);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing-unit) * 2);
+}
+
+/* Status Button Variants */
+.status-todo {
+  composes: button-base;
+  background: white;
+  color: var(--krushr-gray);
+  border-color: var(--krushr-gray-border);
+}
+
+.status-todo:hover {
+  border-color: #3b82f6;
+}
+
+.status-todo-active {
+  composes: button-base;
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.status-progress {
+  composes: button-base;
+  background: white;
+  color: var(--krushr-gray);
+  border-color: var(--krushr-gray-border);
+}
+
+.status-progress:hover {
+  border-color: #f59e0b;
+}
+
+.status-progress-active {
+  composes: button-base;
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fcd34d;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* Priority Button Variants */
+.priority-low {
+  composes: button-base;
+}
+
+.priority-low-active {
+  composes: button-base;
+  background: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+
+.priority-medium {
+  composes: button-base;
+}
+
+.priority-medium-active {
+  composes: button-base;
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fcd34d;
+}
+
+.priority-high {
+  composes: button-base;
+}
+
+.priority-high-active {
+  composes: button-base;
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
+/* Input Styles */
+.input-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-width: 2px;
+  border-color: var(--krushr-gray-border);
+  border-radius: var(--radius-base);
+  padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 4);
+  transition: var(--transition-base);
+}
+
+.input-title:focus {
+  border-color: var(--krushr-primary);
+  box-shadow: 0 0 0 3px rgb(20 49 151 / 0.2);
+  outline: none;
+}
+
+/* Dropdown Styles */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: calc(var(--spacing-unit) * 2);
+  background: white;
+  border: 2px solid var(--krushr-gray-border);
+  border-radius: var(--radius-base);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  z-index: 10;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: calc(var(--spacing-unit) * 3);
+  cursor: pointer;
+  transition: background-color 150ms;
+}
+
+.dropdown-item:hover {
+  background-color: var(--krushr-gray-bg-light);
+}
+
+/* Icon Optimization */
+.icon-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.icon-md {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Animation Classes - Minimal */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Footer Sticky Optimization */
+.footer-sticky {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 2px solid var(--krushr-gray-border);
+  padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 6);
+  margin: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * -6) calc(var(--spacing-unit) * -6);
+}
+
+/* Responsive Utilities */
+@media (min-width: 640px) {
+  .panel {
+    max-width: 42rem;
+  }
+}
+
+/* Performance: GPU Acceleration for animations */
+.button-base,
+.dropdown,
+.card {
+  will-change: transform;
+  transform: translateZ(0);
+}

@@ -313,6 +313,7 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null)
   const [isSingleColumn, setIsSingleColumn] = useState(false)
   const [showEditor, setShowEditor] = useState(false)
+  const [hiddenNoteIds, setHiddenNoteIds] = useState<Set<string>>(new Set())
   const containerRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
@@ -496,16 +497,29 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
       itemName: noteToDelete.title || 'Untitled note',
       deleteAction: async () => {
         await deleteNote.mutateAsync({ id: activeNoteId })
+        // Remove from hidden list after successful deletion
+        setHiddenNoteIds(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(activeNoteId)
+          return newSet
+        })
       },
       onOptimisticRemove: () => {
-        // Clear active note immediately for better UX
-        setActiveNoteId(notesQuery.data?.notes?.find(n => n.id !== activeNoteId)?.id || null)
-        // Note will disappear from list due to refetch
+        // Hide the note immediately
+        setHiddenNoteIds(prev => new Set(prev).add(activeNoteId))
+        // Clear active note
+        const remainingNotes = notesQuery.data?.notes?.filter(n => n.id !== activeNoteId && !hiddenNoteIds.has(n.id))
+        setActiveNoteId(remainingNotes?.[0]?.id || null)
       },
       onRestore: () => {
-        // Restore the active note
+        // Show the note again
+        setHiddenNoteIds(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(noteToDelete.id)
+          return newSet
+        })
+        // Restore as active note
         setActiveNoteId(noteToDelete.id)
-        notesQuery.refetch()
       }
     })
   }
@@ -541,7 +555,13 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
     toast.success('Note color updated')
   }
 
-  const filteredNotes = notesQuery.data?.notes || []
+  const filteredNotes = (notesQuery.data?.notes || []).filter(note => 
+    !hiddenNoteIds.has(note.id) &&
+    (searchQuery ? 
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.content?.toLowerCase().includes(searchQuery.toLowerCase())
+      : true)
+  )
 
   return (
     <div ref={containerRef} className={cn("flex h-full bg-krushr-gray-50", className)}>

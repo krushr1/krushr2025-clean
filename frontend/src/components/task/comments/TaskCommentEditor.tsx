@@ -197,9 +197,21 @@ export default function TaskCommentEditor({
   const toggleBulletList = () => editor?.chain().focus().toggleBulletList().run()
   const toggleOrderedList = () => editor?.chain().focus().toggleOrderedList().run()
   const toggleLink = () => {
-    const url = window.prompt('Enter URL:')
-    if (url) {
-      editor?.chain().focus().setLink({ href: url }).run()
+    if (!editor) return;
+    
+    // Get selected text
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to);
+    
+    // If there's selected text that looks like a URL, use it
+    const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    if (selectedText && urlPattern.test(selectedText)) {
+      const url = selectedText.startsWith('http') ? selectedText : `https://${selectedText}`;
+      editor.chain().focus().setLink({ href: url }).run();
+    } else {
+      // For now, just add a placeholder link
+      // In a real app, you'd show a proper link dialog
+      editor.chain().focus().setLink({ href: 'https://example.com' }).run();
     }
   }
 

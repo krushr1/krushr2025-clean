@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Calendar, ChevronLeft, ChevronRight, User, Tag, Paperclip, Upload, FileText, Clock, Plus, Loader2 } from 'lucide-react'
 import { useOptimisticDelete } from '@/hooks/use-optimistic-delete'
@@ -7,10 +7,33 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameMont
 import { useAuthStore } from '../../stores/auth-store'
 import { Priority } from '../../types/enums'
 import { trpc } from '../../lib/trpc'
-import { DueDatePicker } from '../forms/DueDatePicker'
-import { AttachmentUpload } from '../common/AttachmentUpload'
-import { FloatingInput } from '../ui/floating-input'
+
+// Backend Priority enum for API calls (maps to api/src/types/enums.ts)
+enum ApiPriority {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM', 
+  HIGH = 'HIGH',
+  URGENT = 'URGENT'
+}
+
+// Convert frontend Priority to backend ApiPriority
+const mapPriorityToApi = (priority: Priority): ApiPriority => {
+  switch (priority) {
+    case Priority.LOW:
+      return ApiPriority.LOW
+    case Priority.MEDIUM:
+      return ApiPriority.MEDIUM
+    case Priority.HIGH:
+      return ApiPriority.HIGH
+    case Priority.CRITICAL:
+      return ApiPriority.URGENT
+    default:
+      return ApiPriority.MEDIUM
+  }
+}
 import { cn } from '../../lib/utils'
+import { toast } from 'sonner'
+import { Buffer } from 'buffer'
 
 interface CompactTaskModalProps {
   open: boolean
@@ -20,7 +43,7 @@ interface CompactTaskModalProps {
   workspaceId: string
   kanbanColumnId?: string
   kanbanId?: string
-  task?: any
+  task?: any // Keep as any since task structure varies
   isEditMode?: boolean
   mode?: 'task' | 'calendar'
   selectedDate?: Date | null
@@ -32,13 +55,13 @@ const PrioritySelector = ({ priority, onChange }: { priority: Priority; onChange
   const currentPriority = hoveredPriority || priority
   
   return (
-    <div className="bg-white border border-krushr-gray-border rounded p-3">
+    <div className="bg-white border border-krushr-gray-border rounded p-2 sm:p-3">
       <label className="text-xs font-medium text-krushr-gray mb-2 block">Priority</label>
       <div 
-        className="flex items-center gap-2"
+        className="flex items-center gap-1.5 sm:gap-2"
         onMouseLeave={() => setHoveredPriority(null)}
       >
-        <div className="flex gap-1">
+        <div className="flex gap-0.5 sm:gap-1">
           {[Priority.LOW, Priority.MEDIUM, Priority.HIGH].map((p, index) => {
             const count = index + 1
             const isActive = (
@@ -57,7 +80,7 @@ const PrioritySelector = ({ priority, onChange }: { priority: Priority; onChange
                   setHoveredPriority(null)
                 }}
                 className={cn(
-                  "w-2.5 h-2.5 rounded-full transition-colors duration-150 cursor-pointer",
+                  "w-2 h-2 rounded-full transition-colors duration-150 cursor-pointer",
                   isActive 
                     ? "bg-krushr-secondary" 
                     : "bg-krushr-gray-lighter hover:bg-krushr-gray-light"
@@ -67,7 +90,42 @@ const PrioritySelector = ({ priority, onChange }: { priority: Priority; onChange
             )
           })}
         </div>
-        <span className="text-xs text-krushr-gray capitalize w-12">{currentPriority.toLowerCase()}</span>
+        <span className="text-xs text-krushr-gray capitalize">{currentPriority.toLowerCase()}</span>
+      </div>
+    </div>
+  )
+}
+
+// Intelligent Compact Priority Selector
+const InlinePrioritySelector = ({ priority, onChange }: { priority: Priority; onChange: (p: Priority) => void }) => {
+  const priorities = [
+    { value: Priority.LOW, color: 'bg-green-500' },
+    { value: Priority.MEDIUM, color: 'bg-yellow-500' },
+    { value: Priority.HIGH, color: 'bg-red-500' }
+  ]
+  
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-krushr-gray">Priority</span>
+      <div className="flex items-center gap-1">
+        {priorities.map((p, idx) => (
+          <button
+            key={p.value}
+            type="button"
+            onClick={() => onChange(p.value)}
+            className={cn(
+              "w-4 h-4 rounded-full transition-all relative",
+              "hover:scale-110",
+              priority === p.value ? p.color : "bg-gray-300",
+              // Make touch target larger than visual
+              "after:absolute after:inset-[-8px] after:content-['']"
+            )}
+            title={`${p.value} priority`}
+          />
+        ))}
+        <span className="text-xs text-krushr-gray-dark ml-1 capitalize">
+          {priority.toLowerCase()}
+        </span>
       </div>
     </div>
   )
@@ -89,7 +147,9 @@ export default function CompactTaskModal({
   // Form state
   const [title, setTitle] = useState(task?.title || '')
   const [description, setDescription] = useState(task?.description || '')
-  const [priority, setPriority] = useState<Priority>(task?.priority || Priority.MEDIUM)
+  const [priority, setPriority] = useState<Priority>(
+    task?.priority ? (task.priority as Priority) : Priority.MEDIUM
+  )
   const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate ? new Date(task.dueDate) : null)
   const [assigneeId, setAssigneeId] = useState(task?.assigneeId || '')
   const [tags, setTags] = useState(task?.tags?.join(', ') || '')
@@ -120,10 +180,10 @@ export default function CompactTaskModal({
   const [eventColor, setEventColor] = useState(task?.color || 'blue')
 
   // Workspace data
-  const { currentWorkspace } = useAuthStore()
-  const { data: workspaceUsers } = trpc.workspace.listUsers.useQuery(
-    { workspaceId: currentWorkspace?.id || '' },
-    { enabled: !!currentWorkspace?.id }
+  const { user } = useAuthStore()
+  const { data: workspaceUsers } = trpc.user.getWorkspaceUsers.useQuery(
+    { workspaceId: workspaceId },
+    { enabled: !!workspaceId }
   )
   
   // Get kanban columns from provided kanbanId
@@ -137,7 +197,7 @@ export default function CompactTaskModal({
   const createTaskMutation = trpc.task.create.useMutation()
   const updateTaskMutation = trpc.task.update.useMutation()
   const deleteTaskMutation = trpc.task.delete.useMutation()
-  const uploadMutation = trpc.uploadNew.uploadFiles.useMutation()
+  const uploadMutation = trpc.upload.uploadTaskFile.useMutation()
 
   // Calendar mutations
   const createCalendarEventMutation = trpc.calendar.create.useMutation()
@@ -203,7 +263,7 @@ export default function CompactTaskModal({
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim() || !workspaceId) return
 
@@ -220,7 +280,7 @@ export default function CompactTaskModal({
           allDay,
           location: location.trim() || undefined,
           color: eventColor,
-          type: eventType as any,
+          type: eventType,
           workspaceId
         }
 
@@ -237,10 +297,10 @@ export default function CompactTaskModal({
         const taskData = {
           title: title.trim(),
           description: description.trim(),
-          priority,
+          priority: mapPriorityToApi(priority),
           dueDate: dueDate ? dueDate.toISOString() : null,
           assigneeId: assigneeId || null,
-          tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+          tags: tags ? tags.split(',').map((t: string) => t.trim()).filter(Boolean) : [],
           workspaceId,
           kanbanColumnId: selectedColumnId || undefined
         }
@@ -254,33 +314,44 @@ export default function CompactTaskModal({
           })
         } else {
           const newTask = await createTaskMutation.mutateAsync(taskData)
-          createdTaskId = newTask.id
+          createdTaskId = newTask.task.id
         }
 
         // Handle file uploads if any
         if (pendingFiles.length > 0 && createdTaskId) {
           setUploadingFiles(true)
-          const formData = new FormData()
-          pendingFiles.forEach(file => {
-            formData.append('files', file)
-          })
-          formData.append('type', 'task')
-          formData.append('targetId', createdTaskId)
-
-          await uploadMutation.mutateAsync(formData as any)
+          for (const file of pendingFiles) {
+            const fileBuffer = await file.arrayBuffer()
+            await uploadMutation.mutateAsync({
+              taskId: createdTaskId,
+              file: {
+                filename: file.name,
+                mimetype: file.type,
+                size: file.size,
+                buffer: Buffer.from(fileBuffer),
+              },
+            })
+          }
         }
       }
 
+      toast.success(isEditMode ? 'Item updated' : 'Item created')
       onTaskCreated?.()
       onSuccess?.()
       onClose()
     } catch (error) {
       console.error(`Failed to save ${mode}:`, error)
+      toast.error(`Failed to save ${mode}`)
     } finally {
       setIsLoading(false)
       setUploadingFiles(false)
     }
-  }
+  }, [
+    title, workspaceId, currentMode, description, startTime, endTime, allDay, location, eventColor, eventType,
+    isEditMode, task?.id, priority, dueDate, assigneeId, tags, selectedColumnId, pendingFiles, mode,
+    onTaskCreated, onSuccess, onClose, updateCalendarEventMutation, createCalendarEventMutation,
+    updateTaskMutation, createTaskMutation, uploadMutation
+  ])
 
   const { deleteItem } = useOptimisticDelete()
 
@@ -306,12 +377,12 @@ export default function CompactTaskModal({
     })
   }
 
-  const handleFileSelect = (files: File[]) => {
-    setPendingFiles(prev => [...prev, ...files])
-  }
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const removePendingFile = (index: number) => {
-    setPendingFiles(prev => prev.filter((_, i) => i !== index))
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setPendingFiles(Array.from(e.target.files))
+    }
   }
 
   const generateCalendarDays = () => {
@@ -405,7 +476,9 @@ export default function CompactTaskModal({
       if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
         e.preventDefault()
         if (title.trim() && !isLoading && !uploadingFiles) {
-          handleSubmit(e as any)
+          // Create a synthetic form event for handleSubmit
+          const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true }) as unknown as React.FormEvent
+          handleSubmit(syntheticEvent)
         }
       }
     }
@@ -428,355 +501,249 @@ export default function CompactTaskModal({
         onClick={onClose}
       />
       
-      {/* Modal Container - Responsive Intelligent Design */}
-      <div className="relative w-full max-w-3xl mx-4 max-h-[90vh] bg-white rounded-lg overflow-hidden flex flex-col shadow-lg border border-krushr-gray-border">
-        {/* Compact Header with Task Title */}
-        <div className="px-4 py-3 border-b border-krushr-gray-border bg-gradient-to-r from-krushr-gray-bg-light to-white">
-          <div className="flex items-center justify-between">
+      {/* Intelligently Compact Modal */}
+      <div className="relative w-full max-w-2xl bg-white rounded-lg shadow-lg border border-krushr-gray-border overflow-hidden">
+        {/* Ultra-compact header */}
+        <div className="px-4 py-2 border-b border-krushr-gray-border bg-gray-50">
+          <div className="flex items-center">
             <input
               type="text"
               value={title}
-              onChange={(e) => {
-                setTitle(e.target.value)
-                analyzeTitle(e.target.value)
-              }}
+              onChange={(e) => setTitle(e.target.value)}
               autoFocus
-              className="flex-1 mr-3 text-lg font-semibold border-0 px-0 py-0 focus:outline-none focus:ring-0 bg-transparent placeholder:text-krushr-gray-light"
-              placeholder={isEditMode ? 'Edit task title...' : 'What needs to be done?'}
+              className="flex-1 mr-3 text-base font-medium border-0 px-0 py-0 focus:outline-none focus:ring-0 bg-transparent placeholder:text-gray-400"
+              placeholder={isEditMode ? 'Edit task...' : 'What needs to be done?'}
             />
             <button 
               onClick={onClose}
-              className="text-krushr-gray hover:text-krushr-gray-dark transition-colors p-1.5 hover:bg-white rounded"
+              className="text-gray-400 hover:text-gray-600 p-1"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
         
-        {/* Content - Intelligent Compact Layout */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
-          <div className="p-4">
-            {/* Two Column Layout - Responsive */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr,300px] gap-4">
-              {/* Left Column - Main Content */}
-              <div className="space-y-4">
-                {/* Description - Rich Text Editor */}
-                <div>
-                  <label className="text-xs font-medium text-krushr-gray mb-2 block">Description</label>
-                  <div className="border border-krushr-gray-border rounded-md overflow-hidden">
-                    <RichTextEditor
-                      content={description}
-                      onChange={(content) => setDescription(content)}
-                      placeholder="Add task details, requirements, or notes..."
-                      className="min-h-[60px] [&>div:last-child]:min-h-[40px] [&>div:last-child]:border-0 [&_.border-b]:border-krushr-gray-border [&_.border-b]:pb-1 [&_.border-b]:mb-1 [&_.flex-wrap]:gap-0.5 [&_button]:p-1 [&_.w-px]:mx-0.5"
-                      minimal={false}
-                    />
-                  </div>
-                </div>
-
-                {/* Kanban Column Selection */}
-                <div>
-                  <label className="text-xs font-medium text-krushr-gray mb-2 block">Column</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-1">
-                    {columns.map((column) => (
-                      <button
-                        key={column.id}
-                        type="button"
-                        onClick={() => setSelectedColumnId(column.id)}
-                        className={cn(
-                          "px-2 py-1.5 text-xs font-medium rounded border transition-all",
-                          selectedColumnId === column.id
-                            ? "bg-krushr-primary text-white border-krushr-primary"
-                            : "bg-white text-krushr-gray border-krushr-gray-border hover:border-krushr-gray"
-                        )}
-                        style={{
-                          borderColor: selectedColumnId === column.id ? column.color : undefined
-                        }}
-                      >
-                        {column.title}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Right Column - Calendar */}
-              <div className="space-y-4">
-                {/* Due Date Display */}
-                {dueDate && (
-                  <div className="p-3 bg-krushr-info-50 border border-krushr-info rounded">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-krushr-info" />
-                        <span className="text-sm font-medium text-krushr-gray-dark">
-                          {format(dueDate, 'MMM d, yyyy')}
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setDueDate(null)}
-                        className="text-krushr-gray hover:text-krushr-secondary"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Quick Date Buttons */}
-                <div className="grid grid-cols-3 gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setDueDate(new Date())}
-                    className={cn(
-                      "px-2 py-1 text-xs font-medium rounded border transition-all",
-                      dueDate && isSameDay(dueDate, new Date())
-                        ? "bg-krushr-info-50 text-krushr-info border-krushr-info"
-                        : "bg-white text-krushr-gray border-krushr-gray-border hover:border-krushr-info"
-                    )}
-                  >
-                    Today
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const tomorrow = new Date()
-                      tomorrow.setDate(tomorrow.getDate() + 1)
-                      setDueDate(tomorrow)
-                    }}
-                    className="px-2 py-1 text-xs font-medium bg-white text-krushr-gray border border-krushr-gray-border rounded hover:border-krushr-info transition-all"
-                  >
-                    Tomorrow
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const nextWeek = new Date()
-                      nextWeek.setDate(nextWeek.getDate() + 7)
-                      setDueDate(nextWeek)
-                    }}
-                    className="px-2 py-1 text-xs font-medium bg-white text-krushr-gray border border-krushr-gray-border rounded hover:border-krushr-info transition-all"
-                  >
-                    Next Week
-                  </button>
-                </div>
-
-                {/* Compact Calendar */}
-                <div className="bg-white border border-krushr-gray-border rounded p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <button
-                      type="button"
-                      onClick={() => setCalendarDate(subMonths(calendarDate, 1))}
-                      className="p-1 hover:bg-krushr-gray-bg-light rounded"
-                    >
-                      <ChevronLeft className="w-3 h-3 text-krushr-gray" />
-                    </button>
-                    <span className="text-xs font-semibold text-krushr-gray-dark">
-                      {format(calendarDate, 'MMMM yyyy')}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setCalendarDate(addMonths(calendarDate, 1))}
-                      className="p-1 hover:bg-krushr-gray-bg-light rounded"
-                    >
-                      <ChevronRight className="w-3 h-3 text-krushr-gray" />
-                    </button>
-                  </div>
-                  
-                  <div className="grid grid-cols-7 gap-0.5 text-xs">
-                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
-                      <div key={`${day}-${index}`} className="text-center text-krushr-gray p-1 text-[10px] font-medium">
-                        {day}
-                      </div>
-                    ))}
-                    {generateCalendarDays().map((date, index) => {
-                      if (!date) {
-                        return <div key={index} className="p-1" />
-                      }
-                      
-                      const isCurrentDay = isSameDay(date, new Date())
-                      const isCurrentMonth = isSameMonth(date, calendarDate)
-                      const isSelected = dueDate && isSameDay(date, dueDate)
-                      
-                      return (
-                        <button
-                          key={date.toISOString()}
-                          type="button"
-                          onClick={() => setDueDate(date)}
-                          className={cn(
-                            "p-1 text-center rounded text-xs transition-all",
-                            isCurrentMonth ? "text-krushr-gray-dark" : "text-krushr-gray-light",
-                            isCurrentDay && !isSelected && "bg-krushr-gray-border text-white",
-                            isSelected && "bg-krushr-primary text-white",
-                            !isCurrentDay && !isSelected && "hover:bg-krushr-gray-bg-light"
-                          )}
-                        >
-                          {format(date, 'd')}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-
-                {/* Priority Selector - Now under calendar */}
-                <PrioritySelector priority={priority} onChange={setPriority} />
-
-                {/* Assignee Selection */}
-                <div className="bg-white border border-krushr-gray-border rounded p-3">
-                  <label className="text-xs font-medium text-krushr-gray mb-2 block">Assignee</label>
-                  {!assigneeId ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        // If only one user, assign directly, otherwise show selection
-                        if (workspaceUsers && workspaceUsers.length === 1) {
-                          setAssigneeId(workspaceUsers[0].id)
-                        }
-                      }}
-                      className="w-full px-3 py-1.5 text-xs font-medium text-krushr-gray border border-dashed border-krushr-gray-border rounded hover:border-krushr-primary hover:text-krushr-primary transition-all flex items-center justify-center gap-1"
-                    >
-                      <Plus className="w-3 h-3" />
-                      Assignee
-                    </button>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 bg-krushr-primary rounded-full flex items-center justify-center text-white text-xs font-medium">
-                          {workspaceUsers?.find(u => u.id === assigneeId)?.name?.[0] || 
-                           workspaceUsers?.find(u => u.id === assigneeId)?.email?.[0] || '?'}
-                        </div>
-                        <span className="text-xs text-krushr-gray-dark">
-                          {workspaceUsers?.find(u => u.id === assigneeId)?.name || 
-                           workspaceUsers?.find(u => u.id === assigneeId)?.email}
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setAssigneeId('')}
-                        className="text-krushr-gray hover:text-krushr-secondary p-0.5"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  )}
-                  {workspaceUsers && workspaceUsers.length > 1 && !assigneeId && (
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {workspaceUsers.map((user) => (
-                        <button
-                          key={user.id}
-                          type="button"
-                          onClick={() => setAssigneeId(user.id)}
-                          className="px-2 py-1 text-xs bg-krushr-gray-bg hover:bg-krushr-gray-light rounded transition-colors"
-                        >
-                          {user.name || user.email}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Tags Input */}
-                <div className="bg-white border border-krushr-gray-border rounded p-3">
-                  <FloatingInput
-                    type="text"
-                    label="Tags (comma separated)"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs border-0 focus:ring-0"
-                  />
-                  {tags && (
-                    <div className="flex gap-1 mt-1 flex-wrap">
-                      {tags.split(',').map((tag, idx) => tag.trim() && (
-                        <span key={idx} className="text-xs bg-krushr-gray-bg px-2 py-0.5 rounded">
-                          #{tag.trim()}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Attachments - Compact */}
-                <div className="bg-white border border-krushr-gray-border rounded p-3">
-                  <label className="text-xs font-medium text-krushr-gray mb-2 block">Attachments</label>
-                  <div 
-                    className="border border-dashed border-krushr-gray-border rounded p-2 text-center hover:border-krushr-primary transition-colors cursor-pointer hover:bg-krushr-gray-bg-light"
-                    onClick={() => document.getElementById('file-input')?.click()}
-                  >
-                    <div className="flex items-center justify-center gap-1 text-xs text-krushr-gray">
-                      <Upload className="w-3 h-3" />
-                      <span>Drop or <span className="text-krushr-primary">browse</span></span>
-                    </div>
-                    <input
-                      id="file-input"
-                      type="file"
-                      multiple
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files) {
-                          handleFileSelect(Array.from(e.target.files))
-                        }
-                      }}
-                    />
-                  </div>
-                  {pendingFiles.length > 0 && (
-                    <div className="mt-2 space-y-1">
-                      {pendingFiles.map((file, index) => (
-                        <div key={index} className="flex items-center justify-between p-1 bg-krushr-gray-bg-light rounded text-xs">
-                          <span className="truncate text-[11px]">{file.name}</span>
-                          <button
-                            type="button"
-                            onClick={() => removePendingFile(index)}
-                            className="text-krushr-gray hover:text-krushr-secondary"
-                          >
-                            <X className="w-2.5 h-2.5" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Smart Suggestions */}
-                {smartSuggestions.length > 0 && (
-                  <div className="bg-krushr-info-50 border border-krushr-info rounded p-2">
-                    <div className="flex items-start gap-2">
-                      <span className="text-krushr-info text-sm">💡</span>
-                      <div className="text-xs text-krushr-info space-y-0.5">
-                        {smartSuggestions.map((suggestion, idx) => (
-                          <div key={idx}>{suggestion}</div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+        {/* Compact content area */}
+        <form onSubmit={handleSubmit} className="p-4 space-y-3">
+          {/* Description - Collapsible height */}
+          <div>
+            <label className="text-xs font-medium text-gray-600 mb-1 block">Description</label>
+            <div className="border border-gray-200 rounded-md overflow-hidden">
+              <RichTextEditor
+                content={description}
+                onChange={setDescription}
+                placeholder="Add details..."
+                className="min-h-[60px] max-h-[120px] [&>div:last-child]:min-h-[40px]"
+                minimal={true}
+              />
             </div>
           </div>
-        </form>
+
+          {/* Column selection - Horizontal pills */}
+          <div>
+            <label className="text-xs font-medium text-gray-600 mb-1 block">Column</label>
+            <div className="flex gap-1 overflow-x-auto scrollbar-hide">
+              {columns.map((column) => (
+                <button
+                  key={column.id}
+                  type="button"
+                  onClick={() => setSelectedColumnId(column.id)}
+                  className={cn(
+                    "px-3 py-1 text-xs font-medium rounded-md shrink-0 transition-all",
+                    selectedColumnId === column.id
+                      ? "bg-krushr-primary text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  )}
+                >
+                  {column.title}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Priority & Assignee in same row */}
+          <div className="flex items-center justify-between gap-3">
+            <InlinePrioritySelector priority={priority} onChange={setPriority} />
+            
+            {/* Assignee - Compact */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-600">Assignee</span>
+              {!assigneeId ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const firstUser = workspaceUsers?.[0]
+                    if (firstUser) setAssigneeId(firstUser.id)
+                  }}
+                  className="flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded-md"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Add</span>
+                </button>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <div className="w-6 h-6 bg-krushr-primary rounded-full flex items-center justify-center text-white text-[10px] font-medium">
+                    {workspaceUsers?.find((u) => u.id === assigneeId)?.name?.[0] || '?'}
+                  </div>
+                  <span className="text-xs text-gray-700">
+                    {workspaceUsers?.find((u) => u.id === assigneeId)?.name?.split(' ')[0]}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setAssigneeId('')}
+                    className="text-gray-400 hover:text-red-500 p-0.5"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Date section with quick buttons and calendar */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-medium text-gray-600">Due Date</label>
+              {dueDate && (
+                <div className="flex items-center gap-1 text-xs text-krushr-primary">
+                  <Calendar className="w-3 h-3" />
+                  <span>{format(dueDate, 'MMM d')}</span>
+                  <button
+                    type="button"
+                    onClick={() => setDueDate(null)}
+                    className="text-gray-400 hover:text-red-500"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            {/* Quick date buttons in a compact row */}
+            <div className="flex gap-1 mb-2">
+              <button
+                type="button"
+                onClick={() => setDueDate(new Date())}
+                className={cn(
+                  "flex-1 px-2 py-1 text-xs rounded-md transition-all",
+                  dueDate && isSameDay(dueDate, new Date())
+                    ? "bg-krushr-primary text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                )}
+              >
+                Today
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const tomorrow = new Date()
+                  tomorrow.setDate(tomorrow.getDate() + 1)
+                  setDueDate(tomorrow)
+                }}
+                className="flex-1 px-2 py-1 text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-md"
+              >
+                Tomorrow
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const nextWeek = new Date()
+                  nextWeek.setDate(nextWeek.getDate() + 7)
+                  setDueDate(nextWeek)
+                }}
+                className="flex-1 px-2 py-1 text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-md"
+              >
+                Next Week
+              </button>
+            </div>
+
+            {/* Ultra-compact calendar */}
+            <div className="bg-white border border-gray-200 rounded-md p-2">
+              <div className="flex items-center justify-between mb-1">
+                <button
+                  type="button"
+                  onClick={() => setCalendarDate(subMonths(calendarDate, 1))}
+                  className="p-0.5 hover:bg-gray-100 rounded"
+                >
+                  <ChevronLeft className="w-3 h-3" />
+                </button>
+                <span className="text-xs font-medium">{format(calendarDate, 'MMM yyyy')}</span>
+                <button
+                  type="button"
+                  onClick={() => setCalendarDate(addMonths(calendarDate, 1))}
+                  className="p-0.5 hover:bg-gray-100 rounded"
+                >
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="grid grid-cols-7 gap-0">
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
+                  <div key={d} className="text-[9px] text-gray-500 text-center p-0.5">{d}</div>
+                ))}
+                {generateCalendarDays().map((date, index) => {
+                  if (!date) return <div key={index} />
+                  const isSelected = dueDate && isSameDay(date, dueDate)
+                  const isCurrentDay = isSameDay(date, new Date())
+                  
+                  return (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setDueDate(date)}
+                      className={cn(
+                        "text-[10px] p-0.5 rounded relative",
+                        "hover:bg-gray-100",
+                        isSelected && "bg-krushr-primary text-white hover:bg-krushr-primary",
+                        isCurrentDay && !isSelected && "font-bold text-krushr-primary",
+                        !isSameMonth(date, calendarDate) && "text-gray-300",
+                        // Larger touch target
+                        "after:absolute after:inset-[-2px] after:content-['']"
+                      )}
+                    >
+                      {format(date, 'd')}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+            </div>
+
+            {/* Attachment Section */}
+            <div>
+              <label className="text-xs font-medium text-gray-600 mb-1 block">Attachments</label>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded-md"
+                >
+                  <Upload className="w-3 h-3" />
+                  <span>{pendingFiles.length > 0 ? `${pendingFiles.length} file(s)`: 'Upload'}</span>
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  multiple
+                  className="hidden"
+                />
+              </div>
+            </div>
         
-        {/* Compact Footer */}
-        <div className="px-4 py-3 border-t border-krushr-gray-border bg-krushr-gray-bg-light">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 text-xs text-krushr-gray">
-              <span className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 bg-white border border-krushr-gray-border rounded text-[10px] font-mono">⌘</kbd>
-                <kbd className="px-1.5 py-0.5 bg-white border border-krushr-gray-border rounded text-[10px] font-mono">Enter</kbd>
-                <span>to save</span>
-              </span>
-              <span className="text-krushr-gray-light">•</span>
-              <span className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 bg-white border border-krushr-gray-border rounded text-[10px] font-mono">Esc</kbd>
-                <span>to cancel</span>
-              </span>
+        {/* Ultra-compact footer */}
+        <div className="px-4 py-2 border-t border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-[10px] text-gray-500">
+              <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">⌘</kbd>
+              <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">Enter</kbd>
+              <span>to save</span>
             </div>
             <div className="flex gap-2">
               {isEditMode && (
                 <button
                   type="button"
                   onClick={handleDelete}
-                  disabled={isLoading}
-                  className="px-3 py-1.5 text-xs font-medium text-krushr-secondary hover:text-krushr-secondary/80 disabled:opacity-50"
+                  className="text-xs text-red-600 hover:text-red-700"
                 >
                   Delete
                 </button>
@@ -784,29 +751,28 @@ export default function CompactTaskModal({
               <button 
                 type="button"
                 onClick={onClose}
-                className="px-4 py-1.5 text-xs font-medium border border-krushr-gray-border rounded hover:bg-white transition-colors"
+                className="px-3 py-1 text-xs font-medium text-gray-600 hover:text-gray-800"
               >
                 Cancel
               </button>
               <button 
                 type="submit"
-                disabled={isLoading || uploadingFiles || !title.trim()}
-                className="px-4 py-1.5 text-xs font-medium bg-krushr-primary text-white rounded hover:bg-krushr-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                disabled={isLoading || !title.trim()}
+                className="px-4 py-1 text-xs font-medium bg-krushr-primary text-white rounded-md hover:bg-krushr-primary/90 disabled:opacity-50 flex items-center gap-1"
               >
-                {isLoading || uploadingFiles ? (
+                {isLoading ? (
                   <>
                     <Loader2 className="w-3 h-3 animate-spin" />
                     <span>Saving...</span>
                   </>
                 ) : (
-                  <>
-                    {isEditMode ? 'Update' : 'Create'}
-                  </>
+                  <span>{isEditMode ? 'Update' : 'Create'}</span>
                 )}
               </button>
             </div>
           </div>
         </div>
+        </form>
       </div>
     </div>,
     document.body

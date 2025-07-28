@@ -45,7 +45,7 @@ export default function Workspace() {
   // Use workspace from URL params, or fallback to first workspace
   const activeWorkspace = workspaceId 
     ? workspaces?.find(w => w.id === workspaceId)
-    : workspaces?.find(w => w._count.projects > 0 || w._count.teams > 0 || w._count.kanbans > 0) || workspaces?.[0]
+    : workspaces?.find(w => w._count?.projects > 0 || w._count?.teams > 0 || w._count?.kanbans > 0) || workspaces?.[0]
 
   const { data: panels = [] } = trpc.panel.list.useQuery(
     { workspaceId: activeWorkspace?.id ?? '' },

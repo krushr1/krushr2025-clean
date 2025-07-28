@@ -2,6 +2,7 @@
 import { createTRPCReact } from '@trpc/react-query'
 import { httpLink, loggerLink } from '@trpc/client'
 import type { AppRouter } from '../../../api/src/trpc/router'
+import { isDemoMode, demoResponses, extractProcedure } from './demo-mode'
 
 export const trpc = createTRPCReact<AppRouter>()
 
@@ -33,6 +34,26 @@ function getApiUrl(): string {
   return 'http://127.0.0.1:3002/trpc'
 }
 
+// Custom fetch function that intercepts requests in demo mode
+const demoFetch: typeof fetch = async (input, init) => {
+  if (isDemoMode() && typeof input === 'string') {
+    const procedure = extractProcedure(input)
+    const handler = demoResponses[procedure]
+    
+    if (handler) {
+      console.log(`[Demo Mode] Intercepting ${procedure}`)
+      const data = await handler()
+      return new Response(JSON.stringify(data), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+  }
+  
+  // Fallback to regular fetch
+  return fetch(input, init)
+}
+
 export const trpcClient = trpc.createClient({
   links: [
     loggerLink({
@@ -40,6 +61,7 @@ export const trpcClient = trpc.createClient({
     }),
     httpLink({
       url: getApiUrl(),
+      fetch: demoFetch,
       headers() {
         const token = getAuthToken()
         const apiUrl = getApiUrl()

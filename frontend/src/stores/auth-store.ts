@@ -5,6 +5,7 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { isDemoMode, demoResponses } from '../lib/demo-mode'
 
 interface User {
   id: string
@@ -74,15 +75,18 @@ export const useAuthStore = create<AuthState>()(
             : 'http://127.0.0.1:3002/trpc/user.me'
           
           // For frontend-only deployment, use demo mode
-          if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-            // Demo mode for frontend-only deployment
+          if (isDemoMode()) {
+            // Use demo response
+            const response = await demoResponses['user.me']()
+            const userData = response.result.data
+            
             set({
               user: {
-                id: 'demo-user',
-                name: 'Demo User',
-                email: 'demo@krushr.com',
-                avatar: undefined,
-                createdAt: new Date()
+                id: userData.id,
+                name: userData.name,
+                email: userData.email,
+                avatar: userData.avatar,
+                createdAt: new Date(userData.createdAt)
               },
               isAuthenticated: true,
               isLoading: false

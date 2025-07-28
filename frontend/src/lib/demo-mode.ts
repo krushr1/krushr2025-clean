@@ -124,7 +124,7 @@ export const demoData = {
 const mockDelay = () => new Promise(resolve => setTimeout(resolve, 300))
 
 // Demo responses for tRPC procedures
-export const demoResponses: Record<string, () => Promise<any>> = {
+export const demoResponses: Record<string, () => Promise<{result: {data: unknown}}>> = {
   'user.me': async () => {
     await mockDelay()
     return { result: { data: demoData.user } }
@@ -144,9 +144,13 @@ export const demoResponses: Record<string, () => Promise<any>> = {
   
   'workspace.list': async () => {
     await mockDelay()
-    console.log('[Demo Mode] Returning workspace data:', demoData.workspaces)
-    console.log('[Demo Mode] First workspace _count:', demoData.workspaces[0]._count)
-    return { result: { data: demoData.workspaces } }
+    console.log('[Demo Mode] Raw workspace data being returned:', JSON.stringify(demoData.workspaces, null, 2))
+    console.log('[Demo Mode] First workspace _count exists:', !!demoData.workspaces[0]._count)
+    console.log('[Demo Mode] First workspace _count value:', demoData.workspaces[0]._count)
+    
+    const response = { result: { data: demoData.workspaces } }
+    console.log('[Demo Mode] Full response structure:', JSON.stringify(response, null, 2))
+    return response
   },
   
   'workspace.get': async () => {

@@ -42,10 +42,20 @@ export default function Workspace() {
     cacheTime: 600000, // Keep in cache for 10 minutes
   })
   
+  console.log('[Workspace Debug] workspaces data:', workspaces)
+  console.log('[Workspace Debug] workspaces length:', workspaces?.length)
+  console.log('[Workspace Debug] first workspace:', workspaces?.[0])
+  console.log('[Workspace Debug] first workspace _count:', workspaces?.[0]?._count)
+  
   // Use workspace from URL params, or fallback to first workspace
   const activeWorkspace = workspaceId 
     ? workspaces?.find(w => w.id === workspaceId)
-    : workspaces?.find(w => w._count?.projects > 0 || w._count?.teams > 0 || w._count?.kanbans > 0) || workspaces?.[0]
+    : workspaces?.find(w => {
+        console.log('[Workspace Debug] Checking workspace:', w.id, 'with _count:', w._count)
+        return w._count?.projects > 0 || w._count?.teams > 0 || w._count?.kanbans > 0
+      }) || workspaces?.[0]
+
+  console.log('[Workspace Debug] activeWorkspace selected:', activeWorkspace)
 
   const { data: panels = [] } = trpc.panel.list.useQuery(
     { workspaceId: activeWorkspace?.id ?? '' },

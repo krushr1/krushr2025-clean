@@ -25,7 +25,9 @@ function getAuthToken(): string | null {
 // Get API URL based on environment
 function getApiUrl(): string {
   // Production: Use Vercel deployment URL
-  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+  if (typeof window !== 'undefined' && 
+      window.location.hostname !== 'localhost' && 
+      window.location.hostname !== '127.0.0.1') {
     // Use the same domain as the frontend for Vercel deployment
     return `${window.location.origin}/api/trpc`
   }

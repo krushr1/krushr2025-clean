@@ -34,7 +34,6 @@ const mapPriorityToApi = (priority: Priority): ApiPriority => {
 }
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
-import { Buffer } from 'buffer'
 
 interface CompactTaskModalProps {
   open: boolean
@@ -350,7 +349,7 @@ export default function CompactTaskModal({
                 filename: file.name,
                 mimetype: file.type,
                 size: file.size,
-                buffer: Buffer.from(fileBuffer),
+                buffer: fileBuffer,
               },
             })
           }

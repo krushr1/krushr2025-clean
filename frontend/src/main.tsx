@@ -135,55 +135,28 @@ function isDevelopment(): boolean {
   )
 }
 
-async function initServiceWorker(): Promise<void> {
+// Service Worker completely disabled for Vercel deployment
+// This prevents any 404 errors from trying to load sw.js
+
+async function cleanupServiceWorkers(): Promise<void> {
   if (!('serviceWorker' in navigator)) {
-    console.log('🚫 Service Worker not supported by browser')
     return
   }
 
   try {
+    // Only clean up existing service workers, don't register new ones
     const registrations = await navigator.serviceWorker.getRegistrations()
     for (let registration of registrations) {
       await registration.unregister()
       console.log('🗑️ Unregistered existing service worker:', registration.scope)
     }
-
-    if (isDevelopment()) {
-      console.log('🚫 Service Worker registration skipped (development mode)')
-      console.log('📍 Environment detected:', {
-        hostname: window.location.hostname,
-        port: window.location.port,
-        protocol: window.location.protocol,
-        nodeEnv: process.env.NODE_ENV
-      })
-      return
-    }
-
-    const registration = await navigator.serviceWorker.register('/sw.js', {
-      scope: '/',
-      updateViaCache: 'none' // Always check for updates
-    })
-
-    console.log('✅ SW registered:', registration.scope)
-
-    registration.addEventListener('updatefound', () => {
-      const newWorker = registration.installing
-      if (newWorker) {
-        console.log('🔄 SW update found, installing...')
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            console.log('🔄 SW update ready - consider refreshing page')
-          }
-        })
-      }
-    })
-
+    console.log('🚫 Service Worker cleanup completed for Vercel deployment')
   } catch (error) {
-    console.error('❌ SW registration failed:', error)
+    // Silently handle any cleanup errors
   }
 }
 
-window.addEventListener('load', initServiceWorker)
+window.addEventListener('load', cleanupServiceWorkers)
 
 const root = createRoot(document.getElementById('app')!)
 root.render(

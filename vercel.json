@@ -1,4 +1,18 @@
 {
-  "buildCommand": "npm install --prefix frontend && npm run build --prefix frontend",
-  "outputDirectory": "public"
+  "buildCommand": "npm install --prefix frontend && npm install --prefix api && npm run build --prefix frontend",
+  "outputDirectory": "public",
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/trpc/(.*)",
+      "destination": "/api/trpc/[trpc]"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 } 

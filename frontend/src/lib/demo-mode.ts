@@ -6,7 +6,8 @@
 export const isDemoMode = () => {
   return typeof window !== 'undefined' && 
     window.location.hostname !== 'localhost' && 
-    window.location.hostname !== '127.0.0.1'
+    window.location.hostname !== '127.0.0.1' &&
+    !window.location.port // Ensure no port number (local dev uses :8001)
 }
 
 // Demo data

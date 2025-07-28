@@ -42,11 +42,9 @@ export const useAuthStore = create<AuthState>()(
           // Check if token exists in localStorage first
           const existingToken = localStorage.getItem('auth-token')
           
-          // For production demo without backend, always use demo token
-          if (!existingToken) {
-            const isDemoMode = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
-            const defaultToken = isDemoMode ? 'demo-token' : 'dev-token-123'
-            localStorage.setItem('auth-token', defaultToken)
+          // Only set default token in development
+          if (!existingToken && process.env.NODE_ENV === 'development') {
+            localStorage.setItem('auth-token', 'dev-token-123')
           }
           
           const tokenToUse = localStorage.getItem('auth-token')

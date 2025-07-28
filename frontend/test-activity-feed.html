@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced ActivityFeed Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+    .feature-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+    .check {
+      color: #10b981;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    .code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    .section {
+      margin: 20px 0;
+    }
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Enhanced ActivityFeed Component</h1>
+    
+    <div class="section">
+      <h2>New Features Implemented:</h2>
+      <ul class="feature-list">
+        <li>
+          <span class="check">✓</span>
+          <strong>Activity Grouping:</strong> Similar activities (task creation/completion) by the same user within the same hour are grouped together
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <strong>Expandable Groups:</strong> Click on grouped activities to expand and see individual items
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <strong>Day Separators:</strong> Activities are organized by day with sticky headers
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <strong>Inline Reactions:</strong> Hover over activities to see reaction buttons (👍 👏 🎉)
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <strong>Quick Reply:</strong> Task completion and comment activities have inline reply fields
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <strong>Rich Text Formatting:</strong> @mentions and #tags are highlighted, task names are bold
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <strong>Priority Badges:</strong> Improved styling with Krushr brand colors
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <strong>Task Links:</strong> "View task" link appears on hover for task-related activities
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <strong>Virtual Scrolling:</strong> Optimized performance for long activity lists
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <strong>Real-time Updates:</strong> WebSocket integration preserved and working
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Design System Compliance:</h2>
+      <ul class="feature-list">
+        <li>
+          <span class="check">✓</span>
+          Uses Krushr color tokens: <span class="code">krushr-primary</span>, <span class="code">krushr-task-done</span>, etc.
+        </li>
+        <li>
+          <span class="check">✓</span>
+          Consistent spacing with 24px grid system
+        </li>
+        <li>
+          <span class="check">✓</span>
+          Shadow elevation system for hover states
+        </li>
+        <li>
+          <span class="check">✓</span>
+          Typography hierarchy maintained
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Server Integration Notes:</h2>
+      <p>The following server endpoints would need to be implemented for full functionality:</p>
+      <ul class="feature-list">
+        <li>
+          <span class="code">activity.react</span> - Store and retrieve reactions for activities
+        </li>
+        <li>
+          <span class="code">comment.create</span> with <span class="code">activityId</span> - Link comments to activities
+        </li>
+        <li>
+          <span class="code">activity.getRecent</span> pagination - Currently limited to 50 items
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Usage:</h2>
+      <p>The component is already integrated into the dashboard. To see it in action:</p>
+      <ol>
+        <li>Start the dev server: <span class="code">npm run dev</span></li>
+        <li>Navigate to: <span class="code">http://127.0.0.1:8001/#/workspace</span></li>
+        <li>Look for the "Recent Activity" card in the dashboard</li>
+      </ol>
+    </div>
+  </div>
+</body>
+</html>

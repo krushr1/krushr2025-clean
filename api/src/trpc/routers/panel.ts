@@ -382,7 +382,12 @@ export const panelRouter = router({
       }
 
       // Parse current data to check fullscreen state
-      const currentData = JSON.parse(panel.data)
+      let currentData = {}
+      try {
+        currentData = panel.data ? JSON.parse(panel.data) : {}
+      } catch {
+        currentData = {}
+      }
       const isCurrentlyFullscreen = currentData.isFullscreen || false
 
       return ctx.prisma.panel.update({

@@ -20,7 +20,6 @@ import NotificationBell from '../notifications/NotificationBell'
 import ToastContainer from '../notifications/ToastContainer'
 import GlobalSearch from '../common/GlobalSearch'
 import { cn } from '../../lib/utils'
-import KrushrLogo from '../common/KrushrLogo'
 
 interface ResponsiveLayoutProps {
   children: React.ReactNode
@@ -87,8 +86,10 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
               </SheetContent>
             </Sheet>
 
-            {/* Logo */}
-            <KrushrLogo size="md" />
+            {/* Workspace Name - matches desktop header */}
+            <h1 className="text-lg font-semibold text-foreground ml-2">
+              {activeWorkspace?.name || 'Workspace'}
+            </h1>
           </div>
 
           <div className="flex items-center space-x-2">
@@ -127,12 +128,9 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
         <header className="bg-white/95 backdrop-blur-sm border-b border-border px-6 py-4 hidden md:block">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <KrushrLogo size="sm" showText={false} />
-                <h1 className="text-xl font-semibold text-foreground">
-                  {activeWorkspace?.name || 'Workspace'}
-                </h1>
-              </div>
+              <h1 className="text-xl font-semibold text-foreground">
+                {activeWorkspace?.name || 'Workspace'}
+              </h1>
               <Badge 
                 variant={isConnected ? "default" : "outline"} 
                 className={cn(
@@ -208,22 +206,6 @@ export default function ResponsiveLayout({ children }: ResponsiveLayoutProps) {
           onPageChange={handlePageChange}
         />
       )}
-
-      {/* Footer - Full Width */}
-      <footer className="bg-gray-900 text-white w-full">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col lg:flex-row lg:justify-between items-center gap-4">
-            <div className="text-sm text-gray-400">
-              Copyright © krushr.io
-            </div>
-            <div className="flex items-center gap-4 text-sm text-gray-400">
-              <a href="/privacy" className="hover:text-white transition-colors">Privacy</a>
-              <a href="/terms" className="hover:text-white transition-colors">Terms</a>
-              <a href="/contact" className="hover:text-white transition-colors">Contact</a>
-            </div>
-          </div>
-        </div>
-      </footer>
 
       {/* Toast Notifications */}
       <ToastContainer />

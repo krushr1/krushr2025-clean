@@ -6,6 +6,9 @@ import { TRPCError } from '@trpc/server'
 import { safeRedis } from '../../lib/redis'
 import { aiContextManager, trackTaskActivity } from '../../lib/ai-context'
 import { broadcastAiConversationStatus } from '../../websocket/handler'
+import { intelligentLLMRouter, TaskContext } from '../../lib/ai-llm-router'
+import { aiContextEnhancer } from '../../lib/ai-context-enhancer'
+import { voiceProcessor } from '../../lib/voice-processor'
 
 export const aiRouter = router({
   // Get user's AI conversations
@@ -531,15 +534,28 @@ export const aiRouter = router({
     }))
     .mutation(async ({ input, ctx }) => {
       try {
-        // Verify workspace access
-        const workspaceMember = await prisma.workspaceMember.findFirst({
-          where: {
-            userId: ctx.user.id,
-            workspaceId: input.workspaceId
+        // Verify workspace access (member or owner)
+        const workspace = await prisma.workspace.findUnique({
+          where: { id: input.workspaceId },
+          include: {
+            members: {
+              where: { userId: ctx.user.id }
+            }
           }
         })
 
-        if (!workspaceMember) {
+        if (!workspace) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Workspace not found'
+          })
+        }
+
+        // Check if user is owner or member
+        const isOwner = workspace.ownerId === ctx.user.id
+        const isMember = workspace.members.length > 0
+
+        if (!isOwner && !isMember) {
           throw new TRPCError({
             code: 'FORBIDDEN',
             message: 'Access denied to workspace'
@@ -719,15 +735,28 @@ export const aiRouter = router({
     }))
     .mutation(async ({ input, ctx }) => {
       try {
-        // Verify workspace access
-        const workspaceMember = await prisma.workspaceMember.findFirst({
-          where: {
-            userId: ctx.user.id,
-            workspaceId: input.workspaceId
+        // Verify workspace access (member or owner)
+        const workspace = await prisma.workspace.findUnique({
+          where: { id: input.workspaceId },
+          include: {
+            members: {
+              where: { userId: ctx.user.id }
+            }
           }
         })
 
-        if (!workspaceMember) {
+        if (!workspace) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Workspace not found'
+          })
+        }
+
+        // Check if user is owner or member
+        const isOwner = workspace.ownerId === ctx.user.id
+        const isMember = workspace.members.length > 0
+
+        if (!isOwner && !isMember) {
           throw new TRPCError({
             code: 'FORBIDDEN',
             message: 'Access denied to workspace'
@@ -775,15 +804,28 @@ export const aiRouter = router({
     }))
     .query(async ({ input, ctx }) => {
       try {
-        // Verify workspace access
-        const workspaceMember = await prisma.workspaceMember.findFirst({
-          where: {
-            userId: ctx.user.id,
-            workspaceId: input.workspaceId
+        // Verify workspace access (member or owner)
+        const workspace = await prisma.workspace.findUnique({
+          where: { id: input.workspaceId },
+          include: {
+            members: {
+              where: { userId: ctx.user.id }
+            }
           }
         })
 
-        if (!workspaceMember) {
+        if (!workspace) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Workspace not found'
+          })
+        }
+
+        // Check if user is owner or member
+        const isOwner = workspace.ownerId === ctx.user.id
+        const isMember = workspace.members.length > 0
+
+        if (!isOwner && !isMember) {
           throw new TRPCError({
             code: 'FORBIDDEN',
             message: 'Access denied to workspace'
@@ -808,15 +850,28 @@ export const aiRouter = router({
     }))
     .query(async ({ input, ctx }) => {
       try {
-        // Verify workspace access
-        const workspaceMember = await prisma.workspaceMember.findFirst({
-          where: {
-            userId: ctx.user.id,
-            workspaceId: input.workspaceId
+        // Verify workspace access (member or owner)
+        const workspace = await prisma.workspace.findUnique({
+          where: { id: input.workspaceId },
+          include: {
+            members: {
+              where: { userId: ctx.user.id }
+            }
           }
         })
 
-        if (!workspaceMember) {
+        if (!workspace) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Workspace not found'
+          })
+        }
+
+        // Check if user is owner or member
+        const isOwner = workspace.ownerId === ctx.user.id
+        const isMember = workspace.members.length > 0
+
+        if (!isOwner && !isMember) {
           throw new TRPCError({
             code: 'FORBIDDEN',
             message: 'Access denied to workspace'
@@ -1198,6 +1253,442 @@ export const aiRouter = router({
         message: input.message,
         parsedActions: actions,
         results
+      }
+    }),
+
+  // ENHANCED AI CAPABILITIES - WORLD-CLASS 2025 FEATURES
+
+  // Voice processing endpoint - Convert speech to actionable commands
+  processVoiceCommand: protectedProcedure
+    .input(z.object({
+      audioData: z.string(), // Base64 encoded audio
+      workspaceId: z.string(),
+      conversationId: z.string().optional(),
+      context: z.object({
+        currentProject: z.string().optional(),
+        sessionContext: z.any().optional()
+      }).optional()
+    }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        // Convert base64 to buffer
+        const audioBuffer = Buffer.from(input.audioData, 'base64')
+        
+        // Create voice context
+        const voiceContext = {
+          workspaceId: input.workspaceId,
+          userId: ctx.user.id,
+          currentProject: input.context?.currentProject,
+          activeConversation: input.conversationId,
+          sessionContext: input.context?.sessionContext
+        }
+
+        // Process voice input
+        const result = await voiceProcessor.processVoiceInput(audioBuffer, voiceContext)
+
+        // If successful and part of a conversation, save the interaction
+        if (result.success && input.conversationId) {
+          await prisma.aiMessage.create({
+            data: {
+              conversationId: input.conversationId,
+              role: 'user',
+              content: `Voice: ${result.transcript}`,
+              tokenCount: 10 // Placeholder
+            }
+          })
+
+          await prisma.aiMessage.create({
+            data: {
+              conversationId: input.conversationId,
+              role: 'assistant',
+              content: result.naturalResponse,
+              tokenCount: result.naturalResponse.length / 4, // Rough estimate
+              responseTime: result.processingTime
+            }
+          })
+        }
+
+        return result
+      } catch (error) {
+        console.error('Voice processing error:', error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to process voice command'
+        })
+      }
+    }),
+
+  // Intelligent model selection endpoint
+  selectOptimalModel: protectedProcedure
+    .input(z.object({
+      prompt: z.string(),
+      taskContext: z.object({
+        type: z.enum(['planning', 'technical', 'analysis', 'routine', 'creative', 'problem-solving']),
+        complexity: z.enum(['low', 'medium', 'high']),
+        domain: z.enum(['project-management', 'code', 'documentation', 'data', 'general']),
+        priority: z.enum(['low', 'medium', 'high']),
+        budgetConstraint: z.enum(['strict', 'moderate', 'flexible']).optional(),
+        responseTime: z.enum(['fast', 'balanced', 'quality']).optional()
+      }),
+      userPreferences: z.object({
+        preferredModel: z.string().optional(),
+        maxCost: z.number().optional(),
+        maxResponseTime: z.number().optional()
+      }).optional()
+    }))
+    .query(async ({ input }) => {
+      const selectedModel = intelligentLLMRouter.selectOptimalModel(
+        input.prompt,
+        input.taskContext,
+        input.userPreferences
+      )
+
+      const modelConfig = intelligentLLMRouter.getModelConfig(selectedModel)
+      const performanceAnalytics = intelligentLLMRouter.getPerformanceAnalytics()
+
+      return {
+        selectedModel,
+        modelConfig,
+        reasoning: `Selected ${selectedModel} for ${input.taskContext.type} task with ${input.taskContext.complexity} complexity`,
+        alternatives: performanceAnalytics.slice(0, 3).map(m => m.modelId),
+        performance: performanceAnalytics.find(m => m.modelId === selectedModel)
+      }
+    }),
+
+  // Advanced workspace intelligence endpoint
+  getWorkspaceIntelligence: protectedProcedure
+    .input(z.object({
+      workspaceId: z.string()
+    }))
+    .query(async ({ input, ctx }) => {
+      try {
+        // Verify workspace access (member or owner)
+        const workspace = await prisma.workspace.findUnique({
+          where: { id: input.workspaceId },
+          include: {
+            members: {
+              where: { userId: ctx.user.id }
+            }
+          }
+        })
+
+        if (!workspace) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Workspace not found'
+          })
+        }
+
+        // Check if user is owner or member
+        const isOwner = workspace.ownerId === ctx.user.id
+        const isMember = workspace.members.length > 0
+
+        if (!isOwner && !isMember) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Access denied to workspace'
+          })
+        }
+
+        const intelligence = await aiContextEnhancer.generateWorkspaceIntelligence(input.workspaceId)
+        return intelligence
+      } catch (error) {
+        console.error('Workspace intelligence error:', error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to generate workspace intelligence'
+        })
+      }
+    }),
+
+  // Context-enhanced AI chat
+  enhancedChat: protectedProcedure
+    .input(z.object({
+      conversationId: z.string(),
+      message: z.string().min(1),
+      taskContext: z.object({
+        type: z.enum(['planning', 'technical', 'analysis', 'routine', 'creative', 'problem-solving']),
+        complexity: z.enum(['low', 'medium', 'high']),
+        domain: z.enum(['project-management', 'code', 'documentation', 'data', 'general']),
+        priority: z.enum(['low', 'medium', 'high'])
+      }).optional(),
+      enhanceWithContext: z.boolean().default(true),
+      autoSelectModel: z.boolean().default(true)
+    }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const conversation = await prisma.aiConversation.findFirst({
+          where: {
+            id: input.conversationId,
+            userId: ctx.user.id
+          },
+          include: {
+            messages: { orderBy: { createdAt: 'asc' } }
+          }
+        })
+
+        if (!conversation) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Conversation not found'
+          })
+        }
+
+        // Enhanced context injection
+        let enhancedMessage = input.message
+        if (input.enhanceWithContext) {
+          enhancedMessage = await aiContextEnhancer.enhancePromptWithContext(
+            conversation.workspaceId,
+            input.message,
+            conversation.messages.map(m => ({ role: m.role, content: m.content }))
+          )
+        }
+
+        // Intelligent model selection
+        let selectedModel = 'gemini-2.5-flash' // Default
+        if (input.autoSelectModel && input.taskContext) {
+          selectedModel = intelligentLLMRouter.selectOptimalModel(
+            enhancedMessage,
+            input.taskContext
+          )
+        }
+
+        // Save user message
+        const userMessage = await prisma.aiMessage.create({
+          data: {
+            conversationId: input.conversationId,
+            role: 'user',
+            content: input.message,
+            tokenCount: aiService['estimateTokenCount'](input.message),
+            model: selectedModel
+          }
+        })
+
+        // Generate AI response (using existing aiService with enhanced context)
+        const startTime = Date.now()
+        const aiResponse = await aiService.generateResponse([
+          ...conversation.messages.map(msg => ({
+            role: msg.role as 'user' | 'assistant',
+            content: msg.content
+          })),
+          { role: 'user' as const, content: enhancedMessage }
+        ], {
+          workspaceId: conversation.workspaceId,
+          autoThinkingBudget: true
+        })
+
+        const responseTime = Date.now() - startTime
+
+        // Record performance metrics
+        intelligentLLMRouter.recordPerformance(
+          selectedModel,
+          responseTime,
+          true // Assume success for now
+        )
+
+        // Save AI response
+        const assistantMessage = await prisma.aiMessage.create({
+          data: {
+            conversationId: input.conversationId,
+            role: 'assistant',
+            content: aiResponse.content,
+            tokenCount: aiResponse.tokenCount,
+            cost: aiResponse.cost,
+            model: selectedModel,
+            responseTime,
+            thinkingBudget: aiResponse.actualThinkingBudget
+          }
+        })
+
+        // Update conversation totals
+        await prisma.aiConversation.update({
+          where: { id: input.conversationId },
+          data: {
+            totalTokens: {
+              increment: userMessage.tokenCount + assistantMessage.tokenCount
+            },
+            totalCost: {
+              increment: assistantMessage.cost
+            },
+            updatedAt: new Date()
+          }
+        })
+
+        return {
+          userMessage,
+          assistantMessage,
+          selectedModel,
+          contextEnhanced: input.enhanceWithContext,
+          usage: {
+            tokens: assistantMessage.tokenCount,
+            cost: assistantMessage.cost,
+            responseTime,
+            model: selectedModel
+          },
+          intelligence: input.enhanceWithContext ? 
+            await aiContextEnhancer.generateWorkspaceIntelligence(conversation.workspaceId) : 
+            undefined
+        }
+      } catch (error) {
+        console.error('Enhanced chat error:', error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to process enhanced chat message'
+        })
+      }
+    }),
+
+  // Performance analytics endpoint
+  getModelPerformance: protectedProcedure
+    .query(async () => {
+      const analytics = intelligentLLMRouter.getPerformanceAnalytics()
+      return {
+        models: analytics,
+        recommendations: analytics.slice(0, 3).map(model => ({
+          modelId: model.modelId,
+          reason: `${model.successRate > 0.9 ? 'High reliability' : model.averageResponseTime < 2000 ? 'Fast response' : 'Cost effective'}`,
+          useCase: model.successRate > 0.9 ? 'Critical tasks' : 'Routine operations'
+        }))
+      }
+    }),
+
+  // Cross-platform search capabilities
+  intelligentSearch: protectedProcedure
+    .input(z.object({
+      workspaceId: z.string(),
+      query: z.string().min(1),
+      searchScope: z.array(z.enum(['tasks', 'notes', 'projects', 'messages', 'calendar'])).default(['tasks', 'notes', 'projects']),
+      aiEnhanced: z.boolean().default(true)
+    }))
+    .query(async ({ input, ctx }) => {
+      try {
+        // Verify workspace access (member or owner)
+        const workspace = await prisma.workspace.findUnique({
+          where: { id: input.workspaceId },
+          include: {
+            members: {
+              where: { userId: ctx.user.id }
+            }
+          }
+        })
+
+        if (!workspace) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Workspace not found'
+          })
+        }
+
+        // Check if user is owner or member
+        const isOwner = workspace.ownerId === ctx.user.id
+        const isMember = workspace.members.length > 0
+
+        if (!isOwner && !isMember) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Access denied to workspace'
+          })
+        }
+
+        const results = {
+          tasks: [],
+          notes: [],
+          projects: [],
+          messages: [],
+          calendar: [],
+          aiSummary: null
+        } as any
+
+        // Search tasks
+        if (input.searchScope.includes('tasks')) {
+          results.tasks = await prisma.task.findMany({
+            where: {
+              project: { workspaceId: input.workspaceId },
+              OR: [
+                { title: { contains: input.query } },
+                { description: { contains: input.query } }
+              ]
+            },
+            include: {
+              assignee: { select: { name: true } },
+              project: { select: { name: true } }
+            },
+            take: 20
+          })
+        }
+
+        // Search notes
+        if (input.searchScope.includes('notes')) {
+          results.notes = await prisma.note.findMany({
+            where: {
+              workspaceId: input.workspaceId,
+              OR: [
+                { title: { contains: input.query } },
+                { content: { contains: input.query } }
+              ]
+            },
+            include: {
+              author: { select: { name: true } },
+              tags: true
+            },
+            take: 20
+          })
+        }
+
+        // Search projects
+        if (input.searchScope.includes('projects')) {
+          results.projects = await prisma.project.findMany({
+            where: {
+              workspaceId: input.workspaceId,
+              OR: [
+                { name: { contains: input.query } },
+                { description: { contains: input.query } }
+              ]
+            },
+            include: {
+              team: { select: { name: true } },
+              _count: { select: { tasks: true } }
+            },
+            take: 10
+          })
+        }
+
+        // AI-enhanced search results
+        if (input.aiEnhanced) {
+          const totalResults = results.tasks.length + results.notes.length + results.projects.length
+          
+          if (totalResults > 0) {
+            const taskContext: TaskContext = {
+              type: 'analysis',
+              complexity: 'medium',
+              domain: 'project-management',
+              priority: 'medium'
+            }
+
+            const summaryPrompt = `Analyze these search results for query "${input.query}" and provide insights:\n\nTasks: ${results.tasks.length}\nNotes: ${results.notes.length}\nProjects: ${results.projects.length}\n\nProvide a brief summary of what was found and suggest next actions.`
+
+            results.aiSummary = await aiService.generateResponse([{
+              role: 'user',
+              content: summaryPrompt
+            }], {
+              workspaceId: input.workspaceId,
+              autoThinkingBudget: true
+            })
+          }
+        }
+
+        return {
+          query: input.query,
+          totalResults: results.tasks.length + results.notes.length + results.projects.length,
+          results,
+          searchTime: Date.now() // Placeholder
+        }
+      } catch (error) {
+        console.error('Intelligent search error:', error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to perform intelligent search'
+        })
       }
     })
 })

@@ -37,6 +37,8 @@ model User {
   preferences          UserPreferences?
   workspaces           WorkspaceMember[]
   ownedWorkspaces      Workspace[]           @relation("WorkspaceOwner")
+  activities           Activity[]
+  targetedActivities   Activity[]            @relation("ActivityTarget")
 
   @@map("users")
 }
@@ -72,6 +74,7 @@ model Workspace {
   layoutPresets   WorkspaceLayoutPreset[]
   members         WorkspaceMember[]
   owner           User                    @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  activities      Activity[]
 
   @@map("workspaces")
 }
@@ -212,6 +215,7 @@ model Task {
   assignee         User?            @relation("TaskAssignee", fields: [assigneeId], references: [id])
   parentTask       Task?            @relation("TaskHierarchy", fields: [parentTaskId], references: [id])
   subtasks         Task[]           @relation("TaskHierarchy")
+  notes            Note[]
 
   @@map("tasks")
 }
@@ -647,4 +651,27 @@ model AiUsage {
 
   @@unique([userId, workspaceId, date, model])
   @@map("ai_usage")
+}
+
+model Activity {
+  id          String    @id @default(cuid())
+  type        String    // task_created, task_completed, task_assigned, comment_added, file_uploaded, meeting_scheduled, etc.
+  action      String    // Human readable action description
+  userId      String
+  workspaceId String
+  entityType  String?   // task, project, team, etc.
+  entityId    String?   // ID of the related entity
+  entityName  String?   // Name of the related entity
+  targetUserId String?  // For actions like task assignment
+  metadata    String?   // Additional data for the activity (JSON string)
+  priority    String?   // high, medium, low
+  createdAt   DateTime  @default(now())
+  
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetUser  User?     @relation("ActivityTarget", fields: [targetUserId], references: [id])
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, createdAt])
+  @@index([userId, createdAt])
+  @@map("activities")
 }

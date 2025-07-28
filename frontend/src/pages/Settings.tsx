@@ -1,9 +1,10 @@
 import Layout from '../components/project/Layout'
-import { Bell, Shield, Palette, Globe, User, Moon, Sun, Download, Trash2, Eye, EyeOff } from 'lucide-react'
+import { Bell, Shield, Palette, Globe, User, Moon, Sun, Download, Trash2, Eye, EyeOff, Sparkles } from 'lucide-react'
 import { FloatingInput } from '../components/ui/floating-input'
 import { trpc } from '../lib/trpc'
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
+import { isCelebrationEnabled, setCelebrationEnabled } from '../hooks/useConfetti'
 
 /**
  * Settings page component for application and user preferences
@@ -242,6 +243,16 @@ export default function Settings() {
           type: 'toggle', 
           enabled: preferences?.compactMode ?? false,
           onChange: (value: boolean) => handlePreferenceChange('compactMode', value)
+        },
+        { 
+          name: 'Task Completion Celebrations', 
+          description: 'Show confetti and sound when tasks are completed', 
+          type: 'toggle', 
+          enabled: isCelebrationEnabled(),
+          onChange: (value: boolean) => {
+            setCelebrationEnabled(value)
+            toast.success(`Celebrations ${value ? 'enabled' : 'disabled'}`)
+          }
         }
       ]
     },

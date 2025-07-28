@@ -6,6 +6,7 @@
 import { z } from 'zod'
 import { router, publicProcedure } from '../trpc'
 import { isAuthenticated } from '../middleware'
+import { broadcastAiWorkspaceUpdate } from '../../websocket/handler'
 
 export const activityRouter = router({
   /**
@@ -22,8 +23,49 @@ export const activityRouter = router({
       })
     )
     .query(async ({ input, ctx }) => {
-      // TODO: Implement activity logging when Activity model is added to schema
-      return []
+      const where: any = {}
+      
+      if (input.taskId) {
+        where.entityType = 'task'
+        where.entityId = input.taskId
+      }
+      
+      if (input.projectId) {
+        where.entityType = 'project'
+        where.entityId = input.projectId
+      }
+      
+      if (input.workspaceId) {
+        where.workspaceId = input.workspaceId
+      }
+      
+      const activities = await ctx.prisma.activity.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+            }
+          },
+          targetUser: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        take: input.limit
+      })
+      
+      return activities
     }),
 
   /**
@@ -38,8 +80,52 @@ export const activityRouter = router({
       })
     )
     .query(async ({ input, ctx }) => {
-      // TODO: Implement when Activity model exists - return mock data for now
-      return []
+      // First verify workspace access (single query)
+      const hasAccess = await ctx.prisma.workspace.findFirst({
+        where: {
+          id: input.workspaceId,
+          OR: [
+            { ownerId: ctx.user.id },
+            { members: { some: { userId: ctx.user.id } } }
+          ]
+        },
+        select: { id: true }
+      })
+
+      if (!hasAccess) {
+        return []
+      }
+
+      // Then fetch activities (simplified query)
+      const activities = await ctx.prisma.activity.findMany({
+        where: {
+          workspaceId: input.workspaceId
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+            }
+          },
+          targetUser: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        take: input.limit
+      })
+      
+      return activities
     }),
 
   /**
@@ -49,14 +135,54 @@ export const activityRouter = router({
     .use(isAuthenticated)
     .input(
       z.object({
+        type: z.string(),
         action: z.string(),
-        entityType: z.string(),
-        entityId: z.string(),
+        workspaceId: z.string(),
+        entityType: z.string().optional(),
+        entityId: z.string().optional(),
+        entityName: z.string().optional(),
+        targetUserId: z.string().optional(),
+        priority: z.string().optional(),
         metadata: z.record(z.any()).optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // TODO: Implement activity logging when Activity model is added to schema
-      return { success: true, message: 'Activity logging not yet implemented' }
+      const activity = await ctx.prisma.activity.create({
+        data: {
+          type: input.type,
+          action: input.action,
+          userId: ctx.user.id,
+          workspaceId: input.workspaceId,
+          entityType: input.entityType,
+          entityId: input.entityId,
+          entityName: input.entityName,
+          targetUserId: input.targetUserId,
+          priority: input.priority,
+          metadata: input.metadata ? JSON.stringify(input.metadata) : null,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+            }
+          },
+          targetUser: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+            }
+          }
+        }
+      })
+      
+      // Broadcast activity to workspace members via WebSocket
+      broadcastAiWorkspaceUpdate(input.workspaceId, 'activity-created', activity)
+      
+      return activity
     }),
 })

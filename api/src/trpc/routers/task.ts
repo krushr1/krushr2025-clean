@@ -9,6 +9,7 @@ import { router, publicProcedure } from '../trpc'
 import { isAuthenticated } from '../middleware'
 import { TaskStatus, Priority } from '../../types/enums'
 import { aiService } from '../../services/ai'
+import { broadcastAiWorkspaceUpdate } from '../../websocket/handler'
 
 export const taskRouter = router({
   /**
@@ -337,6 +338,42 @@ export const taskRouter = router({
         },
       })
 
+      // Log activity
+      const activity = await ctx.prisma.activity.create({
+        data: {
+          type: 'task_created',
+          action: 'created task',
+          userId: ctx.user.id,
+          workspaceId: input.workspaceId,
+          entityType: 'task',
+          entityId: task.id,
+          entityName: task.title,
+          targetUserId: task.assigneeId,
+          priority: task.priority,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatarUrl: true,
+            }
+          },
+          targetUser: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatarUrl: true,
+            }
+          }
+        }
+      })
+
+      // Broadcast activity via WebSocket
+      broadcastAiWorkspaceUpdate(input.workspaceId, 'activity-created', activity)
+
       return {
         task,
         message: 'Task created successfully',
@@ -423,10 +460,25 @@ export const taskRouter = router({
             select: { id: true, name: true, email: true, avatar: true },
           },
           project: {
-            select: { id: true, name: true },
+            select: { 
+              id: true, 
+              name: true,
+              workspace: {
+                select: { id: true }
+              }
+            }
           },
           kanbanColumn: {
-            select: { id: true, title: true, kanbanId: true },
+            select: { 
+              id: true, 
+              title: true, 
+              kanbanId: true,
+              kanban: {
+                select: { 
+                  workspaceId: true 
+                }
+              }
+            }
           },
           tags: {
             select: { id: true, name: true },
@@ -440,6 +492,70 @@ export const taskRouter = router({
           },
         },
       })
+
+      // Determine workspace ID
+      const workspaceId = updatedTask.project?.workspace?.id || updatedTask.kanbanColumn?.kanban?.workspaceId
+
+      if (workspaceId) {
+        // Log activity based on what changed
+        let activity
+        if (input.status && task.status !== input.status && (input.status === 'DONE' || input.status === 'COMPLETED')) {
+          activity = await ctx.prisma.activity.create({
+            data: {
+              type: 'task_completed',
+              action: 'completed task',
+              userId: ctx.user.id,
+              workspaceId,
+              entityType: 'task',
+              entityId: updatedTask.id,
+              entityName: updatedTask.title,
+              priority: updatedTask.priority,
+            },
+            include: {
+              user: { select: { id: true, name: true, email: true, avatarUrl: true } },
+              targetUser: { select: { id: true, name: true, email: true, avatarUrl: true } }
+            }
+          })
+        } else if (input.assigneeId && task.assigneeId !== input.assigneeId) {
+          activity = await ctx.prisma.activity.create({
+            data: {
+              type: 'task_assigned',
+              action: 'assigned task',
+              userId: ctx.user.id,
+              workspaceId,
+              entityType: 'task',
+              entityId: updatedTask.id,
+              entityName: updatedTask.title,
+              targetUserId: input.assigneeId,
+              priority: updatedTask.priority,
+            },
+            include: {
+              user: { select: { id: true, name: true, email: true, avatarUrl: true } },
+              targetUser: { select: { id: true, name: true, email: true, avatarUrl: true } }
+            }
+          })
+        } else {
+          activity = await ctx.prisma.activity.create({
+            data: {
+              type: 'task_updated',
+              action: 'updated task',
+              userId: ctx.user.id,
+              workspaceId,
+              entityType: 'task',
+              entityId: updatedTask.id,
+              entityName: updatedTask.title,
+              priority: updatedTask.priority,
+            },
+            include: {
+              user: { select: { id: true, name: true, email: true, avatarUrl: true } },
+              targetUser: { select: { id: true, name: true, email: true, avatarUrl: true } }
+            }
+          })
+        }
+        
+        // Broadcast activity via WebSocket
+        broadcastAiWorkspaceUpdate(workspaceId, 'activity-created', activity)
+      }
 
       return {
         task: updatedTask,

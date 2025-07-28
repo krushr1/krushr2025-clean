@@ -17,6 +17,7 @@ import {
 import { cn } from '../../lib/utils'
 import { trpc } from '../../lib/trpc'
 import { toast } from 'sonner'
+import { useConfetti } from '../../hooks/useConfetti'
 import {
   DndContext,
   closestCenter,
@@ -205,6 +206,7 @@ export default function TaskChecklist({
   onUpdate,
   className 
 }: TaskChecklistProps) {
+  const { triggerSubtleConfetti } = useConfetti()
   const [newChecklistTitle, setNewChecklistTitle] = useState('')
   const [newItemTexts, setNewItemTexts] = useState<Record<string, string>>({})
   const [expandedChecklists, setExpandedChecklists] = useState<Set<string>>(new Set())

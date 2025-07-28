@@ -17,6 +17,7 @@ import Settings from './pages/Settings'
 import Pricing from './pages/Pricing'
 import Workspace from './pages/Workspace'
 import { Toaster } from './components/ui/toaster'
+import { Toaster as Sonner } from './components/ui/sonner'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuthStore()
@@ -66,6 +67,7 @@ export default function App() {
         </Routes>
       </HashRouter>
       <Toaster />
+      <Sonner position="top-center" richColors />
     </TRPCProvider>
   )
 }

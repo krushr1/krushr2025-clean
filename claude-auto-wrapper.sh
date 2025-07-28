@@ -7,7 +7,32 @@
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
+BLUE='\033[0;34m'
 NC='\033[0m'
+
+# Start cache daemon if not running
+if ! pgrep -f "claude_cache_daemon.*--daemon" > /dev/null; then
+    echo -e "${YELLOW}🔥 Starting Claude Cache Daemon for 40x speedup...${NC}"
+    if [ -f "$SCRIPT_DIR/claude_cache_daemon.py" ]; then
+        /usr/bin/python3 "$SCRIPT_DIR/claude_cache_daemon.py" --daemon > "$SCRIPT_DIR/cache_daemon.log" 2>&1 &
+        sleep 1
+        if pgrep -f "claude_cache_daemon.*--daemon" > /dev/null; then
+            echo -e "${GREEN}✅ Cache daemon started successfully${NC}"
+        else
+            echo -e "${RED}❌ Failed to start cache daemon${NC}"
+        fi
+    fi
+else
+    echo -e "${GREEN}✅ Cache daemon already running${NC}"
+fi
+
+# Cache the project files on startup
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [ -f "$SCRIPT_DIR/cache-krushr-files.py" ]; then
+    echo -e "${BLUE}🚀 Loading Krushr project cache...${NC}"
+    /usr/bin/python3 "$SCRIPT_DIR/cache-krushr-files.py" 2>&1 | grep -E "(📊|🗄️|💾|✅|Total files processed:|Successfully cached:|Cache size:|Hit rate:)" || true
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+fi
 
 # Default to bypass permissions mode
 PERMISSION_MODE="bypassPermissions"

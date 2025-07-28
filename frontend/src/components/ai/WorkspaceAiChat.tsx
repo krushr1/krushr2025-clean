@@ -25,7 +25,15 @@ import {
   Trash2,
   X,
   Star,
-  BookOpen
+  BookOpen,
+  Mic,
+  MicOff,
+  Square,
+  Paperclip,
+  Upload,
+  FileImage,
+  FileText,
+  File
 } from 'lucide-react'
 import { trpc } from '../../lib/trpc'
 import { cn } from '../../lib/utils'
@@ -42,15 +50,26 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
   const [thinkingBudget, setThinkingBudget] = useState(8000)
   const [thinkingSliderValue, setThinkingSliderValue] = useState(3) // 0-6 scale
   const [isLoading, setIsLoading] = useState(false)
-  const [showConversations, setShowConversations] = useState(false)
   const [showThinkingControls, setShowThinkingControls] = useState(false)
-  const [showFavorites, setShowFavorites] = useState(false)
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null)
   const [enableRealTimeData, setEnableRealTimeData] = useState(false)
+  
+  // Voice recording state
+  const [isRecording, setIsRecording] = useState(false)
+  const [isProcessingVoice, setIsProcessingVoice] = useState(false)
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
+  const [recordingTime, setRecordingTime] = useState(0)
+  const [voiceError, setVoiceError] = useState<string | null>(null)
+  
+  // File upload state
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([])
+  const [isUploadingFiles, setIsUploadingFiles] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   
   const messageInputRef = useRef<HTMLTextAreaElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   
   const { user } = useAppStore()
   
@@ -119,6 +138,38 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     }
   })
 
+  const processVoiceCommand = trpc.ai.processVoiceCommand.useMutation({
+    onSuccess: (result) => {
+      setIsProcessingVoice(false)
+      setVoiceError(null)
+      
+      // Add the voice result as a message
+      if (result.success && result.naturalResponse) {
+        // Add transcript as user message
+        if (result.transcript) {
+          setMessage(result.transcript)
+        }
+        
+        // If conversation exists, refresh it to show any created tasks/actions
+        if (selectedConversation) {
+          refetchCurrentConversation()
+          refetchConversations()
+        }
+        
+        // Show success message with natural response
+        console.log('🎤 Voice command processed:', result.naturalResponse)
+      }
+    },
+    onError: (error) => {
+      setIsProcessingVoice(false)
+      setVoiceError(error.message || 'Voice processing failed')
+      console.error('Voice processing error:', error)
+    }
+  })
+
+  // We'll handle file upload differently - pass file data directly to the AI message
+  // No need for separate upload mutation
+
   useEffect(() => {
     // Scroll to bottom of messages container, not the whole page
     if (scrollAreaRef.current) {
@@ -147,8 +198,21 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     }
   }, [message])
 
+  // Recording timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isRecording) {
+      interval = setInterval(() => {
+        setRecordingTime(prev => prev + 1)
+      }, 1000)
+    } else {
+      setRecordingTime(0)
+    }
+    return () => clearInterval(interval)
+  }, [isRecording])
+
   const handleSendMessage = async () => {
-    if (!message.trim()) return
+    if (!message.trim() && attachedFiles.length === 0) return
     
     let conversationId = selectedConversation
     
@@ -164,12 +228,48 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
     }
     
     setIsLoading(true)
-    await sendMessage.mutateAsync({
-      conversationId: conversationId!,
-      message,
-      thinkingBudget,
-      enableRealTimeData
-    })
+    
+    try {
+      // Prepare message content with file information
+      let messageContent = message
+      
+      if (attachedFiles.length > 0) {
+        // Convert files to base64 for AI processing
+        const fileData = await Promise.all(
+          attachedFiles.map(async (file) => {
+            const arrayBuffer = await file.arrayBuffer()
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+            return {
+              filename: file.name,
+              mimetype: file.type,
+              size: file.size,
+              base64Data: base64
+            }
+          })
+        )
+        
+        // Add file information to message
+        const fileList = attachedFiles.map(f => f.name).join(', ')
+        messageContent += `\n\n📎 Attached files: ${fileList}`
+        
+        // For now, just mention the files - in the future, the AI could process them
+        messageContent += `\n\n[Note: File processing functionality will be implemented soon]`
+      }
+        
+      await sendMessage.mutateAsync({
+        conversationId: conversationId!,
+        message: messageContent,
+        thinkingBudget,
+        enableRealTimeData
+      })
+      
+      // Clear attached files after successful send
+      setAttachedFiles([])
+      setUploadError(null)
+      
+    } catch (error) {
+      console.error('Send message error:', error)
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -257,6 +357,30 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
       title: 'Sprint Retrospective',
       prompt: 'Let\'s do a sprint retrospective. What went well, what could be improved, and action items:',
       category: 'Agile'
+    },
+    {
+      id: 'voice-create-task',
+      title: '🎤 Create Task',
+      prompt: 'create task for user authentication system',
+      category: 'Voice'
+    },
+    {
+      id: 'voice-assign-task',
+      title: '🎤 Assign Task',
+      prompt: 'assign the frontend work to Alice',
+      category: 'Voice'
+    },
+    {
+      id: 'voice-update-status',
+      title: '🎤 Update Status',
+      prompt: 'mark the database task as done',
+      category: 'Voice'
+    },
+    {
+      id: 'voice-schedule-meeting',
+      title: '🎤 Schedule Meeting',
+      prompt: 'schedule meeting with the team tomorrow',
+      category: 'Voice'
     }
   ]
 
@@ -296,6 +420,134 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
 
   const { deleteItem } = useOptimisticDelete()
   const { execute } = useOptimisticAction()
+
+  // Voice recording functions
+  const startRecording = async () => {
+    try {
+      setVoiceError(null)
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 16000
+        } 
+      })
+      
+      const recorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm;codecs=opus'
+      })
+      
+      const audioChunks: Blob[] = []
+      
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunks.push(event.data)
+        }
+      }
+      
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm;codecs=opus' })
+        await processVoiceInput(audioBlob)
+        
+        // Clean up the stream
+        stream.getTracks().forEach(track => track.stop())
+      }
+      
+      recorder.start()
+      setMediaRecorder(recorder)
+      setIsRecording(true)
+      
+    } catch (error) {
+      console.error('Error starting recording:', error)
+      setVoiceError('Failed to access microphone. Please check permissions.')
+    }
+  }
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop()
+      setIsRecording(false)
+      setMediaRecorder(null)
+    }
+  }
+
+  const processVoiceInput = async (audioBlob: Blob) => {
+    try {
+      setIsProcessingVoice(true)
+      setVoiceError(null)
+      
+      // Convert audio blob to base64
+      const arrayBuffer = await audioBlob.arrayBuffer()
+      const uint8Array = new Uint8Array(arrayBuffer)
+      const base64Audio = btoa(String.fromCharCode(...uint8Array))
+      
+      // Process the voice command
+      await processVoiceCommand.mutateAsync({
+        audioData: base64Audio,
+        workspaceId,
+        conversationId: selectedConversation || undefined
+      })
+      
+    } catch (error) {
+      console.error('Error processing voice input:', error)
+      setVoiceError('Failed to process voice input')
+      setIsProcessingVoice(false)
+    }
+  }
+
+  const formatRecordingTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
+
+  // File upload functions
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (files) {
+      const fileArray = Array.from(files)
+      
+      // Validate file size (15MB limit)
+      const maxSize = 15 * 1024 * 1024
+      const validFiles = fileArray.filter(file => {
+        if (file.size > maxSize) {
+          setUploadError(`File "${file.name}" is too large. Maximum size is 15MB.`)
+          return false
+        }
+        return true
+      })
+      
+      setAttachedFiles(prev => [...prev, ...validFiles])
+      setUploadError(null)
+    }
+    
+    // Clear the input so the same file can be selected again
+    if (event.target) {
+      event.target.value = ''
+    }
+  }
+
+  const removeAttachedFile = (index: number) => {
+    setAttachedFiles(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const getFileIcon = (file: File) => {
+    if (file.type.startsWith('image/')) {
+      return <FileImage className="w-4 h-4" />
+    } else if (file.type.includes('text/') || file.type.includes('application/pdf')) {
+      return <FileText className="w-4 h-4" />
+    } else {
+      return <File className="w-4 h-4" />
+    }
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
 
   const handleDeleteConversation = async (conversationId: string, e: React.MouseEvent) => {
     e.stopPropagation() // Prevent conversation selection
@@ -351,75 +603,53 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
 
   return (
     <div className={cn('h-full flex flex-col bg-white', className)}>
-      {/* Header similar to chat panel */}
-      <div className="flex items-center justify-between p-2 border-b border-gray-200 bg-gradient-to-r from-krushr-primary/5 to-transparent">
-        <div className="flex items-center space-x-1">
-          {/* Conversations and quick access on the left */}
-          {conversations && conversations.length > 0 && (
-            <div className="flex items-center space-x-1 border-r border-gray-200 pr-2 mr-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowConversations(!showConversations)}
-                className={cn(
-                  "h-8 px-2 text-xs",
-                  showConversations ? "bg-gray-100" : ""
-                )}
-                title="Show conversations"
-              >
-                <MessageSquare className="w-3 h-3 mr-1" />
-                {conversations.length}
-              </Button>
+      {/* Minimal header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+        <div className="flex items-center space-x-3">
+          {/* AI Assistant title */}
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-krushr-primary to-krushr-secondary rounded-full flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
-          )}
-          
-          {/* Quick access group - favorites and settings */}
-          <div className="flex items-center space-x-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowFavorites(!showFavorites)}
-              className={cn(
-                "h-8 px-2",
-                showFavorites ? "bg-gray-100" : ""
-              )}
-              title="Favorite prompts"
-            >
-              <Star className="w-3 h-3" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowThinkingControls(!showThinkingControls)}
-              className={cn(
-                "h-8 px-2",
-                showThinkingControls ? "bg-gray-100" : ""
-              )}
-              title="AI settings & real-time data"
-            >
-              <Brain className="w-3 h-3" />
-            </Button>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">AI Assistant</h3>
+              <p className="text-xs text-gray-500">Powered by GPT-4 & Claude</p>
+            </div>
           </div>
         </div>
         
-        {/* Usage stats and new button on the right */}
+        {/* Right side controls */}
         <div className="flex items-center space-x-2">
+          {/* Usage indicator */}
           {usageStats && (
-            <div className="hidden md:flex items-center space-x-3 text-xs text-gray-500">
-              <div className="flex items-center space-x-1">
-                <Zap className="w-3 h-3" />
-                <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <span>{formatCost(usageStats.totalStats.totalCost)}</span>
-              </div>
+            <div className="hidden sm:flex items-center space-x-2 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+              <Zap className="w-3 h-3" />
+              <span>{formatTokens(usageStats.totalStats.totalTokens)}</span>
+              <span>•</span>
+              <span>{formatCost(usageStats.totalStats.totalCost)}</span>
             </div>
           )}
+          
+          {/* Settings menu */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowThinkingControls(!showThinkingControls)}
+            className={cn(
+              "h-8 w-8 p-0 rounded-full",
+              showThinkingControls ? "bg-gray-100" : "hover:bg-gray-100"
+            )}
+            title="AI settings"
+          >
+            <Settings className="w-4 h-4" />
+          </Button>
+          
+          {/* New conversation */}
           <Button
             variant="ghost"
             size="sm"
             onClick={() => createConversation.mutate({ workspaceId })}
-            className="h-8 w-8 p-0 bg-krushr-primary text-white hover:bg-krushr-primary/90"
+            className="h-8 w-8 p-0 rounded-full bg-krushr-primary text-white hover:bg-krushr-primary/90"
             title="New conversation"
           >
             <Plus className="w-4 h-4" />
@@ -427,299 +657,237 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
         </div>
       </div>
 
-      {/* Conversation selector (collapsible) */}
-      {showConversations && conversations && conversations.length > 0 && (
-        <div className="border-b border-gray-200 bg-gray-50 max-h-96 overflow-y-auto">
-          <div className="p-2 space-y-1">
-            {conversations.map((conversation) => (
-              <div
-                key={conversation.id}
-                className={cn(
-                  "group relative rounded border p-2 text-left cursor-pointer hover:bg-gray-100",
-                  selectedConversation === conversation.id ? 'bg-gray-100 border-krushr-primary' : 'border-gray-200'
-                )}
-                onClick={() => {
-                  setSelectedConversation(conversation.id)
-                  setShowConversations(false)
-                }}
-              >
-                <div className="flex-1 min-w-0 pr-6">
-                  <div className="font-medium text-xs truncate">
-                    {conversation.title || 'New Conversation'}
-                  </div>
-                  <div className="text-xs text-gray-500 truncate">
-                    {conversation.messages[0]?.content || 'No messages yet'}
-                  </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-xs text-gray-400">
-                      {conversation.messages.length} messages
-                    </span>
-                    <span className="text-xs text-gray-400">
-                      {formatCost(conversation.totalCost)}
-                    </span>
-                  </div>
-                </div>
-                
-                {/* Delete button - shows on hover */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => handleDeleteConversation(conversation.id, e)}
-                  className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600"
-                  title="Delete conversation"
-                >
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
-      {/* Favorites panel (collapsible) */}
-      {showFavorites && (
-        <div className="border-b border-gray-200 bg-gray-50 max-h-96 overflow-y-auto">
-          <div className="p-3">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-xs font-medium text-gray-700">Quick Prompts</h3>
+
+      {/* Enhanced settings panel */}
+      {showThinkingControls && (
+        <div className="border-b border-gray-100 bg-white shadow-sm">
+          <div className="p-4 space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-semibold text-gray-900">AI Settings</h4>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setShowFavorites(false)}
-                className="h-5 w-5 p-0"
+                onClick={() => setShowThinkingControls(false)}
+                className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
               >
-                <X className="w-3 h-3" />
+                <X className="w-4 h-4" />
               </Button>
             </div>
-            <div className="grid grid-cols-1 gap-1">
-              {favoritePrompts.map((favorite) => (
-                <Button
-                  key={favorite.id}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleUseFavorite(favorite.prompt)}
-                  className="h-auto p-2 text-left justify-start hover:bg-white hover:border hover:border-krushr-primary"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-xs text-gray-900 truncate">
-                        {favorite.title}
-                      </span>
-                      <span className="text-xs text-krushr-primary bg-krushr-primary/10 px-1.5 py-0.5 rounded text-xs font-medium">
-                        {favorite.category}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-600 truncate">
-                      {favorite.prompt.length > 60 
-                        ? `${favorite.prompt.substring(0, 60)}...` 
-                        : favorite.prompt
-                      }
-                    </p>
-                  </div>
-                </Button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Thinking controls (collapsible) */}
-      {showThinkingControls && (
-        <div className="border-b border-gray-200 bg-gray-50 p-3">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-medium text-gray-700">Thinking Level</label>
-              <div className="text-xs text-krushr-primary font-medium">
-                {getCurrentThinkingLevel().label}
+            
+            {/* Thinking Level */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-gray-700">Thinking Depth</label>
+                <div className="text-sm text-krushr-primary font-medium">
+                  {getCurrentThinkingLevel().label}
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <span className="text-xs text-gray-500 w-10">Fast</span>
-              <input
-                type="range"
-                min="0"
-                max="6"
-                step="1"
-                value={thinkingSliderValue}
-                onChange={(e) => handleThinkingSliderChange(Number(e.target.value))}
-                className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb"
-                style={{
-                  background: `linear-gradient(to right, 
-                    #e5e7eb 0%, 
-                    #d1d5db ${(thinkingSliderValue / 6) * 100}%, 
-                    #143197 ${(thinkingSliderValue / 6) * 100}%, 
-                    #143197 100%)`
-                }}
-              />
-              <span className="text-xs text-gray-500 w-10">Deep</span>
-            </div>
-            <div className="text-xs text-gray-600 text-center bg-white px-2 py-1 rounded border">
-              {getCurrentThinkingLevel().description}
+              <div className="flex items-center space-x-3">
+                <span className="text-xs text-gray-500 w-12">Quick</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="6"
+                  step="1"
+                  value={thinkingSliderValue}
+                  onChange={(e) => handleThinkingSliderChange(Number(e.target.value))}
+                  className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  style={{
+                    background: `linear-gradient(to right, 
+                      #e5e7eb 0%, 
+                      #d1d5db ${(thinkingSliderValue / 6) * 100}%, 
+                      #143197 ${(thinkingSliderValue / 6) * 100}%, 
+                      #143197 100%)`
+                  }}
+                />
+                <span className="text-xs text-gray-500 w-12">Expert</span>
+              </div>
+              <p className="text-xs text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+                {getCurrentThinkingLevel().description}
+              </p>
             </div>
             
-            {/* Real-time data toggle */}
-            <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-              <div className="flex items-center space-x-2">
-                <label className="text-xs font-medium text-gray-700">Real-time Data</label>
-                <div className="text-xs text-gray-500">
-                  Current info, weather, news
-                </div>
+            {/* Real-time Data Toggle */}
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="text-sm font-medium text-gray-700">Live Data Access</label>
+                <p className="text-xs text-gray-500">Current weather, news, and web information</p>
               </div>
               <button
                 onClick={() => setEnableRealTimeData(!enableRealTimeData)}
                 className={cn(
-                  "relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:ring-offset-2",
+                  "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:ring-offset-2",
                   enableRealTimeData ? "bg-krushr-primary" : "bg-gray-300"
                 )}
               >
                 <span
                   className={cn(
                     "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
-                    enableRealTimeData ? "translate-x-4" : "translate-x-0.5"
+                    enableRealTimeData ? "translate-x-6" : "translate-x-1"
                   )}
                 />
               </button>
             </div>
+            
+            {/* Conversation History */}
+            {conversations && conversations.length > 0 && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Recent Conversations</label>
+                <div className="max-h-32 overflow-y-auto space-y-1">
+                  {conversations.slice(0, 3).map((conversation) => (
+                    <button
+                      key={conversation.id}
+                      onClick={() => {
+                        setSelectedConversation(conversation.id)
+                        setShowThinkingControls(false)
+                      }}
+                      className={cn(
+                        "w-full text-left p-2 rounded-lg text-xs hover:bg-gray-50 transition-colors",
+                        selectedConversation === conversation.id ? "bg-krushr-primary/10 border border-krushr-primary/20" : "border border-gray-200"
+                      )}
+                    >
+                      <div className="font-medium text-gray-900 truncate">
+                        {conversation.title || 'New Conversation'}
+                      </div>
+                      <div className="text-gray-500 truncate">
+                        {conversation.messages[0]?.content || 'No messages yet'}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
       {/* Messages area */}
-      <ScrollArea ref={scrollAreaRef} className="flex-1 p-3">
-        <div className="space-y-4">
+      <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
+        <div className="max-w-3xl mx-auto space-y-4">
           {selectedConversation && currentConversation ? (
             currentConversation.messages.map((msg) => (
-              <div key={msg.id} className="group flex items-start space-x-3 hover:bg-gray-50 -mx-2 px-2 py-1 rounded">
-                <Avatar className="w-7 h-7 flex-shrink-0">
-                  <AvatarFallback className="text-xs">
-                    {msg.role === 'user' ? (
-                      <User className="w-4 h-4" />
-                    ) : (
-                      <Bot className="w-4 h-4 text-krushr-coral-red" />
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-medium text-xs text-gray-900">
-                        {msg.role === 'user' ? user?.name || 'You' : 'AI'}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {new Date(msg.createdAt).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
-                      </span>
-                      {msg.role === 'assistant' && (
-                        <div className="flex items-center space-x-1 text-xs text-gray-400">
-                          <Zap className="w-3 h-3" />
-                          <span>{formatTokens(msg.tokenCount)}</span>
+              <div key={msg.id} className="group">
+                {msg.role === 'user' ? (
+                  /* User message - right aligned */
+                  <div className="flex justify-end">
+                    <div className="max-w-xl">
+                      <div className="bg-krushr-primary/10 text-gray-900 border border-krushr-primary/20 px-3 py-2 rounded-2xl rounded-br-md">
+                        <p className="text-xs whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                      </div>
+                      <div className="flex items-center justify-end mt-1 space-x-2 text-xs text-gray-500">
+                        <span>{user?.name || 'You'}</span>
+                        <span>•</span>
+                        <span>
+                          {new Date(msg.createdAt).toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* AI message - left aligned with avatar */
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-gradient-to-br from-krushr-primary to-krushr-secondary rounded-full flex items-center justify-center">
+                        <Sparkles className="w-4 h-4 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="bg-gray-50 px-3 py-2 rounded-2xl rounded-bl-md">
+                        <ReactMarkdown 
+                          className="prose prose-xs max-w-none prose-gray prose-strong:text-gray-900 prose-code:text-krushr-primary prose-code:bg-white prose-code:px-1 prose-code:py-0.5 prose-code:rounded"
+                          components={{
+                            p: ({ children }) => <p className="mb-2 last:mb-0 text-gray-800 leading-relaxed text-xs">{children}</p>,
+                            strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
+                            code: ({ children }) => <code className="text-krushr-primary bg-white px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
+                            ul: ({ children }) => <ul className="list-disc pl-3 mb-2 space-y-0.5 text-xs">{children}</ul>,
+                            ol: ({ children }) => <ol className="list-decimal pl-3 mb-2 space-y-0.5 text-xs">{children}</ol>,
+                            li: ({ children }) => <li className="text-gray-800 text-xs">{children}</li>,
+                          }}
+                        >
+                          {msg.content}
+                        </ReactMarkdown>
+                      </div>
+                      <div className="flex items-center justify-between mt-1">
+                        <div className="flex items-center space-x-2 text-xs text-gray-500">
+                          <span>AI Assistant</span>
+                          <span>•</span>
+                          <span>
+                            {new Date(msg.createdAt).toLocaleTimeString([], { 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })}
+                          </span>
                           {msg.responseTime && (
                             <>
-                              <Clock className="w-3 h-3 ml-1" />
+                              <span>•</span>
                               <span>{msg.responseTime}ms</span>
                             </>
                           )}
                         </div>
-                      )}
-                    </div>
-                    
-                    {/* Message Action Buttons */}
-                    <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleCopyMessage(msg.content, msg.id)}
-                        className="h-6 w-6 p-0 hover:bg-gray-200"
-                        title="Copy message"
-                      >
-                        {copiedMessageId === msg.id ? (
-                          <Check className="w-3 h-3 text-green-600" />
-                        ) : (
-                          <Copy className="w-3 h-3" />
-                        )}
-                      </Button>
-                      
-                      {msg.role === 'user' && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => handleAddToFavorites(msg.content, e)}
-                          className="h-6 w-6 p-0 hover:bg-yellow-100 hover:text-yellow-600"
-                          title="Add to favorites"
-                        >
-                          <Star className="w-3 h-3" />
-                        </Button>
-                      )}
-                      
-                      {msg.role === 'assistant' && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleReplyToMessage(msg.content)}
-                          className="h-6 w-6 p-0 hover:bg-gray-200"
-                          title="Reply to this message"
-                        >
-                          <Reply className="w-3 h-3" />
-                        </Button>
-                      )}
+                        
+                        {/* Message Actions */}
+                        <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCopyMessage(msg.content, msg.id)}
+                            className="h-7 w-7 p-0 rounded-full hover:bg-gray-200"
+                            title="Copy message"
+                          >
+                            {copiedMessageId === msg.id ? (
+                              <Check className="w-3.5 h-3.5 text-green-600" />
+                            ) : (
+                              <Copy className="w-3.5 h-3.5" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className={cn(
-                    'text-sm',
-                    msg.role === 'user' 
-                      ? 'bg-krushr-primary/10 p-2 rounded-lg border border-krushr-primary/20' 
-                      : 'text-gray-900'
-                  )}>
-                    {msg.role === 'assistant' ? (
-                      <ReactMarkdown 
-                        className="prose prose-sm max-w-none prose-gray prose-strong:text-gray-900 prose-code:text-krushr-primary prose-code:bg-gray-100 prose-code:px-1 prose-code:rounded"
-                        components={{
-                          p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                          strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
-                          code: ({ children }) => <code className="text-krushr-primary bg-gray-100 px-1 rounded text-xs">{children}</code>,
-                          ul: ({ children }) => <ul className="list-disc pl-4 mb-2">{children}</ul>,
-                          ol: ({ children }) => <ol className="list-decimal pl-4 mb-2">{children}</ol>,
-                          li: ({ children }) => <li className="mb-1">{children}</li>,
-                        }}
-                      >
-                        {msg.content}
-                      </ReactMarkdown>
-                    ) : (
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
             ))
           ) : (
-            <div className="flex-1 flex items-center justify-center">
+            <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
+              <div className="w-16 h-16 bg-gradient-to-br from-krushr-primary to-krushr-secondary rounded-full flex items-center justify-center mb-4">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Welcome to AI Assistant</h3>
+              <p className="text-gray-600 mb-6 max-w-md">
+                Start a conversation to get help with tasks, questions, or creative projects. 
+                I can understand text, voice, and file uploads.
+              </p>
               <Button
                 onClick={() => createConversation.mutate({ workspaceId })}
-                size="sm"
                 className="bg-krushr-primary hover:bg-krushr-primary/90"
               >
-                <Plus className="w-3 h-3 mr-1" />
-                Start Conversation
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Start Your First Conversation
               </Button>
             </div>
           )}
           
           {isLoading && (
             <div className="flex items-start space-x-3">
-              <Avatar className="w-7 h-7">
-                <AvatarFallback className="text-xs">
-                  <Bot className="w-4 h-4 text-krushr-coral-red" />
-                </AvatarFallback>
-              </Avatar>
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-gradient-to-br from-krushr-primary to-krushr-secondary rounded-full flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+              </div>
               <div className="flex-1">
-                <div className="bg-gray-100 p-2 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-krushr-primary"></div>
-                    <span className="text-xs text-gray-500">AI is thinking...</span>
+                <div className="bg-gray-50 px-3 py-2 rounded-2xl rounded-bl-md">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex space-x-1">
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    </div>
+                    <span className="text-xs text-gray-600">AI is thinking...</span>
                   </div>
                 </div>
               </div>
@@ -745,62 +913,240 @@ export default function WorkspaceAiChat({ workspaceId, className }: WorkspaceAiC
           </div>
         )}
         
-        {/* Main input area */}
-        <div className="p-3">
-          <form 
-            onSubmit={(e) => {
-              e.preventDefault()
-              handleSendMessage()
-            }}
-            className="flex items-center space-x-3"
-          >
-            {/* Input field with full width utilization */}
-            <div className="flex-1 relative">
-              <FloatingTextarea
-                ref={messageInputRef}
-                label="Ask AI anything..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                disabled={isLoading}
-                className="w-full h-10 min-h-[40px] text-sm resize-none overflow-hidden text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 pr-10"
-                rows={1}
-              />
+        {/* Voice error display */}
+        {voiceError && (
+          <div className="px-3 py-2 text-xs text-red-600 bg-red-50 border-b border-red-200 flex items-center justify-between">
+            <span>🎤 {voiceError}</span>
+            <button
+              onClick={() => setVoiceError(null)}
+              className="text-red-600 hover:underline font-medium"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+        
+        {/* Upload error display */}
+        {uploadError && (
+          <div className="px-3 py-2 text-xs text-red-600 bg-red-50 border-b border-red-200 flex items-center justify-between">
+            <span>📎 {uploadError}</span>
+            <button
+              onClick={() => setUploadError(null)}
+              className="text-red-600 hover:underline font-medium"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+        
+        {/* Voice recording indicator */}
+        {isRecording && (
+          <div className="px-3 py-2 text-xs text-red-600 bg-red-50 border-b border-red-200 flex items-center justify-center">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <span>Recording... {formatRecordingTime(recordingTime)}</span>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={handlePasteFromClipboard}
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-200 z-10"
-                title="Paste from clipboard"
+                onClick={stopRecording}
+                className="h-6 px-2 bg-red-100 hover:bg-red-200 text-red-700"
               >
-                <ClipboardPaste className="w-3 h-3" />
+                <Square className="w-3 h-3 mr-1" />
+                Stop
               </Button>
             </div>
-            
-            {/* Action buttons group */}
+          </div>
+        )}
+        
+        {/* Voice processing indicator */}
+        {isProcessingVoice && (
+          <div className="px-3 py-2 text-xs text-blue-600 bg-blue-50 border-b border-blue-200 flex items-center justify-center">
             <div className="flex items-center space-x-2">
-              {/* Real-time data indicator */}
-              {enableRealTimeData && (
-                <div className="flex items-center text-xs text-krushr-primary bg-blue-100 px-2 py-1 rounded-full">
-                  <Zap className="w-3 h-3 mr-1" />
-                  Live
-                </div>
-              )}
-              
-              {/* Send button */}
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+              <span>Processing voice command...</span>
+            </div>
+          </div>
+        )}
+        
+        {/* Attached files display */}
+        {attachedFiles.length > 0 && (
+          <div className="px-3 py-2 border-b border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-gray-700">
+                Attached Files ({attachedFiles.length})
+              </span>
               <Button
-                type="submit"
+                variant="ghost"
                 size="sm"
-                className="h-10 w-10 bg-krushr-primary text-white rounded-lg flex items-center justify-center hover:bg-krushr-primary/90 transition-colors p-0"
+                onClick={() => setAttachedFiles([])}
+                className="h-5 px-2 text-xs text-gray-500 hover:text-gray-700"
               >
-                {isLoading ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-white border-t-transparent border-2"></div>
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
+                Clear All
               </Button>
             </div>
-          </form>
+            <div className="grid grid-cols-1 gap-1 max-h-32 overflow-y-auto">
+              {attachedFiles.map((file, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                >
+                  <div className="flex items-center space-x-2 min-w-0 flex-1">
+                    {getFileIcon(file)}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-medium text-gray-900 truncate">
+                        {file.name}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {formatFileSize(file.size)}
+                      </div>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeAttachedFile(index)}
+                    className="h-6 w-6 p-0 text-gray-400 hover:text-red-600 hover:bg-red-50 flex-shrink-0"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* File uploading indicator */}
+        {isUploadingFiles && (
+          <div className="px-3 py-2 text-xs text-blue-600 bg-blue-50 border-b border-blue-200 flex items-center justify-center">
+            <div className="flex items-center space-x-2">
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+              <span>Uploading files...</span>
+            </div>
+          </div>
+        )}
+        
+        {/* Main input area - Optimized ChatGPT-style layout */}
+        <div className="p-4 bg-white border-t border-gray-100">
+          <div className="max-w-3xl mx-auto">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault()
+                handleSendMessage()
+              }}
+              className="relative"
+            >
+              {/* Enhanced input container with inline controls */}
+              <div className="relative flex items-center bg-white border border-gray-300 rounded-3xl shadow-sm hover:shadow-md transition-shadow focus-within:shadow-md focus-within:border-krushr-primary h-[60px]">
+              {/* Left action buttons - inside input */}
+              <div className="flex items-center pl-3 space-x-1">
+                {/* Add/Plus button */}
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isLoading || isRecording || isProcessingVoice}
+                  className="h-8 w-8 rounded-full flex items-center justify-center transition-colors p-0 bg-transparent text-gray-600 hover:bg-gray-100"
+                  title="Attach files"
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+                
+                {/* Agent/Sources selector */}
+                <div className="flex items-center space-x-1">
+                  {/* Real-time data toggle */}
+                  {enableRealTimeData && (
+                    <div className="flex items-center text-xs text-krushr-primary bg-blue-100 px-2 py-1 rounded-full">
+                      <Zap className="w-3 h-3 mr-1" />
+                      <span className="text-xs font-medium">Live</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Main textarea - centered and expandable with floating label */}
+              <div className="flex-1 min-w-0 relative">
+                <textarea
+                  ref={messageInputRef}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  disabled={isLoading}
+                  placeholder=""
+                  className="w-full min-h-[46px] h-[46px] text-sm resize-none border-0 bg-transparent focus:ring-0 focus:outline-none px-3 py-3 placeholder-transparent peer leading-relaxed"
+                  rows={1}
+                />
+                {/* Floating label - proper brandkit-style behavior */}
+                <label 
+                  htmlFor={messageInputRef.current?.id}
+                  className={cn(
+                    "absolute left-3 text-gray-500 duration-300 transform origin-[0] bg-white px-1 pointer-events-none select-none z-10",
+                    message.trim()
+                      ? "-top-2 text-xs scale-75 text-krushr-primary"
+                      : "top-1/2 -translate-y-1/2 text-sm peer-focus:-top-2 peer-focus:text-xs peer-focus:scale-75 peer-focus:text-krushr-primary"
+                  )}
+                >
+                  Describe a task...
+                </label>
+              </div>
+
+              {/* Right action buttons - inside input */}
+              <div className="flex items-center pr-3 space-x-1">
+                {/* Voice button */}
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={isRecording ? stopRecording : startRecording}
+                  disabled={isProcessingVoice || isLoading}
+                  className={cn(
+                    "h-8 w-8 rounded-full flex items-center justify-center transition-colors p-0",
+                    isRecording 
+                      ? "bg-red-500 text-white hover:bg-red-600" 
+                      : "bg-transparent text-gray-600 hover:bg-gray-100"
+                  )}
+                  title={isRecording ? "Stop recording" : "Start voice recording"}
+                >
+                  {isProcessingVoice ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-gray-400 border-t-transparent border-2"></div>
+                  ) : isRecording ? (
+                    <Square className="w-4 h-4" />
+                  ) : (
+                    <Mic className="w-4 h-4" />
+                  )}
+                </Button>
+                
+                {/* Send button - prominent */}
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={isRecording || isProcessingVoice || (!message.trim() && attachedFiles.length === 0)}
+                  className={cn(
+                    "h-8 w-8 rounded-full flex items-center justify-center transition-all p-0",
+                    (!message.trim() && attachedFiles.length === 0)
+                      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      : "bg-krushr-primary text-white hover:bg-krushr-primary/90 shadow-sm hover:shadow"
+                  )}
+                  title="Send message"
+                >
+                  {isLoading ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-white border-t-transparent border-2"></div>
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
+              
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*,.pdf,.txt,.doc,.docx,.json,.md"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+            </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

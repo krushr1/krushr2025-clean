@@ -133,6 +133,10 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     onSuccess: () => {
       utils.panel.list.invalidate({ workspaceId })
       onRefresh?.()
+      // Force a layout recalculation after minimize/restore
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'))
+      }, 100)
     },
     onError: (error) => {
       console.error('Minimize toggle failed:', error)
@@ -183,11 +187,15 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
   const toggleFullscreen = trpc.panel.toggleFullscreen.useMutation({
     onSuccess: (updatedPanel) => {
       try {
-        const panelData = JSON.parse(updatedPanel.data)
+        const panelData = typeof updatedPanel.data === 'string' ? JSON.parse(updatedPanel.data) : (updatedPanel.data || {})
         // Invalidate cache to ensure UI updates immediately
         utils.panel.list.invalidate({ workspaceId })
         onFullscreen?.(panel.id, panelData.isFullscreen || false)
         onRefresh?.()
+        // Force component re-render
+        setTimeout(() => {
+          utils.panel.list.invalidate({ workspaceId })
+        }, 50)
       } catch (error) {
         console.error('Error parsing panel data:', error, updatedPanel)
         // Still invalidate cache even if parsing fails
@@ -452,8 +460,17 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
     handleTitleSave()
   }
 
-  const isFullscreen = panel.data?.isFullscreen || false
-  const isFocused = panel.data?.isFocused || false
+  // Parse panel data properly - it might be a string
+  const panelData = useMemo(() => {
+    try {
+      return typeof panel.data === 'string' ? JSON.parse(panel.data) : (panel.data || {})
+    } catch {
+      return {}
+    }
+  }, [panel.data])
+  
+  const isFullscreen = panelData?.isFullscreen || false
+  const isFocused = panelData?.isFocused || false
 
   return (
     <Card 
@@ -509,20 +526,6 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
         </div>
         
         <div className="flex items-center" style={{ marginLeft: 'auto', gap: '2px' }}>
-          {/* Focus mode button */}
-          <Button
-            size="sm"
-            variant="ghost"
-            className={cn(
-              "w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0",
-              focusMode && focusedPanelId === panel.id && "bg-krushr-primary/10 text-krushr-primary"
-            )}
-            onClick={() => toggleFocusMode(panel.id)}
-            title={focusMode && focusedPanelId === panel.id ? "Exit focus mode" : "Focus on this panel"}
-          >
-            <Focus className="w-2.5 h-2.5" />
-          </Button>
-          
           {/* Panel-specific actions dropdown */}
           {(panel.type === 'KANBAN' || panel.type === 'CHAT' || panel.type === 'AI_CHAT' || panel.type === 'NOTES') && (
             <DropdownMenu>
@@ -602,6 +605,20 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
               </DropdownMenuContent>
             </DropdownMenu>
           )}
+          
+          {/* Focus mode button */}
+          <Button
+            size="sm"
+            variant="ghost"
+            className={cn(
+              "w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0",
+              focusMode && focusedPanelId === panel.id && "bg-krushr-primary/10 text-krushr-primary"
+            )}
+            onClick={() => toggleFocusMode(panel.id)}
+            title={focusMode && focusedPanelId === panel.id ? "Exit focus mode" : "Focus on this panel"}
+          >
+            <Focus className="w-2.5 h-2.5" />
+          </Button>
           
           <Button 
             size="sm" 

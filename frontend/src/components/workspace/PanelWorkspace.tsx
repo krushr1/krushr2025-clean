@@ -91,6 +91,10 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   })
   const updatePositions = trpc.panel.updatePositions.useMutation({
     onSuccess: () => {
+      console.log('✅ Panel positions saved successfully')
+    },
+    onError: (error) => {
+      console.error('❌ Failed to save panel positions:', error)
     }
   })
 
@@ -141,17 +145,14 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     setFocusedPanelId(panelId)
   }, [])
 
-  const debouncedUpdatePositions = useMemo(() => 
-    debounce((updates: any[]) => {
-      if (updates.length > 0) {
-        updatePositions.mutate({
-          workspaceId,
-          updates
-        })
-      }
-    }, 100), // 100ms delay - very responsive for position stability
-    [workspaceId, updatePositions]
-  )
+  const updatePositionsImmediately = useCallback((updates: any[]) => {
+    if (updates.length > 0) {
+      updatePositions.mutate({
+        workspaceId,
+        updates
+      })
+    }
+  }, [workspaceId, updatePositions])
 
   const handleLayoutChange = useCallback((newLayout: Layout[]) => {
     if (allPanels.length === 0 || !newLayout) return
@@ -198,11 +199,11 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
 
     if (updates.length > 0) {
       console.log('💾 Applying layout updates:', updates.length, 'panels')
-      debouncedUpdatePositions(updates)
+      updatePositionsImmediately(updates)
     }
 
     // Note: Removed onLayoutPersistenceChange call to prevent conflicts
-  }, [allPanels, debouncedUpdatePositions, onLayoutPersistenceChange])
+  }, [allPanels, updatePositionsImmediately, onLayoutPersistenceChange])
 
   const [originalLayout, setOriginalLayout] = useState<Layout[] | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -241,7 +242,9 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
 
   const handlePanelDrag = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
     element.style.transform = element.style.transform.replace(/scale\([^)]*\)/, 'scale(1.02)')
-  }, [])
+    // Force immediate layout update during drag
+    handleLayoutChange(layout)
+  }, [handleLayoutChange])
 
   const handlePanelDragStop = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
     setIsDragging(false)
@@ -254,7 +257,8 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
       positionChanged,
       sizeChanged,
       oldPos: { x: oldItem.x, y: oldItem.y },
-      newPos: { x: newItem.x, y: newItem.y }
+      newPos: { x: newItem.x, y: newItem.y },
+      finalLayout: layout.map(item => ({ id: item.i, x: item.x, y: item.y }))
     })
     
     element.style.transition = 'all 0.3s ease-out'
@@ -266,16 +270,23 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     element.style.boxShadow = ''
     element.style.border = ''
     
-    if (positionChanged || sizeChanged) {
-      console.log('💾 Saving layout change immediately')
-      handleLayoutChange(layout)
-    }
+    // Force immediate save with the exact layout from drag stop
+    const updates = layout.map(item => ({
+      id: item.i,
+      position_x: item.x,
+      position_y: item.y,
+      width: item.w,
+      height: item.h
+    }))
+    
+    console.log('💾 Saving final positions immediately:', updates)
+    updatePositionsImmediately(updates)
     
     setTimeout(() => {
       element.style.transition = ''
       setOriginalLayout(null)
     }, 300)
-  }, [handleLayoutChange])
+  }, [updatePositionsImmediately])
 
   const handlePanelResizeStart = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
     element.style.zIndex = '9997' // Below dragging panels

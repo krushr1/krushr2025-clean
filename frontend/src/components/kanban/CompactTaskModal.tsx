@@ -614,9 +614,9 @@ export default function CompactTaskModal({
               <span className="hidden sm:inline text-xs font-medium text-gray-600">Priority:</span>
               <div className="flex gap-0.5">
                 {[
-                  { value: Priority.LOW, color: 'bg-green-500', hoverColor: 'hover:bg-green-500/50' },
-                  { value: Priority.MEDIUM, color: 'bg-yellow-500', hoverColor: 'hover:bg-yellow-500/50' },
-                  { value: Priority.HIGH, color: 'bg-red-500', hoverColor: 'hover:bg-red-500/50' }
+                  { value: Priority.LOW, color: 'bg-krushr-secondary', hoverColor: 'hover:bg-krushr-secondary/50' },
+                  { value: Priority.MEDIUM, color: 'bg-krushr-secondary', hoverColor: 'hover:bg-krushr-secondary/50' },
+                  { value: Priority.HIGH, color: 'bg-krushr-secondary', hoverColor: 'hover:bg-krushr-secondary/50' }
                 ].map((p, index) => {
                   const isActive = priority === p.value || 
                                  (priority === Priority.LOW && index === 0) ||

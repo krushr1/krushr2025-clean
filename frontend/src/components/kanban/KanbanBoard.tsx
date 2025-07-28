@@ -16,6 +16,7 @@ import { Task } from '../../types'
 import { useOptimisticDelete } from '@/hooks/use-optimistic-delete'
 import { useOptimisticAction } from '@/hooks/use-optimistic-action'
 import { useToast } from '@/hooks/use-toast'
+import { useConfetti } from '../../hooks/useConfetti'
 
 interface KanbanBoardProps {
   kanban: any
@@ -23,6 +24,7 @@ interface KanbanBoardProps {
 }
 
 export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
+  const { triggerConfetti } = useConfetti()
   const [activeTask, setActiveTask] = useState<any | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [showFilters, setShowFilters] = useState(false)
@@ -189,6 +191,25 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
           id: activeTask.id,
           ...updates
         })
+        
+        // Check if task was moved to a "Done" column
+        const targetColumnTitle = targetColumn.title?.toLowerCase() || ''
+        const isMovingToDone = targetColumnTitle.includes('done') || 
+                              targetColumnTitle.includes('complete') ||
+                              targetColumnTitle.includes('finished')
+        const sourceColumnTitle = sourceColumn.title?.toLowerCase() || ''
+        const wasInDone = sourceColumnTitle.includes('done') || 
+                         sourceColumnTitle.includes('complete') ||
+                         sourceColumnTitle.includes('finished')
+        
+        // Trigger confetti only when moving TO done column from another column
+        if (isMovingToDone && !wasInDone && !bulkMode) {
+          triggerConfetti({
+            origin: { x: 0.5, y: 0.6 },
+            particleCount: 150,
+            spread: 80,
+          })
+        }
       } catch (error) {
         console.error('Failed to move task:', error)
       }

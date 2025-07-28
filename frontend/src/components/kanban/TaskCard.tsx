@@ -17,6 +17,7 @@ import {
   MoreHorizontal
 } from 'lucide-react'
 import { Task } from '../../types'
+import { Priority } from '../../types/enums'
 import { cn } from '../../lib/utils'
 import { formatDate } from '../../lib/utils'
 import { useWorkspaceContextStore } from '../../stores/workspace-context-store'
@@ -78,14 +79,32 @@ export default function TaskCard({
     }
   }
 
-  const getPriorityBadgeColor = () => {
-    switch (task.priority) {
-      case 'critical': return 'bg-krushr-priority-critical/10 text-krushr-priority-critical border-krushr-priority-critical/20 font-medium'
-      case 'high': return 'bg-krushr-priority-high/10 text-krushr-priority-high border-krushr-priority-high/20 font-medium'
-      case 'medium': return 'bg-krushr-priority-medium/10 text-krushr-priority-medium border-krushr-priority-medium/20 font-medium'
-      case 'low': return 'bg-krushr-priority-low/10 text-krushr-priority-low border-krushr-priority-low/20 font-medium'
-      default: return 'bg-gray-100 text-gray-700 border-gray-200'
+  const getPriorityLevel = () => {
+    switch (task.priority?.toLowerCase()) {
+      case 'low': return 1
+      case 'medium': return 2
+      case 'high': return 3
+      case 'critical': return 3
+      default: return 2
     }
+  }
+
+  const renderPriorityDots = () => {
+    const level = getPriorityLevel()
+    
+    return (
+      <div className="flex items-center gap-0.5" title={`Priority: ${task.priority || 'medium'}`}>
+        {[1, 2, 3].map((dotIndex) => (
+          <div
+            key={dotIndex}
+            className={cn(
+              "w-1.5 h-1.5 rounded-full transition-all duration-200",
+              dotIndex <= level ? "bg-krushr-secondary" : "bg-gray-300"
+            )}
+          />
+        ))}
+      </div>
+    )
   }
 
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date()
@@ -201,20 +220,8 @@ export default function TaskCard({
         {/* Task Metadata - Compact Single Line */}
         <div className="flex items-center justify-between text-xs text-gray-500 font-manrope">
           <div className="flex items-center space-x-2">
-            {/* Priority Badge - Smaller */}
-            <Badge 
-              variant="outline" 
-              className={cn('capitalize font-manrope px-2 py-1 text-xs font-medium', getPriorityBadgeColor())}
-              role="status"
-              aria-label={`Priority: ${task.priority}`}
-            >
-              {task.priority}
-            </Badge>
-
             {/* Due Date - Inline */}
             {task.dueDate && (
-              <>
-                <span className="text-gray-300">•</span>
                 <div className={cn(
                   'flex items-center space-x-1',
                   isOverdue && 'text-krushr-secondary',
@@ -229,7 +236,6 @@ export default function TaskCard({
                     {formatDate(task.dueDate)}
                   </span>
                 </div>
-              </>
             )}
           </div>
 
@@ -287,6 +293,10 @@ export default function TaskCard({
                 <span className="text-xs">{task.estimatedHours || 0}h</span>
               </div>
               
+              {/* Priority Dots */}
+              <span className="text-gray-300 text-xs">•</span>
+              {renderPriorityDots()}
+              
               {/* Tags - Inline with assignee */}
               {task.tags && task.tags.length > 0 && (
                 <>
@@ -324,6 +334,10 @@ export default function TaskCard({
                 <Clock className="w-3 h-3" />
                 <span className="text-xs">{task.estimatedHours || 0}h</span>
               </div>
+              
+              {/* Priority Dots */}
+              <span className="text-gray-300 text-xs">•</span>
+              {renderPriorityDots()}
               
               {/* Tags - Inline with unassigned */}
               {task.tags && task.tags.length > 0 && (

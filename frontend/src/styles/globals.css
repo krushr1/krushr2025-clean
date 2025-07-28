@@ -24,4 +24,21 @@
     position: absolute;
     inset: -8px;
   }
+
+  /* Success pulse animation */
+  @keyframes success-pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+  }
+
+  .animate-success-pulse {
+    animation: success-pulse 0.5s ease-out;
+  }
 }

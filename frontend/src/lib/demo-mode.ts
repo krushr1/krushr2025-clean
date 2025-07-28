@@ -27,7 +27,45 @@ export const demoData = {
       description: 'Experience Krushr\'s features',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      ownerId: 'demo-user'
+      ownerId: 'demo-user',
+      _count: {
+        projects: 3,
+        teams: 2,
+        kanbans: 1,
+        tasks: 3,
+        members: 1
+      }
+    }
+  ],
+
+  workspaceMembers: [
+    {
+      id: 'demo-member-1',
+      userId: 'demo-user',
+      workspaceId: 'demo-workspace',
+      role: 'owner',
+      user: {
+        id: 'demo-user',
+        name: 'Demo User',
+        email: 'demo@krushr.com',
+        avatar: undefined
+      }
+    }
+  ],
+
+  kanbans: [
+    {
+      id: 'demo-kanban-1',
+      name: 'Demo Project Board',
+      workspaceId: 'demo-workspace',
+      createdById: 'demo-user',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      columns: [
+        { id: 'col-1', name: 'Todo', position: 0 },
+        { id: 'col-2', name: 'In Progress', position: 1 },
+        { id: 'col-3', name: 'Done', position: 2 }
+      ]
     }
   ],
   
@@ -112,6 +150,16 @@ export const demoResponses: Record<string, () => Promise<any>> = {
   'workspace.get': async () => {
     await mockDelay()
     return { result: { data: demoData.workspaces[0] } }
+  },
+
+  'user.listWorkspaceMembers': async () => {
+    await mockDelay()
+    return { result: { data: demoData.workspaceMembers } }
+  },
+
+  'kanban.list': async () => {
+    await mockDelay()
+    return { result: { data: demoData.kanbans } }
   },
   
   'task.list': async () => {

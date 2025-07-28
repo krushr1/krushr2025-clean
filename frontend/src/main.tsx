@@ -1,6 +1,3 @@
-// Krushr Frontend Entry Point - Cache Bust v20250728-203800
-console.log('🚀 Krushr Loading - Build Version:', new Date().toISOString())
-
 import { createRoot } from 'react-dom/client'
 import './shadcn.css'
 import './styles/landing.css'

@@ -198,7 +198,7 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                       {member.name}
                     </p>
                     <p className="text-xs text-sidebar-foreground/60 truncate leading-tight">
-                      {member.email.split('@')[0]}
+                      {member.email?.split('@')[0] || 'user'}
                     </p>
                   </div>
                 )}

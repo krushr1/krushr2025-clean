@@ -5271,12 +5271,54 @@ var demoData = {
       userId: "demo-user",
       workspaceId: "demo-workspace",
       role: "owner",
+      name: "Demo User",
+      email: "demo@krushr.com",
+      avatar: void 0,
       user: {
         id: "demo-user",
         name: "Demo User",
         email: "demo@krushr.com",
         avatar: void 0
       }
+    }
+  ],
+  panels: [
+    {
+      id: "demo-panel-1",
+      name: "Demo Panel",
+      type: "kanban",
+      workspaceId: "demo-workspace",
+      layout: { x: 0, y: 0, w: 12, h: 8 },
+      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    }
+  ],
+  activities: [
+    {
+      id: "demo-activity-1",
+      type: "task_created",
+      message: "Demo task created",
+      workspaceId: "demo-workspace",
+      userId: "demo-user",
+      createdAt: (/* @__PURE__ */ new Date()).toISOString()
+    }
+  ],
+  layoutPresets: [
+    {
+      id: "demo-preset-1",
+      name: "Default Layout",
+      workspaceId: "demo-workspace",
+      layout: [],
+      isDefault: true
+    }
+  ],
+  chatThreads: [
+    {
+      id: "demo-thread-1",
+      name: "General Discussion",
+      workspaceId: "demo-workspace",
+      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
     }
   ],
   kanbans: [
@@ -5361,12 +5403,8 @@ var demoResponses = {
   },
   "workspace.list": async () => {
     await mockDelay();
-    console.log("[Demo Mode] Raw workspace data being returned:", JSON.stringify(demoData.workspaces, null, 2));
-    console.log("[Demo Mode] First workspace _count exists:", !!demoData.workspaces[0]._count);
-    console.log("[Demo Mode] First workspace _count value:", demoData.workspaces[0]._count);
-    const response = { result: { data: demoData.workspaces } };
-    console.log("[Demo Mode] Full response structure:", JSON.stringify(response, null, 2));
-    return response;
+    console.log("[Demo Mode] Returning workspace data with _count structure");
+    return { result: { data: demoData.workspaces } };
   },
   "workspace.get": async () => {
     await mockDelay();
@@ -5379,6 +5417,26 @@ var demoResponses = {
   "kanban.list": async () => {
     await mockDelay();
     return { result: { data: demoData.kanbans } };
+  },
+  "panel.list": async () => {
+    await mockDelay();
+    return { result: { data: demoData.panels } };
+  },
+  "workspace.findById": async () => {
+    await mockDelay();
+    return { result: { data: demoData.workspaces[0] } };
+  },
+  "activity.getRecent": async () => {
+    await mockDelay();
+    return { result: { data: demoData.activities } };
+  },
+  "layout.listPresets": async () => {
+    await mockDelay();
+    return { result: { data: demoData.layoutPresets } };
+  },
+  "chat.listThreads": async () => {
+    await mockDelay();
+    return { result: { data: demoData.chatThreads } };
   },
   "task.list": async () => {
     await mockDelay();
@@ -5484,4 +5542,4 @@ export {
 @trpc/react-query/dist/shared-JtnEvJvB.mjs:
   (* istanbul ignore next -- @preserve *)
 */
-//# sourceMappingURL=/chunks/chunk-BVY3CDO7.js.map
+//# sourceMappingURL=/chunks/chunk-OQODX37F.js.map

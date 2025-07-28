@@ -1,6 +1,6 @@
 import {
   trpc
-} from "/chunks/chunk-BVY3CDO7.js";
+} from "/chunks/chunk-OQODX37F.js";
 import {
   Reply,
   Send,
@@ -439,4 +439,4 @@ function Chat({ threadId, className }) {
 export {
   Chat as default
 };
-//# sourceMappingURL=/chunks/Chat-ULBAPQEP.js.map
+//# sourceMappingURL=/chunks/Chat-2GZMBS3L.js.map

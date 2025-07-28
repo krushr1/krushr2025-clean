@@ -45,11 +45,11 @@ import {
   setCelebrationEnabled,
   useFocusGuards,
   usePrevious
-} from "/chunks/chunk-LPBA6R4F.js";
+} from "/chunks/chunk-2D34RKBX.js";
 import {
   NotesPanel_default,
   useUIStore
-} from "/chunks/chunk-7PQH5SFG.js";
+} from "/chunks/chunk-W7VKTMDN.js";
 import {
   Toaster,
   toast
@@ -65,7 +65,7 @@ import {
   formatDateTime,
   isToday,
   shouldProcessHotkey
-} from "/chunks/chunk-JEIMLRKZ.js";
+} from "/chunks/chunk-PF63QB6Q.js";
 import {
   Anchor,
   Arrow,
@@ -113,7 +113,7 @@ import {
   useControllableState,
   useId,
   useSize
-} from "/chunks/chunk-75ZFDLKN.js";
+} from "/chunks/chunk-I3LRCVRM.js";
 import {
   Avatar,
   AvatarFallback,
@@ -138,7 +138,7 @@ import {
   trpc,
   trpcClient,
   useQueryClient
-} from "/chunks/chunk-BVY3CDO7.js";
+} from "/chunks/chunk-OQODX37F.js";
 import {
   ScrollArea
 } from "/chunks/chunk-BVYJYOML.js";
@@ -17459,7 +17459,7 @@ function Sidebar({ currentPage, onPageChange }) {
                 ] }),
                 !isCollapsed && /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)("div", { className: "flex-1 min-w-0", children: [
                   /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("p", { className: "text-xs font-medium text-sidebar-foreground truncate leading-tight", children: member.name }),
-                  /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("p", { className: "text-xs text-sidebar-foreground/60 truncate leading-tight", children: member.email.split("@")[0] })
+                  /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("p", { className: "text-xs text-sidebar-foreground/60 truncate leading-tight", children: member.email?.split("@")[0] || "user" })
                 ] })
               ]
             },
@@ -23843,12 +23843,12 @@ var import_react_grid_layout = __toESM(require_react_grid_layout(), 1);
 // src/components/workspace/PanelRenderer.tsx
 var import_react42 = __toESM(require_react(), 1);
 var import_jsx_runtime65 = __toESM(require_jsx_runtime(), 1);
-var KanbanBoard2 = (0, import_react42.lazy)(() => import("/chunks/KanbanBoard-NRFS5FMA.js"));
-var Chat2 = (0, import_react42.lazy)(() => import("/chunks/Chat-ULBAPQEP.js"));
-var NotesPanel = (0, import_react42.lazy)(() => import("/chunks/NotesPanel-2QFUOOIT.js"));
-var NewCalendarPanel = (0, import_react42.lazy)(() => import("/chunks/NewCalendarPanel-RAGG3SOE.js"));
+var KanbanBoard2 = (0, import_react42.lazy)(() => import("/chunks/KanbanBoard-IR3PV7JO.js"));
+var Chat2 = (0, import_react42.lazy)(() => import("/chunks/Chat-2GZMBS3L.js"));
+var NotesPanel = (0, import_react42.lazy)(() => import("/chunks/NotesPanel-KUCOPPRV.js"));
+var NewCalendarPanel = (0, import_react42.lazy)(() => import("/chunks/NewCalendarPanel-4TC5EEUK.js"));
 var Contacts = (0, import_react42.lazy)(() => import("/chunks/Contacts-7KNWQBBW.js"));
-var WorkspaceAiChat = (0, import_react42.lazy)(() => import("/chunks/WorkspaceAiChat-L2O3YZVN.js"));
+var WorkspaceAiChat = (0, import_react42.lazy)(() => import("/chunks/WorkspaceAiChat-7K7A7OEJ.js"));
 var PanelLoadingSpinner = () => /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "flex items-center justify-center h-full", children: /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(LoaderCircle, { className: "w-6 h-6 animate-spin text-krushr-primary" }) });
 var PanelErrorBoundary = class extends import_react42.default.Component {
   constructor(props) {
@@ -26919,15 +26919,10 @@ function Workspace() {
     cacheTime: 6e5
     // Keep in cache for 10 minutes
   });
-  console.log("[Workspace Debug] workspaces data:", workspaces2);
-  console.log("[Workspace Debug] workspaces length:", workspaces2?.length);
-  console.log("[Workspace Debug] first workspace:", workspaces2?.[0]);
-  console.log("[Workspace Debug] first workspace _count:", workspaces2?.[0]?._count);
-  const activeWorkspace = workspaceId ? workspaces2?.find((w) => w.id === workspaceId) : workspaces2?.find((w) => {
-    console.log("[Workspace Debug] Checking workspace:", w.id, "with _count:", w._count);
-    return w._count?.projects > 0 || w._count?.teams > 0 || w._count?.kanbans > 0;
-  }) || workspaces2?.[0];
-  console.log("[Workspace Debug] activeWorkspace selected:", activeWorkspace);
+  const activeWorkspace = workspaceId ? workspaces2?.find((w) => w.id === workspaceId) : workspaces2?.find((w) => w._count?.projects > 0 || w._count?.teams > 0 || w._count?.kanbans > 0) || workspaces2?.[0];
+  if (!activeWorkspace && workspaces2?.length > 0) {
+    console.warn("[Workspace] No active workspace found despite available workspaces:", workspaces2);
+  }
   const { data: panels = [] } = trpc.panel.list.useQuery(
     { workspaceId: activeWorkspace?.id ?? "" },
     {

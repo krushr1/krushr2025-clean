@@ -44,12 +44,58 @@ export const demoData = {
       userId: 'demo-user',
       workspaceId: 'demo-workspace',
       role: 'owner',
+      name: 'Demo User',
+      email: 'demo@krushr.com',
+      avatar: undefined,
       user: {
         id: 'demo-user',
         name: 'Demo User',
         email: 'demo@krushr.com',
         avatar: undefined
       }
+    }
+  ],
+
+  panels: [
+    {
+      id: 'demo-panel-1',
+      name: 'Demo Panel',
+      type: 'kanban',
+      workspaceId: 'demo-workspace',
+      layout: { x: 0, y: 0, w: 12, h: 8 },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+  ],
+
+  activities: [
+    {
+      id: 'demo-activity-1',
+      type: 'task_created',
+      message: 'Demo task created',
+      workspaceId: 'demo-workspace',
+      userId: 'demo-user',
+      createdAt: new Date().toISOString()
+    }
+  ],
+
+  layoutPresets: [
+    {
+      id: 'demo-preset-1',
+      name: 'Default Layout',
+      workspaceId: 'demo-workspace',
+      layout: [],
+      isDefault: true
+    }
+  ],
+
+  chatThreads: [
+    {
+      id: 'demo-thread-1',
+      name: 'General Discussion',
+      workspaceId: 'demo-workspace',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
   ],
 
@@ -144,13 +190,8 @@ export const demoResponses: Record<string, () => Promise<{result: {data: unknown
   
   'workspace.list': async () => {
     await mockDelay()
-    console.log('[Demo Mode] Raw workspace data being returned:', JSON.stringify(demoData.workspaces, null, 2))
-    console.log('[Demo Mode] First workspace _count exists:', !!demoData.workspaces[0]._count)
-    console.log('[Demo Mode] First workspace _count value:', demoData.workspaces[0]._count)
-    
-    const response = { result: { data: demoData.workspaces } }
-    console.log('[Demo Mode] Full response structure:', JSON.stringify(response, null, 2))
-    return response
+    console.log('[Demo Mode] Returning workspace data with _count structure')
+    return { result: { data: demoData.workspaces } }
   },
   
   'workspace.get': async () => {
@@ -166,6 +207,31 @@ export const demoResponses: Record<string, () => Promise<{result: {data: unknown
   'kanban.list': async () => {
     await mockDelay()
     return { result: { data: demoData.kanbans } }
+  },
+
+  'panel.list': async () => {
+    await mockDelay()
+    return { result: { data: demoData.panels } }
+  },
+
+  'workspace.findById': async () => {
+    await mockDelay()
+    return { result: { data: demoData.workspaces[0] } }
+  },
+
+  'activity.getRecent': async () => {
+    await mockDelay()
+    return { result: { data: demoData.activities } }
+  },
+
+  'layout.listPresets': async () => {
+    await mockDelay()
+    return { result: { data: demoData.layoutPresets } }
+  },
+
+  'chat.listThreads': async () => {
+    await mockDelay()
+    return { result: { data: demoData.chatThreads } }
   },
   
   'task.list': async () => {

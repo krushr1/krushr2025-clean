@@ -8,7 +8,7 @@ import {
   formatDateShort,
   isToday,
   shouldProcessHotkey
-} from "/chunks/chunk-JEIMLRKZ.js";
+} from "/chunks/chunk-PF63QB6Q.js";
 import {
   Badge,
   Card,
@@ -25,14 +25,14 @@ import {
   startOfMonth,
   startOfWeek,
   subMonths
-} from "/chunks/chunk-75ZFDLKN.js";
+} from "/chunks/chunk-I3LRCVRM.js";
 import "/chunks/chunk-PFMVW4LI.js";
 import {
   Button
 } from "/chunks/chunk-KDAPYUH3.js";
 import {
   trpc
-} from "/chunks/chunk-BVY3CDO7.js";
+} from "/chunks/chunk-OQODX37F.js";
 import "/chunks/chunk-QHXVCZRG.js";
 import "/chunks/chunk-O4RKJJFS.js";
 import {
@@ -1143,4 +1143,4 @@ function NewCalendarPanel({
 export {
   NewCalendarPanel as default
 };
-//# sourceMappingURL=/chunks/NewCalendarPanel-RAGG3SOE.js.map
+//# sourceMappingURL=/chunks/NewCalendarPanel-4TC5EEUK.js.map

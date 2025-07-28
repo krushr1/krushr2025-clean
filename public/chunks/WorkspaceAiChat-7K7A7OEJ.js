@@ -11,7 +11,7 @@ import {
 } from "/chunks/chunk-KDAPYUH3.js";
 import {
   trpc
-} from "/chunks/chunk-BVY3CDO7.js";
+} from "/chunks/chunk-OQODX37F.js";
 import {
   ScrollArea
 } from "/chunks/chunk-BVYJYOML.js";
@@ -10857,4 +10857,4 @@ function WorkspaceAiChat({ workspaceId, className }) {
 export {
   WorkspaceAiChat as default
 };
-//# sourceMappingURL=/chunks/WorkspaceAiChat-L2O3YZVN.js.map
+//# sourceMappingURL=/chunks/WorkspaceAiChat-7K7A7OEJ.js.map

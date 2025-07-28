@@ -8,7 +8,7 @@ import {
 } from "/chunks/chunk-KDAPYUH3.js";
 import {
   trpc
-} from "/chunks/chunk-BVY3CDO7.js";
+} from "/chunks/chunk-OQODX37F.js";
 import {
   Archive,
   ArrowLeft,
@@ -593,4 +593,4 @@ export {
   useUIStore,
   NotesPanel_default
 };
-//# sourceMappingURL=/chunks/chunk-7PQH5SFG.js.map
+//# sourceMappingURL=/chunks/chunk-W7VKTMDN.js.map

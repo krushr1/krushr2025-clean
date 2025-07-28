@@ -1,0 +1,29 @@
+# Exclude backend API directory from static deployment
+api/
+backend/
+
+# Exclude development and testing files
+Github-CC-Research/
+multi-agent-system/
+venv/
+logs/
+
+# Exclude node_modules (handled by Vercel automatically but explicit)
+node_modules/
+*/node_modules/
+
+# Exclude development files and logs
+*.log
+*.png
+*.gif
+test-*.js
+test-*.cjs
+test-*.html
+debug-*.cjs
+*-debug.png
+*-error.png
+
+# Exclude backup and temporary files
+backup-system.js
+*.bak
+*.tmp

@@ -12,6 +12,7 @@ import {
   CompactTaskModal,
   Content,
   DismissableLayer,
+  FloatingInput,
   Portal,
   RichTextEditor,
   Root2,
@@ -29,10 +30,7 @@ import {
   toDate,
   useControllableState,
   useId
-} from "/chunks/chunk-PAGTJ65N.js";
-import {
-  FloatingInput
-} from "/chunks/chunk-4VNX5AHK.js";
+} from "/chunks/chunk-RT2NOGQM.js";
 import {
   Avatar,
   AvatarFallback,
@@ -7863,7 +7861,7 @@ var SelectTrigger2 = React18.forwardRef(({ className, children, ...props }, ref)
   {
     ref,
     className: cn(
-      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      "flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-background px-3 py-2 text-sm shadow-sm hover:shadow-md transition-shadow placeholder:text-muted-foreground focus:outline-none focus:shadow-md focus:border-krushr-primary disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
       className
     ),
     ...props,
@@ -11580,6 +11578,10 @@ function KanbanBoard({ kanban, className }) {
   const [bulkMode, setBulkMode] = (0, import_react12.useState)(false);
   const [selectedTasks, setSelectedTasks] = (0, import_react12.useState)(/* @__PURE__ */ new Set());
   const [showBulkActions, setShowBulkActions] = (0, import_react12.useState)(false);
+  const [isToolbarCollapsed, setIsToolbarCollapsed] = (0, import_react12.useState)(() => {
+    const savedState = localStorage.getItem(`kanban-toolbar-${kanban.id}`);
+    return savedState ? JSON.parse(savedState) : false;
+  });
   const { data: kanbanData, refetch: refetchKanban } = trpc.kanban.get.useQuery({ id: kanban.id });
   const columns = kanbanData?.columns || [];
   const { data: tasks = [], refetch: refetchTasks } = trpc.task.list.useQuery({
@@ -11859,7 +11861,7 @@ function KanbanBoard({ kanban, className }) {
         /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
           "select",
           {
-            className: "text-sm border rounded px-3 py-2 h-10 min-h-[40px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-manrope",
+            className: "text-sm border border-gray-300 rounded px-3 py-2 h-10 min-h-[40px] shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary font-manrope",
             onChange: (e) => e.target.value && handleBulkMove(e.target.value),
             defaultValue: "",
             "aria-label": "Move selected tasks to column",
@@ -11872,7 +11874,7 @@ function KanbanBoard({ kanban, className }) {
         /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
           "select",
           {
-            className: "text-sm border rounded px-3 py-2 h-10 min-h-[40px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-manrope",
+            className: "text-sm border border-gray-300 rounded px-3 py-2 h-10 min-h-[40px] shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary font-manrope",
             onChange: (e) => e.target.value && handleBulkPriority(e.target.value),
             defaultValue: "",
             "aria-label": "Set priority for selected tasks",
@@ -11931,15 +11933,41 @@ function KanbanBoard({ kanban, className }) {
         )
       ] })
     ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex items-center justify-between p-2 bg-white border-b", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex items-center gap-2", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
+      "button",
+      {
+        "data-kanban-toolbar-toggle": true,
+        onClick: () => {
+          const newState = !isToolbarCollapsed;
+          setIsToolbarCollapsed(newState);
+          localStorage.setItem(`kanban-toolbar-${kanban.id}`, JSON.stringify(newState));
+        },
+        style: { display: "none" },
+        "aria-hidden": "true"
+      }
+    ),
+    !isToolbarCollapsed && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "bg-white border-b", children: /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex items-center justify-between p-2 gap-3", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex items-center gap-2 flex-1", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
+          "button",
+          {
+            onClick: () => {
+              setSelectedColumnId(columns[0]?.id || null);
+              setShowCreatePanel(true);
+            },
+            className: "w-7 h-7 bg-krushr-primary text-white rounded-md flex items-center justify-center hover:bg-krushr-primary/90 transition-colors flex-shrink-0",
+            "aria-label": "Create new task",
+            title: "Create new task",
+            children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Plus, { className: "w-3.5 h-3.5" })
+          }
+        ),
         /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
           FloatingInput,
           {
             label: "Search tasks",
             value: searchTerm,
             onChange: (e) => setSearchTerm(e.target.value),
-            className: "w-64 h-10 min-h-[40px] text-sm focus:ring-2 focus:ring-blue-500",
+            className: "w-48 h-7 text-sm",
             type: "search"
           }
         ),
@@ -11949,11 +11977,11 @@ function KanbanBoard({ kanban, className }) {
             size: "sm",
             variant: "outline",
             onClick: () => setShowFilters(!showFilters),
-            className: "h-10 min-h-[40px] text-sm hover:bg-gray-50 focus:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all duration-200",
+            className: "h-7 text-xs px-2 hover:bg-gray-50 focus:bg-gray-50 transition-all duration-200",
             "aria-label": `${showFilters ? "Hide" : "Show"} task filters`,
             "aria-expanded": showFilters,
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Funnel, { className: "w-4 h-4 mr-2" }),
+              /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Funnel, { className: "w-3 h-3 mr-1" }),
               "Filters"
             ]
           }
@@ -11966,11 +11994,11 @@ function KanbanBoard({ kanban, className }) {
             size: "sm",
             variant: "outline",
             onClick: () => setShowColumnManagement(!showColumnManagement),
-            className: "h-10 min-h-[40px] text-sm hover:bg-gray-50 focus:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all duration-200",
+            className: "h-7 text-xs px-2 hover:bg-gray-50 focus:bg-gray-50 transition-all duration-200",
             "aria-label": `${showColumnManagement ? "Hide" : "Show"} column management`,
             "aria-expanded": showColumnManagement,
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Settings, { className: "w-4 h-4 mr-2" }),
+              /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Settings, { className: "w-3 h-3 mr-1" }),
               "Columns"
             ]
           }
@@ -11984,10 +12012,10 @@ function KanbanBoard({ kanban, className }) {
               setBulkMode(!bulkMode);
               if (bulkMode) clearSelection();
             },
-            className: "h-10 min-h-[40px] text-sm hover:bg-gray-50 focus:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all duration-200",
+            className: "h-7 text-xs px-2 hover:bg-gray-50 focus:bg-gray-50 transition-all duration-200",
             "aria-label": bulkMode ? "Exit bulk selection mode" : "Enter bulk selection mode",
             "aria-pressed": bulkMode,
-            children: bulkMode ? "Exit Bulk" : "Bulk Select"
+            children: bulkMode ? "Exit Bulk" : "Bulk"
           }
         ),
         bulkMode && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
@@ -11996,26 +12024,13 @@ function KanbanBoard({ kanban, className }) {
             size: "sm",
             variant: "outline",
             onClick: selectAllTasks,
-            className: "h-10 min-h-[40px] text-sm hover:bg-gray-50 focus:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all duration-200",
+            className: "h-7 text-xs px-2 hover:bg-gray-50 focus:bg-gray-50 transition-all duration-200",
             "aria-label": "Select all visible tasks",
-            children: "Select All"
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
-          "button",
-          {
-            onClick: () => {
-              setSelectedColumnId(columns[0]?.id || null);
-              setShowCreatePanel(true);
-            },
-            className: "w-8 h-8 bg-krushr-primary text-white rounded-md flex items-center justify-center hover:bg-krushr-primary/90 transition-colors",
-            "aria-label": "Create new task",
-            title: "Create new task",
-            children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Plus, { className: "w-4 h-4" })
+            children: "All"
           }
         )
       ] })
-    ] }),
+    ] }) }),
     showFilters && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "mx-2 mt-1 p-2 bg-gray-50 rounded border", children: /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
       /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { children: [
         /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: "Priority" }),
@@ -12072,7 +12087,7 @@ function KanbanBoard({ kanban, className }) {
           {
             value: newColumnColor,
             onChange: (e) => setNewColumnColor(e.target.value),
-            className: "h-8 text-sm border rounded px-2",
+            className: "h-8 text-sm border border-gray-300 rounded px-2 shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary",
             children: [
               /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("option", { value: "#6B7280", children: "Gray" }),
               /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("option", { value: "#3B82F6", children: "Blue" }),
@@ -12124,7 +12139,7 @@ function KanbanBoard({ kanban, className }) {
             {
               value: editingColumn.color,
               onChange: (e) => setEditingColumn({ ...editingColumn, color: e.target.value }),
-              className: "h-7 text-sm border rounded px-1",
+              className: "h-7 text-sm border border-gray-300 rounded px-1 shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary",
               children: [
                 /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("option", { value: "#6B7280", children: "Gray" }),
                 /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("option", { value: "#3B82F6", children: "Blue" }),
@@ -12307,4 +12322,4 @@ export {
   setCelebrationEnabled,
   KanbanBoard
 };
-//# sourceMappingURL=/chunks/chunk-JTDAWY4P.js.map
+//# sourceMappingURL=/chunks/chunk-UXVSC6KF.js.map

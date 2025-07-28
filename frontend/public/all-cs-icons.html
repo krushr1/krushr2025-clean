@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All CS-Interface Icons - Krushr</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="./fonts/CS-Interface/style.css" rel="stylesheet">
+    <style>
+        * { font-family: 'Manrope', sans-serif; }
+        body { background: #F9FAFB; padding: 2rem; margin: 0; }
+        h1 { color: #111827; margin-bottom: 1rem; }
+        p { color: #6B7280; margin-bottom: 2rem; }
+        .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+        .icon-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .icon-card:hover {
+            background: #EEF2FF;
+            border-color: #C7D2FE;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .icon-card:active {
+            transform: translateY(0);
+            background: #DBEAFE;
+        }
+        .icon-card i {
+            font-size: 1.5rem;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            transition: color 0.2s;
+        }
+        .icon-card:hover i {
+            color: #143197;
+        }
+        .icon-card span {
+            font-size: 0.75rem;
+            color: #6B7280;
+            text-align: center;
+            word-break: break-all;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-title .dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+        }
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #10B981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(1rem);
+            transition: all 0.3s;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <h1>Complete CS-Interface Icon Library</h1>
+    <p>All 90+ CS-Interface icons used in Krushr. Click any icon to copy its class name.</p>
+    
+    <!-- Core Interface Icons -->
+    <h2 class="section-title">
+        <span class="dot" style="background: #143197;"></span>
+        Core Interface Icons
+    </h2>
+    <div class="icon-grid">
+        <div class="icon-card" onclick="copyToClipboard('cs-home')">
+            <i class="cs-home"></i>
+            <span>cs-home</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-user')">
+            <i class="cs-user"></i>
+            <span>cs-user</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-users')">
+            <i class="cs-users"></i>
+            <span>cs-users</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-settings')">
+            <i class="cs-settings"></i>
+            <span>cs-settings</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-settings-2')">
+            <i class="cs-settings-2"></i>
+            <span>cs-settings-2</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-gear')">
+            <i class="cs-gear"></i>
+            <span>cs-gear</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-cog')">
+            <i class="cs-cog"></i>
+            <span>cs-cog</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-search')">
+            <i class="cs-search"></i>
+            <span>cs-search</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-menu')">
+            <i class="cs-menu"></i>
+            <span>cs-menu</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-more-horizontal')">
+            <i class="cs-more-horizontal"></i>
+            <span>cs-more-horizontal</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-grid')">
+            <i class="cs-grid"></i>
+            <span>cs-grid</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-layers')">
+            <i class="cs-layers"></i>
+            <span>cs-layers</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-container')">
+            <i class="cs-container"></i>
+            <span>cs-container</span>
+        </div>
+    </div>
+    
+    <!-- Action Icons -->
+    <h2 class="section-title">
+        <span class="dot" style="background: #EB5857;"></span>
+        Actions & Operations
+    </h2>
+    <div class="icon-grid">
+        <div class="icon-card" onclick="copyToClipboard('cs-save')">
+            <i class="cs-save"></i>
+            <span>cs-save</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-send')">
+            <i class="cs-send"></i>
+            <span>cs-send</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-edit-square')">
+            <i class="cs-edit-square"></i>
+            <span>cs-edit-square</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-duplicate')">
+            <i class="cs-duplicate"></i>
+            <span>cs-duplicate</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-copy')">
+            <i class="cs-copy"></i>
+            <span>cs-copy</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-clipboard')">
+            <i class="cs-clipboard"></i>
+            <span>cs-clipboard</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-scissors')">
+            <i class="cs-scissors"></i>
+            <span>cs-scissors</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-bin')">
+            <i class="cs-bin"></i>
+            <span>cs-bin</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-trash')">
+            <i class="cs-trash"></i>
+            <span>cs-trash</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-add-circle')">
+            <i class="cs-add-circle"></i>
+            <span>cs-add-circle</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-close')">
+            <i class="cs-close"></i>
+            <span>cs-close</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-close-circle')">
+            <i class="cs-close-circle"></i>
+            <span>cs-close-circle</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-check')">
+            <i class="cs-check"></i>
+            <span>cs-check</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-check-circle')">
+            <i class="cs-check-circle"></i>
+            <span>cs-check-circle</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-check-square')">
+            <i class="cs-check-square"></i>
+            <span>cs-check-square</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-circle')">
+            <i class="cs-circle"></i>
+            <span>cs-circle</span>
+        </div>
+    </div>
+    
+    <!-- Navigation Icons -->
+    <h2 class="section-title">
+        <span class="dot" style="background: #57C7EB;"></span>
+        Navigation & Arrows
+    </h2>
+    <div class="icon-grid">
+        <div class="icon-card" onclick="copyToClipboard('cs-chevron-left')">
+            <i class="cs-chevron-left"></i>
+            <span>cs-chevron-left</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-chevron-right')">
+            <i class="cs-chevron-right"></i>
+            <span>cs-chevron-right</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-chevron-top')">
+            <i class="cs-chevron-top"></i>
+            <span>cs-chevron-top</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-chevron-bottom')">
+            <i class="cs-chevron-bottom"></i>
+            <span>cs-chevron-bottom</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-arrow-left')">
+            <i class="cs-arrow-left"></i>
+            <span>cs-arrow-left</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-arrow-right')">
+            <i class="cs-arrow-right"></i>
+            <span>cs-arrow-right</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-arrow-double-left')">
+            <i class="cs-arrow-double-left"></i>
+            <span>cs-arrow-double-left</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-arrow-double-right')">
+            <i class="cs-arrow-double-right"></i>
+            <span>cs-arrow-double-right</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-navigation')">
+            <i class="cs-navigation"></i>
+            <span>cs-navigation</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-sort')">
+            <i class="cs-sort"></i>
+            <span>cs-sort</span>
+        </div>
+    </div>
+    
+    <!-- Communication Icons -->
+    <h2 class="section-title">
+        <span class="dot" style="background: #1FBB65;"></span>
+        Communication
+    </h2>
+    <div class="icon-grid">
+        <div class="icon-card" onclick="copyToClipboard('cs-mail')">
+            <i class="cs-mail"></i>
+            <span>cs-mail</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-message-circle')">
+            <i class="cs-message-circle"></i>
+            <span>cs-message-circle</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-phone')">
+            <i class="cs-phone"></i>
+            <span>cs-phone</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-video')">
+            <i class="cs-video"></i>
+            <span>cs-video</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-at-sign')">
+            <i class="cs-at-sign"></i>
+            <span>cs-at-sign</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-share')">
+            <i class="cs-share"></i>
+            <span>cs-share</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-link')">
+            <i class="cs-link"></i>
+            <span>cs-link</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-bell')">
+            <i class="cs-bell"></i>
+            <span>cs-bell</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-notification')">
+            <i class="cs-notification"></i>
+            <span>cs-notification</span>
+        </div>
+    </div>
+    
+    <!-- Files & Data Icons -->
+    <h2 class="section-title">
+        <span class="dot" style="background: #8B5CF6;"></span>
+        Files & Data
+    </h2>
+    <div class="icon-grid">
+        <div class="icon-card" onclick="copyToClipboard('cs-file')">
+            <i class="cs-file"></i>
+            <span>cs-file</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-file-text')">
+            <i class="cs-file-text"></i>
+            <span>cs-file-text</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-folder')">
+            <i class="cs-folder"></i>
+            <span>cs-folder</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-download')">
+            <i class="cs-download"></i>
+            <span>cs-download</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-upload')">
+            <i class="cs-upload"></i>
+            <span>cs-upload</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-database')">
+            <i class="cs-database"></i>
+            <span>cs-database</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-archive')">
+            <i class="cs-archive"></i>
+            <span>cs-archive</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-paperclip')">
+            <i class="cs-paperclip"></i>
+            <span>cs-paperclip</span>
+        </div>
+    </div>
+    
+    <!-- Status & Alerts Icons -->
+    <h2 class="section-title">
+        <span class="dot" style="background: #FFB366;"></span>
+        Status & Alerts
+    </h2>
+    <div class="icon-grid">
+        <div class="icon-card" onclick="copyToClipboard('cs-info')">
+            <i class="cs-info"></i>
+            <span>cs-info</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-info-hexagon')">
+            <i class="cs-info-hexagon"></i>
+            <span>cs-info-hexagon</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-warning')">
+            <i class="cs-warning"></i>
+            <span>cs-warning</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-warning-hexagon')">
+            <i class="cs-warning-hexagon"></i>
+            <span>cs-warning-hexagon</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-error-hexagon')">
+            <i class="cs-error-hexagon"></i>
+            <span>cs-error-hexagon</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-question-hexagon')">
+            <i class="cs-question-hexagon"></i>
+            <span>cs-question-hexagon</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-alert-triangle')">
+            <i class="cs-alert-triangle"></i>
+            <span>cs-alert-triangle</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-flag')">
+            <i class="cs-flag"></i>
+            <span>cs-flag</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-badge')">
+            <i class="cs-badge"></i>
+            <span>cs-badge</span>
+        </div>
+    </div>
+    
+    <!-- Time & Calendar Icons -->
+    <h2 class="section-title">
+        <span class="dot" style="background: #F97066;"></span>
+        Time & Calendar
+    </h2>
+    <div class="icon-grid">
+        <div class="icon-card" onclick="copyToClipboard('cs-calendar')">
+            <i class="cs-calendar"></i>
+            <span>cs-calendar</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-clock')">
+            <i class="cs-clock"></i>
+            <span>cs-clock</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-history')">
+            <i class="cs-history"></i>
+            <span>cs-history</span>
+        </div>
+    </div>
+    
+    <!-- Additional Icons -->
+    <h2 class="section-title">
+        <span class="dot" style="background: #6B7280;"></span>
+        Additional Icons
+    </h2>
+    <div class="icon-grid">
+        <div class="icon-card" onclick="copyToClipboard('cs-star')">
+            <i class="cs-star"></i>
+            <span>cs-star</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-star-full')">
+            <i class="cs-star-full"></i>
+            <span>cs-star-full</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-bookmark')">
+            <i class="cs-bookmark"></i>
+            <span>cs-bookmark</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-briefcase')">
+            <i class="cs-briefcase"></i>
+            <span>cs-briefcase</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-code')">
+            <i class="cs-code"></i>
+            <span>cs-code</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-flash')">
+            <i class="cs-flash"></i>
+            <span>cs-flash</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-zap')">
+            <i class="cs-zap"></i>
+            <span>cs-zap</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-keyboard')">
+            <i class="cs-keyboard"></i>
+            <span>cs-keyboard</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-list')">
+            <i class="cs-list"></i>
+            <span>cs-list</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-bar-chart')">
+            <i class="cs-bar-chart"></i>
+            <span>cs-bar-chart</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-play')">
+            <i class="cs-play"></i>
+            <span>cs-play</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-title')">
+            <i class="cs-title"></i>
+            <span>cs-title</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-subtitle')">
+            <i class="cs-subtitle"></i>
+            <span>cs-subtitle</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-italic')">
+            <i class="cs-italic"></i>
+            <span>cs-italic</span>
+        </div>
+        <div class="icon-card" onclick="copyToClipboard('cs-underline')">
+            <i class="cs-underline"></i>
+            <span>cs-underline</span>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast">Copied to clipboard!</div>
+    
+    <script>
+        let toastTimeout;
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

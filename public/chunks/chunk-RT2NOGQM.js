@@ -1691,6 +1691,40 @@ function Badge({ className, variant, ...props }) {
   return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: cn(badgeVariants({ variant }), className), ...props });
 }
 
+// src/components/ui/floating-input.tsx
+var React2 = __toESM(require_react(), 1);
+var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+var FloatingInput = React2.forwardRef(
+  ({ className, type, label, id, ...props }, ref) => {
+    const inputId = id || `floating_${Math.random().toString(36).substr(2, 9)}`;
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "relative", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        "input",
+        {
+          type,
+          id: inputId,
+          className: cn(
+            "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:ring-0 focus:shadow-md focus:border-krushr-primary peer",
+            className
+          ),
+          placeholder: " ",
+          ref,
+          ...props
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        "label",
+        {
+          htmlFor: inputId,
+          className: "absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-krushr-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1",
+          children: label
+        }
+      )
+    ] });
+  }
+);
+FloatingInput.displayName = "FloatingInput";
+
 // ../node_modules/date-fns/toDate.mjs
 function toDate(argument) {
   const argStr = Object.prototype.toString.call(argument);
@@ -24140,7 +24174,7 @@ var Color = Extension.create({
 });
 
 // src/components/ui/rich-text-editor.tsx
-var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
 var RichTextEditor = ({
   content = "",
   onChange,
@@ -24248,9 +24282,9 @@ var RichTextEditor = ({
       console.log("\u{1F6AB} Cannot focus editor:", { editor: !!editor, editable });
     }
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "relative", children: [
-    !minimal && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "border-b border-krushr-gray-200 pb-0.5 mb-1", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(EditorToolbar, { editor }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "relative", children: [
+    !minimal && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "border-b border-krushr-gray-200 pb-0.5 mb-1", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(EditorToolbar, { editor }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       "div",
       {
         onClick: handleClick2,
@@ -24263,7 +24297,7 @@ var RichTextEditor = ({
           "flex flex-col",
           className
         ),
-        children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
           EditorContent,
           {
             editor,
@@ -24281,7 +24315,7 @@ var EditorToolbar = ({ editor }) => {
       e.stopPropagation();
       onClick();
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       "button",
       {
         type: "button",
@@ -24297,113 +24331,113 @@ var EditorToolbar = ({ editor }) => {
       }
     );
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "flex flex-wrap gap-0.5", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex flex-wrap gap-0.5", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       ToolbarButton,
       {
         onClick: () => editor.chain().focus().toggleBold().run(),
         isActive: editor.isActive("bold"),
         title: "Bold",
-        children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Bold, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
+        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Bold, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       ToolbarButton,
       {
         onClick: () => editor.chain().focus().toggleItalic().run(),
         isActive: editor.isActive("italic"),
         title: "Italic",
-        children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Italic, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
+        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Italic, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "w-px h-4 sm:h-5 bg-krushr-gray-300 mx-0.5" }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-px h-4 sm:h-5 bg-krushr-gray-300 mx-0.5" }),
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       ToolbarButton,
       {
         onClick: () => editor.chain().focus().toggleBulletList().run(),
         isActive: editor.isActive("bulletList"),
         title: "Bullet List",
-        children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(List, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
+        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(List, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       ToolbarButton,
       {
         onClick: () => editor.chain().focus().toggleOrderedList().run(),
         isActive: editor.isActive("orderedList"),
         title: "Numbered List",
-        children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ListOrdered, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
+        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(ListOrdered, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       ToolbarButton,
       {
         onClick: () => editor.chain().focus().toggleTaskList().run(),
         isActive: editor.isActive("taskList"),
         title: "Task List",
-        children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(SquareCheckBig, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
+        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(SquareCheckBig, { className: "w-3 h-3 sm:w-3.5 sm:h-3.5" })
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "hidden sm:flex sm:items-center sm:gap-0.5", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "w-px h-5 bg-krushr-gray-300 mx-0.5" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "hidden sm:flex sm:items-center sm:gap-0.5", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-px h-5 bg-krushr-gray-300 mx-0.5" }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         ToolbarButton,
         {
           onClick: () => editor.chain().focus().toggleStrike().run(),
           isActive: editor.isActive("strike"),
           title: "Strikethrough",
-          children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Strikethrough, { className: "w-3.5 h-3.5" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Strikethrough, { className: "w-3.5 h-3.5" })
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "w-px h-5 bg-krushr-gray-300 mx-0.5" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-px h-5 bg-krushr-gray-300 mx-0.5" }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         ToolbarButton,
         {
           onClick: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
           isActive: editor.isActive("heading", { level: 1 }),
           title: "Heading 1",
-          children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Heading1, { className: "w-3.5 h-3.5" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Heading1, { className: "w-3.5 h-3.5" })
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         ToolbarButton,
         {
           onClick: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
           isActive: editor.isActive("heading", { level: 2 }),
           title: "Heading 2",
-          children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Heading2, { className: "w-3.5 h-3.5" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Heading2, { className: "w-3.5 h-3.5" })
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         ToolbarButton,
         {
           onClick: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
           isActive: editor.isActive("heading", { level: 3 }),
           title: "Heading 3",
-          children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Heading3, { className: "w-3.5 h-3.5" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Heading3, { className: "w-3.5 h-3.5" })
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "w-px h-5 bg-krushr-gray-300 mx-0.5" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-px h-5 bg-krushr-gray-300 mx-0.5" }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         ToolbarButton,
         {
           onClick: () => editor.chain().focus().toggleBlockquote().run(),
           isActive: editor.isActive("blockquote"),
           title: "Quote",
-          children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Quote, { className: "w-3.5 h-3.5" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Quote, { className: "w-3.5 h-3.5" })
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         ToolbarButton,
         {
           onClick: () => editor.chain().focus().toggleCodeBlock().run(),
           isActive: editor.isActive("codeBlock"),
           title: "Code Block",
-          children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(CodeXml, { className: "w-3.5 h-3.5" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(CodeXml, { className: "w-3.5 h-3.5" })
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "w-px h-5 bg-krushr-gray-300 mx-0.5" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-px h-5 bg-krushr-gray-300 mx-0.5" }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         ToolbarButton,
         {
           onClick: () => {
@@ -24419,16 +24453,16 @@ var EditorToolbar = ({ editor }) => {
           },
           isActive: editor.isActive("link"),
           title: "Add Link (select text first)",
-          children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Link2, { className: "w-3.5 h-3.5" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Link2, { className: "w-3.5 h-3.5" })
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         ToolbarButton,
         {
           onClick: () => editor.chain().focus().unsetLink().run(),
           title: "Remove Link",
           isActive: false,
-          children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Link2Off, { className: "w-3.5 h-3.5" })
+          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Link2Off, { className: "w-3.5 h-3.5" })
         }
       )
     ] })
@@ -24562,7 +24596,7 @@ var Priority = /* @__PURE__ */ ((Priority2) => {
 
 // src/components/kanban/CompactTaskModal.tsx
 var import_buffer = __toESM(require_buffer(), 1);
-var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
 var mapPriorityToApi = (priority) => {
   switch (priority) {
     case "low" /* LOW */:
@@ -24830,7 +24864,7 @@ function CompactTaskModal({
     toast({
       title: "Checklist item deleted",
       duration: 5e3,
-      action: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+      action: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
         "button",
         {
           onClick: () => {
@@ -24963,17 +24997,17 @@ function CompactTaskModal({
   }, [open, onClose, title, isLoading, uploadingFiles, handleSubmit]);
   if (!open) return null;
   return (0, import_react_dom2.createPortal)(
-    /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "fixed inset-0 z-[999999] flex items-start sm:items-center justify-center overflow-y-auto", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "fixed inset-0 z-[999999] flex items-start sm:items-center justify-center overflow-y-auto", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
         "div",
         {
           className: "absolute inset-0 bg-black bg-opacity-50",
           onClick: onClose
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "relative w-[calc(100%-2rem)] sm:w-full max-w-2xl max-h-[85vh] sm:max-h-[90vh] bg-white rounded-lg shadow-lg border border-krushr-gray-border overflow-hidden flex flex-col mx-4 sm:mx-0 my-8 sm:my-0", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "px-4 py-2 border-b border-krushr-gray-border bg-gray-50", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "relative w-[calc(100%-2rem)] sm:w-full max-w-2xl max-h-[85vh] sm:max-h-[90vh] bg-white rounded-lg shadow-lg border border-krushr-gray-border overflow-hidden flex flex-col mx-4 sm:mx-0 my-8 sm:my-0", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "px-4 py-2 border-b border-krushr-gray-border bg-gray-50", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex items-center", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
             "input",
             {
               type: "text",
@@ -24984,15 +25018,15 @@ function CompactTaskModal({
               placeholder: isEditMode ? "Edit task..." : "What needs to be done?"
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center gap-1 sm:gap-2 mr-2 sm:mr-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "hidden sm:inline text-xs font-medium text-gray-600", children: "Priority:" }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex gap-0.5", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex items-center gap-1 sm:gap-2 mr-2 sm:mr-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { className: "hidden sm:inline text-xs font-medium text-gray-600", children: "Priority:" }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "flex gap-0.5", children: [
               { value: "low" /* LOW */, color: "bg-krushr-secondary", hoverColor: "hover:bg-krushr-secondary/50" },
               { value: "medium" /* MEDIUM */, color: "bg-krushr-secondary", hoverColor: "hover:bg-krushr-secondary/50" },
               { value: "high" /* HIGH */, color: "bg-krushr-secondary", hoverColor: "hover:bg-krushr-secondary/50" }
             ].map((p, index2) => {
               const isActive2 = priority === p.value || priority === "low" /* LOW */ && index2 === 0 || priority === "medium" /* MEDIUM */ && index2 <= 1 || priority === "high" /* HIGH */ && index2 <= 2;
-              return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+              return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                 "button",
                 {
                   type: "button",
@@ -25010,19 +25044,19 @@ function CompactTaskModal({
               );
             }) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
             "button",
             {
               onClick: onClose,
               className: "text-gray-400 hover:text-gray-600 p-1",
-              children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(X, { className: "w-4 h-4" })
+              children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(X, { className: "w-4 h-4" })
             }
           )
         ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("form", { onSubmit: handleSubmit, className: "flex-1 overflow-y-auto p-3 sm:p-4 space-y-3", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Description" }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "border border-gray-200 rounded-md overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("form", { onSubmit: handleSubmit, className: "flex-1 overflow-y-auto p-3 sm:p-4 space-y-3", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Description" }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "border border-gray-200 rounded-md overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
               RichTextEditor,
               {
                 content: description,
@@ -25033,11 +25067,11 @@ function CompactTaskModal({
               }
             ) })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Column" }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex gap-1 flex-wrap", children: columns.map((column) => {
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Column" }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "flex gap-1 flex-wrap", children: columns.map((column) => {
               const isSelected = selectedColumnId === column.id;
-              return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+              return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                 "button",
                 {
                   type: "button",
@@ -25055,10 +25089,10 @@ function CompactTaskModal({
               );
             }) })
           ] }),
-          projects && projects.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Project" }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex gap-1 flex-wrap", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          projects && projects.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Project" }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex gap-1 flex-wrap", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                 "button",
                 {
                   type: "button",
@@ -25072,7 +25106,7 @@ function CompactTaskModal({
               ),
               projects.map((project) => {
                 const isSelected = projectId === project.id;
-                return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
+                return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(
                   "button",
                   {
                     type: "button",
@@ -25083,8 +25117,8 @@ function CompactTaskModal({
                       isSelected ? "border-krushr-primary bg-krushr-primary/10 text-krushr-primary" : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                     ),
                     children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Folder, { className: "w-3 h-3" }),
-                      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { children: project.name })
+                      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Folder, { className: "w-3 h-3" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { children: project.name })
                     ]
                   },
                   project.id
@@ -25092,10 +25126,10 @@ function CompactTaskModal({
               })
             ] })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Assignee" }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex gap-1.5 flex-wrap", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Assignee" }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex gap-1.5 flex-wrap", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                 "button",
                 {
                   type: "button",
@@ -25109,12 +25143,12 @@ function CompactTaskModal({
                     "after:absolute after:inset-[-6px] after:content-['']"
                   ),
                   title: "Unassigned",
-                  children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(User, { className: "w-4 h-4 mx-auto text-gray-400" })
+                  children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(User, { className: "w-4 h-4 mx-auto text-gray-400" })
                 }
               ),
               workspaceUsers?.map((user2) => {
                 const isSelected = assigneeId === user2.id;
-                return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                   "button",
                   {
                     type: "button",
@@ -25135,25 +25169,25 @@ function CompactTaskModal({
               })
             ] })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center justify-between mb-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("label", { className: "text-xs font-medium text-gray-600", children: "Due Date" }),
-              dueDate && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center gap-1 text-xs text-krushr-primary", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Calendar, { className: "w-3 h-3" }),
-                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { children: format(dueDate, "MMM d") }),
-                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex items-center justify-between mb-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("label", { className: "text-xs font-medium text-gray-600", children: "Due Date" }),
+              dueDate && /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex items-center gap-1 text-xs text-krushr-primary", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Calendar, { className: "w-3 h-3" }),
+                /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { children: format(dueDate, "MMM d") }),
+                /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                   "button",
                   {
                     type: "button",
                     onClick: () => setDueDate(null),
                     className: "text-gray-400 hover:text-red-500",
-                    children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(X, { className: "w-3 h-3" })
+                    children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(X, { className: "w-3 h-3" })
                   }
                 )
               ] })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex gap-1 mb-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex gap-1 mb-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                 "button",
                 {
                   type: "button",
@@ -25165,7 +25199,7 @@ function CompactTaskModal({
                   children: "Today"
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                 "button",
                 {
                   type: "button",
@@ -25178,7 +25212,7 @@ function CompactTaskModal({
                   children: "Tomorrow"
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                 "button",
                 {
                   type: "button",
@@ -25192,35 +25226,35 @@ function CompactTaskModal({
                 }
               )
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "bg-white border border-gray-200 rounded-md p-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center justify-between mb-2 sm:mb-1", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "bg-white border border-gray-200 rounded-md p-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex items-center justify-between mb-2 sm:mb-1", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                   "button",
                   {
                     type: "button",
                     onClick: () => setCalendarDate(subMonths(calendarDate, 1)),
                     className: "p-1 sm:p-0.5 hover:bg-gray-100 rounded relative after:absolute after:inset-[-4px] after:content-['']",
-                    children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(ChevronLeft, { className: "w-4 h-4 sm:w-3 sm:h-3" })
+                    children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(ChevronLeft, { className: "w-4 h-4 sm:w-3 sm:h-3" })
                   }
                 ),
-                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-xs font-medium", children: format(calendarDate, "MMM yyyy") }),
-                /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { className: "text-xs font-medium", children: format(calendarDate, "MMM yyyy") }),
+                /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                   "button",
                   {
                     type: "button",
                     onClick: () => setCalendarDate(addMonths(calendarDate, 1)),
                     className: "p-1 sm:p-0.5 hover:bg-gray-100 rounded relative after:absolute after:inset-[-4px] after:content-['']",
-                    children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(ChevronRight, { className: "w-4 h-4 sm:w-3 sm:h-3" })
+                    children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(ChevronRight, { className: "w-4 h-4 sm:w-3 sm:h-3" })
                   }
                 )
               ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "grid grid-cols-7 gap-0", children: [
-                ["S", "M", "T", "W", "T", "F", "S"].map((d, i) => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "text-[10px] sm:text-[9px] text-gray-500 text-center p-1 sm:p-0.5", children: d }, `${d}-${i}`)),
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "grid grid-cols-7 gap-0", children: [
+                ["S", "M", "T", "W", "T", "F", "S"].map((d, i) => /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "text-[10px] sm:text-[9px] text-gray-500 text-center p-1 sm:p-0.5", children: d }, `${d}-${i}`)),
                 generateCalendarDays().map((date, index2) => {
-                  if (!date) return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", {}, index2);
+                  if (!date) return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", {}, index2);
                   const isSelected = dueDate && isSameDay(date, dueDate);
                   const isCurrentDay = isSameDay(date, /* @__PURE__ */ new Date());
-                  return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                  return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                     "button",
                     {
                       type: "button",
@@ -25242,10 +25276,10 @@ function CompactTaskModal({
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Checklist" }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "space-y-1 max-h-32 overflow-y-auto", children: [
-              checklistItems.map((item, index2) => /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Checklist" }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "space-y-1 max-h-32 overflow-y-auto", children: [
+              checklistItems.map((item, index2) => /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(
                 "div",
                 {
                   className: cn(
@@ -25285,7 +25319,7 @@ function CompactTaskModal({
                     setDragOverItemId(null);
                   },
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                       "div",
                       {
                         className: "cursor-move text-gray-400 hover:text-gray-600 p-0.5 opacity-0 group-hover:opacity-100 transition-opacity",
@@ -25343,10 +25377,10 @@ function CompactTaskModal({
                           setDraggingItemId(null);
                           setDragOverItemId(null);
                         },
-                        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(GripVertical, { className: "w-3 h-3" })
+                        children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(GripVertical, { className: "w-3 h-3" })
                       }
                     ),
-                    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                       "button",
                       {
                         type: "button",
@@ -25364,10 +25398,10 @@ function CompactTaskModal({
                           // Make subtasks slightly smaller
                           (item.level || 0) > 0 && "w-3.5 h-3.5"
                         ),
-                        children: item.completed && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Check, { className: "w-2.5 h-2.5 text-white" })
+                        children: item.completed && /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Check, { className: "w-2.5 h-2.5 text-white" })
                       }
                     ),
-                    editingChecklistItemId === item.id ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                    editingChecklistItemId === item.id ? /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                       "input",
                       {
                         type: "text",
@@ -25404,10 +25438,10 @@ function CompactTaskModal({
                           setEditingChecklistItemId(null);
                           setEditingChecklistText("");
                         },
-                        className: "flex-1 px-2 py-0.5 text-xs border border-gray-200 rounded focus:outline-none focus:border-krushr-primary",
+                        className: "flex-1 px-2 py-0.5 text-xs border border-gray-300 rounded shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:shadow-md focus:border-krushr-primary",
                         autoFocus: true
                       }
-                    ) : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                    ) : /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                       "span",
                       {
                         className: cn(
@@ -25421,28 +25455,28 @@ function CompactTaskModal({
                         children: item.text
                       }
                     ),
-                    /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity", children: [
-                      (item.level || 0) > 0 && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                    /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity", children: [
+                      (item.level || 0) > 0 && /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                         "button",
                         {
                           type: "button",
                           onClick: () => handleIndentItem(item.id, "outdent"),
                           className: "text-gray-400 hover:text-gray-600 transition-colors p-0.5",
                           title: "Outdent (Shift+Tab)",
-                          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(CornerUpLeft, { className: "w-3 h-3" })
+                          children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(CornerUpLeft, { className: "w-3 h-3" })
                         }
                       ),
-                      index2 > 0 && (item.level || 0) < 2 && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                      index2 > 0 && (item.level || 0) < 2 && /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                         "button",
                         {
                           type: "button",
                           onClick: () => handleIndentItem(item.id, "indent"),
                           className: "text-gray-400 hover:text-gray-600 transition-colors p-0.5",
                           title: "Indent (Tab)",
-                          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(CornerDownRight, { className: "w-3 h-3" })
+                          children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(CornerDownRight, { className: "w-3 h-3" })
                         }
                       ),
-                      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                         "button",
                         {
                           type: "button",
@@ -25452,10 +25486,10 @@ function CompactTaskModal({
                           },
                           className: "text-gray-400 hover:text-gray-600 transition-colors p-0.5",
                           title: "Edit",
-                          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Pen, { className: "w-3 h-3" })
+                          children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Pen, { className: "w-3 h-3" })
                         }
                       ),
-                      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                         "button",
                         {
                           type: "button",
@@ -25464,7 +25498,7 @@ function CompactTaskModal({
                           },
                           className: "text-gray-400 hover:text-red-500 transition-colors p-0.5",
                           title: "Delete",
-                          children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Trash2, { className: "w-3 h-3" })
+                          children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Trash2, { className: "w-3 h-3" })
                         }
                       )
                     ] })
@@ -25472,14 +25506,14 @@ function CompactTaskModal({
                 },
                 item.id
               )),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(
                 "div",
                 {
                   className: "flex items-center gap-2 py-1",
                   style: { paddingLeft: `${newChecklistItemLevel * 24}px` },
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-4 h-4 rounded border-2 border-gray-300 flex-shrink-0" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "w-4 h-4 rounded border-2 border-gray-300 flex-shrink-0" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                       "input",
                       {
                         type: "text",
@@ -25519,22 +25553,22 @@ function CompactTaskModal({
               )
             ] })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Attachments" }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center gap-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("label", { className: "text-xs font-medium text-gray-600 mb-1 block", children: "Attachments" }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(
                 "button",
                 {
                   type: "button",
                   onClick: () => fileInputRef.current?.click(),
                   className: "flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded-md",
                   children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Upload, { className: "w-3 h-3" }),
-                    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { children: pendingFiles.length > 0 ? `${pendingFiles.length} file(s)` : "Upload" })
+                    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Upload, { className: "w-3 h-3" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { children: pendingFiles.length > 0 ? `${pendingFiles.length} file(s)` : "Upload" })
                   ]
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+              /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
                 "input",
                 {
                   type: "file",
@@ -25547,14 +25581,14 @@ function CompactTaskModal({
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "px-3 sm:px-4 py-2 border-t border-gray-200 bg-gray-50 mt-auto", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex items-center justify-between", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "hidden sm:flex items-center gap-2 text-[10px] text-gray-500", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("kbd", { className: "px-1 py-0.5 bg-white border rounded text-[9px]", children: "\u2318" }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("kbd", { className: "px-1 py-0.5 bg-white border rounded text-[9px]", children: "Enter" }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { children: "to save" })
+        /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "px-3 sm:px-4 py-2 border-t border-gray-200 bg-gray-50 mt-auto", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex items-center justify-between", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "hidden sm:flex items-center gap-2 text-[10px] text-gray-500", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("kbd", { className: "px-1 py-0.5 bg-white border rounded text-[9px]", children: "\u2318" }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("kbd", { className: "px-1 py-0.5 bg-white border rounded text-[9px]", children: "Enter" }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { children: "to save" })
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "flex gap-2", children: [
-            isEditMode && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "flex gap-2", children: [
+            isEditMode && /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
               "button",
               {
                 type: "button",
@@ -25563,7 +25597,7 @@ function CompactTaskModal({
                 children: "Delete"
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
               "button",
               {
                 type: "button",
@@ -25572,16 +25606,16 @@ function CompactTaskModal({
                 children: "Cancel"
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
               "button",
               {
                 type: "submit",
                 disabled: isLoading || !title.trim(),
                 className: "px-3 sm:px-4 py-1.5 sm:py-1 text-xs font-medium bg-krushr-primary text-white rounded-md hover:bg-krushr-primary/90 disabled:opacity-50 flex items-center gap-1",
-                children: isLoading ? /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_jsx_runtime4.Fragment, { children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(LoaderCircle, { className: "w-3 h-3 animate-spin" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { children: "Saving..." })
-                ] }) : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { children: isEditMode ? "Update" : "Create" })
+                children: isLoading ? /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_jsx_runtime5.Fragment, { children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(LoaderCircle, { className: "w-3 h-3 animate-spin" }),
+                  /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { children: "Saving..." })
+                ] }) : /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { children: isEditMode ? "Update" : "Create" })
               }
             )
           ] })
@@ -25593,11 +25627,11 @@ function CompactTaskModal({
 }
 
 // ../node_modules/@radix-ui/react-id/dist/index.mjs
-var React5 = __toESM(require_react(), 1);
-var useReactId = React5[" useId ".trim().toString()] || (() => void 0);
+var React6 = __toESM(require_react(), 1);
+var useReactId = React6[" useId ".trim().toString()] || (() => void 0);
 var count = 0;
 function useId(deterministicId) {
-  const [id, setId] = React5.useState(useReactId());
+  const [id, setId] = React6.useState(useReactId());
   useLayoutEffect2(() => {
     if (!deterministicId) setId((reactId) => reactId ?? String(count++));
   }, [deterministicId]);
@@ -25605,9 +25639,9 @@ function useId(deterministicId) {
 }
 
 // ../node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
-var React6 = __toESM(require_react(), 1);
+var React7 = __toESM(require_react(), 1);
 var React22 = __toESM(require_react(), 1);
-var useInsertionEffect = React6[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
+var useInsertionEffect = React7[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
 function useControllableState({
   prop,
   defaultProp,
@@ -25622,8 +25656,8 @@ function useControllableState({
   const isControlled = prop !== void 0;
   const value = isControlled ? prop : uncontrolledProp;
   if (true) {
-    const isControlledRef = React6.useRef(prop !== void 0);
-    React6.useEffect(() => {
+    const isControlledRef = React7.useRef(prop !== void 0);
+    React7.useEffect(() => {
       const wasControlled = isControlledRef.current;
       if (wasControlled !== isControlled) {
         const from2 = wasControlled ? "controlled" : "uncontrolled";
@@ -25635,7 +25669,7 @@ function useControllableState({
       isControlledRef.current = isControlled;
     }, [isControlled, caller]);
   }
-  const setValue = React6.useCallback(
+  const setValue = React7.useCallback(
     (nextValue) => {
       if (isControlled) {
         const value2 = isFunction2(nextValue) ? nextValue(prop) : nextValue;
@@ -25654,13 +25688,13 @@ function useUncontrolledState({
   defaultProp,
   onChange
 }) {
-  const [value, setValue] = React6.useState(defaultProp);
-  const prevValueRef = React6.useRef(value);
-  const onChangeRef = React6.useRef(onChange);
+  const [value, setValue] = React7.useState(defaultProp);
+  const prevValueRef = React7.useRef(value);
+  const onChangeRef = React7.useRef(onChange);
   useInsertionEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
-  React6.useEffect(() => {
+  React7.useEffect(() => {
     if (prevValueRef.current !== value) {
       onChangeRef.current?.(value);
       prevValueRef.current = value;
@@ -25674,13 +25708,13 @@ function isFunction2(value) {
 var SYNC_STATE = Symbol("RADIX:SYNC_STATE");
 
 // ../node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
-var React8 = __toESM(require_react(), 1);
+var React9 = __toESM(require_react(), 1);
 
 // ../node_modules/@radix-ui/react-use-escape-keydown/dist/index.mjs
-var React7 = __toESM(require_react(), 1);
+var React8 = __toESM(require_react(), 1);
 function useEscapeKeydown(onEscapeKeyDownProp, ownerDocument = globalThis?.document) {
   const onEscapeKeyDown = useCallbackRef(onEscapeKeyDownProp);
-  React7.useEffect(() => {
+  React8.useEffect(() => {
     const handleKeyDown2 = (event) => {
       if (event.key === "Escape") {
         onEscapeKeyDown(event);
@@ -25692,18 +25726,18 @@ function useEscapeKeydown(onEscapeKeyDownProp, ownerDocument = globalThis?.docum
 }
 
 // ../node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
-var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
 var DISMISSABLE_LAYER_NAME = "DismissableLayer";
 var CONTEXT_UPDATE = "dismissableLayer.update";
 var POINTER_DOWN_OUTSIDE = "dismissableLayer.pointerDownOutside";
 var FOCUS_OUTSIDE = "dismissableLayer.focusOutside";
 var originalBodyPointerEvents;
-var DismissableLayerContext = React8.createContext({
+var DismissableLayerContext = React9.createContext({
   layers: /* @__PURE__ */ new Set(),
   layersWithOutsidePointerEventsDisabled: /* @__PURE__ */ new Set(),
   branches: /* @__PURE__ */ new Set()
 });
-var DismissableLayer = React8.forwardRef(
+var DismissableLayer = React9.forwardRef(
   (props, forwardedRef) => {
     const {
       disableOutsidePointerEvents = false,
@@ -25714,10 +25748,10 @@ var DismissableLayer = React8.forwardRef(
       onDismiss,
       ...layerProps
     } = props;
-    const context = React8.useContext(DismissableLayerContext);
-    const [node, setNode2] = React8.useState(null);
+    const context = React9.useContext(DismissableLayerContext);
+    const [node, setNode2] = React9.useState(null);
     const ownerDocument = node?.ownerDocument ?? globalThis?.document;
-    const [, force] = React8.useState({});
+    const [, force] = React9.useState({});
     const composedRefs = useComposedRefs(forwardedRef, (node2) => setNode2(node2));
     const layers = Array.from(context.layers);
     const [highestLayerWithOutsidePointerEventsDisabled] = [...context.layersWithOutsidePointerEventsDisabled].slice(-1);
@@ -25750,7 +25784,7 @@ var DismissableLayer = React8.forwardRef(
         onDismiss();
       }
     }, ownerDocument);
-    React8.useEffect(() => {
+    React9.useEffect(() => {
       if (!node) return;
       if (disableOutsidePointerEvents) {
         if (context.layersWithOutsidePointerEventsDisabled.size === 0) {
@@ -25767,7 +25801,7 @@ var DismissableLayer = React8.forwardRef(
         }
       };
     }, [node, ownerDocument, disableOutsidePointerEvents, context]);
-    React8.useEffect(() => {
+    React9.useEffect(() => {
       return () => {
         if (!node) return;
         context.layers.delete(node);
@@ -25775,12 +25809,12 @@ var DismissableLayer = React8.forwardRef(
         dispatchUpdate();
       };
     }, [node, context]);
-    React8.useEffect(() => {
+    React9.useEffect(() => {
       const handleUpdate = () => force({});
       document.addEventListener(CONTEXT_UPDATE, handleUpdate);
       return () => document.removeEventListener(CONTEXT_UPDATE, handleUpdate);
     }, []);
-    return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
       Primitive.div,
       {
         ...layerProps,
@@ -25801,11 +25835,11 @@ var DismissableLayer = React8.forwardRef(
 );
 DismissableLayer.displayName = DISMISSABLE_LAYER_NAME;
 var BRANCH_NAME = "DismissableLayerBranch";
-var DismissableLayerBranch = React8.forwardRef((props, forwardedRef) => {
-  const context = React8.useContext(DismissableLayerContext);
-  const ref = React8.useRef(null);
+var DismissableLayerBranch = React9.forwardRef((props, forwardedRef) => {
+  const context = React9.useContext(DismissableLayerContext);
+  const ref = React9.useRef(null);
   const composedRefs = useComposedRefs(forwardedRef, ref);
-  React8.useEffect(() => {
+  React9.useEffect(() => {
     const node = ref.current;
     if (node) {
       context.branches.add(node);
@@ -25814,15 +25848,15 @@ var DismissableLayerBranch = React8.forwardRef((props, forwardedRef) => {
       };
     }
   }, [context.branches]);
-  return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Primitive.div, { ...props, ref: composedRefs });
+  return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Primitive.div, { ...props, ref: composedRefs });
 });
 DismissableLayerBranch.displayName = BRANCH_NAME;
 function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis?.document) {
   const handlePointerDownOutside = useCallbackRef(onPointerDownOutside);
-  const isPointerInsideReactTreeRef = React8.useRef(false);
-  const handleClickRef = React8.useRef(() => {
+  const isPointerInsideReactTreeRef = React9.useRef(false);
+  const handleClickRef = React9.useRef(() => {
   });
-  React8.useEffect(() => {
+  React9.useEffect(() => {
     const handlePointerDown = (event) => {
       if (event.target && !isPointerInsideReactTreeRef.current) {
         let handleAndDispatchPointerDownOutsideEvent2 = function() {
@@ -25863,8 +25897,8 @@ function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis?
 }
 function useFocusOutside(onFocusOutside, ownerDocument = globalThis?.document) {
   const handleFocusOutside = useCallbackRef(onFocusOutside);
-  const isFocusInsideReactTreeRef = React8.useRef(false);
-  React8.useEffect(() => {
+  const isFocusInsideReactTreeRef = React9.useRef(false);
+  React9.useEffect(() => {
     const handleFocus = (event) => {
       if (event.target && !isFocusInsideReactTreeRef.current) {
         const eventDetail = { originalEvent: event };
@@ -25899,21 +25933,21 @@ var Root = DismissableLayer;
 var Branch2 = DismissableLayerBranch;
 
 // ../node_modules/@radix-ui/react-portal/dist/index.mjs
-var React9 = __toESM(require_react(), 1);
+var React10 = __toESM(require_react(), 1);
 var import_react_dom3 = __toESM(require_react_dom(), 1);
-var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
 var PORTAL_NAME = "Portal";
-var Portal = React9.forwardRef((props, forwardedRef) => {
+var Portal = React10.forwardRef((props, forwardedRef) => {
   const { container: containerProp, ...portalProps } = props;
-  const [mounted, setMounted] = React9.useState(false);
+  const [mounted, setMounted] = React10.useState(false);
   useLayoutEffect2(() => setMounted(true), []);
   const container = containerProp || mounted && globalThis?.document?.body;
-  return container ? import_react_dom3.default.createPortal(/* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
+  return container ? import_react_dom3.default.createPortal(/* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
 });
 Portal.displayName = PORTAL_NAME;
 
 // ../node_modules/@radix-ui/react-popper/dist/index.mjs
-var React13 = __toESM(require_react(), 1);
+var React14 = __toESM(require_react(), 1);
 
 // ../node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
 var sides = ["top", "right", "bottom", "left"];
@@ -27514,7 +27548,7 @@ var computePosition2 = (reference, floating, options) => {
 };
 
 // ../node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
-var React10 = __toESM(require_react(), 1);
+var React11 = __toESM(require_react(), 1);
 var import_react5 = __toESM(require_react(), 1);
 var ReactDOM3 = __toESM(require_react_dom(), 1);
 var isClient = typeof document !== "undefined";
@@ -27580,7 +27614,7 @@ function roundByDPR(element, value) {
   return Math.round(value * dpr) / dpr;
 }
 function useLatestRef(value) {
-  const ref = React10.useRef(value);
+  const ref = React11.useRef(value);
   index(() => {
     ref.current = value;
   });
@@ -27603,7 +27637,7 @@ function useFloating(options) {
     whileElementsMounted,
     open
   } = options;
-  const [data, setData] = React10.useState({
+  const [data, setData] = React11.useState({
     x: 0,
     y: 0,
     strategy,
@@ -27611,19 +27645,19 @@ function useFloating(options) {
     middlewareData: {},
     isPositioned: false
   });
-  const [latestMiddleware, setLatestMiddleware] = React10.useState(middleware);
+  const [latestMiddleware, setLatestMiddleware] = React11.useState(middleware);
   if (!deepEqual2(latestMiddleware, middleware)) {
     setLatestMiddleware(middleware);
   }
-  const [_reference, _setReference] = React10.useState(null);
-  const [_floating, _setFloating] = React10.useState(null);
-  const setReference = React10.useCallback((node) => {
+  const [_reference, _setReference] = React11.useState(null);
+  const [_floating, _setFloating] = React11.useState(null);
+  const setReference = React11.useCallback((node) => {
     if (node !== referenceRef.current) {
       referenceRef.current = node;
       _setReference(node);
     }
   }, []);
-  const setFloating = React10.useCallback((node) => {
+  const setFloating = React11.useCallback((node) => {
     if (node !== floatingRef.current) {
       floatingRef.current = node;
       _setFloating(node);
@@ -27631,14 +27665,14 @@ function useFloating(options) {
   }, []);
   const referenceEl = externalReference || _reference;
   const floatingEl = externalFloating || _floating;
-  const referenceRef = React10.useRef(null);
-  const floatingRef = React10.useRef(null);
-  const dataRef = React10.useRef(data);
+  const referenceRef = React11.useRef(null);
+  const floatingRef = React11.useRef(null);
+  const dataRef = React11.useRef(data);
   const hasWhileElementsMounted = whileElementsMounted != null;
   const whileElementsMountedRef = useLatestRef(whileElementsMounted);
   const platformRef = useLatestRef(platform2);
   const openRef = useLatestRef(open);
-  const update = React10.useCallback(() => {
+  const update = React11.useCallback(() => {
     if (!referenceRef.current || !floatingRef.current) {
       return;
     }
@@ -27676,7 +27710,7 @@ function useFloating(options) {
       }));
     }
   }, [open]);
-  const isMountedRef = React10.useRef(false);
+  const isMountedRef = React11.useRef(false);
   index(() => {
     isMountedRef.current = true;
     return () => {
@@ -27693,17 +27727,17 @@ function useFloating(options) {
       update();
     }
   }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted]);
-  const refs = React10.useMemo(() => ({
+  const refs = React11.useMemo(() => ({
     reference: referenceRef,
     floating: floatingRef,
     setReference,
     setFloating
   }), [setReference, setFloating]);
-  const elements = React10.useMemo(() => ({
+  const elements = React11.useMemo(() => ({
     reference: referenceEl,
     floating: floatingEl
   }), [referenceEl, floatingEl]);
-  const floatingStyles = React10.useMemo(() => {
+  const floatingStyles = React11.useMemo(() => {
     const initialStyles = {
       position: strategy,
       left: 0,
@@ -27729,7 +27763,7 @@ function useFloating(options) {
       top: y
     };
   }, [strategy, transform, elements.floating, data.x, data.y]);
-  return React10.useMemo(() => ({
+  return React11.useMemo(() => ({
     ...data,
     update,
     refs,
@@ -27798,12 +27832,12 @@ var arrow4 = (options, deps) => ({
 });
 
 // ../node_modules/@radix-ui/react-arrow/dist/index.mjs
-var React11 = __toESM(require_react(), 1);
-var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
+var React12 = __toESM(require_react(), 1);
+var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
 var NAME = "Arrow";
-var Arrow = React11.forwardRef((props, forwardedRef) => {
+var Arrow = React12.forwardRef((props, forwardedRef) => {
   const { children, width = 10, height = 5, ...arrowProps } = props;
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
     Primitive.svg,
     {
       ...arrowProps,
@@ -27812,7 +27846,7 @@ var Arrow = React11.forwardRef((props, forwardedRef) => {
       height,
       viewBox: "0 0 30 10",
       preserveAspectRatio: "none",
-      children: props.asChild ? children : /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("polygon", { points: "0,0 30,0 15,10" })
+      children: props.asChild ? children : /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("polygon", { points: "0,0 30,0 15,10" })
     }
   );
 });
@@ -27820,9 +27854,9 @@ Arrow.displayName = NAME;
 var Root2 = Arrow;
 
 // ../node_modules/@radix-ui/react-use-size/dist/index.mjs
-var React12 = __toESM(require_react(), 1);
+var React13 = __toESM(require_react(), 1);
 function useSize(element) {
-  const [size4, setSize] = React12.useState(void 0);
+  const [size4, setSize] = React13.useState(void 0);
   useLayoutEffect2(() => {
     if (element) {
       setSize({ width: element.offsetWidth, height: element.offsetHeight });
@@ -27857,33 +27891,33 @@ function useSize(element) {
 }
 
 // ../node_modules/@radix-ui/react-popper/dist/index.mjs
-var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
 var POPPER_NAME = "Popper";
 var [createPopperContext, createPopperScope] = createContextScope(POPPER_NAME);
 var [PopperProvider, usePopperContext] = createPopperContext(POPPER_NAME);
 var Popper = (props) => {
   const { __scopePopper, children } = props;
-  const [anchor, setAnchor] = React13.useState(null);
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(PopperProvider, { scope: __scopePopper, anchor, onAnchorChange: setAnchor, children });
+  const [anchor, setAnchor] = React14.useState(null);
+  return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(PopperProvider, { scope: __scopePopper, anchor, onAnchorChange: setAnchor, children });
 };
 Popper.displayName = POPPER_NAME;
 var ANCHOR_NAME = "PopperAnchor";
-var PopperAnchor = React13.forwardRef(
+var PopperAnchor = React14.forwardRef(
   (props, forwardedRef) => {
     const { __scopePopper, virtualRef, ...anchorProps } = props;
     const context = usePopperContext(ANCHOR_NAME, __scopePopper);
-    const ref = React13.useRef(null);
+    const ref = React14.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, ref);
-    React13.useEffect(() => {
+    React14.useEffect(() => {
       context.onAnchorChange(virtualRef?.current || ref.current);
     });
-    return virtualRef ? null : /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Primitive.div, { ...anchorProps, ref: composedRefs });
+    return virtualRef ? null : /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Primitive.div, { ...anchorProps, ref: composedRefs });
   }
 );
 PopperAnchor.displayName = ANCHOR_NAME;
 var CONTENT_NAME = "PopperContent";
 var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME);
-var PopperContent = React13.forwardRef(
+var PopperContent = React14.forwardRef(
   (props, forwardedRef) => {
     const {
       __scopePopper,
@@ -27902,9 +27936,9 @@ var PopperContent = React13.forwardRef(
       ...contentProps
     } = props;
     const context = usePopperContext(CONTENT_NAME, __scopePopper);
-    const [content, setContent2] = React13.useState(null);
+    const [content, setContent2] = React14.useState(null);
     const composedRefs = useComposedRefs(forwardedRef, (node) => setContent2(node));
-    const [arrow5, setArrow] = React13.useState(null);
+    const [arrow5, setArrow] = React14.useState(null);
     const arrowSize = useSize(arrow5);
     const arrowWidth = arrowSize?.width ?? 0;
     const arrowHeight = arrowSize?.height ?? 0;
@@ -27966,11 +28000,11 @@ var PopperContent = React13.forwardRef(
     const arrowX = middlewareData.arrow?.x;
     const arrowY = middlewareData.arrow?.y;
     const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0;
-    const [contentZIndex, setContentZIndex] = React13.useState();
+    const [contentZIndex, setContentZIndex] = React14.useState();
     useLayoutEffect2(() => {
       if (content) setContentZIndex(window.getComputedStyle(content).zIndex);
     }, [content]);
-    return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
       "div",
       {
         ref: refs.setFloating,
@@ -27994,7 +28028,7 @@ var PopperContent = React13.forwardRef(
           }
         },
         dir: props.dir,
-        children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+        children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
           PopperContentProvider,
           {
             scope: __scopePopper,
@@ -28003,7 +28037,7 @@ var PopperContent = React13.forwardRef(
             arrowX,
             arrowY,
             shouldHideArrow: cannotCenterArrow,
-            children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+            children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
               Primitive.div,
               {
                 "data-side": placedSide,
@@ -28032,7 +28066,7 @@ var OPPOSITE_SIDE = {
   bottom: "top",
   left: "right"
 };
-var PopperArrow = React13.forwardRef(function PopperArrow2(props, forwardedRef) {
+var PopperArrow = React14.forwardRef(function PopperArrow2(props, forwardedRef) {
   const { __scopePopper, ...arrowProps } = props;
   const contentContext = useContentContext(ARROW_NAME, __scopePopper);
   const baseSide = OPPOSITE_SIDE[contentContext.placedSide];
@@ -28040,7 +28074,7 @@ var PopperArrow = React13.forwardRef(function PopperArrow2(props, forwardedRef) 
     // we have to use an extra wrapper because `ResizeObserver` (used by `useSize`)
     // doesn't report size as we'd expect on SVG elements.
     // it reports their bounding box which is effectively the largest path inside the SVG.
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
       "span",
       {
         ref: contentContext.onArrowChange,
@@ -28063,7 +28097,7 @@ var PopperArrow = React13.forwardRef(function PopperArrow2(props, forwardedRef) 
           }[contentContext.placedSide],
           visibility: contentContext.shouldHideArrow ? "hidden" : void 0
         },
-        children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+        children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
           Root2,
           {
             ...arrowProps,
@@ -28124,8 +28158,8 @@ var Content = PopperContent;
 var Arrow2 = PopperArrow;
 
 // ../node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
-var React14 = __toESM(require_react(), 1);
-var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
+var React15 = __toESM(require_react(), 1);
+var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
 var VISUALLY_HIDDEN_STYLES = Object.freeze({
   // See: https://github.com/twbs/bootstrap/blob/main/scss/mixins/_visually-hidden.scss
   position: "absolute",
@@ -28140,9 +28174,9 @@ var VISUALLY_HIDDEN_STYLES = Object.freeze({
   wordWrap: "normal"
 });
 var NAME2 = "VisuallyHidden";
-var VisuallyHidden = React14.forwardRef(
+var VisuallyHidden = React15.forwardRef(
   (props, forwardedRef) => {
-    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
       Primitive.span,
       {
         ...props,
@@ -28169,6 +28203,7 @@ export {
   Root,
   Branch2 as Branch,
   Portal,
+  FloatingInput,
   useSize,
   createPopperScope,
   Root22 as Root2,
@@ -28267,4 +28302,4 @@ buffer/index.js:
    * LICENSE file in the root directory of this source tree.
    *)
 */
-//# sourceMappingURL=/chunks/chunk-PAGTJ65N.js.map
+//# sourceMappingURL=/chunks/chunk-RT2NOGQM.js.map

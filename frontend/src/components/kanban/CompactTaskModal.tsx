@@ -1060,7 +1060,7 @@ export default function CompactTaskModal({
                           setEditingChecklistItemId(null);
                           setEditingChecklistText('');
                         }}
-                        className="flex-1 px-2 py-0.5 text-xs border border-gray-200 rounded focus:outline-none focus:border-krushr-primary"
+                        className="flex-1 px-2 py-0.5 text-xs border border-gray-300 rounded shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:shadow-md focus:border-krushr-primary"
                         autoFocus
                       />
                     ) : (

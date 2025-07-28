@@ -128,7 +128,7 @@ function SearchBar({ value, onChange, onCreateNote, isCreating }: {
           label="Search notes"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="flex-1 h-10 min-h-[40px] text-sm focus:ring-2 focus:ring-blue-500 font-manrope"
+          className="flex-1 h-10 min-h-[40px] text-sm font-manrope"
           type="search"
         />
         <button

@@ -3,9 +3,6 @@ import {
   useWorkspaceContextStore
 } from "/chunks/chunk-26AQZRFX.js";
 import {
-  FloatingInput
-} from "/chunks/chunk-4VNX5AHK.js";
-import {
   create,
   useOptimisticDelete
 } from "/chunks/chunk-KDAPYUH3.js";
@@ -123,13 +120,6 @@ var NOTE_COLORS = [
 var getNoteColor = (note) => {
   const noteColor = note.color || note.folder?.color || "#ffffff";
   const colorConfig = NOTE_COLORS.find((c) => c.value.toLowerCase() === noteColor.toLowerCase()) || NOTE_COLORS[7];
-  console.log("Note color debug:", {
-    noteId: note.id,
-    individualColor: note.color,
-    folderColor: note.folder?.color,
-    finalColor: noteColor,
-    colorConfig
-  });
   return colorConfig;
 };
 function NoteCard({ note, isActive, onClick, isFirst, isLast, onArchiveToggle }) {
@@ -149,8 +139,8 @@ function NoteCard({ note, isActive, onClick, isFirst, isLast, onArchiveToggle })
     {
       onClick,
       className: cn(
-        "border rounded-md p-2 cursor-pointer transition-all duration-200 mb-1",
-        isActive ? "border border-krushr-primary shadow-md" : "border border-krushr-gray-200 hover:border-krushr-primary/50 hover:shadow-sm"
+        "border rounded-md p-1.5 cursor-pointer transition-all duration-200 mb-1",
+        isActive ? "border border-krushr-primary shadow-md" : "border border-gray-300 shadow-sm hover:shadow-md transition-shadow hover:border-krushr-primary/50"
       ),
       style: {
         backgroundColor: isActive ? "rgba(20, 49, 151, 0.05)" : colorConfig.bgValue,
@@ -159,52 +149,50 @@ function NoteCard({ note, isActive, onClick, isFirst, isLast, onArchiveToggle })
         borderLeftStyle: "solid"
       },
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-start justify-between gap-2 mb-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between gap-1 mb-1", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", { className: cn(
-            "font-medium line-clamp-2 flex-1 font-brand",
+            "font-medium line-clamp-1 flex-1 min-w-0 font-brand text-sm",
             isActive ? "text-krushr-primary" : "text-gray-900"
           ), children: note.title || "Untitled" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-1 flex-shrink-0", children: [
-            note.isPinned && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Star, { className: "w-3 h-3 text-amber-500 fill-current" }),
-            note.isArchived && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "w-3 h-3 text-krushr-gray-400" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-0.5 flex-shrink-0", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-xs text-gray-500 font-manrope", children: formatDate(note.updatedAt) }),
+            note.isPinned && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Star, { className: "w-2.5 h-2.5 text-amber-500 fill-current" }),
+            note.isArchived && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "w-2.5 h-2.5 text-krushr-gray-400" })
           ] })
         ] }),
-        note.content && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-sm text-gray-600 mb-3 line-clamp-2 font-manrope", children: note.content }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center justify-between text-xs text-gray-500 font-manrope", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: formatDate(note.updatedAt) }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: new Date(note.updatedAt).toLocaleDateString() })
-        ] })
+        note.content && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs text-gray-600 line-clamp-1 font-manrope", children: note.content })
       ]
     }
   );
 }
 function SearchBar({ value, onChange, onCreateNote, isCreating }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "p-3 border-b border-krushr-gray-200 w-full", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 w-full", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "p-2 w-full", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "relative flex items-center bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus-within:shadow-md focus-within:border-krushr-primary h-8", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex items-center pl-2.5", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "w-3.5 h-3.5 text-gray-400" }) }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-      FloatingInput,
+      "input",
       {
-        label: "Search notes",
+        type: "search",
         value,
         onChange: (e) => onChange(e.target.value),
-        className: "flex-1 min-w-0 h-8 text-sm font-manrope border border-krushr-gray-300 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200",
-        type: "search"
+        placeholder: "Search notes...",
+        className: "flex-1 min-w-0 h-6 text-sm font-manrope bg-transparent border-0 outline-none px-2 placeholder:text-gray-400 focus:ring-0"
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex items-center pr-1", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "button",
       {
         onClick: onCreateNote,
         disabled: isCreating,
-        className: "bg-krushr-primary text-white w-8 h-8 rounded-md flex items-center justify-center hover:bg-krushr-primary/90 transition-all duration-200 disabled:opacity-50 flex-shrink-0",
+        className: "bg-krushr-primary text-white w-6 h-6 rounded-md flex items-center justify-center hover:bg-krushr-primary/90 transition-all duration-200 disabled:opacity-50 flex-shrink-0",
         title: "Create new note",
-        children: isCreating ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "w-4 h-4" })
+        children: isCreating ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-2 h-2 border border-white border-t-transparent rounded-full animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "w-3 h-3" })
       }
-    )
+    ) })
   ] }) });
 }
 function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, note, onPin, onColorChange, onArchive, onExport, isSingleColumn, onBack }) {
   const [showColorPicker, setShowColorPicker] = (0, import_react.useState)(false);
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "p-3 border-b border-krushr-gray-200 bg-white", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2 mb-2", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "p-2 bg-white", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-1 mb-1", children: [
     isSingleColumn && onBack && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "button",
       {
@@ -223,35 +211,32 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
           value: title,
           onChange: (e) => onTitleChange(e.target.value),
           placeholder: "Note title...",
-          className: "w-full h-7 font-medium text-gray-900 font-brand bg-transparent border-0 outline-none placeholder:text-gray-400 focus:bg-krushr-gray-50 rounded px-2 pr-16 transition-colors"
+          className: "w-full h-6 font-medium text-gray-900 font-brand bg-transparent border-0 outline-none placeholder:text-gray-400 focus:bg-krushr-gray-50 rounded px-2 pr-14 transition-colors text-sm"
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs", children: isSaving ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-amber-600 font-medium font-manrope", children: "Saving" })
-      ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-1.5 h-1.5 bg-green-500 rounded-full" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-green-600 font-medium font-manrope", children: "Saved" })
-      ] }) })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-xs", children: isSaving ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-1 h-1 bg-amber-500 rounded-full animate-pulse" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "text-amber-600 font-medium font-manrope text-xs", children: "Save" })
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-1 h-1 bg-green-500 rounded-full" }) })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-1", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-0.5", children: [
       note && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
             onClick: () => onPin(note.id),
-            className: `w-6 h-6 flex items-center justify-center rounded transition-colors ${note.isPinned ? "text-amber-500" : "text-krushr-gray-400 hover:text-amber-500"}`,
+            className: `w-5 h-5 flex items-center justify-center rounded transition-colors ${note.isPinned ? "text-amber-500" : "text-krushr-gray-400 hover:text-amber-500"}`,
             title: note.isPinned ? "Unpin" : "Pin",
-            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Star, { className: `w-3 h-3 ${note.isPinned ? "fill-current" : ""}` })
+            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Star, { className: `w-2.5 h-2.5 ${note.isPinned ? "fill-current" : ""}` })
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "button",
           {
             onClick: () => onArchive?.(note.id),
-            className: `w-6 h-6 flex items-center justify-center rounded transition-colors ${note.isArchived ? "text-krushr-primary" : "text-krushr-gray-400 hover:text-krushr-primary"}`,
+            className: `w-5 h-5 flex items-center justify-center rounded transition-colors ${note.isArchived ? "text-krushr-primary" : "text-krushr-gray-400 hover:text-krushr-primary"}`,
             title: note.isArchived ? "Unarchive" : "Archive",
-            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "w-3 h-3" })
+            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "w-2.5 h-2.5" })
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "relative", children: [
@@ -259,9 +244,9 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
             "button",
             {
               onClick: () => setShowColorPicker(!showColorPicker),
-              className: "w-6 h-6 flex items-center justify-center rounded transition-colors text-krushr-gray-400 hover:text-krushr-gray-600",
+              className: "w-5 h-5 flex items-center justify-center rounded transition-colors text-krushr-gray-400 hover:text-krushr-gray-600",
               title: "Color",
-              children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Palette, { className: "w-3 h-3" })
+              children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Palette, { className: "w-2.5 h-2.5" })
             }
           ),
           showColorPicker && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
@@ -272,13 +257,13 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
                 onClick: () => setShowColorPicker(false)
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute top-full right-0 mt-1 bg-white border border-krushr-gray-200 rounded-lg shadow-xl p-2 z-50", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute top-full right-0 mt-0.5 bg-white border border-krushr-gray-200 rounded-lg shadow-xl p-1.5 z-50", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "div",
               {
                 style: {
                   display: "grid",
                   gridTemplateColumns: "repeat(4, 1fr)",
-                  gap: "4px"
+                  gap: "3px"
                 },
                 children: NOTE_COLORS.map((color) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
                   "button",
@@ -287,7 +272,7 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
                       onColorChange(note.id, color.value);
                       setShowColorPicker(false);
                     },
-                    className: `w-6 h-6 rounded border hover:scale-110 transition-transform ${getNoteColor(note).value === color.value ? "border-krushr-primary ring-2 ring-krushr-primary/30" : "border-krushr-gray-300 hover:border-krushr-primary/50"}`,
+                    className: `w-5 h-5 rounded border hover:scale-110 transition-transform ${getNoteColor(note).value === color.value ? "border-krushr-primary ring-2 ring-krushr-primary/30" : "border-krushr-gray-300 hover:border-krushr-primary/50"}`,
                     style: { backgroundColor: color.bgValue },
                     title: color.name
                   },
@@ -303,9 +288,9 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
         {
           onClick: onDelete,
           disabled: isDeleting,
-          className: "w-6 h-6 text-krushr-gray-400 hover:text-red-500 rounded flex items-center justify-center transition-colors disabled:opacity-50",
+          className: "w-5 h-5 text-krushr-gray-400 hover:text-red-500 rounded flex items-center justify-center transition-colors disabled:opacity-50",
           title: "Delete",
-          children: isDeleting ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-3 h-3 border border-red-500 border-t-transparent rounded-full animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "w-3 h-3" })
+          children: isDeleting ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-2.5 h-2.5 border border-red-500 border-t-transparent rounded-full animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "w-2.5 h-2.5" })
         }
       )
     ] })
@@ -427,12 +412,11 @@ var NotesPanel = import_react.default.forwardRef(
       const checkSize = () => {
         if (containerRef.current) {
           const width = containerRef.current.offsetWidth;
-          const shouldBeSingleColumn = width < 600 || isMobile;
+          const shouldBeSingleColumn = width < 360 || isMobile;
           setIsSingleColumn(shouldBeSingleColumn);
           if (shouldBeSingleColumn && activeNoteId && !showEditor) {
             setShowEditor(true);
           }
-          console.log("Notes panel size check:", { width, shouldBeSingleColumn, isMobile, activeNoteId, showEditor });
         }
       };
       checkSize();
@@ -527,7 +511,7 @@ var NotesPanel = import_react.default.forwardRef(
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { ref: containerRef, className: cn("flex h-full bg-krushr-gray-50", className), children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: cn(
         "bg-white flex flex-col shadow-sm transition-all duration-300",
-        isSingleColumn ? showEditor ? "hidden" : "w-full" : "w-80 border-r border-krushr-gray-200"
+        isSingleColumn ? showEditor ? "hidden" : "w-full" : "w-80"
       ), children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           SearchBar,
@@ -542,7 +526,7 @@ var NotesPanel = import_react.default.forwardRef(
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-10 h-10 bg-krushr-gray-100 rounded-full flex items-center justify-center mx-auto mb-2", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "w-5 h-5 text-krushr-gray-400" }) }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-gray-900 font-medium font-brand", children: "No notes found" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-gray-400 text-sm mt-1 font-manrope", children: searchQuery ? "Try different keywords" : "Create your first note" })
-        ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "p-2", children: filteredNotes.map((note, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "p-1.5", children: filteredNotes.map((note, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           NoteCard,
           {
             note,
@@ -576,14 +560,14 @@ var NotesPanel = import_react.default.forwardRef(
             onBack: handleBackToList
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex-1 p-3", style: { backgroundColor: activeNoteId ? getNoteColor(filteredNotes.find((n) => n.id === activeNoteId) || {}).bgValue : "#ffffff" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex-1 p-2", style: { backgroundColor: activeNoteId ? getNoteColor(filteredNotes.find((n) => n.id === activeNoteId) || {}).bgValue : "#ffffff" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "textarea",
           {
             value: noteContent,
             onChange: (e) => setNoteContent(e.target.value),
             placeholder: "Start writing your note...",
             className: cn(
-              "w-full h-full min-h-[400px] border-0 outline-none resize-none bg-transparent",
+              "w-full h-full min-h-[300px] border-0 outline-none resize-none bg-transparent",
               "font-manrope text-sm text-gray-700 placeholder:text-gray-400"
             )
           }
@@ -597,17 +581,7 @@ var NotesPanel = import_react.default.forwardRef(
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: cn(
           "text-gray-500 leading-relaxed mb-4 font-manrope",
           isSingleColumn ? "text-xs" : "text-sm"
-        ), children: isSingleColumn ? "Tap a note to start editing" : "Choose a note from the sidebar to start editing, or create a new note to get started." }),
-        !isSingleColumn && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-          "button",
-          {
-            onClick: handleCreateNote,
-            disabled: createNote.isPending,
-            className: "w-8 h-8 bg-krushr-primary text-white rounded-md flex items-center justify-center hover:bg-krushr-primary/90 disabled:opacity-50 transition-colors",
-            title: "Create your first note",
-            children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "w-4 h-4" })
-          }
-        )
+        ), children: isSingleColumn ? "Tap a note to start editing" : "Choose a note from the sidebar to start editing, or create a new note to get started." })
       ] }) }) })
     ] });
   }
@@ -619,4 +593,4 @@ export {
   useUIStore,
   NotesPanel_default
 };
-//# sourceMappingURL=/chunks/chunk-PVWZJIML.js.map
+//# sourceMappingURL=/chunks/chunk-47NPYJUB.js.map

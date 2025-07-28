@@ -10489,10 +10489,10 @@ function WorkspaceAiChat({ workspaceId, className }) {
               className: "flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
               style: {
                 background: `linear-gradient(to right, 
-                      #e5e7eb 0%, 
-                      #d1d5db ${thinkingSliderValue / 6 * 100}%, 
+                      #143197 0%, 
                       #143197 ${thinkingSliderValue / 6 * 100}%, 
-                      #143197 100%)`
+                      #e5e7eb ${thinkingSliderValue / 6 * 100}%, 
+                      #e5e7eb 100%)`
               }
             }
           ),
@@ -10857,4 +10857,4 @@ function WorkspaceAiChat({ workspaceId, className }) {
 export {
   WorkspaceAiChat as default
 };
-//# sourceMappingURL=/chunks/WorkspaceAiChat-2N7SJYFE.js.map
+//# sourceMappingURL=/chunks/WorkspaceAiChat-HAWIIZED.js.map

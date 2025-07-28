@@ -41,6 +41,11 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
   const [bulkMode, setBulkMode] = useState(false)
   const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set())
   const [showBulkActions, setShowBulkActions] = useState(false)
+  const [isToolbarCollapsed, setIsToolbarCollapsed] = useState(() => {
+    // Remember toolbar state per kanban board
+    const savedState = localStorage.getItem(`kanban-toolbar-${kanban.id}`)
+    return savedState ? JSON.parse(savedState) : false
+  })
 
   const { data: kanbanData, refetch: refetchKanban } = trpc.kanban.get.useQuery({ id: kanban.id })
   const columns = kanbanData?.columns || []
@@ -379,7 +384,7 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
             <div className="flex items-center gap-1">
               {/* Move to Column */}
               <select 
-                className="text-sm border rounded px-3 py-2 h-10 min-h-[40px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-manrope"
+                className="text-sm border border-gray-300 rounded px-3 py-2 h-10 min-h-[40px] shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary font-manrope"
                 onChange={(e) => e.target.value && handleBulkMove(e.target.value)}
                 defaultValue=""
                 aria-label="Move selected tasks to column"
@@ -392,7 +397,7 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
               
               {/* Set Priority */}
               <select 
-                className="text-sm border rounded px-3 py-2 h-10 min-h-[40px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-manrope"
+                className="text-sm border border-gray-300 rounded px-3 py-2 h-10 min-h-[40px] shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary font-manrope"
                 onChange={(e) => e.target.value && handleBulkPriority(e.target.value)}
                 defaultValue=""
                 aria-label="Set priority for selected tasks"
@@ -456,81 +461,99 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
         </div>
       )}
 
-      {/* Main Toolbar */}
-      <div className="flex items-center justify-between p-2 bg-white border-b">
-        <div className="flex items-center gap-2">
-          <FloatingInput
-            label="Search tasks"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-64 h-10 min-h-[40px] text-sm focus:ring-2 focus:ring-blue-500"
-            type="search"
-          />
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setShowFilters(!showFilters)}
-            className="h-10 min-h-[40px] text-sm hover:bg-gray-50 focus:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-            aria-label={`${showFilters ? 'Hide' : 'Show'} task filters`}
-            aria-expanded={showFilters}
-          >
-            <Filter className="w-4 h-4 mr-2" />
-            Filters
-          </Button>
+      {/* Hidden toggle button for panel header integration */}
+      <button
+        data-kanban-toolbar-toggle
+        onClick={() => {
+          const newState = !isToolbarCollapsed
+          setIsToolbarCollapsed(newState)
+          // Persist the state
+          localStorage.setItem(`kanban-toolbar-${kanban.id}`, JSON.stringify(newState))
+        }}
+        style={{ display: 'none' }}
+        aria-hidden="true"
+      />
+
+      {/* Consolidated Toolbar - togglable from panel header */}
+      {!isToolbarCollapsed && (
+        <div className="bg-white border-b">
+          <div className="flex items-center justify-between p-2 gap-3">
+            {/* Left side - Search, Filters, Create */}
+            <div className="flex items-center gap-2 flex-1">
+              <button
+                onClick={() => {
+                  setSelectedColumnId(columns[0]?.id || null)
+                  setShowCreatePanel(true)
+                }}
+                className="w-7 h-7 bg-krushr-primary text-white rounded-md flex items-center justify-center hover:bg-krushr-primary/90 transition-colors flex-shrink-0"
+                aria-label="Create new task"
+                title="Create new task"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+              <FloatingInput
+                label="Search tasks"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-48 h-7 text-sm"
+                type="search"
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className="h-7 text-xs px-2 hover:bg-gray-50 focus:bg-gray-50 transition-all duration-200"
+                aria-label={`${showFilters ? 'Hide' : 'Show'} task filters`}
+                aria-expanded={showFilters}
+              >
+                <Filter className="w-3 h-3 mr-1" />
+                Filters
+              </Button>
+            </div>
+            
+            {/* Right side - Management tools */}
+            <div className="flex items-center gap-1">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowColumnManagement(!showColumnManagement)}
+                className="h-7 text-xs px-2 hover:bg-gray-50 focus:bg-gray-50 transition-all duration-200"
+                aria-label={`${showColumnManagement ? 'Hide' : 'Show'} column management`}
+                aria-expanded={showColumnManagement}
+              >
+                <Settings className="w-3 h-3 mr-1" />
+                Columns
+              </Button>
+              
+              <Button
+                size="sm"
+                variant={bulkMode ? "default" : "outline"}
+                onClick={() => {
+                  setBulkMode(!bulkMode)
+                  if (bulkMode) clearSelection()
+                }}
+                className="h-7 text-xs px-2 hover:bg-gray-50 focus:bg-gray-50 transition-all duration-200"
+                aria-label={bulkMode ? 'Exit bulk selection mode' : 'Enter bulk selection mode'}
+                aria-pressed={bulkMode}
+              >
+                {bulkMode ? 'Exit Bulk' : 'Bulk'}
+              </Button>
+              
+              {bulkMode && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={selectAllTasks}
+                  className="h-7 text-xs px-2 hover:bg-gray-50 focus:bg-gray-50 transition-all duration-200"
+                  aria-label="Select all visible tasks"
+                >
+                  All
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
-        
-        <div className="flex items-center gap-1">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setShowColumnManagement(!showColumnManagement)}
-            className="h-10 min-h-[40px] text-sm hover:bg-gray-50 focus:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-            aria-label={`${showColumnManagement ? 'Hide' : 'Show'} column management`}
-            aria-expanded={showColumnManagement}
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Columns
-          </Button>
-          
-          <Button
-            size="sm"
-            variant={bulkMode ? "default" : "outline"}
-            onClick={() => {
-              setBulkMode(!bulkMode)
-              if (bulkMode) clearSelection()
-            }}
-            className="h-10 min-h-[40px] text-sm hover:bg-gray-50 focus:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-            aria-label={bulkMode ? 'Exit bulk selection mode' : 'Enter bulk selection mode'}
-            aria-pressed={bulkMode}
-          >
-            {bulkMode ? 'Exit Bulk' : 'Bulk Select'}
-          </Button>
-          
-          {bulkMode && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={selectAllTasks}
-              className="h-10 min-h-[40px] text-sm hover:bg-gray-50 focus:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-              aria-label="Select all visible tasks"
-            >
-              Select All
-            </Button>
-          )}
-          
-          <button
-            onClick={() => {
-              setSelectedColumnId(columns[0]?.id || null)
-              setShowCreatePanel(true)
-            }}
-            className="w-8 h-8 bg-krushr-primary text-white rounded-md flex items-center justify-center hover:bg-krushr-primary/90 transition-colors"
-            aria-label="Create new task"
-            title="Create new task"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Filter Panel */}
       {showFilters && (
@@ -602,7 +625,7 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
               <select
                 value={newColumnColor}
                 onChange={(e) => setNewColumnColor(e.target.value)}
-                className="h-8 text-sm border rounded px-2"
+                className="h-8 text-sm border border-gray-300 rounded px-2 shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary"
               >
                 <option value="#6B7280">Gray</option>
                 <option value="#3B82F6">Blue</option>
@@ -649,7 +672,7 @@ export default function KanbanBoard({ kanban, className }: KanbanBoardProps) {
                     <select
                       value={editingColumn.color}
                       onChange={(e) => setEditingColumn({ ...editingColumn, color: e.target.value })}
-                      className="h-7 text-sm border rounded px-1"
+                      className="h-7 text-sm border border-gray-300 rounded px-1 shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary"
                     >
                       <option value="#6B7280">Gray</option>
                       <option value="#3B82F6">Blue</option>

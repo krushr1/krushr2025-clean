@@ -145,6 +145,10 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     setFocusedPanelId(panelId)
   }, [])
 
+  const [originalLayout, setOriginalLayout] = useState<Layout[] | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [draggedItemId, setDraggedItemId] = useState<string | null>(null)
+
   const updatePositionsImmediately = useCallback((updates: any[]) => {
     if (updates.length > 0) {
       updatePositions.mutate({
@@ -157,10 +161,46 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   const handleLayoutChange = useCallback((newLayout: Layout[]) => {
     if (allPanels.length === 0 || !newLayout) return
     
+    // If we're dragging, check for collisions with locked panels
+    if (isDragging && draggedItemId) {
+      const draggedItem = newLayout.find(item => item.i === draggedItemId)
+      if (draggedItem) {
+        // Check if the dragged panel overlaps with any locked panels
+        for (const panel of allPanels) {
+          if (panel.id !== draggedItemId && panel.is_locked) {
+            const lockedItem = newLayout.find(l => l.i === panel.id)
+            if (lockedItem) {
+              const overlaps = !(
+                draggedItem.x + draggedItem.w <= lockedItem.x ||
+                draggedItem.x >= lockedItem.x + lockedItem.w ||
+                draggedItem.y + draggedItem.h <= lockedItem.y ||
+                draggedItem.y >= lockedItem.y + lockedItem.h
+              )
+              
+              if (overlaps && originalLayout) {
+                console.log('⚠️ Collision with locked panel detected during drag:', panel.id)
+                // Find the original position
+                const originalItem = originalLayout.find(item => item.i === draggedItemId)
+                if (originalItem) {
+                  // Revert just the dragged item's position
+                  draggedItem.x = originalItem.x
+                  draggedItem.y = originalItem.y
+                  draggedItem.w = originalItem.w
+                  draggedItem.h = originalItem.h
+                }
+                break
+              }
+            }
+          }
+        }
+      }
+    }
+    
     console.log('🔄 Layout Change Handler:', {
       panelCount: allPanels.length,
       newLayoutCount: newLayout.length,
-      newLayout: newLayout.map(item => ({ id: item.i, x: item.x, y: item.y, w: item.w, h: item.h }))
+      isDragging,
+      draggedItemId
     })
 
     const optimizedLayout = newLayout.map(item => ({
@@ -172,6 +212,12 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     const updates = optimizedLayout
       .filter(item => {
         const panel = allPanels.find(p => p.id === item.i)
+        
+        // NEVER update locked panels - they should be immovable
+        if (panel && panel.is_locked) {
+          return false
+        }
+        
         const hasChanges = panel && (
           panel.position_x !== item.x ||
           panel.position_y !== item.y ||
@@ -203,10 +249,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     }
 
     // Note: Removed onLayoutPersistenceChange call to prevent conflicts
-  }, [allPanels, updatePositionsImmediately, onLayoutPersistenceChange])
-
-  const [originalLayout, setOriginalLayout] = useState<Layout[] | null>(null)
-  const [isDragging, setIsDragging] = useState(false)
+  }, [allPanels, updatePositionsImmediately, onLayoutPersistenceChange, isDragging, draggedItemId, originalLayout])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -224,6 +267,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
   const handlePanelDragStart = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
     setOriginalLayout([...layout])
     setIsDragging(true)
+    setDraggedItemId(oldItem.i)
     
     element.style.zIndex = '9998' // Below fullscreen panels
     element.style.opacity = '0.95'
@@ -248,18 +292,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
 
   const handlePanelDragStop = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
     setIsDragging(false)
-    
-    const positionChanged = Math.abs(oldItem.x - newItem.x) > 0.1 || Math.abs(oldItem.y - newItem.y) > 0.1
-    const sizeChanged = Math.abs(oldItem.w - newItem.w) > 0.1 || Math.abs(oldItem.h - newItem.h) > 0.1
-    
-    console.log('🎯 Drag stopped:', {
-      panelId: newItem.i,
-      positionChanged,
-      sizeChanged,
-      oldPos: { x: oldItem.x, y: oldItem.y },
-      newPos: { x: newItem.x, y: newItem.y },
-      finalLayout: layout.map(item => ({ id: item.i, x: item.x, y: item.y }))
-    })
+    setDraggedItemId(null)
     
     element.style.transition = 'all 0.3s ease-out'
     element.style.zIndex = ''
@@ -270,23 +303,74 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
     element.style.boxShadow = ''
     element.style.border = ''
     
-    // Force immediate save with the exact layout from drag stop
-    const updates = layout.map(item => ({
-      id: item.i,
-      position_x: item.x,
-      position_y: item.y,
-      width: item.w,
-      height: item.h
-    }))
+    // Check if we need to revert due to collision with locked panel
+    let shouldRevert = false
+    const draggedPanel = allPanels.find(p => p.id === newItem.i)
     
-    console.log('💾 Saving final positions immediately:', updates)
-    updatePositionsImmediately(updates)
+    if (draggedPanel) {
+      // Check final position for overlap with locked panels
+      for (const panel of allPanels) {
+        if (panel.id !== draggedPanel.id && panel.is_locked) {
+          const lockedItem = layout.find(l => l.i === panel.id)
+          if (lockedItem) {
+            const overlaps = !(
+              newItem.x + newItem.w <= lockedItem.x ||
+              newItem.x >= lockedItem.x + lockedItem.w ||
+              newItem.y + newItem.h <= lockedItem.y ||
+              newItem.y >= lockedItem.y + lockedItem.h
+            )
+            
+            if (overlaps) {
+              console.log('⚠️ Final position overlaps with locked panel:', panel.id)
+              shouldRevert = true
+              break
+            }
+          }
+        }
+      }
+    }
+    
+    if (shouldRevert && originalLayout) {
+      // Revert to original layout
+      console.log('🔄 Reverting to original layout due to locked panel collision')
+      const revertUpdates = originalLayout
+        .filter(item => {
+          const panel = allPanels.find(p => p.id === item.i)
+          return panel && !panel.is_locked
+        })
+        .map(item => ({
+          id: item.i,
+          position_x: item.x,
+          position_y: item.y,
+          width: item.w,
+          height: item.h
+        }))
+      
+      updatePositionsImmediately(revertUpdates)
+    } else {
+      // Normal save - skip locked panels
+      const updates = layout
+        .filter(item => {
+          const panel = allPanels.find(p => p.id === item.i)
+          return panel && !panel.is_locked
+        })
+        .map(item => ({
+          id: item.i,
+          position_x: item.x,
+          position_y: item.y,
+          width: item.w,
+          height: item.h
+        }))
+      
+      console.log('💾 Saving final positions immediately (excluding locked panels):', updates)
+      updatePositionsImmediately(updates)
+    }
     
     setTimeout(() => {
       element.style.transition = ''
       setOriginalLayout(null)
     }, 300)
-  }, [updatePositionsImmediately])
+  }, [updatePositionsImmediately, allPanels, originalLayout])
 
   const handlePanelResizeStart = useCallback((layout: Layout[], oldItem: Layout, newItem: Layout, placeholder: Layout, e: MouseEvent, element: HTMLElement) => {
     element.style.zIndex = '9997' // Below dragging panels
@@ -328,7 +412,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
         maxH: panel.is_minimized ? 2 : 50, // Prevent resizing minimized panels vertically
         isDraggable: !panel.is_locked && !isHidden,
         isResizable: !panel.is_locked && !isHidden && !panel.is_minimized, // Disable resize for minimized panels
-        static: panel.is_minimized // Make minimized panels static so they don't interfere with layout
+        static: panel.is_locked || panel.is_minimized // Locked panels are static - nothing can move them
       } as Layout
     })
     
@@ -536,7 +620,7 @@ export default function PanelWorkspace({ workspaceId, className }: PanelWorkspac
         rowHeight={25}
         draggableHandle=".panel-drag-handle"
         useCSSTransforms={true}
-        preventCollision={false}
+        preventCollision={true}
         compactType={null}
         autoSize={true}
         draggableCancel="input,textarea,button,select,option,.panel-content"

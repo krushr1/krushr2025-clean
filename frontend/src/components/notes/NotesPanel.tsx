@@ -49,15 +49,6 @@ const getNoteColor = (note: Note) => {
   const noteColor = note.color || note.folder?.color || '#ffffff'
   const colorConfig = NOTE_COLORS.find(c => c.value.toLowerCase() === noteColor.toLowerCase()) || NOTE_COLORS[7]
   
-  // Debug logging
-  console.log('Note color debug:', {
-    noteId: note.id,
-    individualColor: note.color,
-    folderColor: note.folder?.color,
-    finalColor: noteColor,
-    colorConfig: colorConfig
-  })
-  
   return colorConfig
 }
 
@@ -88,10 +79,10 @@ function NoteCard({ note, isActive, onClick, isFirst, isLast, onArchiveToggle }:
     <div
       onClick={onClick}
       className={cn(
-        "border rounded-md p-2 cursor-pointer transition-all duration-200 mb-1",
+        "border rounded-md p-1.5 cursor-pointer transition-all duration-200 mb-1",
         isActive
           ? "border border-krushr-primary shadow-md"
-          : "border border-krushr-gray-200 hover:border-krushr-primary/50 hover:shadow-sm"
+          : "border border-gray-300 shadow-sm hover:shadow-md transition-shadow hover:border-krushr-primary/50"
       )}
       style={{
         backgroundColor: isActive ? 'rgba(20, 49, 151, 0.05)' : colorConfig.bgValue,
@@ -100,29 +91,24 @@ function NoteCard({ note, isActive, onClick, isFirst, isLast, onArchiveToggle }:
         borderLeftStyle: 'solid'
       }}
     >
-      <div className="flex items-start justify-between gap-2 mb-3">
+      <div className="flex items-center justify-between gap-1 mb-1">
         <h4 className={cn(
-          "font-medium line-clamp-2 flex-1 font-brand",
+          "font-medium line-clamp-1 flex-1 min-w-0 font-brand text-sm",
           isActive ? "text-krushr-primary" : "text-gray-900"
         )}>
           {note.title || 'Untitled'}
         </h4>
-        <div className="flex items-center gap-1 flex-shrink-0">
-          {note.isPinned && <Star className="w-3 h-3 text-amber-500 fill-current" />}
-          {note.isArchived && <Archive className="w-3 h-3 text-krushr-gray-400" />}
+        <div className="flex items-center gap-0.5 flex-shrink-0">
+          <span className="text-xs text-gray-500 font-manrope">{formatDate(note.updatedAt)}</span>
+          {note.isPinned && <Star className="w-2.5 h-2.5 text-amber-500 fill-current" />}
+          {note.isArchived && <Archive className="w-2.5 h-2.5 text-krushr-gray-400" />}
         </div>
       </div>
-      
       {note.content && (
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2 font-manrope">
+        <p className="text-xs text-gray-600 line-clamp-1 font-manrope">
           {note.content}
         </p>
       )}
-
-      <div className="flex items-center justify-between text-xs text-gray-500 font-manrope">
-        <span>{formatDate(note.updatedAt)}</span>
-        <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
-      </div>
     </div>
   )
 }
@@ -135,28 +121,38 @@ function SearchBar({ value, onChange, onCreateNote, isCreating }: {
   isCreating: boolean
 }) {
   return (
-    <div className="p-3 border-b border-krushr-gray-200 w-full">
-      {/* Single row with search and create button */}
-      <div className="flex items-center gap-2 w-full">
-        <FloatingInput
-          label="Search notes"
+    <div className="p-2 w-full">
+      {/* Single input with inline search icon and create button */}
+      <div className="relative flex items-center bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus-within:shadow-md focus-within:border-krushr-primary h-8">
+        {/* Search icon */}
+        <div className="flex items-center pl-2.5">
+          <Search className="w-3.5 h-3.5 text-gray-400" />
+        </div>
+        
+        {/* Search input */}
+        <input
+          type="search"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="flex-1 min-w-0 h-8 text-sm font-manrope border border-krushr-gray-300 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200"
-          type="search"
+          placeholder="Search notes..."
+          className="flex-1 min-w-0 h-6 text-sm font-manrope bg-transparent border-0 outline-none px-2 placeholder:text-gray-400 focus:ring-0"
         />
-        <button
-          onClick={onCreateNote}
-          disabled={isCreating}
-          className="bg-krushr-primary text-white w-8 h-8 rounded-md flex items-center justify-center hover:bg-krushr-primary/90 transition-all duration-200 disabled:opacity-50 flex-shrink-0"
-          title="Create new note"
-        >
-          {isCreating ? (
-            <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <Plus className="w-4 h-4" />
-          )}
-        </button>
+        
+        {/* Create button - inline */}
+        <div className="flex items-center pr-1">
+          <button
+            onClick={onCreateNote}
+            disabled={isCreating}
+            className="bg-krushr-primary text-white w-6 h-6 rounded-md flex items-center justify-center hover:bg-krushr-primary/90 transition-all duration-200 disabled:opacity-50 flex-shrink-0"
+            title="Create new note"
+          >
+            {isCreating ? (
+              <div className="w-2 h-2 border border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Plus className="w-3 h-3" />
+            )}
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -179,9 +175,9 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
 }) {
   const [showColorPicker, setShowColorPicker] = useState(false)
   return (
-    <div className="p-3 border-b border-krushr-gray-200 bg-white">
+    <div className="p-2 bg-white">
       {/* Title input with compact toolbar */}
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-1 mb-1">
         {/* Back button for mobile - integrated with title */}
         {isSingleColumn && onBack && (
           <button
@@ -200,55 +196,52 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
             placeholder="Note title..."
-            className="w-full h-7 font-medium text-gray-900 font-brand bg-transparent border-0 outline-none placeholder:text-gray-400 focus:bg-krushr-gray-50 rounded px-2 pr-16 transition-colors"
+            className="w-full h-6 font-medium text-gray-900 font-brand bg-transparent border-0 outline-none placeholder:text-gray-400 focus:bg-krushr-gray-50 rounded px-2 pr-14 transition-colors text-sm"
           />
-          {/* Status indicator in title input */}
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs">
+          {/* Compact status indicator in title input */}
+          <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-xs">
             {isSaving ? (
               <>
-                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
-                <span className="text-amber-600 font-medium font-manrope">Saving</span>
+                <div className="w-1 h-1 bg-amber-500 rounded-full animate-pulse" />
+                <span className="text-amber-600 font-medium font-manrope text-xs">Save</span>
               </>
             ) : (
-              <>
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-                <span className="text-green-600 font-medium font-manrope">Saved</span>
-              </>
+              <div className="w-1 h-1 bg-green-500 rounded-full" />
             )}
           </div>
         </div>
         
-        {/* Compact action buttons */}
-        <div className="flex items-center gap-1">
+        {/* Extra compact action buttons */}
+        <div className="flex items-center gap-0.5">
           {note && (
             <>
               <button
                 onClick={() => onPin(note.id)}
-                className={`w-6 h-6 flex items-center justify-center rounded transition-colors ${
+                className={`w-5 h-5 flex items-center justify-center rounded transition-colors ${
                   note.isPinned ? 'text-amber-500' : 'text-krushr-gray-400 hover:text-amber-500'
                 }`}
                 title={note.isPinned ? 'Unpin' : 'Pin'}
               >
-                <Star className={`w-3 h-3 ${note.isPinned ? 'fill-current' : ''}`} />
+                <Star className={`w-2.5 h-2.5 ${note.isPinned ? 'fill-current' : ''}`} />
               </button>
               
               <button
                 onClick={() => onArchive?.(note.id)}
-                className={`w-6 h-6 flex items-center justify-center rounded transition-colors ${
+                className={`w-5 h-5 flex items-center justify-center rounded transition-colors ${
                   note.isArchived ? 'text-krushr-primary' : 'text-krushr-gray-400 hover:text-krushr-primary'
                 }`}
                 title={note.isArchived ? 'Unarchive' : 'Archive'}
               >
-                <Archive className="w-3 h-3" />
+                <Archive className="w-2.5 h-2.5" />
               </button>
               
               <div className="relative">
                 <button
                   onClick={() => setShowColorPicker(!showColorPicker)}
-                  className="w-6 h-6 flex items-center justify-center rounded transition-colors text-krushr-gray-400 hover:text-krushr-gray-600"
+                  className="w-5 h-5 flex items-center justify-center rounded transition-colors text-krushr-gray-400 hover:text-krushr-gray-600"
                   title="Color"
                 >
-                  <Palette className="w-3 h-3" />
+                  <Palette className="w-2.5 h-2.5" />
                 </button>
                 {showColorPicker && (
                   <>
@@ -256,12 +249,12 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
                       className="fixed inset-0 z-40" 
                       onClick={() => setShowColorPicker(false)}
                     />
-                    <div className="absolute top-full right-0 mt-1 bg-white border border-krushr-gray-200 rounded-lg shadow-xl p-2 z-50">
+                    <div className="absolute top-full right-0 mt-0.5 bg-white border border-krushr-gray-200 rounded-lg shadow-xl p-1.5 z-50">
                       <div 
                         style={{ 
                           display: 'grid', 
                           gridTemplateColumns: 'repeat(4, 1fr)',
-                          gap: '4px'
+                          gap: '3px'
                         }}
                       >
                         {NOTE_COLORS.map((color) => (
@@ -271,7 +264,7 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
                               onColorChange(note.id, color.value)
                               setShowColorPicker(false)
                             }}
-                            className={`w-6 h-6 rounded border hover:scale-110 transition-transform ${
+                            className={`w-5 h-5 rounded border hover:scale-110 transition-transform ${
                               getNoteColor(note).value === color.value ? 'border-krushr-primary ring-2 ring-krushr-primary/30' : 'border-krushr-gray-300 hover:border-krushr-primary/50'
                             }`}
                             style={{ backgroundColor: color.bgValue }}
@@ -289,13 +282,13 @@ function EditorHeader({ title, onTitleChange, onDelete, isSaving, isDeleting, no
           <button
             onClick={onDelete}
             disabled={isDeleting}
-            className="w-6 h-6 text-krushr-gray-400 hover:text-red-500 rounded flex items-center justify-center transition-colors disabled:opacity-50"
+            className="w-5 h-5 text-krushr-gray-400 hover:text-red-500 rounded flex items-center justify-center transition-colors disabled:opacity-50"
             title="Delete"
           >
             {isDeleting ? (
-              <div className="w-3 h-3 border border-red-500 border-t-transparent rounded-full animate-spin" />
+              <div className="w-2.5 h-2.5 border border-red-500 border-t-transparent rounded-full animate-spin" />
             ) : (
-              <Trash2 className="w-3 h-3" />
+              <Trash2 className="w-2.5 h-2.5" />
             )}
           </button>
         </div>
@@ -444,16 +437,13 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
     const checkSize = () => {
       if (containerRef.current) {
         const width = containerRef.current.offsetWidth
-        const shouldBeSingleColumn = width < 600 || isMobile
+        const shouldBeSingleColumn = width < 360 || isMobile
         setIsSingleColumn(shouldBeSingleColumn)
         
         // Auto-show editor on mobile when note is selected
         if (shouldBeSingleColumn && activeNoteId && !showEditor) {
           setShowEditor(true)
         }
-        
-        // Debug logging
-        console.log('Notes panel size check:', { width, shouldBeSingleColumn, isMobile, activeNoteId, showEditor })
       }
     }
 
@@ -583,7 +573,7 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
         "bg-white flex flex-col shadow-sm transition-all duration-300",
         isSingleColumn 
           ? (showEditor ? "hidden" : "w-full")
-          : "w-80 border-r border-krushr-gray-200"
+          : "w-80"
       )}>
         {/* Search Bar */}
         <SearchBar
@@ -610,7 +600,7 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
               </p>
             </div>
           ) : (
-            <div className="p-2">
+            <div className="p-1.5">
               {filteredNotes.map((note, index) => (
                 <NoteCard
                   key={note.id}
@@ -653,14 +643,14 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
               onBack={handleBackToList}
             />
 
-            {/* Editor Content */}
-            <div className="flex-1 p-3" style={{ backgroundColor: activeNoteId ? getNoteColor(filteredNotes.find(n => n.id === activeNoteId) || {} as Note).bgValue : '#ffffff' }}>
+            {/* Editor Content - Compact */}
+            <div className="flex-1 p-2" style={{ backgroundColor: activeNoteId ? getNoteColor(filteredNotes.find(n => n.id === activeNoteId) || {} as Note).bgValue : '#ffffff' }}>
               <textarea
                 value={noteContent}
                 onChange={(e) => setNoteContent(e.target.value)}
                 placeholder="Start writing your note..."
                 className={cn(
-                  "w-full h-full min-h-[400px] border-0 outline-none resize-none bg-transparent",
+                  "w-full h-full min-h-[300px] border-0 outline-none resize-none bg-transparent",
                   "font-manrope text-sm text-gray-700 placeholder:text-gray-400"
                 )}
               />
@@ -685,16 +675,6 @@ const NotesPanel = React.forwardRef<HTMLDivElement, NotesPanelProps>(
                   : "Choose a note from the sidebar to start editing, or create a new note to get started."
                 }
               </p>
-              {!isSingleColumn && (
-                <button
-                  onClick={handleCreateNote}
-                  disabled={createNote.isPending}
-                  className="w-8 h-8 bg-krushr-primary text-white rounded-md flex items-center justify-center hover:bg-krushr-primary/90 disabled:opacity-50 transition-colors"
-                  title="Create your first note"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              )}
             </div>
           </div>
         )}

@@ -26,7 +26,8 @@ import {
   Loader2,
   AlertCircle,
   FolderOpen,
-  Bot
+  Bot,
+  Settings
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -526,84 +527,41 @@ export default function PanelRenderer({ panel, workspaceId, onRefresh, onFullscr
         </div>
         
         <div className="flex items-center" style={{ marginLeft: 'auto', gap: '2px' }}>
-          {/* Panel-specific actions dropdown */}
-          {(panel.type === 'KANBAN' || panel.type === 'CHAT' || panel.type === 'AI_CHAT' || panel.type === 'NOTES') && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  className="w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0"
-                  title="Panel actions"
-                >
-                  <MoreHorizontal className="w-2.5 h-2.5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
-                {panel.type === 'KANBAN' ? (
-                  <>
-                    <DropdownMenuItem className="text-xs" onClick={() => setShowCreatePanel(true)}>
-                      <Plus className="w-3 h-3 mr-2" />
-                      Add Task
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-xs">
-                      <Users className="w-3 h-3 mr-2" />
-                      Members
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
-                      <Calendar className="w-3 h-3 mr-2" />
-                      Timeline
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
-                      <Filter className="w-3 h-3 mr-2" />
-                      Filters
-                    </DropdownMenuItem>
-                  </>
-                ) : panel.type === 'CHAT' ? (
-                  <>
-                    <DropdownMenuItem className="text-xs">
-                      <MessageCircle className="w-3 h-3 mr-2" />
-                      New Message
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
-                      <Users className="w-3 h-3 mr-2" />
-                      Participants
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
-                      <Search className="w-3 h-3 mr-2" />
-                      Search Chat
-                    </DropdownMenuItem>
-                  </>
-                ) : panel.type === 'AI_CHAT' ? (
-                  <>
-                    <DropdownMenuItem className="text-xs">
-                      <Plus className="w-3 h-3 mr-2" />
-                      New Conversation
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
-                      <MessageCircle className="w-3 h-3 mr-2" />
-                      Conversations
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
-                      <Search className="w-3 h-3 mr-2" />
-                      Search Messages
-                    </DropdownMenuItem>
-                  </>
-                ) : (
-                  <>
-                    <DropdownMenuItem className="text-xs">
-                      <Search className="w-3 h-3 mr-2" />
-                      Search Notes
-                    </DropdownMenuItem>
-                  </>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-xs text-gray-600">
-                  Settings
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {/* Kanban toolbar toggles - both gear and more do the same thing */}
+          {panel.type === 'KANBAN' && (
+            <>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                className="w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0"
+                title="Toggle tools"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  const kanbanBoard = document.querySelector('[data-kanban-toolbar-toggle]')
+                  if (kanbanBoard) {
+                    (kanbanBoard as HTMLElement).click()
+                  }
+                }}
+              >
+                <Settings className="w-2.5 h-2.5" />
+              </Button>
+              
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                className="w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0"
+                title="Toggle tools"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  const kanbanBoard = document.querySelector('[data-kanban-toolbar-toggle]')
+                  if (kanbanBoard) {
+                    (kanbanBoard as HTMLElement).click()
+                  }
+                }}
+              >
+                <MoreHorizontal className="w-2.5 h-2.5" />
+              </Button>
+            </>
           )}
           
           {/* Focus mode button */}

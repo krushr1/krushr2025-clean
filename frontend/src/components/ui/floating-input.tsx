@@ -16,7 +16,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
           type={type}
           id={inputId}
           className={cn(
-            "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-krushr-primary peer",
+            "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:ring-0 focus:shadow-md focus:border-krushr-primary peer",
             className
           )}
           placeholder=" "

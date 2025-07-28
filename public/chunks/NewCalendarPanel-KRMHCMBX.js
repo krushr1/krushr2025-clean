@@ -8,11 +8,12 @@ import {
   formatDateShort,
   isToday,
   shouldProcessHotkey
-} from "/chunks/chunk-S62CAKX4.js";
+} from "/chunks/chunk-EDY2OB7Z.js";
 import {
   Badge,
   Card,
   CompactTaskModal,
+  FloatingInput,
   addMonths,
   eachDayOfInterval,
   endOfDay,
@@ -24,10 +25,7 @@ import {
   startOfMonth,
   startOfWeek,
   subMonths
-} from "/chunks/chunk-PAGTJ65N.js";
-import {
-  FloatingInput
-} from "/chunks/chunk-4VNX5AHK.js";
+} from "/chunks/chunk-RT2NOGQM.js";
 import "/chunks/chunk-PFMVW4LI.js";
 import {
   Button
@@ -1145,4 +1143,4 @@ function NewCalendarPanel({
 export {
   NewCalendarPanel as default
 };
-//# sourceMappingURL=/chunks/NewCalendarPanel-OVA6NCGI.js.map
+//# sourceMappingURL=/chunks/NewCalendarPanel-KRMHCMBX.js.map

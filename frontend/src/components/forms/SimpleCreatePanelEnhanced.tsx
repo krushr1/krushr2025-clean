@@ -789,7 +789,7 @@ export default function SimpleCreatePanel({
                 type="number"
                 value={state.estimatedHours || ''}
                 onChange={(e) => handleSetField('estimatedHours', e.target.value ? Number(e.target.value) : null)}
-                className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary"
                 placeholder="0"
                 min="0"
                 step="0.5"
@@ -805,7 +805,7 @@ export default function SimpleCreatePanel({
               <select
                 value={state.complexity || ''}
                 onChange={(e) => handleSetField('complexity', e.target.value || null)}
-                className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-krushr-primary"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary"
               >
                 <option value="">None</option>
                 <option value={TaskComplexity.SIMPLE}>Simple</option>
@@ -823,7 +823,7 @@ export default function SimpleCreatePanel({
               <select
                 value={state.riskLevel || ''}
                 onChange={(e) => handleSetField('riskLevel', e.target.value || null)}
-                className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-krushr-primary"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary"
               >
                 <option value="">None</option>
                 <option value={TaskRiskLevel.LOW}>Low</option>
@@ -955,7 +955,7 @@ export default function SimpleCreatePanel({
                 value={state.blockedReason || ''}
                 onChange={(e) => handleSetField('blockedReason', e.target.value)}
                 placeholder="Why is this task blocked?"
-                className="w-full px-3 py-2 border-2 border-red-200 rounded-lg focus:border-red-400 focus:ring-2 focus:ring-red-400/20"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-red-400"
               />
             </div>
           )}

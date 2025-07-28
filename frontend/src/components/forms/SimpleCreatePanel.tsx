@@ -253,6 +253,7 @@ export default function SimpleCreatePanel({
                 <X className="w-4 h-4" />
               </Button>
             </div>
+            </div>
           </div>
         </SheetHeader>
 
@@ -266,7 +267,7 @@ export default function SimpleCreatePanel({
                   label="Task Title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="text-xl font-semibold border-2 border-krushr-gray-border rounded-input px-4 py-3 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200"
+                  className="text-xl font-semibold rounded-input px-4 py-3"
                   autoFocus
                 />
               </div>
@@ -358,7 +359,7 @@ export default function SimpleCreatePanel({
                 placeholder="Add task details, requirements, or notes..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="min-h-[100px] resize-y text-sm border-2 border-krushr-gray-border rounded-input p-3 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200 placeholder:text-krushr-gray-light"
+                className="min-h-[100px] resize-y text-sm rounded-input p-3 placeholder:text-krushr-gray-light"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter' && e.ctrlKey && !createTaskMutation.isLoading) {
                     e.preventDefault()
@@ -484,7 +485,7 @@ export default function SimpleCreatePanel({
                           setDueDate(e.target.value)
                           setShowDatePicker(false)
                         }}
-                        className="w-full p-3 border-2 border-krushr-gray-border rounded-input text-sm focus:ring-2 focus:ring-krushr-primary focus:border-krushr-primary"
+                        className="w-full p-3 border border-gray-300 rounded-input text-sm shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary"
                       />
                       {dueDate && (
                         <button
@@ -534,7 +535,7 @@ export default function SimpleCreatePanel({
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Add a comment or note..."
-                    className="flex-1 min-h-[80px] text-sm resize-none border-2 border-krushr-gray-border rounded-input p-3 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200 placeholder:text-krushr-gray-light"
+                    className="flex-1 min-h-[80px] text-sm resize-none rounded-input p-3 placeholder:text-krushr-gray-light"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault()

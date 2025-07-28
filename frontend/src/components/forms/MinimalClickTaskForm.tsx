@@ -859,7 +859,7 @@ export default function MinimalClickTaskForm({
                   setNewTagInput('')
                   setShowNewTag(false)
                 }}
-                className="px-3 py-1.5 text-sm border border-krushr-primary rounded-full focus:outline-none focus:ring-2 focus:ring-krushr-primary"
+                className="px-3 py-1.5 text-sm border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:shadow-md focus:border-krushr-primary"
                 placeholder="New tag..."
                 autoFocus
               />
@@ -1057,7 +1057,7 @@ export default function MinimalClickTaskForm({
               placeholder="Reason for blocking..."
               value={state.blockedReason || ''}
               onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'blockedReason', value: e.target.value })}
-              className="w-full px-3 py-2 text-sm border border-krushr-gray-border rounded-md focus:outline-none focus:ring-2 focus:ring-krushr-secondary"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:shadow-md focus:border-krushr-primary"
             />
           </div>
         )}
@@ -1261,7 +1261,7 @@ export default function MinimalClickTaskForm({
                   <input
                     type="text"
                     placeholder="Add item..."
-                    className="w-full px-3 py-2 text-sm border border-krushr-gray-border rounded-md focus:outline-none focus:ring-2 focus:ring-krushr-primary focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:shadow-md focus:border-krushr-primary"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                         e.preventDefault()

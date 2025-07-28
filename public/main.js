@@ -45,11 +45,11 @@ import {
   setCelebrationEnabled,
   useFocusGuards,
   usePrevious
-} from "/chunks/chunk-JTDAWY4P.js";
+} from "/chunks/chunk-UXVSC6KF.js";
 import {
   NotesPanel_default,
   useUIStore
-} from "/chunks/chunk-PVWZJIML.js";
+} from "/chunks/chunk-47NPYJUB.js";
 import {
   Toaster,
   toast
@@ -65,7 +65,7 @@ import {
   formatDateTime,
   isToday,
   shouldProcessHotkey
-} from "/chunks/chunk-S62CAKX4.js";
+} from "/chunks/chunk-EDY2OB7Z.js";
 import {
   Anchor,
   Arrow,
@@ -79,6 +79,7 @@ import {
   CompactTaskModal,
   Content as Content2,
   DismissableLayer,
+  FloatingInput,
   Portal,
   Priority,
   RichTextEditor,
@@ -112,10 +113,7 @@ import {
   useControllableState,
   useId,
   useSize
-} from "/chunks/chunk-PAGTJ65N.js";
-import {
-  FloatingInput
-} from "/chunks/chunk-4VNX5AHK.js";
+} from "/chunks/chunk-RT2NOGQM.js";
 import {
   Avatar,
   AvatarFallback,
@@ -8833,7 +8831,7 @@ var Textarea = React17.forwardRef(({ className, ...props }, ref) => {
     "textarea",
     {
       className: cn(
-        "flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+        "flex min-h-[60px] w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm shadow-sm hover:shadow-md transition-shadow placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-md focus-visible:border-krushr-primary disabled:cursor-not-allowed disabled:opacity-50",
         className
       ),
       ref,
@@ -16206,7 +16204,7 @@ function SimpleCreatePanel({
               type: "number",
               value: state.estimatedHours || "",
               onChange: (e) => handleSetField("estimatedHours", e.target.value ? Number(e.target.value) : null),
-              className: "w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20",
+              className: "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary",
               placeholder: "0",
               min: "0",
               step: "0.5"
@@ -16223,7 +16221,7 @@ function SimpleCreatePanel({
             {
               value: state.complexity || "",
               onChange: (e) => handleSetField("complexity", e.target.value || null),
-              className: "w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-krushr-primary",
+              className: "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary",
               children: [
                 /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("option", { value: "", children: "None" }),
                 /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("option", { value: "SIMPLE" /* SIMPLE */, children: "Simple" }),
@@ -16243,7 +16241,7 @@ function SimpleCreatePanel({
             {
               value: state.riskLevel || "",
               onChange: (e) => handleSetField("riskLevel", e.target.value || null),
-              className: "w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-krushr-primary",
+              className: "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary",
               children: [
                 /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("option", { value: "", children: "None" }),
                 /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("option", { value: "LOW" /* LOW */, children: "Low" }),
@@ -16374,7 +16372,7 @@ function SimpleCreatePanel({
             value: state.blockedReason || "",
             onChange: (e) => handleSetField("blockedReason", e.target.value),
             placeholder: "Why is this task blocked?",
-            className: "w-full px-3 py-2 border-2 border-red-200 rounded-lg focus:border-red-400 focus:ring-2 focus:ring-red-400/20"
+            className: "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-red-400"
           }
         )
       ] }),
@@ -17936,7 +17934,7 @@ function NotificationCenter({ className }) {
             placeholder: "Search notifications...",
             value: searchTerm,
             onChange: (e) => setSearchTerm(e.target.value),
-            className: "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            className: "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow focus:shadow-md focus:border-krushr-primary text-sm"
           }
         )
       ] })
@@ -18979,7 +18977,7 @@ var Input = React47.forwardRef(
       {
         type,
         className: cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-10 w-full rounded-md border border-gray-300 bg-background px-3 py-2 text-sm shadow-sm hover:shadow-md transition-shadow file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-md focus-visible:border-krushr-primary disabled:cursor-not-allowed disabled:opacity-50",
           className
         ),
         ref,
@@ -23845,12 +23843,12 @@ var import_react_grid_layout = __toESM(require_react_grid_layout(), 1);
 // src/components/workspace/PanelRenderer.tsx
 var import_react42 = __toESM(require_react(), 1);
 var import_jsx_runtime65 = __toESM(require_jsx_runtime(), 1);
-var KanbanBoard2 = (0, import_react42.lazy)(() => import("/chunks/KanbanBoard-44FNU6WT.js"));
-var Chat2 = (0, import_react42.lazy)(() => import("/chunks/Chat-Q6KQSEYN.js"));
-var NotesPanel = (0, import_react42.lazy)(() => import("/chunks/NotesPanel-WDLMU5WU.js"));
-var NewCalendarPanel = (0, import_react42.lazy)(() => import("/chunks/NewCalendarPanel-OVA6NCGI.js"));
+var KanbanBoard2 = (0, import_react42.lazy)(() => import("/chunks/KanbanBoard-3KSZNGWE.js"));
+var Chat2 = (0, import_react42.lazy)(() => import("/chunks/Chat-Z2ORF33V.js"));
+var NotesPanel = (0, import_react42.lazy)(() => import("/chunks/NotesPanel-73HEVHQT.js"));
+var NewCalendarPanel = (0, import_react42.lazy)(() => import("/chunks/NewCalendarPanel-KRMHCMBX.js"));
 var Contacts = (0, import_react42.lazy)(() => import("/chunks/Contacts-7KNWQBBW.js"));
-var WorkspaceAiChat = (0, import_react42.lazy)(() => import("/chunks/WorkspaceAiChat-2N7SJYFE.js"));
+var WorkspaceAiChat = (0, import_react42.lazy)(() => import("/chunks/WorkspaceAiChat-HAWIIZED.js"));
 var PanelLoadingSpinner = () => /* @__PURE__ */ (0, import_jsx_runtime65.jsx)("div", { className: "flex items-center justify-center h-full", children: /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(LoaderCircle, { className: "w-6 h-6 animate-spin text-krushr-primary" }) });
 var PanelErrorBoundary = class extends import_react42.default.Component {
   constructor(props) {
@@ -24210,69 +24208,41 @@ function PanelRenderer({ panel, workspaceId, onRefresh, onFullscreen, onFocus })
                 panel.is_locked && /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Lock, { className: "w-3 h-3 text-amber-600 flex-shrink-0" })
               ] }),
               /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)("div", { className: "flex items-center", style: { marginLeft: "auto", gap: "2px" }, children: [
-                (panel.type === "KANBAN" || panel.type === "CHAT" || panel.type === "AI_CHAT" || panel.type === "NOTES") && /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenu, { children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(DropdownMenuTrigger, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(
+                panel.type === "KANBAN" && /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(import_jsx_runtime65.Fragment, { children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(
                     Button,
                     {
                       size: "sm",
                       variant: "ghost",
                       className: "w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0",
-                      title: "Panel actions",
+                      title: "Toggle tools",
+                      onClick: (e) => {
+                        e.stopPropagation();
+                        const kanbanBoard = document.querySelector("[data-kanban-toolbar-toggle]");
+                        if (kanbanBoard) {
+                          kanbanBoard.click();
+                        }
+                      },
+                      children: /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Settings, { className: "w-2.5 h-2.5" })
+                    }
+                  ),
+                  /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(
+                    Button,
+                    {
+                      size: "sm",
+                      variant: "ghost",
+                      className: "w-5 h-5 p-0 hover:bg-gray-100 flex-shrink-0",
+                      title: "Toggle tools",
+                      onClick: (e) => {
+                        e.stopPropagation();
+                        const kanbanBoard = document.querySelector("[data-kanban-toolbar-toggle]");
+                        if (kanbanBoard) {
+                          kanbanBoard.click();
+                        }
+                      },
                       children: /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Ellipsis, { className: "w-2.5 h-2.5" })
                     }
-                  ) }),
-                  /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuContent, { align: "end", className: "w-40", children: [
-                    panel.type === "KANBAN" ? /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(import_jsx_runtime65.Fragment, { children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", onClick: () => setShowCreatePanel(true), children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Plus, { className: "w-3 h-3 mr-2" }),
-                        "Add Task"
-                      ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(DropdownMenuSeparator, {}),
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Users, { className: "w-3 h-3 mr-2" }),
-                        "Members"
-                      ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Calendar, { className: "w-3 h-3 mr-2" }),
-                        "Timeline"
-                      ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Funnel, { className: "w-3 h-3 mr-2" }),
-                        "Filters"
-                      ] })
-                    ] }) : panel.type === "CHAT" ? /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(import_jsx_runtime65.Fragment, { children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(MessageCircle, { className: "w-3 h-3 mr-2" }),
-                        "New Message"
-                      ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Users, { className: "w-3 h-3 mr-2" }),
-                        "Participants"
-                      ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Search, { className: "w-3 h-3 mr-2" }),
-                        "Search Chat"
-                      ] })
-                    ] }) : panel.type === "AI_CHAT" ? /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(import_jsx_runtime65.Fragment, { children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Plus, { className: "w-3 h-3 mr-2" }),
-                        "New Conversation"
-                      ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(MessageCircle, { className: "w-3 h-3 mr-2" }),
-                        "Conversations"
-                      ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Search, { className: "w-3 h-3 mr-2" }),
-                        "Search Messages"
-                      ] })
-                    ] }) : /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(import_jsx_runtime65.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime65.jsxs)(DropdownMenuItem, { className: "text-xs", children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(Search, { className: "w-3 h-3 mr-2" }),
-                      "Search Notes"
-                    ] }) }),
-                    /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(DropdownMenuSeparator, {}),
-                    /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(DropdownMenuItem, { className: "text-xs text-gray-600", children: "Settings" })
-                  ] })
+                  )
                 ] }),
                 /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(
                   Button,
@@ -24663,6 +24633,9 @@ function PanelWorkspace({ workspaceId, className }) {
   const handleFocus = (0, import_react44.useCallback)((panelId) => {
     setFocusedPanelId(panelId);
   }, []);
+  const [originalLayout, setOriginalLayout] = (0, import_react44.useState)(null);
+  const [isDragging, setIsDragging] = (0, import_react44.useState)(false);
+  const [draggedItemId, setDraggedItemId] = (0, import_react44.useState)(null);
   const updatePositionsImmediately = (0, import_react44.useCallback)((updates) => {
     if (updates.length > 0) {
       updatePositions.mutate({
@@ -24673,10 +24646,35 @@ function PanelWorkspace({ workspaceId, className }) {
   }, [workspaceId, updatePositions]);
   const handleLayoutChange = (0, import_react44.useCallback)((newLayout) => {
     if (allPanels.length === 0 || !newLayout) return;
+    if (isDragging && draggedItemId) {
+      const draggedItem = newLayout.find((item) => item.i === draggedItemId);
+      if (draggedItem) {
+        for (const panel of allPanels) {
+          if (panel.id !== draggedItemId && panel.is_locked) {
+            const lockedItem = newLayout.find((l) => l.i === panel.id);
+            if (lockedItem) {
+              const overlaps = !(draggedItem.x + draggedItem.w <= lockedItem.x || draggedItem.x >= lockedItem.x + lockedItem.w || draggedItem.y + draggedItem.h <= lockedItem.y || draggedItem.y >= lockedItem.y + lockedItem.h);
+              if (overlaps && originalLayout) {
+                console.log("\u26A0\uFE0F Collision with locked panel detected during drag:", panel.id);
+                const originalItem = originalLayout.find((item) => item.i === draggedItemId);
+                if (originalItem) {
+                  draggedItem.x = originalItem.x;
+                  draggedItem.y = originalItem.y;
+                  draggedItem.w = originalItem.w;
+                  draggedItem.h = originalItem.h;
+                }
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
     console.log("\u{1F504} Layout Change Handler:", {
       panelCount: allPanels.length,
       newLayoutCount: newLayout.length,
-      newLayout: newLayout.map((item) => ({ id: item.i, x: item.x, y: item.y, w: item.w, h: item.h }))
+      isDragging,
+      draggedItemId
     });
     const optimizedLayout = newLayout.map((item) => ({
       ...item,
@@ -24687,6 +24685,9 @@ function PanelWorkspace({ workspaceId, className }) {
     }));
     const updates = optimizedLayout.filter((item) => {
       const panel = allPanels.find((p2) => p2.id === item.i);
+      if (panel && panel.is_locked) {
+        return false;
+      }
       const hasChanges = panel && (panel.position_x !== item.x || panel.position_y !== item.y || panel.width !== item.w || panel.height !== item.h);
       if (hasChanges && panel) {
         console.log("\u{1F504} Panel dimension change detected:", {
@@ -24707,9 +24708,7 @@ function PanelWorkspace({ workspaceId, className }) {
       console.log("\u{1F4BE} Applying layout updates:", updates.length, "panels");
       updatePositionsImmediately(updates);
     }
-  }, [allPanels, updatePositionsImmediately, onLayoutPersistenceChange]);
-  const [originalLayout, setOriginalLayout] = (0, import_react44.useState)(null);
-  const [isDragging, setIsDragging] = (0, import_react44.useState)(false);
+  }, [allPanels, updatePositionsImmediately, onLayoutPersistenceChange, isDragging, draggedItemId, originalLayout]);
   (0, import_react44.useEffect)(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape" && isDragging && originalLayout) {
@@ -24724,6 +24723,7 @@ function PanelWorkspace({ workspaceId, className }) {
   const handlePanelDragStart = (0, import_react44.useCallback)((layout2, oldItem, newItem, placeholder, e, element) => {
     setOriginalLayout([...layout2]);
     setIsDragging(true);
+    setDraggedItemId(oldItem.i);
     element.style.zIndex = "9998";
     element.style.opacity = "0.95";
     element.style.transition = "transform 0.15s ease-out, box-shadow 0.15s ease-out";
@@ -24741,36 +24741,62 @@ function PanelWorkspace({ workspaceId, className }) {
   }, [handleLayoutChange]);
   const handlePanelDragStop = (0, import_react44.useCallback)((layout2, oldItem, newItem, placeholder, e, element) => {
     setIsDragging(false);
-    const positionChanged = Math.abs(oldItem.x - newItem.x) > 0.1 || Math.abs(oldItem.y - newItem.y) > 0.1;
-    const sizeChanged = Math.abs(oldItem.w - newItem.w) > 0.1 || Math.abs(oldItem.h - newItem.h) > 0.1;
-    console.log("\u{1F3AF} Drag stopped:", {
-      panelId: newItem.i,
-      positionChanged,
-      sizeChanged,
-      oldPos: { x: oldItem.x, y: oldItem.y },
-      newPos: { x: newItem.x, y: newItem.y },
-      finalLayout: layout2.map((item) => ({ id: item.i, x: item.x, y: item.y }))
-    });
+    setDraggedItemId(null);
     element.style.transition = "all 0.3s ease-out";
     element.style.zIndex = "";
     element.style.opacity = "";
     element.style.transform = element.style.transform.replace(/scale\([^)]*\)/, "").trim();
     element.style.boxShadow = "";
     element.style.border = "";
-    const updates = layout2.map((item) => ({
-      id: item.i,
-      position_x: item.x,
-      position_y: item.y,
-      width: item.w,
-      height: item.h
-    }));
-    console.log("\u{1F4BE} Saving final positions immediately:", updates);
-    updatePositionsImmediately(updates);
+    let shouldRevert = false;
+    const draggedPanel = allPanels.find((p2) => p2.id === newItem.i);
+    if (draggedPanel) {
+      for (const panel of allPanels) {
+        if (panel.id !== draggedPanel.id && panel.is_locked) {
+          const lockedItem = layout2.find((l) => l.i === panel.id);
+          if (lockedItem) {
+            const overlaps = !(newItem.x + newItem.w <= lockedItem.x || newItem.x >= lockedItem.x + lockedItem.w || newItem.y + newItem.h <= lockedItem.y || newItem.y >= lockedItem.y + lockedItem.h);
+            if (overlaps) {
+              console.log("\u26A0\uFE0F Final position overlaps with locked panel:", panel.id);
+              shouldRevert = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+    if (shouldRevert && originalLayout) {
+      console.log("\u{1F504} Reverting to original layout due to locked panel collision");
+      const revertUpdates = originalLayout.filter((item) => {
+        const panel = allPanels.find((p2) => p2.id === item.i);
+        return panel && !panel.is_locked;
+      }).map((item) => ({
+        id: item.i,
+        position_x: item.x,
+        position_y: item.y,
+        width: item.w,
+        height: item.h
+      }));
+      updatePositionsImmediately(revertUpdates);
+    } else {
+      const updates = layout2.filter((item) => {
+        const panel = allPanels.find((p2) => p2.id === item.i);
+        return panel && !panel.is_locked;
+      }).map((item) => ({
+        id: item.i,
+        position_x: item.x,
+        position_y: item.y,
+        width: item.w,
+        height: item.h
+      }));
+      console.log("\u{1F4BE} Saving final positions immediately (excluding locked panels):", updates);
+      updatePositionsImmediately(updates);
+    }
     setTimeout(() => {
       element.style.transition = "";
       setOriginalLayout(null);
     }, 300);
-  }, [updatePositionsImmediately]);
+  }, [updatePositionsImmediately, allPanels, originalLayout]);
   const handlePanelResizeStart = (0, import_react44.useCallback)((layout2, oldItem, newItem, placeholder, e, element) => {
     element.style.zIndex = "9997";
     element.style.opacity = "0.98";
@@ -24807,8 +24833,8 @@ function PanelWorkspace({ workspaceId, className }) {
         isDraggable: !panel.is_locked && !isHidden,
         isResizable: !panel.is_locked && !isHidden && !panel.is_minimized,
         // Disable resize for minimized panels
-        static: panel.is_minimized
-        // Make minimized panels static so they don't interfere with layout
+        static: panel.is_locked || panel.is_minimized
+        // Locked panels are static - nothing can move them
       };
     });
     console.log("\u{1F4CA} Panel to Grid Layout Conversion:", {
@@ -25004,7 +25030,7 @@ function PanelWorkspace({ workspaceId, className }) {
         rowHeight: 25,
         draggableHandle: ".panel-drag-handle",
         useCSSTransforms: true,
-        preventCollision: false,
+        preventCollision: true,
         compactType: null,
         autoSize: true,
         draggableCancel: "input,textarea,button,select,option,.panel-content",

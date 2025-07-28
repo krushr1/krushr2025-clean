@@ -335,7 +335,7 @@ const SimpleCreatePanel = React.memo(({
                   label="Task Title"
                   value={state.title}
                   onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'title', value: e.target.value })}
-                  className="text-xl font-semibold border-2 border-krushr-gray-border rounded-input px-4 py-3 focus:border-krushr-primary focus:ring-2 focus:ring-krushr-primary/20 transition-all duration-200"
+                  className="text-xl font-semibold rounded-input px-4 py-3"
                   autoFocus
                 />
               </div>

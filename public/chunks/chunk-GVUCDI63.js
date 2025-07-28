@@ -1,0 +1,1 @@
+import{c as o,d as n,e as a}from"/chunks/chunk-XLF7ZOXQ.js";function v(t,[e,i]){return Math.min(i,Math.max(e,t))}var r=o(n(),1),c=o(a(),1),u=r.createContext(void 0);function x(t){let e=r.useContext(u);return t||e||"ltr"}export{v as a,x as b};

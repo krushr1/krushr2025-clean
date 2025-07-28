@@ -41,13 +41,14 @@ export const useAuthStore = create<AuthState>()(
           // Check if token exists in localStorage first
           const existingToken = localStorage.getItem('auth-token')
           
-          // Only use dev token in development environment
-          if (!existingToken && process.env.NODE_ENV === 'development') {
-            localStorage.setItem('auth-token', 'dev-token-123')
+          // For production demo without backend, always use demo token
+          if (!existingToken) {
+            const isDemoMode = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+            const defaultToken = isDemoMode ? 'demo-token' : 'dev-token-123'
+            localStorage.setItem('auth-token', defaultToken)
           }
           
-          const tokenToUse = existingToken || 
-            (process.env.NODE_ENV === 'development' ? 'dev-token-123' : null)
+          const tokenToUse = localStorage.getItem('auth-token')
           
           set({ 
             token: tokenToUse,
@@ -61,10 +62,35 @@ export const useAuthStore = create<AuthState>()(
 
       fetchUser: async () => {
         const token = get().token
-        if (!token) return
+        if (!token) {
+          set({ isLoading: false })
+          return
+        }
 
         try {
-          const response = await fetch('http://127.0.0.1:3002/trpc/user.me', {
+          // Use same URL logic as tRPC client
+          const apiUrl = typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+            ? `${window.location.origin}/api/trpc/user.me`
+            : 'http://127.0.0.1:3002/trpc/user.me'
+          
+          // For frontend-only deployment, use demo mode
+          if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            // Demo mode for frontend-only deployment
+            set({
+              user: {
+                id: 'demo-user',
+                name: 'Demo User',
+                email: 'demo@krushr.com',
+                avatar: undefined,
+                createdAt: new Date()
+              },
+              isAuthenticated: true,
+              isLoading: false
+            })
+            return
+          }
+            
+          const response = await fetch(apiUrl, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'

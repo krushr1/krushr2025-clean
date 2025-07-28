@@ -144,6 +144,8 @@ export const demoResponses: Record<string, () => Promise<any>> = {
   
   'workspace.list': async () => {
     await mockDelay()
+    console.log('[Demo Mode] Returning workspace data:', demoData.workspaces)
+    console.log('[Demo Mode] First workspace _count:', demoData.workspaces[0]._count)
     return { result: { data: demoData.workspaces } }
   },
   

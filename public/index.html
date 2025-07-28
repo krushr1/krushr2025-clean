@@ -45,19 +45,10 @@
   <!-- React App Entry Point -->
   <script type="module" src="/main.js"></script>
   
-  <!-- Service Worker Registration -->
+  <!-- Service Worker Registration - Disabled for production -->
   <script>
-    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => {
-            console.log('✅ SW registered:', reg.scope);
-          })
-          .catch(err => {
-            console.log('❌ SW registration failed:', err);
-          });
-      });
-    }
+    // Service Worker disabled to prevent 404 errors in Vercel deployment
+    console.log('🚫 Service Worker registration disabled for production deployment');
   </script>
 </body>
 </html>

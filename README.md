@@ -1,4 +1,8 @@
-# 🚀 Krushr 2025 - Enterprise Project Management Platform
+# Krushr - Project Management Platform
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/krushr1/krushr2025-clean)
+
+**🎉 This is the CLEAN repository with only essential operational files!**
 
 **A powerful, flexible, and responsive project management platform built with cutting-edge 2025 technologies. Perfect for teams seeking robust collaboration, real-time features, and seamless web-to-mobile experiences.**
 
